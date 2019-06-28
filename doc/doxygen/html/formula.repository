@@ -1,0 +1,92 @@
+\form#0:$j+i\times ny$
+\form#1:$ C=A\backslash B$
+\form#2:$y=\alpha Ax$
+\form#3:$\left[n\times m\right]$
+\form#4:$m$
+\form#5:$n$
+\form#6:$y=\alpha A^Tx$
+\form#7:$\left[m\times n\right]$
+\form#8:$C=\alpha AB$
+\form#9:$m\times m$
+\form#10:$C=\alpha A^TB$
+\form#11:$x_i=x_i+\alpha y_i^ip$
+\form#12:$a^T B c$
+\form#13:$A^T A$
+\form#14:$\left[n\times k\right]$
+\form#15:$\left[n\times n\right]$
+\form#16:$A_{n+1,i}=A_{i,n+1}=x_i$
+\form#17:$A_{n+1,n+1}=scal$
+\form#18:$V^*$
+\form#19:$A$
+\form#20:$\alpha$
+\form#21:$\beta$
+\form#22:$y=f(\lambda;x)$
+\form#23:$x\in\mathbf{R}^s$
+\form#24:$\lambda\in\mathbf{R}^d$
+\form#25:$r$
+\form#26:$\lambda$
+\form#27:$x$
+\form#28:$r\times d$
+\form#29:$n\times s$
+\form#30:$r\times n$
+\form#31:$y=f(\lambda;x)=\lambda x$
+\form#32:$x\in\mathbf{R}^1$
+\form#33:$\lambda\in\mathbf{R}^1$
+\form#34:$y=f(\lambda;x)=\lambda_1 x+\lambda_2x^2$
+\form#35:$\lambda\in\mathbf{R}^2$
+\form#36:$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x}$
+\form#37:$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x+\lambda_3x^2}$
+\form#38:$\lambda\in\mathbf{R}^3$
+\form#39:$y=f(\lambda;x)=\lambda$
+\form#40:$y=f(\lambda;x)=\lambda_1+\lambda_2x$
+\form#41:$y=f(\lambda;x)=\frac{x d_w}{A_w \lambda}+T_0$
+\form#42:$d_w=0.1, A_w=0.04, T_0=273$
+\form#43:$y=f(\lambda;x)=\frac{x Q}{A_w \lambda_1}+\lambda_2$
+\form#44:$A_w=0.04, Q=20.0$
+\form#45:$y=f(\lambda;x)=\lambda_1+\lambda_2 x+\lambda_3 x^2+ \lambda_4 (x+1)^{3.5}$
+\form#46:$\lambda\in\mathbf{R}^4$
+\form#47:$y=f(\lambda;x)=\lambda_2 e^{\lambda_1 x} - 2$
+\form#48:$y=f(\lambda;x_i)=\lambda_i$
+\form#49:$i=1,...,d$
+\form#50:$x_i\in\mathbf{R}^1$
+\form#51:$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} \lambda_\alpha \Psi_\alpha(x)$
+\form#52:$\lambda\in\mathbf{R}^{|{\cal S}|}$
+\form#53:${\cal S}$
+\form#54:$z=(\lambda,x)$
+\form#55:$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} c_\alpha \Psi_\alpha(\lambda,x)$
+\form#56:$c_\alpha$
+\form#57:$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\form#58:$c_{\alpha,i}$
+\form#59:$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}_i} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\form#60:$(-\infty,\infty)$
+\form#61:$[-1,1]$
+\form#62:$\xi=R^{-1}(u)\in\mathbf{R}^d$
+\form#63:$u\in[0,1]^d$
+\form#64:$d$
+\form#65:$d\times M$
+\form#66:$N\times d$
+\form#67:$u=R(\xi)$
+\form#68:$\xi$
+\form#69:$M\times d$
+\form#70:$\xi_d$
+\form#71:$[0,1]^d$
+\form#72:\[ F(t,\theta) = \left < F(t,\theta) \right >_{\theta} + \sum_{k=1}^{\infty} \sqrt{\lambda_k} f_k(t) \xi_k\]
+\form#73:$C$
+\form#74:$t$
+\form#75:$w$
+\form#76:\[ \int C(s,t)f(t)dt=\lambda f(s) \rightarrow \sum w_j C(s_i,t_j) f_k(t_j) = \lambda_k f_k(s_i)\]
+\form#77:\[A g=\lambda g \]
+\form#78:$A=W K W$
+\form#79:$g=Wf$
+\form#80:$W$
+\form#81:$W_{ii}=\sqrt{w_i}$
+\form#82:$K_{ij}=Cov(t_i,t_j)$
+\form#83:$\lambda_k$
+\form#84:$f_k=W^{-1}g_k$
+\form#85:$F(t,\theta_l)$
+\form#86:$\xi_k$
+\form#87:$F$
+\form#88:$f_k$
+\form#89:\[ \left.\xi_k\right\vert_{\theta_l}=\left <F(t,\theta_l)-\left < F(t,\theta) \right >_{\theta}, f_k(t) \right >_t/\sqrt{\lambda_k} \]
+\form#90:\[ \left.\xi_k\right\vert_{\theta_l}=\sum_{i=1}^{N_p} w_i\left(F(t_i,\theta_l)-\left < F(t_i,\theta) \right >_{\theta} \right) f_k(t_i)/\sqrt{\lambda_k} \]
+\form#91:\[ F(t_i,\theta_l) = \left < F(t_i,\theta) \right >_{\theta} + \sum_{k=1}^{nKL} \sqrt{\lambda_k} f_k(t_i) \left. \xi_k\right\vert_{\theta_l} \]

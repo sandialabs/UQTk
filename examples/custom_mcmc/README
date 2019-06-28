@@ -1,0 +1,6 @@
+An example code to demonstrate
+a) how to create a Makefile to link to UQTk libraries,
+b) how to perform model parameter inference given a user-defined, C++ forward function.
+
+Note: The first few lines of Makefile need to be edited to point to 
+UQTk installation location, fortran libraries, C/C++ compilers specific to user's computer.
