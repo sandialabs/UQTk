@@ -1,0 +1,23 @@
+Files
+================================
+SurfRxnDet.cpp   : a single run of the ODE model given parameters in an xml file
+
+SurfRxnInfer.cpp : MCMC inference of the ODE model parameters given data
+
+SurfRxnISP.cpp   : uncertainty propagation of the ODE model parameters via intrusive spectral projection (ISP)
+
+SurfRxnNISP.cpp  : uncertainty propagation of the ODE model parameters via non-intrusive spectral projection (NISP)
+
+XMLreader.h      : contains utilities to read parts of the xml file
+model.h          : contains ODE forward runnnig utilities, both deterministic and via ISP
+posterior.h      : contains posterior computation for the inference code
+Utils.cpp .h     : contains utilities for writing out the uncertain solution for ISP/NISP codes
+
+
+SurfRxnMulti.py  : Python wrapper, that given a parameter sample file param.dat and an xml template,
+                 : runs a set of deterministic simulations relying on SurfRxnDet.x
+                 : also, computes the average and the period of the species u based on the second half of the time series
+
+surf_rxn.in.xml  : generic xml file being read in all the codes.
+
+surf_rxn.in.xml.templ : template file where the parameter values are keywords to be replaced by the wrapper SurfRxnMulti.py

@@ -1,0 +1,20 @@
+Window example
+
+expanded version of the forward propagation examples in  examples/fwd_prop
+uses more complex models that provide additional parameters.
+
+
+For more information, look in UQTk manual under
+Expanded Forward Propagation of Uncertainty - PyUQTk tutorial
+(at time of writing this page. 79, but might change)
+
+================================================================================
+
+5D_fwd_prop.py: produces a probability density function of
+                the heat flux for a fifth dimension model, using fourth order PCE's.
+fwd_prop_tools.py: functions called by 5D_fwd_prop.py
+
+highd_sparse.py:  produces a probability density function of the heat flux for
+                  a twelve dimension model, using fourth order PCE's
+                  and sparse quadrature.
+tools_conductance_dp_pce_ward.py: functions called by highd_sparse.py

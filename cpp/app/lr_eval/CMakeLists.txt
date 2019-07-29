@@ -1,0 +1,66 @@
+project (UQTk)
+
+add_executable (lr_eval lr_eval.cpp)
+
+target_link_libraries (lr_eval uqtklowrank)
+target_link_libraries (lr_eval uqtkgproc )
+target_link_libraries (lr_eval uqtkpce  )
+target_link_libraries (lr_eval uqtkbcs  )
+target_link_libraries (lr_eval uqtkquad )
+target_link_libraries (lr_eval uqtktools)
+target_link_libraries (lr_eval uqtkarray)
+
+target_link_libraries (lr_eval depdsfmt )
+target_link_libraries (lr_eval deplbfgs )
+target_link_libraries (lr_eval depcvode )
+target_link_libraries (lr_eval depnvec  )
+target_link_libraries (lr_eval depslatec)
+target_link_libraries (lr_eval deplapack)
+target_link_libraries (lr_eval depblas  )
+target_link_libraries (lr_eval depfigtree )
+target_link_libraries (lr_eval depann   )
+
+# Link fortran libraries
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # using GCC
+  if ("${GnuLibPath}" STREQUAL "")
+    target_link_libraries (lr_eval gfortran stdc++)
+  else()
+    target_link_libraries (lr_eval ${GnuLibPath}/libgfortran.a ${GnuLibPath}/libquadmath.a stdc++)
+  endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  # using Intel
+  if ("${IntelLibPath}" STREQUAL "")
+    target_link_libraries (lr_eval ifcore)
+    target_link_libraries (lr_eval ifport)
+  else()
+    target_link_libraries (lr_eval ${IntelLibPath}/libifcore.a)
+    target_link_libraries (lr_eval ${IntelLibPath}/libifport.a)
+  endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # using Clang
+  if ("${ClangLibPath}" STREQUAL "")
+    target_link_libraries (lr_eval gfortran stdc++)
+  else()
+    target_link_libraries (lr_eval ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
+  endif()
+endif()
+
+include_directories(../../lib/pce    )
+include_directories(../../lib/array  )
+include_directories(../../lib/include)
+include_directories(../../lib/quad   )
+include_directories(../../lib/tools  )
+include_directories(../../lib/bcs    )
+include_directories(../../lib/gproc  )
+include_directories(../../lib/lowrank)
+
+
+include_directories(../../../dep/dsfmt)
+include_directories(../../../dep/lbfgs)
+include_directories(../../../dep/figtree)
+include_directories(../../../dep/cvode-2.7.0/include)
+include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+
+INSTALL(TARGETS lr_eval DESTINATION bin)
+

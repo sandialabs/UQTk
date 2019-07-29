@@ -1,0 +1,20 @@
+fwd_prop example
+
+contains a pair of Python scripts that propagate uncertainty in input parameters
+through a heat transfer model using both a Monte Carlo sampling approach
+and a non-intrusive spectral projection (NISP) via quadrature methods.
+
+For more information, look in UQTk manual under
+Forward Propagation of Uncertainty with PyUQTk
+(at time of writing this page. 72, but might change)
+
+===============================================================================
+Files
+
+red_heat_transfer_atm_pce.py: main script that produces a graph comparing PDF's
+        of heat flux generated using NISP full and sparse quadrature methods
+        and Monte Carlo sampling method.
+        The beginning of the script there are a few flags to consider.
+        See manual for further explanation of flags
+
+heat_transfer_pce_tools.py: functions called by rad_heat_transfer_atm_pce.py

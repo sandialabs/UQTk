@@ -1,0 +1,9 @@
+#README
+
+scripts
+
+This directory contains the executable files:
+get_data.py: gets data from a random polynomial of certain order with random gaussian noise
+fit.py: performs MCMC to fit model to data
+post.py: performs post precessing from MCMC, i.e. finds MAP parameters, produced various plot, various other calculations
+tools.py: Contains helper functions, like the class for the models, calculating the posterior probability and more

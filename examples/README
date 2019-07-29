@@ -1,0 +1,106 @@
+EXAMPLES
+
+==============================
+d_spring_series
+==============================
+Example with springs in series to demonstrate dimensionality
+reduction through basis adaptation (Xiaoshu Zeng, Aug 2018)
+
+==============================
+fwd_prop
+==============================
+forward propagation with heat transfer example
+
+==============================
+kle_ex1
+==============================
+Karhunen-Loeve expansion example
+
+==============================
+line_infer
+==============================
+Example to calibrate parameters of a linear models
+
+==============================
+muq
+==============================
+inference between MUQ and UQTk
+
+==============================
+mcmc_griewank
+==============================
+TMCMC Optimization Function Example
+Griewank Function, global minimum at (0, ..., 0)
+Generally evaluated on hypercube, [-600, 600]^d
+
+==============================
+mcmc_hdf5
+==============================
+TMCMC General-Purpose Example
+HDF5 capability is available with files "hdf5clean.sh"
+Requires config flag USE_HDF5 during compilation
+
+
+==============================
+mcmc_manifold
+==============================
+TMCMC Manifold Sampling Example
+
+==============================
+mcmc_pol
+==============================
+TMCMC Polynomial Fitting Example
+
+==============================
+mcmc_rb
+==============================
+TMCMC Rosenbrock Function Example
+Mode at (1, 1)
+
+==============================
+num_integ
+==============================
+Examples on quadrature and Monte Carlo integrations
+
+==============================
+ops
+==============================
+operations with Polynomial Chaos expansions
+
+==============================
+param_infer
+==============================
+March, 2019
+Example for testing Bayesian Inference between MUQ, UQTk, Dakota
+
+==============================
+pce_bcs
+==============================
+Example to construct sparse Polynomial Chaos expansions
+
+==============================
+polynomial
+==============================
+Example of polynomial model fit with MCMC
+
+==============================
+sensMC
+==============================
+Monte-Carlo based sensitivity index computation
+
+==============================
+surf_rxn
+==============================
+surface reaction example for forward and inverse UQ
+
+
+==============================
+uqpc
+==============================
+construct Polynomial Chaos surrogates for multiple outputs/functions
+
+==============================
+window
+==============================
+extended version of fwd_prop demonstrating forward propagation
+using a number of methods on more complicated examples

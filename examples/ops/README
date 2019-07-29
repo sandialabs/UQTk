@@ -1,0 +1,5 @@
+C++ code that illustrates various operations on PC variables.
+The code is self-documented.
+
+type "make examples" to compile the code and run some examples. The python
+script plots PDFs from sampled PC expansions.
