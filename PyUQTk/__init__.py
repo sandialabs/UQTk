@@ -58,14 +58,8 @@ except ImportError:
 
 try:
 	from . import mcmc
-	from . import mcmc2
 except ImportError:
 	print('PyUQTk SWIG mcmc interface not created.')
-
-try:
-	from . import dfi
-except:
-	print('PyUQTk SWIG dfi interface not created.')
 
 # pure python tools (always included)
 try:

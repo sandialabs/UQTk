@@ -27,8 +27,6 @@ if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (pce)
   add_subdirectory (bcs)
   add_subdirectory (mcmc)
-  add_subdirectory (mcmc2)
-  #add_subdirectory (dfi)
 
   add_subdirectory(pytests)
 endif()
