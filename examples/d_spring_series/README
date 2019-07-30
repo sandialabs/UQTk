@@ -1,0 +1,17 @@
+d_spring_series example
+
+
+This examples contains several Python scripts that  that propagate uncertainty
+in input parameters through a series springs model using basis adaptation
+approach, and is compared with Monte Carlo sampling method and non- intrusive
+spectral projection (NISP) via sparse quadrature method.
+
+For more information, look in UQTk manual under
+Forward Propagation of Uncertainty Using Basis Adaptation
+
+===============================================================================
+FILES:
+
+run_d_springs.py: main script
+
+d_springs_tools.py: functions called by run_d_springs.py

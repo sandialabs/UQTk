@@ -11,7 +11,7 @@ Forward Propagation of Uncertainty with PyUQTk
 ===============================================================================
 Files
 
-red_heat_transfer_atm_pce.py: main script that produces a graph comparing PDF's
+rad_heat_transfer_atm_pce.py: main script that produces a graph comparing PDF's
         of heat flux generated using NISP full and sparse quadrature methods
         and Monte Carlo sampling method.
         The beginning of the script there are a few flags to consider.

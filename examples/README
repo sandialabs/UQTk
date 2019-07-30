@@ -26,36 +26,6 @@ muq
 ==============================
 inference between MUQ and UQTk
 
-==============================
-mcmc_griewank
-==============================
-TMCMC Optimization Function Example
-Griewank Function, global minimum at (0, ..., 0)
-Generally evaluated on hypercube, [-600, 600]^d
-
-==============================
-mcmc_hdf5
-==============================
-TMCMC General-Purpose Example
-HDF5 capability is available with files "hdf5clean.sh"
-Requires config flag USE_HDF5 during compilation
-
-
-==============================
-mcmc_manifold
-==============================
-TMCMC Manifold Sampling Example
-
-==============================
-mcmc_pol
-==============================
-TMCMC Polynomial Fitting Example
-
-==============================
-mcmc_rb
-==============================
-TMCMC Rosenbrock Function Example
-Mode at (1, 1)
 
 ==============================
 num_integ
@@ -66,12 +36,6 @@ Examples on quadrature and Monte Carlo integrations
 ops
 ==============================
 operations with Polynomial Chaos expansions
-
-==============================
-param_infer
-==============================
-March, 2019
-Example for testing Bayesian Inference between MUQ, UQTk, Dakota
 
 ==============================
 pce_bcs

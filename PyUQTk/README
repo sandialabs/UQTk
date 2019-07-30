@@ -1,0 +1,32 @@
+PyUQTk
+The python functionalities of PyUQTk
+
+bcs - interface to Bayesian compressive sensing library
+
+inference - interface to data-free inference class
+
+kle - interface to Karhunen-Loeve expansion class
+
+mcmc - interface to MCMC class
+
+multirun
+
+numpy
+
+pce - interface to Polynomial Chaos expansion class
+
+plotting - Python plotting scripts
+
+PyPCE
+
+pytests - units tests for PyUQTk
+
+quad - interface to Quad class
+
+sens - Python global sensitivity analysis scripts
+
+tools - interface to UQTk tools
+
+uqtkarray - interface to array class
+
+utils - interface to UQTk utils
