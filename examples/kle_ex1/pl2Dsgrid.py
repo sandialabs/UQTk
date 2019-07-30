@@ -24,11 +24,11 @@
 #
 #     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
-#===================================================================================== 
+#=====================================================================================
 """
 Plots a 2D structured grid using in data saved in
 xgrid.dat/ygrid.dat files.
-usage ./pl2Dsgrid directory 
+usage ./pl2Dsgrid directory
 """
 
 import os
@@ -44,15 +44,15 @@ from pyutils import readfile, column
 if (len(sys.argv) > 1):
     dir  = sys.argv[1]
 else:
-    print "Need 1 arguments: directory"
-    
+    print("Need 1 arguments: directory")
+
 x,nx = readfile(dir+"/xgrid.dat");
 y,ny = readfile(dir+"/ygrid.dat");
 x=column(x,0);
 y=column(y,0);
 
 fig=plt.figure(figsize=(4,4))
-ax = fig.add_axes([0.05, 0.05, 0.9, 0.9]) 
+ax = fig.add_axes([0.05, 0.05, 0.9, 0.9])
 ax.set_xticks(x)
 ax.set_yticks(y)
 ax.set_xticklabels([])
