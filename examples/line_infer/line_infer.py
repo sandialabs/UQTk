@@ -49,8 +49,8 @@ import fileinput
 try:
     import PyUQTk.inference.postproc as postp
 except ImportError:
-    print("\nline_infer.py requires the pyUQTk package. Make sure the UQTk root", exit = " ")
-    print("directory is included in the PYTHONPATH environment variable.\n")
+    print("\nline_infer.py requires the pyUQTk package.",
+        "Make sure the UQTk root directory is included in the PYTHONPATH environment variable.\n")
     quit()
 
 #from pylab import *
