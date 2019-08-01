@@ -1,0 +1,19 @@
+polynomial example
+
+codes to generate a random polynomial data with noise, fit a set of polynomial
+models to the data using Markov Chain Monte Carlo, comparing the models to
+each other using model evidence, calculate the derivatives of the models with
+uncertainties, and produce other plots about the model fits.
+
+to run full example, run run/full_run.sh
+
+For more information, look in UQTk manual under
+Polynomial Fitting
+
+================================================================================
+Directories
+
+run:  contains the shell script to run workflow and xml file of all needed variables
+      run workflow from this directory
+
+scripts: contains needed scripts to run workflow
