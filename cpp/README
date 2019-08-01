@@ -1,0 +1,8 @@
+cpp directory
+
+contains the C++ source code
+
+Directories:
+- app: C++ apps
+- lib: C++ libraries
+- tests: Tests for C++ libraries
