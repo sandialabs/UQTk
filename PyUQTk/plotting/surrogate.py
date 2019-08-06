@@ -510,7 +510,7 @@ def plot_senscirc(varname, msens,jsens,inpar_names,figname='senscirc.eps',showpl
     fig = plt.figure(figsize=(10,8))
     ax=fig.add_axes([0.05, 0.05, 0.9, 0.9],aspect='equal')
     #circ=pylab.Circle((0,0),radius=0.5,color='r')
-    circ=Wedge((0.0,0.0),1.01, 0, 360, width=0.02,color='r')
+    circ=matplotlib.patches.Wedge((0.0,0.0),1.01, 0, 360, width=0.02,color='r')
     ax.add_patch(circ)
     maxJfr=-1.e10;
     for i in range(Nmain):
