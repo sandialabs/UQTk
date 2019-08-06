@@ -1,0 +1,21 @@
+Requirements and Notes:
+=======================
+Please make sure the following environment variables are set
+export UQTK_INS=$HOME/research/UQTk-install
+export PYTHONPATH="$PYTHONPATH:${UQTK_INS}"
+
+Create an empty directory, cd there and run workflow.x as an example
+Go through the steps of workflow.x
+Create your own workflow for problem-specific model ensemble, data generation and problem-specific postprocessin
+
+
+TODO
+===
+1d example postprocessing
+automatically select top X for embedding, e.g. see scram_16d study code
+comment and document
+plot_prpost.py: proper legends and labels, treatment of data
+plot_fit1d.py: labels and colors hardwired
+get_postsam.py include sigma
+note the similarities between plot_shade.py and plot_fit1d.py,
+update them together when appropriate!
