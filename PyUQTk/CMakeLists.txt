@@ -30,3 +30,8 @@ if ("${PyUQTk}" STREQUAL "ON")
 
   add_subdirectory(pytests)
 endif()
+
+# Copy over README file too
+INSTALL(FILES README
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION PyUQTk/)

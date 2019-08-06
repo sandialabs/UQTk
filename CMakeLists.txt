@@ -56,3 +56,14 @@ add_subdirectory (dep     )
 add_subdirectory (cpp     )
 add_subdirectory (examples)
 add_subdirectory (PyUQTk  )
+add_subdirectory (doc  )
+
+# Copy over README file too
+INSTALL(FILES README
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION .)
+
+# Copy over LICENSE file too
+INSTALL(FILES LICENSE
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION .)

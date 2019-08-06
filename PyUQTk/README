@@ -1,5 +1,7 @@
 PyUQTk
-The python functionalities of PyUQTk
+This directory contains the python functionalities of PyUQTk.
+Please see the UQTk Manual for more information.
+
 
 bcs - interface to Bayesian compressive sensing library
 
