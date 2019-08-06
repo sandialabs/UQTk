@@ -64,9 +64,13 @@ def plot_vars(ax, xdata, ydata, variances=None, ysam=None, stdfactor=1.,
         shift = np.zeros_like(ydata)
     if scale is None:
         scale = np.ones_like(ydata)
-    print(scale.shape)
+
     ydata_ = (ydata - shift) / scale
-    variances_ = variances / (scale.reshape(-1, 1) * scale.reshape(-1, 1))
+
+    if variances.shape[1] > 0:
+        variances_ = variances / (scale.reshape(-1, 1) * scale.reshape(-1, 1))
+    else:
+        variances_ = variances
     nvariances = variances_.shape[1]
 
     if interp is not None:
@@ -98,7 +102,7 @@ def plot_vars(ax, xdata, ydata, variances=None, ysam=None, stdfactor=1.,
     if connected:
         plt.gca().plot(xdata_, ydata_, color='orange',
                    marker='None', linestyle='-',
-                   label='Mean', zorder=10000)
+                   label='Mean prediction', zorder=10000)
         for ii in range(nvars):
             if varcolors is None:
                 varcolor = cmap(normalize(0.1 + ii * 0.3 / nvars))
@@ -112,7 +116,7 @@ def plot_vars(ax, xdata, ydata, variances=None, ysam=None, stdfactor=1.,
     else:
         plt.gca().plot(xdata_, ydata_, color='orange',
                    marker='o', linestyle='None',
-                   label='Mean', zorder=100000)
+                   label='Mean prediction', zorder=100000)
         for ii in range(nvars):
             if varcolors is None:
                 varcolor = cmap(normalize(0.1 + ii * 0.3 / nvars))
