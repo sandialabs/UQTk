@@ -63,6 +63,12 @@ uqpc
 ==============================
 construct Polynomial Chaos surrogates for multiple outputs/functions
 
+
+==============================
+iuq
+==============================
+surrogate-enabled inverse UQ workflow
+
 ==============================
 window
 ==============================
