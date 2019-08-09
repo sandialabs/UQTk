@@ -1,7 +1,9 @@
 #!/bin/bash
+
+#enter the name of the directory, so we can search through all directories manually pretty easily
 read -p "enter directory: " directory
 
-echo "directory = $directory"
+echo "Changing from directory: $directory"
 #file that all changed names get saved to
 FILECHANGED="files_changed.new"
 FILE_NOT_CHANGED="files_not_changed.new"
@@ -35,6 +37,7 @@ for i in $directory/*.py $directory/*.sh; do
         sed '1,27d' "$i" >> "$NEWFILE"
         echo "$i" >> $FILECHANGED
 
+    #if the header is 2 lines. 
     elif [ "$(head -3 $i |tail -2 | head -c2)" == "#=" ]
     then
         echo "$i being converted with a 2 line header"
