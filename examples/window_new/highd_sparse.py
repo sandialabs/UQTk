@@ -71,7 +71,7 @@ except ImportError:
     print("File with PCE utilities not found.")
 
 try:
-    import PyUQTk.PyPCE.pce_tool as pce_tools
+    import PyUQTk.PyPCE.pce_tools as pce_tools
 except ImportError:
     print("PyUQTk pce_tools module not found")
 

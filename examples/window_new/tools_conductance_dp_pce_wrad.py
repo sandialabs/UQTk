@@ -121,45 +121,6 @@ def r_heat_flux(Ti,To,Ts,dw,da,kw,ka,hi,ho,mu,rho,beta,estimates):
     return(Q)
 
 
-def GalerkinProjection(pc_model,f_evaluations):
-    """
-    Obtain PC coefficients by Galerkin Projection
-    Input:
-        pc_model : PC object with info about basis to project on
-        f_evaluations: 1D numpy array (vector) with function to be projected,
-                       evaluated at the quadrature points
-    Output:
-        Numpy array with PC coefficients
-    """
-
-    # Get parameters
-    if len(f_evaluations.shape) > 1:
-        print("This function can only project single variables for now")
-        exit(1)
-    # Number of quadrature points
-    npce = pc_model.GetNumberPCTerms()
-
-    nqp = f_evaluations.shape[0]
-
-    # UQTk array for PC coefficients for one variable
-    c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
-
-    # UQTk array for function evaluations at quadrature points for that variable
-    f_uqtk = uqtkarray.dblArray1D(nqp,0.0)
-    for ipt in range(nqp):
-        f_uqtk[ipt]=f_evaluations[ipt]
-
-    # Galerkin Projection
-    pc_model.GalerkProjection(f_uqtk,c_k_1d_uqtk)
-
-    # Put PC coefficients in numpy array
-    c_k = np.zeros(npce)
-    for ip in range(npce):
-        c_k[ip] = c_k_1d_uqtk[ip]
-
-    # Return numpy array of PC coefficients
-    return c_k
-
 def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     """
     Evaluate PCE at a set of samples of the germ of this PCE
@@ -206,24 +167,6 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     # Return numpy array of PCE evaluations
     return rvs_sampled
 
-def get_quadpts(pc_model,ndim):
-    """
-    Generates quadrature points
-    Input:
-        pc_model: PC object with info about PCE
-        ndim: number of dimensions of the PCE
-    Output:
-        qdpts: numpy array of quadrature points
-    """
-    # Get the quadrature points
-    qdpts_uqtk = uqtkarray.dblArray2D()
-    pc_model.GetQuadPoints(qdpts_uqtk)
-    totquat = pc_model.GetNQuadPoints() # Total number of quadrature points
-
-    # Convert quad points to a numpy array
-    qdpts = np.zeros((totquat,ndim))
-    qdpts_uqtk.getnpdblArray(qdpts)
-    return qdpts, totquat
 
 def fwd_model(Ti_samples,To_samples,Ts_samples,dw_samples,da_samples,kw_samples,ka_samples,hi_samples,ho_samples,mu_samples,rho_samples,beta_samples):
     """
