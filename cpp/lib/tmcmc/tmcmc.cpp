@@ -85,7 +85,6 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
     }
     std::cout << "Samples generated from d-dim hypercube\n";
   }
-std::cout << "hereeeee" << std::endl;
 
   /* Compute initial likelihoods using outside model*/
   outProcToFile(spls, ndim, nspl, nProcs); // Make mcmcstates
