@@ -37,6 +37,7 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "mcmc.h"
+#include "tmcmc.h"
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
 
@@ -97,6 +98,9 @@ MCMC::MCMC(double (*logPosterior)(Array1D<double>&, void *), void *postinfo)
   // Set defaults
   this->initDefaults();
 
+  // Set TMCMC defaults
+  this->initTMCMCDefaults();
+
   WRITE_FLAG = 1;
 
   return;
@@ -134,6 +138,9 @@ MCMC::MCMC(LikelihoodBase& L)
 
   // Set defaults
   this->initDefaults();
+
+  // Set TMCMC defaults
+  this->initTMCMCDefaults();
 
   WRITE_FLAG = 1;
 
@@ -200,6 +207,28 @@ void MCMC::initDefaults()
 
   this->newMode_=false;
   this->accRatio_ = -1.0;
+
+  return;
+}
+
+void MCMC::initTMCMCDefaults()
+{
+  this->default_tmcmc_nprocs_ = 4;
+  this->default_tmcmc_gamma_ = -1.0;
+  this->default_tmcmc_cv_ = 0.1;
+  this->default_tmcmc_MFactor_ = 1;
+  this->default_tmcmc_basis_ = false;
+  this->default_tmcmc_CATSteps_ = 1;
+
+  return;
+}
+
+void MCMC::initTMCMCRngsDefaults()
+{
+  this->default_tmcmc_rngs_ = std::vector<std::vector<double>> (this->chainDim_);
+  for(int i=0;i<this->chainDim_;i++){
+    this->default_tmcmc_rngs_[i] = {-1.0, 1.0};
+  }
 
   return;
 }
@@ -295,6 +324,80 @@ void MCMC::initEpsMALA(double eps_mala)
   // Set the initialization flag to True
   epsMalaInit_=true;
 
+  return;
+}
+
+void MCMC::initTMCMCNprocs(int tmcmc_nprocs)
+{
+  // Initialize the number of processes for TMCMC
+  methodinfo_.tmcmc_nprocs=tmcmc_nprocs;
+  // Set the initialization flag to True
+  tmcmcNprocsInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCGamma(double tmcmc_gamma)
+{
+  // Initialize the the coefficient behind the covariance scaling
+  // factor for TMCMC
+  methodinfo_.tmcmc_gamma=tmcmc_gamma;
+  // Set the initialization flag to True
+  tmcmcGammaInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCCv(double tmcmc_cv)
+{
+  // Initialize the maximum allowed coefficient of variation for
+  // the weights in TMCMC
+  methodinfo_.tmcmc_cv=tmcmc_cv;
+  // Set the initialization flag to True
+  tmcmcCvInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCMFactor(int tmcmc_MFactor)
+{
+  // Initialize the multiplicative factor for chain length to
+  // encourage mixing in TMCMC
+  methodinfo_.tmcmc_MFactor=tmcmc_MFactor;
+  // Set the initialization flag to True
+  tmcmcMFactorInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCBasis(bool tmcmc_basis)
+{
+  // Initialize the choice to resample according to BASIS and
+  // CATMIPs in TMCMC
+  methodinfo_.tmcmc_basis=tmcmc_basis;
+  // Set the initialization flag to True
+  tmcmcBasisInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCCATSteps(int tmcmc_CATSteps)
+{
+  // Initialize the CATMIPs resampling parameter for TMCMC
+  methodinfo_.tmcmc_CATSteps=tmcmc_CATSteps;
+  // Set the initialization flag to True
+  tmcmcCATStepsInit_=true;
+
+  return;
+}
+
+void MCMC::initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs)
+{
+  // Initialize the ranges for all samples
+  methodinfo_.tmcmc_rngs.assign(tmcmc_rngs.begin(), tmcmc_rngs.end());
+
+  // Set the initialization flag to True
+  tmcmcRngsInit_=true;
   return;
 }
 
@@ -486,129 +589,190 @@ void MCMC::runChain(int ncalls, Array1D<double>& chstart)
     if(!epsMalaInit_)
       this->initEpsMALA(this->default_eps_mala_);
   }
+  else if(!strcmp(this->methodinfo_.type.c_str(),"tmcmc")){
+    if(!tmcmcNprocsInit_)
+      this->initTMCMCNprocs(this->default_tmcmc_nprocs_);
 
+    if(!tmcmcGammaInit_)
+      this->initTMCMCGamma(this->default_tmcmc_gamma_);
+
+    if(!tmcmcCvInit_)
+      this->initTMCMCCv(this->default_tmcmc_cv_);
+
+    if(!tmcmcMFactorInit_)
+      this->initTMCMCMFactor(this->default_tmcmc_MFactor_);
+
+    if(!tmcmcBasisInit_)
+      this->initTMCMCBasis(this->default_tmcmc_basis_);
+
+    if(!tmcmcCATStepsInit_)
+      this->initTMCMCCATSteps(this->default_tmcmc_CATSteps_);
+
+    if(!tmcmcRngsInit_){
+      this->initTMCMCRngsDefaults();
+      this->initTMCMCRngs(this->default_tmcmc_rngs_);
+    }
+      
+  }
 
   // For simplicity, work variables
   string method=methodinfo_.type;
   string output=outputinfo_.type;
 
+  // For TMCMC, call appropriate subroutines
+  if(!strcmp(this->methodinfo_.type.c_str(),"tmcmc")){
+    double logevid;
 
-  // Set the number of substeps per one chain step
-  if(!strcmp(method.c_str(),"ss"))
-    nSubSteps_=chainDim_;
-  else //if(!strcmp(method.c_str(),"am")) or if(!strcmp(method.c_str(),"mala"))
-    nSubSteps_=1;
+    std::vector<double> dts; // Obsolete, Dbeta changes are adaptive now.
+    std::ofstream evidFile("Evidence.dat");
 
+      // Run TMCMC, get evidence
+      logevid = tmcmc(methodinfo_.tmcmc_rngs, methodinfo_.tmcmc_gamma, ncalls,
+        seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
+        methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
+        methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps);
 
-  // Initial chain state
-  currState_.step=0;
-  currState_.state=chstart;
-  currState_.alfa=0.0;
-  currState_.post=this->evalLogPosterior(chstart);
-  this->updateMode();
-  fullChain_.PushBack(currState_);
+      evidFile << std::setprecision(18) << logevid << std::endl;
+      // Move residual files out of the way if necessary.
+      std::string filename;
+      for (size_t f = 1000; f > 0; --f) {
+        filename = "samples.dat." + std::to_string(f);
 
-  // Number of accepted steps and number of all trials
-  int nacc=0;
-  int nall=0;
+        std::ifstream sampleFile(filename);
 
-  // No new mode found yet
-  newMode_=false;
-
-  // Main loop
-  for (int t=1; t <= ncalls; t++) {
-    currState_.step=t;
-    double sum_alpha=0.0;
-
-    // Create a new proposed sample
-    // If the method is 'ss'(Single-Site), one actually searches all dimensions before recording the new state, i.e.
-    // one chain step has d substeps, where d is the chain dimensionality.
-    // For 'am'(Adaptive), d is set to 1.
-    for (int is=0; is<nSubSteps_; is++){
-      Array1D<double> m_cand;
-      if(!strcmp(method.c_str(),"ss"))
-        this->proposalSingleSite(currState_.state, m_cand, is);
-      else if(!strcmp(method.c_str(),"am"))
-        this->proposalAdaptive(currState_.state, m_cand, t);
-      else if(!strcmp(method.c_str(),"mala"))
-        this->proposalMALA(currState_.state, m_cand);
-      else if(!strcmp(method.c_str(),"mmala"))
-        this->proposalMMALA(currState_.state, m_cand);
-      else
-        throw Tantrum((string) "Chain running method is not recognized");
-
-      // Evaluate the posterior at the new sample point
-      double eval_cand = this->evalLogPosterior(m_cand);
-
-      // Evaluate the new|old and old|new proposals
-      double old_given_new = this->probOldNew(currState_.state, m_cand);
-      double new_given_old = this->probOldNew(m_cand,currState_.state);
-
-
-
-      // Accept or reject it
-      double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
-        // cout << t << " " << eval_cand << " " << currState_.post << " " << old_given_new << " " << new_given_old << " " << alpha << endl;
-       // cout << "alpha = " << alpha << endl;
-      sum_alpha+=alpha;
-      if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
-          nacc++;
-          currState_.state = m_cand;
-          currState_.post = eval_cand;
-          if (this->fcnAcceptFlag_)
-            this->fcnAccept_(this->postInfo_);
-      } // If state not accepted, keep previous state as the current state
-      else{
-        if (this->fcnRejectFlag_)
-          this->fcnReject_(this->postInfo_);
+        if (sampleFile.is_open()) {
+          break;
+        }
       }
 
-      nall++;
-    }
-    currState_.alfa=sum_alpha/nSubSteps_;
+      std::ifstream moveFile("move.sh");
+      if (moveFile.is_open()) {
+        std::string moveStr = "./move.sh Stage" + std::to_string(1) +
+        " " + filename;
+        system(moveStr.c_str());
+      }
 
-    // Append the current state to the array of all past states
+    evidFile.close();
+  }
+  // For any method other than TMCMC
+  else{
+    // Set the number of substeps per one chain step
+    if(!strcmp(method.c_str(),"ss"))
+      nSubSteps_=chainDim_;
+    else //if(!strcmp(method.c_str(),"am")) or if(!strcmp(method.c_str(),"mala"))
+      nSubSteps_=1;
+
+
+    // Initial chain state
+    currState_.step=0;
+    currState_.state=chstart;
+    currState_.alfa=0.0;
+    currState_.post=this->evalLogPosterior(chstart);
+    this->updateMode();
     fullChain_.PushBack(currState_);
 
-    // Keep track of the mode (among the locations visited so far)
-    // \todo maybe only store tmode_(we save the full chain anyway)
-    if (currState_.post > modeState_.post){
-      this->updateMode();
-      newMode_=true;
-    }
+    // Number of accepted steps and number of all trials
+    int nacc=0;
+    int nall=0;
 
-    accRatio_ = (double) nacc/nall;
+    // No new mode found yet
+    newMode_=false;
 
+    // Main loop
+    for (int t=1; t <= ncalls; t++) {
+      currState_.step=t;
+      double sum_alpha=0.0;
 
-
-    if (WRITE_FLAG == 1){
-
-      // Output to the screen
-      if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
-
-        printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
-        printf("================= Current MAP params: ");
-        for(int ic=0;ic<this->chainDim_;ic++)
-          printf("par(%d)=%f ",ic,modeState_.state(ic));
-        cout << endl;
-
-      }
-
-      // Output to file
-      if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
-
-        if(!strcmp(output.c_str(),"txt"))
-          this->writeChainTxt(outputinfo_.filename);
-        else  if(!strcmp(output.c_str(),"bin"))
-          this->writeChainBin(outputinfo_.filename);
+      // Create a new proposed sample
+      // If the method is 'ss'(Single-Site), one actually searches all dimensions before recording the new state, i.e.
+      // one chain step has d substeps, where d is the chain dimensionality.
+      // For 'am'(Adaptive), d is set to 1.
+      for (int is=0; is<nSubSteps_; is++){
+        Array1D<double> m_cand;
+        if(!strcmp(method.c_str(),"ss"))
+          this->proposalSingleSite(currState_.state, m_cand, is);
+        else if(!strcmp(method.c_str(),"am"))
+          this->proposalAdaptive(currState_.state, m_cand, t);
+        else if(!strcmp(method.c_str(),"mala"))
+          this->proposalMALA(currState_.state, m_cand);
+        else if(!strcmp(method.c_str(),"mmala"))
+          this->proposalMMALA(currState_.state, m_cand);
         else
-          throw Tantrum((string) "Chain output type is not recognized");
-        lastwrite_ = t;
-      }
-    }
+          throw Tantrum((string) "Chain running method is not recognized");
 
-  }  // End of main loop
+        // Evaluate the posterior at the new sample point
+        double eval_cand = this->evalLogPosterior(m_cand);
+
+        // Evaluate the new|old and old|new proposals
+        double old_given_new = this->probOldNew(currState_.state, m_cand);
+        double new_given_old = this->probOldNew(m_cand,currState_.state);
+
+
+
+        // Accept or reject it
+        double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
+          // cout << t << " " << eval_cand << " " << currState_.post << " " << old_given_new << " " << new_given_old << " " << alpha << endl;
+         // cout << "alpha = " << alpha << endl;
+        sum_alpha+=alpha;
+        if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
+            nacc++;
+            currState_.state = m_cand;
+            currState_.post = eval_cand;
+            if (this->fcnAcceptFlag_)
+              this->fcnAccept_(this->postInfo_);
+        } // If state not accepted, keep previous state as the current state
+        else{
+          if (this->fcnRejectFlag_)
+            this->fcnReject_(this->postInfo_);
+        }
+
+        nall++;
+      }
+      currState_.alfa=sum_alpha/nSubSteps_;
+
+      // Append the current state to the array of all past states
+      fullChain_.PushBack(currState_);
+
+      // Keep track of the mode (among the locations visited so far)
+      // \todo maybe only store tmode_(we save the full chain anyway)
+      if (currState_.post > modeState_.post){
+        this->updateMode();
+        newMode_=true;
+      }
+
+      accRatio_ = (double) nacc/nall;
+
+
+
+      if (WRITE_FLAG == 1){
+
+        // Output to the screen
+        if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
+
+          printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
+          printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+          printf("================= Current MAP params: ");
+          for(int ic=0;ic<this->chainDim_;ic++)
+            printf("par(%d)=%f ",ic,modeState_.state(ic));
+          cout << endl;
+
+        }
+
+        // Output to file
+        if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
+
+          if(!strcmp(output.c_str(),"txt"))
+            this->writeChainTxt(outputinfo_.filename);
+          else  if(!strcmp(output.c_str(),"bin"))
+            this->writeChainBin(outputinfo_.filename);
+          else
+            throw Tantrum((string) "Chain output type is not recognized");
+          lastwrite_ = t;
+        }
+      }
+
+    }  // End of main loop
+  }
 
   return;
 }

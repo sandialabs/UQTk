@@ -9,6 +9,7 @@ include_directories (../include)
 include_directories (../array  )
 include_directories (../tools  )
 include_directories (../quad   )
+include_directories (../tmcmc  )
 
 include_directories (../../../dep/slatec)
 include_directories (../../../dep/lapack) 
@@ -17,6 +18,8 @@ include_directories (../../../dep/figtree)
 include_directories (../../../dep/cvode-2.7.0/include)
 include_directories (../../../dep/lbfgs )
   
+target_link_libraries(uqtkmcmc uqtktmcmc)
+
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 # Install the library
