@@ -25,7 +25,7 @@
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 /// \file quad.h
-/// \author K. Sargsyan, C. Safta 2010 - 
+/// \author K. Sargsyan, C. Safta 2010 -
 /// \brief Header file for the quadrature class
 
 #ifndef QUAD_H_SEEN
@@ -62,7 +62,7 @@ public:
   /// alpha      :  parameter #1 for the corresponding PC type (e.g. LG requires one parameter)
   /// betta      :  parameter #2 for the corresponding PC type (e.g. JB requires two parameters)
   Quad(char *grid_type, char *fs_type,int ndim,int param,double alpha=0.0, double betta=1.0);
-    
+
   /// \brief Constructor, overloaded for dimension-unisotropy: initializes
   /// the dimension-specific rule types, sparseness type, dimension-specific ppd or level,
   /// and two optional parameters for quadrature rule per each dimension
@@ -74,7 +74,7 @@ public:
   /// alpha      :  array of parameters #1 for the corresponding PC type (e.g. LG requires one parameter)
   /// bettas     :  array of parameters #2 for the corresponding PC type (e.g. JB requires two parameters)
     Quad(Array1D<string>& grid_types, char *fs_type, Array1D<int>& param,Array1D<double>& alphas, Array1D<double>& bettas);
-    
+
   /// \brief Constructor: empty
   Quad() {};
   /// \brief Destructor
@@ -96,7 +96,7 @@ public:
   void GetDomain(Array1D<double>& aa, Array1D<double>& bb) const {aa=aa_; bb=bb_;}
   /// \brief Get the domain endpoint (for semi-infinite domains)
   void GetDomain(Array1D<double>& aa) const {aa=aa_;}
-  
+
   /// \brief Set the rule externally (only quadrature points and weights)
   void SetRule(Array2D<double>& q, Array1D<double>& w);
   /// \brief Set the rule externally (quadrature points, weights and indices)
@@ -104,7 +104,7 @@ public:
   void SetRule(Array2D<double>& q, Array1D<double>& w, Array2D<int>& ind){this->SetRule(q,w);}
   /// \brief Set the rule externally (quadrature points, weights, indices, and the level)
   //void SetRule(Array2D<double>& q, Array1D<double>& w, Array2D<int>& ind, int param);
-  
+
   /// \brief Set the rule (the function that builds quadrature points/weights/indices)
   void SetRule();
 
@@ -113,14 +113,14 @@ public:
   /// \brief Get the quadrature rule with indexing
   /// Dummy function for backward compatibility
   void GetRule(Array2D<double>& q, Array1D<double>& w, Array2D<int>& ind){this->GetRule(q,w);}
-    
+
   /// \brief Externally set quadrature points
   void SetQdpts(Array2D<double>& q){  rule_.qdpts=q; return;}
   /// \brief Externally set the weights
   void SetWghts(Array1D<double>& w){  rule_.wghts=w; return;}
   /// \brief Externally set the indices
   // void SetIndices(Array2D<int>& ind){  rule_.indices=ind; return;}
-  
+
   /// \brief Get quadrature points
   void GetQdpts(Array2D<double>& q){ q=rule_.qdpts;  return;}
   /// \brief Get the weights
@@ -130,33 +130,33 @@ public:
 
   /// \brief Set the level parameter
   void SetLevel(int param) {nlevel_=param; return;}
-    
+
   /// \brief Compute the indices of the next-level points
   void nextLevel();
-  
+
    /// \brief Get the number of quadrature points
   int GetNQ() {return rule_.qdpts.XSize(); }
-    
+
   /// \brief Set the verbosity level
   /// \note Currently, the values of 0, 1 and 2 are implemented
   void SetVerbosity(int verbosity) { quadverbose_ = verbosity; }
 
-    
-    
+
+
  private:
-  
+
   /// \brief Dummy copy constructor, which should not be used as it is currently not well defined
   Quad(const Quad &) {};
-          
+
   /// \brief The left endpoints of the domain
   Array1D<double> aa_;
   /// \brief the right endpoints of the domain
   Array1D<double> bb_;
-    
+
   /// \brief Verbosity level
   /// \note Currently the values of 0, 1 or 2 are implemented.
   int quadverbose_;
-  
+
   /// \brief The first parameter of the rule, if any
   double alpha_;
   /// \brief The second parameter of the rule, if any
@@ -167,28 +167,28 @@ public:
   Array1D<double> betas_;
 
   /// \brief Rule structure that stores quadrature points, weights and indices
-  typedef struct 
+  typedef struct
   {
     /// \brief Quadrature points
     Array2D<double> qdpts;
     /// \brief Quadrature weights
     Array1D<double> wghts;
   } QuadRule;
-  
+
   /// \brief The quadrature rule structure
   QuadRule rule_;
 
   /// \brief The dimensionality
   int ndim_;
-  
+
   /// \brief The current level, working variable for hierarchical construction
   int nlevel_;
-  
-  /// \brief The level for sparse rules, or the number of grid points per dim 
+
+  /// \brief The level for sparse rules, or the number of grid points per dim
   /// for full product rules
   int maxlevel_;
   Array1D<int> param_;
-  
+
   /// \brief Multiply two rules (full tensor product)
   void MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod);
   /// \brief Multiply many rules (full tensor product)
@@ -197,7 +197,7 @@ public:
   void AddTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum);
   /// \brief Subtract two rules
   void SubtractTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum);
-  
+
   /// \brief Compute 1D rules
   void create1DRule(string gridtype,Array1D<double>& qdpts,Array1D<double>& wghts, int ngr, double a, double b);
 
@@ -218,8 +218,8 @@ public:
   /// \brief Jacobi-Beta
   void create1DRule_JB(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr, double a, double b);
   /// \brief Gamma-Laguerre
-  void create1DRule_GLG(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr);
-  /// \brief Stieltjes-Wigert 
+  void create1DRule_LG(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr);
+  /// \brief Stieltjes-Wigert
   void create1DRule_SW(Array1D<double>& qdpts,Array1D<double>& wghts,int ngr);
   /// \brief Custom rule given the recursive coefficients of the corresponding orthogonal polynomials
   /// \todo Recursive coefficients are given in a file 'ab.dat'; will need to make this more friendly
@@ -227,27 +227,27 @@ public:
   /// \brief Gauss-Patterson starting with Legendre-Uniform 3
   /// \note Hardwired reading of quadrature points and weights
   void create1DRule_GP3(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr, double a, double b);
-  
+
   /// \brief Auxilliary function: get the level of the multi-index
   void getMultiIndexLevel(Array2D<int>& multiIndexLevel, int level, int ndim);
-	
+
   /// \brief Growth rule: exponential(0) or linear(1)
   int growth_rule_;
   /// \brief Growth rules: exponential(0) or linear(1)
   Array1D<int> growth_rules_;
-  
-  /// \brief Grid type: 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'GLG', 'SW', 'pdf', or 'GP3'
+
+  /// \brief Grid type: 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'LG', 'SW', 'pdf', or 'GP3'
   string grid_type_;
-  /// \brief Vector of grid types: 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'GLG', 'SW', 'pdf', or 'GP3'
+  /// \brief Vector of grid types: 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'LG', 'SW', 'pdf', or 'GP3'
   Array1D<string> grid_types_;
-  
+
   /// \brief Sparseness type (full or sparse)
   string fs_type_;
-    
+
   /// \brief Compress the rule, i.e. merge repeating points
   void compressRule(QuadRule *rule);
-    
 
-  
-}; 
+
+
+};
 #endif /* QUAD_H_SEEN */

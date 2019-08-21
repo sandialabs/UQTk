@@ -25,7 +25,7 @@
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 /// \file quad.cpp
-/// \author K. Sargsyan, C. Safta 2010 - 
+/// \author K. Sargsyan, C. Safta 2010 -
 /// \brief Quadrature class
 
 #include <math.h>
@@ -43,14 +43,14 @@
 // Constructor given quadrature type, sparsity, dimensionaility, grid parameter (ppd or level), and associated PC parameters, if relevant
 Quad::Quad(char *grid_type, char *fs_type,int ndim, int param,double alpha, double betta)//Default
 {
-  
+
   // Initialize the dimensionality, grid types and boundaries
   this->ndim_=ndim;
   aa_.Resize(ndim,-1.e0);
   bb_.Resize(ndim,1.e0);
   this->grid_type_=grid_type;
   this->fs_type_=fs_type;
-  
+
   // Initialize parameters
   this->alpha_=alpha;
   this->beta_=betta;
@@ -63,10 +63,10 @@ Quad::Quad(char *grid_type, char *fs_type,int ndim, int param,double alpha, doub
 
   // Set the quadrature level
   maxlevel_=param;
-  
+
   // The rest of initialization
   this->init();
- 
+
 
 }
 
@@ -74,16 +74,16 @@ Quad::Quad(char *grid_type, char *fs_type,int ndim, int param,double alpha, doub
 // Overloaded for unisotropy
 Quad::Quad(Array1D<string>& grid_types, char *fs_type, Array1D<int>& param,Array1D<double>& alphas, Array1D<double>& bettas)
 {
-    
+
   // Initialize the dimensionality, grid types and boundaries
   this->ndim_=grid_types.Length();
   aa_.Resize(this->ndim_,-1.e0);
   bb_.Resize(this->ndim_,1.e0);
   this->growth_rules_.Resize(this->ndim_,0);
 
-  this->grid_types_=grid_types; 
+  this->grid_types_=grid_types;
   this->fs_type_=fs_type;
-  
+
   // Initialize parameters
   this->alphas_=alphas;
   this->betas_=bettas;
@@ -94,7 +94,7 @@ Quad::Quad(Array1D<string>& grid_types, char *fs_type, Array1D<int>& param,Array
 
   // The rest of initialization
   this->init();
- 
+
 
 }
 
@@ -115,18 +115,18 @@ void Quad::init()
         throw Tantrum("Quad::Quad(): The requested number of points is too large");
     }
   }
-    
+
   // Sanity check - do not use 0 ppd with full tensor-product
   if (this->fs_type_=="full"){
     if(this->maxlevel_==0)
       throw Tantrum("Quad::Quad(): 'full' does not make sense with parameter 0.");
   }
-  
+
   // Set the proper growth rules for sparse quadrature
   else if (this->fs_type_=="sparse"){
     if(this->ndim_==1)
       throw Tantrum("Quad::Quad(): 'sparse' does not make sense in 1D, use 'full' instead.");
-    
+
     for (int i=0;i<this->ndim_;i++){
       if (this->grid_types_(i)=="CC" or this->grid_types_(i)=="NC")
       	this->growth_rules_(i)=0;
@@ -138,7 +138,7 @@ void Quad::init()
         this->growth_rules_(i)=1;
       else if (this->grid_types_(i)=="JB")
       	this->growth_rules_(i)=0;
-      else if (this->grid_types_(i)=="GLG")
+      else if (this->grid_types_(i)=="LG")
       	this->growth_rules_(i)=0;
       else if (this->grid_types_(i)=="SW")
         this->growth_rules_(i)=0;
@@ -147,11 +147,11 @@ void Quad::init()
       else if (this->grid_types_(i)=="GP3")
         this->growth_rules_(i)=0;
       else
-        throw Tantrum("Quad::Quad(): Grid type unrecognized! Options are 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'GLG', 'SW', 'pdf' or 'GP3'");
+        throw Tantrum("Quad::Quad(): Grid type unrecognized! Options are 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'LG', 'SW', 'pdf' or 'GP3'");
 	  }
   }
-  
-  else 
+
+  else
     throw Tantrum("Quad::Quad(): Either 'full' or 'sparse' should be specified");
 
   return;
@@ -177,9 +177,9 @@ void Quad::SetDomain(Array1D<double>& aa)
   // Dimensionality check
   if ( (int) aa.XSize() != ndim_ )
     throw Tantrum("Quad::SetDomain(): Dimension error!");
-  
+
   aa_=aa;
-  
+
   return;
 }
 
@@ -206,12 +206,12 @@ void Quad::GetRule(Array2D<double>& q, Array1D<double>& w)
 
 // Multiply two rules (tensor product of points and weights)
 void Quad::MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod)
-{ 
+{
 
   // Get the sizes
   int n1=rule1->qdpts.XSize();
   int n2=rule2->qdpts.XSize();
-  
+
   int d1=rule1->qdpts.YSize();
   int d2=rule2->qdpts.YSize();
 
@@ -222,10 +222,10 @@ void Quad::MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod)
   // Resize the product rule containers
   rule_prod->qdpts.Resize(n12,d12,0.e0);
   rule_prod->wghts.Resize(n12,0.e0);
-  
+
   for(int in2=0;in2<n2;in2++){
     for(int in1=0;in1<n1;in1++){
-      
+
       // Quadrature points and indices are 'mesh'-ed
       for(int id1=0;id1<d1;id1++){
         rule_prod->qdpts(in1+in2*n1,id1)=rule1->qdpts(in1,id1);
@@ -233,14 +233,14 @@ void Quad::MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod)
       for(int id2=0;id2<d2;id2++){
         rule_prod->qdpts(in1+in2*n1,id2+d1)=rule2->qdpts(in2,id2);
       }
-      
+
       // Weights are multiplied
       rule_prod->wghts(in1+in2*n1)=rule1->wghts(in1)*rule2->wghts(in2);
 
     }
   }
-  
-  
+
+
 
 
 
@@ -256,25 +256,25 @@ void Quad::MultiplyManyRules(int nrules, QuadRule *rules, QuadRule *rule_prod)
   QuadRule rule_1d;
   QuadRule rule_cur;
   QuadRule rule_prod_h;
-      
+
   for(int i=0;i<nrules;i++){
 
       rule_1d=rules[i];
-   
+
       // Recursively multiply all the rules
       if(i==0)
         rule_prod_h=rule_1d;
       else
         this->MultiplyTwoRules(&rule_cur,&rule_1d,&rule_prod_h);
-      
+
       rule_cur=rule_prod_h;
-      
+
   }
 
-  
+
   rule_prod->qdpts=rule_prod_h.qdpts;
   rule_prod->wghts=rule_prod_h.wghts;
-  
+
   return;
 }
 
@@ -306,10 +306,10 @@ void Quad::AddTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum)
     exit(1);
   }
   int d=d1;
- 
+
   // The size of the full sum
   int n12=n1+n2;
-  
+
   merge(rule1->qdpts,rule2->qdpts,rule_sum->qdpts);
   merge(rule1->wghts,rule2->wghts,rule_sum->wghts);
 
@@ -343,8 +343,8 @@ void Quad::create1DRule(string gridtype,Array1D<double>& qdpts,Array1D<double>& 
   else  if (gridtype=="JB"){
     this->create1DRule_JB(qdpts,wghts,ngr,a,b);
   }
-  else  if (gridtype=="GLG"){
-    this->create1DRule_GLG(qdpts,wghts,ngr);
+  else  if (gridtype=="LG"){
+    this->create1DRule_LG(qdpts,wghts,ngr);
       }
   else  if (gridtype=="SW"){
     this->create1DRule_SW(qdpts,wghts,ngr);
@@ -355,10 +355,10 @@ void Quad::create1DRule(string gridtype,Array1D<double>& qdpts,Array1D<double>& 
   else  if (gridtype=="GP3"){
     this->create1DRule_GP3(qdpts,wghts,ngr,a,b);
   }
-  
-  else 
-    throw Tantrum("Quad::create1DRule(): Grid type unrecognized! Options are 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'GLG', 'SW', 'pdf' or 'GP3' ");
-  
+
+  else
+    throw Tantrum("Quad::create1DRule(): Grid type unrecognized! Options are 'CC','CCO','NC','NCO','LU', 'HG', 'JB', 'LG', 'SW', 'pdf' or 'GP3' ");
+
   return;
 }
 /**********************************************************************************/
@@ -369,7 +369,7 @@ void Quad::create1DRule_LU(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
 {
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   // Work arrays
   Array1D<double> endpts(2,0.e0); // real array of length two with zeroed values, needed to pass to gaussqC
   Array1D<double> bwork(ngr,0.e0);
@@ -380,11 +380,11 @@ void Quad::create1DRule_LU(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
   gq( kind, alpha, beta, qdpts_1d, wghts );
 
   // Rescale and index
-  for(int i=0; i<ngr;i++){ 
+  for(int i=0; i<ngr;i++){
     qdpts(i)=a+(b-a)*(qdpts_1d(i)+1.)/2.;
     wghts(i) *= (b-a)/4.; //since the integral is with respect to pdf=1/2
-  }    
-  
+  }
+
   return;
 }
 /**********************************************************************************/
@@ -394,7 +394,7 @@ void Quad::create1DRule_HG(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
 {
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   // Work arrays
   Array1D<double> endpts(2,0.e0); // real array of length two with zeroed values, needed to pass to gaussqC
   Array1D<double> bwork(ngr,0.e0);
@@ -408,11 +408,11 @@ void Quad::create1DRule_HG(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
 
   gq( kind, alpha, beta, qdpts_1d, wghts );
   // Rescale and index
-  for(int i=0; i<ngr;i++){ 
+  for(int i=0; i<ngr;i++){
     qdpts(i)=qdpts_1d(i)*fac;
     wghts(i) /= spi;
-  }    
-  
+  }
+
   return;
 }
 /**********************************************************************************/
@@ -430,20 +430,20 @@ void Quad::create1DRule_NC(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
   else{
     for (int i=0;i<ngr;i++)
       qdpts(i) =  -1.+2.*double(i)/ double(ngr-1.);
-    
+
     Array1D<double> exact(ngr,0.e0);
     for (int i=0;i<ngr;i=i+2)
       exact(i)=2./(i+1.);
     vandermonde_gq(qdpts,wghts,exact);
-    
+
    }
 
   // Rescale and index
   for (int i=0;i<ngr;i++){
     qdpts(i) = (b+a)/2.+ qdpts(i)* (b-a)/2.;
     wghts(i) = wghts(i) *(b-a)/4.;  //since the integral is with respect to pdf=1/2
-  
-    
+
+
   }
 
     return;
@@ -455,21 +455,21 @@ void Quad::create1DRule_NCO(Array1D<double>& qdpts,Array1D<double>& wghts,int ng
 {
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   for (int i=0;i<ngr;i++)
     qdpts(i) =  -1.+2.*(i+1.)/ double(ngr+1.);
-  
+
   Array1D<double> exact(ngr,0.e0);
   for (int i=0;i<ngr;i=i+2)
     exact(i)=2./(i+1.);
   vandermonde_gq(qdpts,wghts,exact);
-  
+
   // Rescale and index
   for (int i=0;i<ngr;i++){
     qdpts(i) = (b+a)/2.+ qdpts(i)* (b-a)/2.;
     wghts(i) = wghts(i) *(b-a)/4.;  //since the integral is with respect to pdf=1/2
 
-    
+
   }
   return;
 }
@@ -480,50 +480,50 @@ void Quad::create1DRule_CC(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
 {
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   if (ngr==1){
     qdpts(0)=0.0;
     wghts(0)=2.0;
   }
-  
+
   else {
-    
+
     double pi=4.*atan(1.);
     double theta,f;
-      
+
     for (int i=0;i<ngr;i++)
       qdpts(i) =  cos( (double) (ngr-1-i) * pi / (double) (ngr-1) );
-    
+
     for (int i=0;i<ngr;i++){
       theta = (double) i * pi / (double) (ngr-1);
       wghts(i) = 1.0;
-      
+
       for (int j=1;j<=( ngr - 1 ) / 2; j++ ){
         if ( 2 * j == ( ngr - 1 ) )
           f = 1.0;
         else
           f = 2.0;
-        
+
         wghts(i)-= f*cos ( 2.0 * ( double ) j * theta ) / ( double ) ( 4 * j * j - 1 );
       }
 
     }
-    
+
     wghts(0)  /=  (double) ( ngr - 1 );
     for ( int i = 1; i < ngr - 1; i++ )
       wghts(i) *= 2.0 / ( double ) ( ngr - 1 );
-    
+
     wghts(ngr-1) *= 1.0 / ( double ) ( ngr - 1 );
   }
-  
+
   // Rescale and index
   for (int i=0;i<ngr;i++){
     qdpts(i) = (b+a)/2.+ qdpts(i)* (b-a)/2.;
     wghts(i) = wghts(i) *(b-a)/4.;  //since the integral is with respect to pdf=1/2
-  
-    
+
+
   }
-  
+
   return;
 }
 /**********************************************************************************/
@@ -536,17 +536,17 @@ void Quad::create1DRule_CCO(Array1D<double>& qdpts,Array1D<double>& wghts, int n
 
   double pi=4.*atan(1.);
   double theta,f;
-  
+
   for (int i=0;i<ngr;i++)
     qdpts(i) =  cos( (double) (ngr-i) * pi / (double) (ngr+1) );
 
-  
+
   for (int i=0;i<ngr;i++){
 
     theta = (double) (ngr-i) * pi / (double) (ngr+1);
-    
+
     wghts(i) = 1.0;
-    
+
     for (int j=1;j<=( ngr - 1 ) / 2; j++ ){
       wghts(i)-= 2.0*cos ( 2.0 * ( double ) j * theta ) / ( double ) ( 4 * j * j - 1 );
     }
@@ -554,19 +554,19 @@ void Quad::create1DRule_CCO(Array1D<double>& qdpts,Array1D<double>& wghts, int n
       f=ngr;
     else
       f=ngr-1;
-    
+
     wghts(i)-=cos((f+1.)*theta) / f;
-    
+
   }
-  
+
   for ( int i = 0; i < ngr; i++ )
     wghts(i) *= 2.0 / ( double ) ( ngr + 1 );
-  
+
   // Rescale and index
   for (int i=0;i<ngr;i++){
     qdpts(i) = (b+a)/2.+ qdpts(i)* (b-a)/2.;
     wghts(i) = wghts(i) *(b-a)/4.;  //since the integral is with respect to pdf=1/2
-    
+
   }
 
   return;
@@ -585,28 +585,28 @@ void Quad::create1DRule_JB(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
   gq (5, alpha_, beta_, qdpts, wghts ) ;
 
   // Rescale and index
-  for(int i=0; i<ngr;i++){ 
+  for(int i=0; i<ngr;i++){
     qdpts(i)=a+(b-a)*(qdpts(i)+1.)/2.;
-    wghts(i) *= (b-a)/(2.*mu0);  
-  }    
-  
+    wghts(i) *= (b-a)/(2.*mu0);
+  }
+
   return;
 }
 /**********************************************************************************/
 
 // Gamma-Laguerre (positive half-line)
-void Quad::create1DRule_GLG(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr)
+void Quad::create1DRule_LG(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr)
 {
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   gq (6, alpha_, 0.0, qdpts, wghts ) ;
 
   // Indexing
-  for(int i=0; i<ngr;i++){ 
+  for(int i=0; i<ngr;i++){
     wghts(i) /= exp(lgamma(alpha_+1));
-  }    
-  
+  }
+
 return;
 }
 /**********************************************************************************/
@@ -618,26 +618,26 @@ void Quad::create1DRule_SW(Array1D<double>& qdpts,Array1D<double>& wghts, int ng
 
   qdpts.Resize(ngr,0.e0);
   wghts.Resize(ngr,0.e0);
-  
+
   // Work arrays
   Array1D<double> al(ngr,0.e0);
   Array1D<double> be(ngr, 0.e0);
-  
+
   double ee=exp(beta_*beta_/2.);
   double eesq = ee*ee ;
-  
+
   for(int i=0; i<ngr;i++){
       al(i)=exp(alpha_)*pow(ee,2.e0*i-1.e0)*((eesq+1.0)*pow(eesq,i)-1.e0);
       be(i)=exp(2.e0*alpha_)*pow(eesq,3.e0*i-2.e0)*(pow(ee,2.e0*(double)(i))-1.e0);
   }
-  
+
   // The norm
   double mu0=1.;
-    
+
   // Computes the quadrature given the recursion coefficients
   gq_gen(al,be,mu0,qdpts, wghts) ;
 
-  
+
 return;
 }
 /**********************************************************************************/
@@ -652,7 +652,7 @@ void Quad::create1DRule_pdf(Array1D<double>& qdpts,Array1D<double>& wghts, int n
   // Work arrays
   Array1D<double> al(ngr,0.e0);
   Array1D<double> be(ngr, 0.e0);
-  
+
   // Read the recursion coefficients from the data file
   Array2D<double> albe;
   read_datafileVS(albe,"ab.dat");
@@ -665,24 +665,24 @@ void Quad::create1DRule_pdf(Array1D<double>& qdpts,Array1D<double>& wghts, int n
     al(i)=albe(i,0);
     be(i)=albe(i,1);
   }
-  
+
   // \todo This is problem specific!!!
   double mu0=1.0; //0.5+0.5*erf(3.2/sqrt(2.));
-  
+
   // Computes the quadrature given the recursion coefficients
   gq_gen(al,be,mu0,qdpts, wghts) ;
 
-  
+
   return;
 }
 /**********************************************************************************/
 
-// Gauss-Patterson 
+// Gauss-Patterson
 void Quad::create1DRule_GP3(Array1D<double>& qdpts,Array1D<double>& wghts, int ngr, double a, double b)
 {
 
   int nqp[7]={1,3,7,15,31,63,127};
- 
+
   if ((ngr<1) || (ngr>7)) {
     printf("Quad::create1DRule_GP3() : ngr=%d !\n",ngr) ;
     throw Tantrum("The above Gauss-Patterson rule is not available!");
@@ -703,7 +703,7 @@ void Quad::create1DRule_GP3(Array1D<double>& qdpts,Array1D<double>& wghts, int n
     throw Tantrum("The the number of quadrature points does not match the expected value");
   }
   for(int i=0; i<(int)din.XSize();i++) qdpts(i) = din(i,0);
-  
+
   fname.str("gp3rules/gp3_o");
   fname << ngr << "_w.dat";
 
@@ -714,13 +714,13 @@ void Quad::create1DRule_GP3(Array1D<double>& qdpts,Array1D<double>& wghts, int n
     throw Tantrum("The the number of quadrature weights does not match the expected value");
   }
   for(int i=0; i<(int)din.XSize();i++) wghts(i) = din(i,0);
-  
+
   // Rescale
-  for(int i=0; i<ngr;i++){ 
+  for(int i=0; i<ngr;i++){
     qdpts(i)  = a+(b-a)*(qdpts(i)+1.)/2.;
-    wghts(i) *= (b-a)/2.0;  
-  }    
-  
+    wghts(i) *= (b-a)/2.0;
+  }
+
   return;
 }
 
@@ -749,15 +749,15 @@ void Quad::SetRule()
         rule_prod=rule_1d;
       else
         this->MultiplyTwoRules(&rule_cur,&rule_1d,&rule_prod);
-      
+
       rule_cur=rule_prod;
 
     }
-     
+
     rule_=rule_prod;
   }
 
-  
+
   //...or multiply rules in a specific way and combine them to obtain sparse rule
   else if (this->fs_type_=="sparse"){
     this->SetLevel(-1);
@@ -769,30 +769,30 @@ void Quad::SetRule()
       this->nextLevel();
     }
   }
-  
-  else 
+
+  else
     throw Tantrum("Quad::SetRule(): unknown rule type.");
-    
+
   return;
 }
 
 // Compute the next-level points
 void Quad::nextLevel()
 {
-  
+
   this->SetLevel(nlevel_+1);
-  
+
   QuadRule rule_level;
   QuadRule rule_cur;
   QuadRule rule_total;
-   
+
   Array2D<int> multiIndexLevel;
   this->getMultiIndexLevel(multiIndexLevel,nlevel_,ndim_);
-   
+
   int nMultiIndicesLevel=multiIndexLevel.XSize();
-   
+
   Array2D<int> multiIndexLevel_npts(nMultiIndicesLevel,ndim_,0);
-   
+
   for(int j=0;j<nMultiIndicesLevel;j++){
 
     if (quadverbose_==2) cout << j << " / " << nMultiIndicesLevel << endl;
@@ -800,7 +800,7 @@ void Quad::nextLevel()
     QuadRule* rules;
     QuadRule* rules_1;
     QuadRule* srules;
-     
+
     rules   = new QuadRule[ndim_];
     rules_1 = new QuadRule[ndim_];
     srules  = new QuadRule[ndim_];
@@ -809,7 +809,7 @@ void Quad::nextLevel()
 
       // multiIndexLevel(j,id)=multiIndex(j+levelCounter_start,id);
       int npts,npts_1;
- 
+
       if (this->growth_rules_(id)==0){ //2^l+1
         if ( multiIndexLevel(j,id)==0){
           npts = 1;
@@ -850,43 +850,43 @@ void Quad::nextLevel()
 
     if(j==0)
       rule_level=rule_temp;
-    else 
+    else
       this->AddTwoRules(&rule_cur,&rule_temp,&rule_level);
-    
+
 
     // if (rule_level.wghts.XSize()>1.e+6)
     //     this->compressRule(&rule_level);
 
     rule_cur=rule_level;
-       
+
     delete []rules;
     delete []rules_1;
     delete []srules;
   }
 
   if (nlevel_==0)
-    rule_total=rule_level;   
-  else 
-    this->AddTwoRules(&rule_,&rule_level,&rule_total);  
-  
-   
+    rule_total=rule_level;
+  else
+    this->AddTwoRules(&rule_,&rule_level,&rule_total);
+
+
   rule_=rule_total;
   this->compressRule(&rule_);
-    
- 
+
+
  return;
 }
 
 // Auxilliary function: get the level of the multi-index
 void Quad::getMultiIndexLevel(Array2D<int>& multiIndexLevel, int level,int ndim)
 {
-  
+
   int iup=0;
-  
+
   int nup_level=choose(ndim+level-1,level);
 
   multiIndexLevel.Resize(nup_level,ndim,0);
-  
+
   if (ndim==1)
     multiIndexLevel(0,0)=level;
 
@@ -896,7 +896,7 @@ void Quad::getMultiIndexLevel(Array2D<int>& multiIndexLevel, int level,int ndim)
 
       Array2D<int> theRest;
       getMultiIndexLevel(theRest,level-first,ndim-1);
-        
+
       for(int j=0;j<(int)theRest.XSize();j++){
         multiIndexLevel(iup,0)=first;
         for(int id=1;id<ndim;id++){
@@ -904,7 +904,7 @@ void Quad::getMultiIndexLevel(Array2D<int>& multiIndexLevel, int level,int ndim)
         }
         iup++;
       }
-        
+
     }
 
   }
@@ -927,7 +927,7 @@ void Quad::compressRule(QuadRule *rule)
 
   Array1D<int> ind;
   for(int i=0;i<ndim;i++) ind.PushBack(i);
-  
+
   Array2D<double> qw = rule->qdpts;
   paddMatCol(qw,rule->wghts);
 
@@ -952,7 +952,7 @@ void Quad::compressRule(QuadRule *rule)
     Array1D<double> qw_cur,q_cur;
     getCol(qwt,iq,qw_cur);
     subVector(qw_cur,ind,q_cur);
-   
+
     if(is_equal(q_cur,q_prev))
       qwt(ndim,iq_prev)+=qwt(ndim,iq);
     else{
@@ -962,10 +962,10 @@ void Quad::compressRule(QuadRule *rule)
     }
   }
   qw=Trans(qwt);
-  
+
   Array2D<double> tmp;
   subMatrix_row(qw,choose_ind,tmp);
-    
+
   subMatrix_col(tmp,ind,rule->qdpts);
   getCol(tmp,ndim,rule->wghts);
 

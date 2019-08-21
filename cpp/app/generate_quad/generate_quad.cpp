@@ -24,8 +24,8 @@
      Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-/// \file generate_quad.cpp 
-/// \author K. Sargsyan 2013 - 
+/// \file generate_quad.cpp
+/// \author K. Sargsyan 2013 -
 /// \brief Command-line utility to generate quadrature points
 
 #include <unistd.h>
@@ -36,19 +36,19 @@
 using namespace std;
 
 /// default value of parameter (level for sparse quadrature, or number of grid points for full quadrature)
-#define PARAM 3	        
+#define PARAM 3
 /// default data dimensionality
-#define DIM 2	         
+#define DIM 2
 /// default sparseness type (full or sparse)
-#define FSTYPE "sparse"  
+#define FSTYPE "sparse"
 /// default quadrature type
-#define QUADTYPE "CC"    
+#define QUADTYPE "CC"
 /// default alpha parameter for chaos
-#define ALPHA 0.0      
-/// default beta parameter for chaos  
-#define BETA 1.0       
+#define ALPHA 0.0
+/// default beta parameter for chaos
+#define BETA 1.0
 /// default domain file
-#define DOMAIN_FILE "param_domain.dat" 
+#define DOMAIN_FILE "param_domain.dat"
 /// default verbosity
 #define VERBOSITY 1
 
@@ -59,12 +59,12 @@ int usage(){
   printf(" -h                 : print out this help message \n");
   printf(" -r                 :  use if building the next quadrature level on top of existing rule\n");
   printf(" -d <ndim>          : define the data dimensionality (default=%d) \n",DIM);
-  printf(" -g <quadType>      : define the quad type, implemented 'CC','CCO','NC','NCO','LU','HG','JB','GLG','SW','pdf'.  (default=%s) \n",QUADTYPE);
+  printf(" -g <quadType>      : define the quad type, implemented 'CC','CCO','NC','NCO','LU','HG','JB','LG','SW','pdf'.  (default=%s) \n",QUADTYPE);
   printf(" -x <fsType>        : define 'full' or 'sparse'  (default=%s) \n",FSTYPE);
   printf(" -p <param>         : define the level or nquad parameter(default=%d) \n",PARAM);
   printf(" -a <alpha>         : define the alpha parameter of the quadrature (default=%lg) \n",ALPHA);
   printf(" -b <beta>          : define the beta parameter of the quadrature (default=%lg) \n",BETA);
-  printf(" -s <domain_file>   : define the domain file for compact-support quadratures (default=%s) \n",DOMAIN_FILE);    
+  printf(" -s <domain_file>   : define the domain file for compact-support quadratures (default=%s) \n",DOMAIN_FILE);
   printf(" -v <verb>          : define verbosity 0-no output/1-output info (default=%d) \n",VERBOSITY);
   printf("================================================================================\n");
   printf("Input  :  If -r flagged, files qdpts.dat, wghts.dat, indices.dat required as quadrature will be built on top of them\n");
@@ -83,21 +83,21 @@ int usage(){
 
 
 ///  Main program: Generates various kinds of quadrature points and weights
-int main (int argc, char *argv[]) 
+int main (int argc, char *argv[])
 {
   /// Set the default values
   int    verb     = VERBOSITY ;
   int    ndim     = DIM ;
   char*  quadType = (char *) QUADTYPE;
-  char*  fsType   = (char *) FSTYPE ; 
+  char*  fsType   = (char *) FSTYPE ;
   int    param    = PARAM ;
   double alpha    = ALPHA;
   double beta     = BETA;
-  char*  domain_file = (char *) DOMAIN_FILE; 
+  char*  domain_file = (char *) DOMAIN_FILE;
 
   /// Read the user input
   int c;
-  
+
   bool rflag=false;
   bool aflag=false;
   bool bflag=false;
@@ -112,7 +112,7 @@ int main (int argc, char *argv[])
       rflag=true;
       break;
     case 'd':
-      ndim = strtol(optarg, (char **)NULL,0);	
+      ndim = strtol(optarg, (char **)NULL,0);
       break;
     case 'g':
       quadType = optarg;
@@ -121,15 +121,15 @@ int main (int argc, char *argv[])
       fsType = optarg;
       break;
     case 'p':
-      param = strtol(optarg, (char **)NULL,0);	
+      param = strtol(optarg, (char **)NULL,0);
       break;
     case 'a':
       aflag=true;
-      alpha = strtod(optarg, (char **)NULL);	
+      alpha = strtod(optarg, (char **)NULL);
       break;
     case 'b':
       bflag=true;
-      beta = strtod(optarg, (char **)NULL);	
+      beta = strtod(optarg, (char **)NULL);
       break;
     case 's':
       sflag=true;
@@ -142,13 +142,13 @@ int main (int argc, char *argv[])
       break;
     }
   }
-  
-  /// Print the input information on screen 
+
+  /// Print the input information on screen
   if ( verb > 0 ) {
     fprintf(stdout,"generate_quad() : parameters ================================= \n");
     fprintf(stdout," ndim     = %d \n",ndim);
-    fprintf(stdout," quadType = %s \n",quadType);   
-    fprintf(stdout," fsType   = %s \n",fsType);  
+    fprintf(stdout," quadType = %s \n",quadType);
+    fprintf(stdout," fsType   = %s \n",fsType);
     fprintf(stdout," param    = %d \n",param);
     if (aflag)
       fprintf(stdout," alpha    = %lg \n",alpha);
@@ -159,17 +159,17 @@ int main (int argc, char *argv[])
     if (sflag)
       fprintf(stdout,"generate_quad() : domain file %s is provided\n",domain_file);
   }
-  /*----------------------------------------------------------------------------*/ 
-  
+  /*----------------------------------------------------------------------------*/
+
   /// Parameter sanity checks
   if (rflag && string(fsType)=="full")
       throw Tantrum("Incremental addition makes sense only in the sparse mode!");
-  if (sflag && string(quadType)!="CC" 
-            && string(quadType)!="CCO" 
-            && string(quadType)!="NC" 
-            && string(quadType)!="NCO" 
-            && string(quadType)!="LU" 
-            && string(quadType)!="JB") 
+  if (sflag && string(quadType)!="CC"
+            && string(quadType)!="CCO"
+            && string(quadType)!="NC"
+            && string(quadType)!="NCO"
+            && string(quadType)!="LU"
+            && string(quadType)!="JB")
       throw Tantrum("Input domain should be provided only for compact-support quadratures!");
 
 
@@ -187,12 +187,12 @@ int main (int argc, char *argv[])
   Array1D<int> newPtInd;
   Array2D<double> qdpts;
   Array1D<double> wghts;
-  
+
   spRule.SetRule();
- 
+
   // DEBUG
   //Array1D<int> ind;
-  //spRule.compressRule(ind); 
+  //spRule.compressRule(ind);
 
   /// Extract the properties of the rule
   spRule.GetRule(qdpts,wghts);
@@ -209,7 +209,7 @@ int main (int argc, char *argv[])
     Array1D<double> aa(ndim,-1.e0);
     Array1D<double> bb(ndim,1.e0);
     Array2D<double> aabb(ndim,2,0.e0);
-    
+
     if(ifstream(domain_file)){
       read_datafile(aabb,domain_file);
       for (int i=0;i<ndim;i++){
@@ -217,12 +217,12 @@ int main (int argc, char *argv[])
         bb(i)=aabb(i,1);
       }
     }
-    
+
     Array2D<double> xqdpts(nQdpts,ndim);
     //   Array2D<double> xqdpts_new(nNewQdpts,ndim);
     Array1D<double> xwghts(nQdpts);
     //    Array1D<double> xwghts_new(nNewQdpts);
-    
+
     // Scale points according to the given domain
     for(int it=0;it<nQdpts;it++){
       double prod=1.;
@@ -232,7 +232,7 @@ int main (int argc, char *argv[])
       }
       xwghts(it)=wghts(it)*prod;
     }
-    
+
     // /// Scale weights according to the given domain
     // for(int iq=0;iq<nNewQdpts;iq++){
     //   double prod=1.;
@@ -248,9 +248,9 @@ int main (int argc, char *argv[])
     write_datafile_1d(xwghts,"xwghts.dat");
     // write_datafile(xqdpts_new,"xqdpts_new.dat");
     // write_datafile_1d(xwghts_new,"xwghts_new.dat");
-    
+
   }
-  
+
   if ( verb > 0 ) {
     //fprintf(stdout,"generate_quad() : generated %d new quadrature points\n",nNewQdpts);
     fprintf(stdout,"generate_quad() : total number of quadrature points: %d\n",nQdpts);

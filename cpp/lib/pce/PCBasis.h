@@ -54,7 +54,7 @@ public:
   /// in a more elegant way using base and inherited classes. For the time being,
   /// Hermite-Gaussian or Legendre-Uniform will probably be the most commonly used
   /// cases.
-  /// The parameters alpha and betta are relevant only for GLG, SW and JB chaoses
+  /// The parameters alpha and betta are relevant only for LG, SW and JB chaoses
   /// \note Maxord specifies the maximal order up to which the computations are performed
   PCBasis(const string type="LU", const double alpha=0.0, const double betta=1.0, const int maxord=10);
 
@@ -216,7 +216,7 @@ private:
   /// \brief Number of parameters to specify the basis
   int narg_;
 
-  /// \brief Parameter alpha for PCs that require a parameter (GLG,SW,JB)
+  /// \brief Parameter alpha for PCs that require a parameter (LG,SW,JB)
   double alpha_;
 
   /// \brief Parameter beta for PCs that require two parameters (SW,JB)
