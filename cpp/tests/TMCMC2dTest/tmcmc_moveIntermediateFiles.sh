@@ -2,11 +2,11 @@
 
 folderName=$1
 
-# rm -rf $folderName
+rm -rf $folderName
 mkdir $folderName
 mv samples.dat.* $folderName
 mv loglik.dat.* $folderName
-rm tmcmc_ll.dat $folderName
+rm tmcmc_ll.dat
 mv logprior.dat.* $folderName
-rm tmcmc_lp.dat $folderName
-rm mcmcstates_* $folderName
+rm tmcmc_lp.dat
+rm mcmcstates_*
