@@ -3,7 +3,11 @@ project (UQTk)
 SET(copy_SCRIPT_FILES
   tmcmc_getLL.sh
   tmcmc_getLP.sh
-  move.sh
+  tmcmc_moveIntermediateFiles.sh
+  )
+
+SET(copy_DATA_FILES
+  tmcmc_prior_samples.dat
   )
 
 SET(copy_EXE_FILES
@@ -73,6 +77,11 @@ INSTALL(TARGETS ${copy_EXE_FILES}
 )
 
 INSTALL(FILES ${copy_SCRIPT_FILES}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION bin/tests/
+)
+
+INSTALL(FILES ${copy_DATA_FILES}
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION bin/tests/
 )

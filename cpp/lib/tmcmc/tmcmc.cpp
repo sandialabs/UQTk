@@ -11,7 +11,7 @@ void outProcToFile(const RealVector spls, const int ndim, const int nspl,
                     int nprocs) ;
 void outProcToFile(const RealVector spls, const int ndim, const int nspl,
                     std::string fname);
-void shuffle_spls(RealVector &spls, RealVector &llik);
+void shuffle_spls(RealVector &spls, RealVector &llik, RealVector &lprior);
 
 void readInitSamples(RealVector &spls, std::string fname);
 void parseSetup(dsfmt_t &RandomState, int nspl, int iseed);
@@ -20,11 +20,12 @@ void PriorGen(dsfmt_t &RandomState, int nspl, CharVector &distr,
 double pearsonCorrCoef(RealVector X, RealVector Y);
 double rescaleSTD(RealVector w, double wmean);
 
-double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
+double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
+          double gm, int nspl,
           int iseed, int nProcs, int ndim, double cv,
-          int MFactor, bool basis, int CATSteps) {
+          int MFactor, bool basis, int CATSteps, int write_flag) {
   /* TMCMC Algorithm
-      Input: rngs - ranges for all samples
+      Input: spls - On return, contains samples according to posterior
              gm - initial gamma value
              nspl - number of Samples
              iseed - random seed
@@ -57,34 +58,22 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
   dsfmt_t RandomState;
   dsfmt_init_gen_rand(&RandomState,iseed);
 
-  RealVector spls(nscal);
-  // Track if a setup or sample file was used.
-  bool usedSetup = false;
-  bool usedSample = false;
-
-
   /* Generate Initial Random Samples */
   /* Check if an initial sample file exists, otherwise 
     generate from a d-dim hypercube */
-  if (fileExists("samples.dat.0")) {
-    readInitSamples(spls, "samples.dat.0");
-    std::cout << "Samples read from samples.dat.0\n";
-    usedSample = true;
-
-  } else {
-    /* Generate from d-dim hypercube */
-    for (int j=0; j<nscal; j++) {
-      spls[j] = dsfmt_genrand_open_open(&RandomState);
-    }
-    /* Rescale to ranges */
-    for (int j=0; j<nspl; j++ ) {
-      int ipos=j*ndim;
-      for (int i=0; i<ndim; i++ ) {
-        spls[ipos+i] = rngs[i][0]+spls[ipos+i]*(rngs[i][1]-rngs[i][0]);
-      }
-    }
-    std::cout << "Samples generated from d-dim hypercube\n";
+  spls.clear();
+  readInitSamples(spls, "tmcmc_prior_samples.dat");
+  // Catch the error in reading prior samples
+  if (spls.size() != nscal) {
+    printf("Number of prior samples read from file not equal to number of samples requested\n");
+    exit(1);
   }
+
+  assert(spls.size() == nscal);
+  if (write_flag == 1){
+    std::cout << "Samples read from prior_samples.dat\n";
+  }
+
 
   /* Compute initial likelihoods using outside model*/
   outProcToFile(spls, ndim, nspl, nProcs); // Make mcmcstates
@@ -92,11 +81,10 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
   system(ll_stream.c_str());
   std::ifstream input_file("tmcmc_ll.dat");
 
-  RealVector llik(nspl);
+  llik.resize(nspl);
   double check;
   std::string line;
   for (int j = 0; j < nspl; j++ ) {
-    // input_file >> check; // not working for -inf
     std::getline(input_file, line);
     check = std::atof(line.c_str());
     if (check == 0 || check < -pow(10, 300)) {
@@ -108,15 +96,18 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
 
 
   /* Compute initial log priors, if applicable */
-  RealVector lprior(nspl);
-  if (usedSetup || usedSample) {
-    std::string lp_stream = "./tmcmc_getLP.sh " + std::to_string(0) + " " + std::to_string(0);
-    system(lp_stream.c_str());
-    std::ifstream lp_input("tmcmc_lp.dat");
-    for (int i = 0; i < nspl; ++i ) {
-      // lp_input >> lprior[i];
-      std::getline(lp_input, line);
-      lprior[i] = std::atof(line.c_str());
+  std::string lp_stream = "./tmcmc_getLP.sh "+std::to_string(nProcs);
+  system(lp_stream.c_str());
+  std::ifstream lp_input("tmcmc_lp.dat");
+
+  lprior.resize(nspl);
+  for (int j = 0; j < nspl; j++ ) {
+    std::getline(lp_input, line);
+    check = std::atof(line.c_str());
+    if (check == 0.0 || check < -pow(10, 300)) {
+      lprior[j] = -pow(10, 300);
+    } else {
+      lprior[j] = check;
     }
   }
 
@@ -124,29 +115,24 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
   /* Output first set of samples to file*/
   outProcToFile(spls,ndim,nspl,std::string("samples.dat.0"));
   outProcToFile(llik,1,   nspl,std::string("loglik.dat.0") );
-  if (usedSetup || usedSample) {
-    outProcToFile(lprior, 1,nspl,std::string("logprior.dat.0"));
-  }
+  outProcToFile(lprior, 1,nspl,std::string("logprior.dat.0"));
 
   RealVector Sm;
   double accRatio = 1.0;
-  // double pearsonR = 1.0;
   int iter = 0;
 
-  // double beta = 0.0, dBeta = 0.01, evid = 0.0;
   double beta = 0.0, dBeta = 0.0, evid = 0.0;
 
   do { // Start algorithm
     iter++;
 
     /* shuffle samples */
-    shuffle_spls(spls,llik);
+    shuffle_spls(spls,llik,lprior);
 
     /* compute weights */
     RealVector w(nspl,0.0);
     double wsum, wmean, w2mean, wstd;
 
-    // dBeta = std::min(dBeta,1.0-beta);
     dBeta = std::min(BETA_MAX,1.0-beta);
 
     /* Adapt delta beta as needed */
@@ -172,13 +158,17 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
 
     } while (wstd/wmean > (cv + 0.00000005) || wstd == 0);
 
-    std::cout<<"DBeta: " << dBeta<<" Wmean: "<<wmean;
-    std::cout<<" Wstd: "<<wstd<<" Cv: "<<wstd/wmean<<std::endl;
+    if (write_flag == 1){
+      std::cout<<"DBeta: " << dBeta<<" Wmean: "<<wmean;
+      std::cout<<" Wstd: "<<wstd<<" Cv: "<<wstd/wmean<<std::endl;
+    }
 
     beta += dBeta;
     evid += log(wmean);
-    std::cout<<"Iteration "<<iter<<" Beta= "<<beta;
-    std::cout<<" wMean= "<< wmean << " Evid=   " << evid<<std::endl<<std::flush;
+    if (write_flag == 1){
+      std::cout<<"Iteration "<<iter<<" Beta= "<<beta;
+      std::cout<<" wMean= "<< wmean << " Evid=   " << evid<<std::endl<<std::flush;
+    }
 
 
     /* Save mean ll for Bayes factor */
@@ -278,14 +268,12 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
 
     RealVector splSave, llikSave, lpriorSave, XiSave, gradSave;
     int nSteps = *std::max_element(splCard.begin(), splCard.end());
-    // std::cout << "Max Steps: " << nSteps << std::endl;
 
     /* Run single steps of the Markov chains at a time, for the chains
         that need several jumps */
     if (basis) nsplSt = nspl; // Post resampling, nspl # of chains
     for (int isbSteps=0; isbSteps < nSteps; isbSteps++ ) {
       RealVector splCand(nsplSt*ndim);
-      BoolVector isInside(nsplSt,true);
       for (int ispl=0; ispl<nsplSt; ispl++) {
         /* generate candidate */
         RealVector xi(ndim);
@@ -302,13 +290,6 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
           }
 
           splCand[ispl*ndim+i] += Lnrv;
-          
-          // Ensure within bounds
-          if ((splCand[ispl*ndim+i] < rngs[i][0])
-              || (splCand[ispl*ndim+i] > rngs[i][1])) {
-            isInside[ispl] = false;
-            break;
-          }
         } /* done generating candidate */
       }
     
@@ -317,52 +298,43 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
       RealVector splsComp;
       int compCount=0;
       for (int ispl=0; ispl<nsplSt; ispl++) {
-        if (isInside[ispl]) {
-          for (int i=0; i<ndim; i++ ) {
-            splsComp.push_back(splCand[ispl*ndim+i]);
-          }
-          compCount++;
-	      }
+        for (int i=0; i<ndim; i++ ) {
+          splsComp.push_back(splCand[ispl*ndim+i]);
+        }
+        compCount++;
       }
 
-      // std::cout << "Jump: " << isbSteps;
-      // std::cout << ", Saving " << compCount << " out of ";
-      // std::cout << nsplSt << " to file" << std::endl;
       outProcToFile(splsComp,ndim,compCount,nProcs);
       std::string ll_stream="./tmcmc_getLL.sh "+ std::to_string(nProcs);
       system(ll_stream.c_str());
       std::ifstream input_file("tmcmc_ll.dat");
 
-      /* Collect loglikelihood, logprior for proposals as applicable */
+      /* Collect loglikelihood for proposals as applicable */
       RealVector llikComp(compCount);
-      double check2;
       for (int j = 0; j < compCount; j++ ) {
         std::getline(input_file, line);
-        check2 = std::atof(line.c_str());
-        // input_file >> check2;
-        if (check2 == 0.0 || check2 < -pow(10, 300)) {
+        check = std::atof(line.c_str());
+        if (check == 0.0 || check < -pow(10, 300)) {
           llikComp[j] = -pow(10, 300);
         } else {
-          llikComp[j] = check2;
+          llikComp[j] = check;
         }
       }
 
+      std::string lp_stream = "./tmcmc_getLP.sh "+std::to_string(nProcs);
+      system(lp_stream.c_str());
+      std::ifstream lp_input("tmcmc_lp.dat");
 
+      /* Collect logprior for proposals as applicable */
       RealVector lpriorComp(compCount);
-      if (usedSetup || usedSample) {
-        std::string lp_stream = "./tmcmc_getLP.sh " + std::to_string(iter - 1) + " " + std::to_string(0);
-        system(lp_stream.c_str());
-        std::ifstream lp_input("tmcmc_lp.dat");
-        double check5;
-        for (int i = 0; i < compCount; ++i) {
-          lp_input >> check5;
-          if (check5 == 0.0 || check5 < -pow(10, 300)) {
-            lpriorComp[i] = -pow(10, 300);
-          } else {
-            std::getline(lp_input, line);
-            lpriorComp[i] = std::atof(line.c_str());
-            // lpriorComp[i] = check5;
-          }
+      for (int j = 0; j < compCount; j++ ) {
+        std::getline(lp_input, line);
+        check = std::atof(line.c_str());
+        // input_file >> check2;
+        if (check == 0.0 || check < -pow(10, 300)) {
+          lpriorComp[j] = -pow(10, 300);
+        } else {
+          lpriorComp[j] = check;
         }
       }
 
@@ -373,45 +345,29 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
       RealVector gradNew(nsplSt*ndim);
 
       for (int ispl=0; ispl<nsplSt; ispl++) {
-        if (isInside[ispl]) { // Require within bounds
-          double alpha = dsfmt_genrand_urv(&RandomState);
-          double AcceptRatio = -1;
+        double alpha = dsfmt_genrand_urv(&RandomState);
+        double AcceptRatio = -1;
 
-          if ((usedSetup || usedSample)) { // Standard MH Update
-            AcceptRatio = beta * (llikComp[icomp] - llikSt[ispl])
-                          + (lpriorComp[icomp] - lpriorSt[ispl]);
+        AcceptRatio = beta * (llikComp[icomp] - llikSt[ispl])
+                      + (lpriorComp[icomp] - lpriorSt[ispl]);
 
-          } else { // No Setup File
-            AcceptRatio = beta * (llikComp[icomp] - llikSt[ispl]);
+        if (log(alpha) < AcceptRatio) { // Accept proposal
+          for (int i=0; i < ndim; i++) {
+            splNew[ispl*ndim+i] = splsComp[icomp*ndim+i];
           }
+          lpriorNew[ispl] = lpriorComp[icomp];
+          llikNew[ispl] = llikComp[icomp];
+          acceptCount++;
 
-          if (log(alpha) < AcceptRatio) { // Accept proposal
-            for (int i=0; i < ndim; i++) {
-              splNew[ispl*ndim+i] = splsComp[icomp*ndim+i];
-            }
-            if (usedSetup || usedSample) {
-              lpriorNew[ispl] = lpriorComp[icomp];
-            }
-            llikNew[ispl] = llikComp[icomp];
-            acceptCount++;
-
-	        } else { // Reject Proposal
-            for (int i=0; i<ndim; i++ ) {
-              splNew[ispl*ndim+i] = splSt[ispl*ndim+i] ;
-            }
-            if (usedSetup || usedSample) {
-              lpriorNew[ispl] = lpriorSt[ispl];
-            }
-            llikNew[ispl] = llikSt[ispl];
-	        }
-
-          icomp++;
-	      } else { // Out of Bounds - Automatic Reject
+        } else { // Reject Proposal
           for (int i=0; i<ndim; i++ ) {
             splNew[ispl*ndim+i] = splSt[ispl*ndim+i] ;
           }
+          lpriorNew[ispl] = lpriorSt[ispl];
           llikNew[ispl] = llikSt[ispl];
-	      }
+        }
+
+        icomp++;
       }
 
       /* Save Samples for Next Iteration */
@@ -425,9 +381,7 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
 
         for (int ij=0; ij<nsplSt; ++ij) {
           llikSave.push_back(llikNew[ij]);
-        }
-        for (int ij = 0; ij < nsplSt; ++ij) {
-            lpriorSave.push_back(lpriorNew[ij]);
+          lpriorSave.push_back(lpriorNew[ij]);
         }
       }
 
@@ -437,13 +391,6 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
       gradSt.clear();
       llikSt.clear();
       lpriorSt.clear();
-
-      // Rescaling based on Muto & Beck 2008 (See Minson et al 2013)
-      // gamma = a + b*R, R = current acceptance rate.
-      // double a = (double)1.0/(double)9.0;
-      // double b = (double)8.0/(double)9.0;
-      // gm2 = pow(accRatio * b + a, 2);
-
 
       gamma_file << "====================" << "\n";
       gamma_file << "Itera: " << iter << "\n";
@@ -464,10 +411,7 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
             }
 
             llikSt.push_back(llikNew[ispl]);
-
-            if (usedSetup || usedSample) {
-              lpriorSt.push_back(lpriorNew[ispl]);
-            }
+            lpriorSt.push_back(lpriorNew[ispl]);
   	      }
         }
       }
@@ -494,27 +438,26 @@ double tmcmc(std::vector<std::vector<double>> &rngs, double gm, int nspl,
     gm2 = pow(gm, 2.0);
 
     /* Set samples for next temperature iteration */
-    spls = splSave;
-    llik = llikSave;
-    lprior = lpriorSave;
+    spls = splSt;
+    llik = llikSt;
+    lprior = lpriorSt;
     assert(llik.size()==nspl);
+    assert(lprior.size()==nspl);
     assert(spls.size()==nscal);
 
-    outProcToFile(spls,ndim,nspl,
+    outProcToFile(splSt,ndim,nspl,
                     std::string("samples.dat.")+std::to_string(iter));
-    outProcToFile(llik,1,   nspl,
+    outProcToFile(llikSt,1,   nspl,
                     std::string("loglik.dat." )+std::to_string(iter));
 
-    if (usedSetup || usedSample) {
-      outProcToFile(lprior,1, nspl,
+    outProcToFile(lpriorSt,1, nspl,
                     std::string("logprior.dat.") + std::to_string(iter));
-    }
 
   } while ( ( iter < 1000 ) && (beta<1-1.e-10) );
 
-  outProcToFile(spls,ndim,nspl,"tmcmc_samples.dat");
-
-  std::cout << "Algorithm Done" << std::endl;
+  if (write_flag == 1){
+    std::cout << "TMCMC Algorithm Done" << std::endl;
+  }
   return (evid);
 } /* done tmcmc */
 
@@ -555,37 +498,6 @@ void outProcToFile(const RealVector spls, const int ndim,
 
 }
 
-//void outProcToFile(const RealVector spls, const int ndim,
-//                      const int nspl, const int nprocs) {
-//
-//  assert(spls.size()==ndim*nspl);
-//
-//  /* no. of mcmc states per file */
-//  int nsplP = (int) nspl/nprocs;
-//  if ( nsplP*nprocs < nspl) nsplP += 1;
-//
-//  /* save samples to files */
-//  for (int ifile=0; ifile < nprocs; ifile++) {
-//
-//    int isplSt = ifile * nsplP;
-//   int isplEn = isplSt+nsplP ;
-//    if ( isplEn > nspl ) isplEn = nspl;
-//
-//    char fname[20];
-//    sprintf(fname,"%s%d%s","mcmcStates_",ifile+1,".dat");
-//    FILE *myfile  = fopen(fname,"w") ;
-//    for (int j = isplSt; j < isplEn; j++) {
-//      for (int i = 0; i < ndim; i++)
-//        fprintf(myfile,"%24.18e ",spls[j*ndim+i]);
-//      fprintf(myfile,"\n");
-//    }
-//    fclose(myfile);
-//  }
-//
-//  return ;
-//
-//}
-
 void outProcToFile(const RealVector spls, const int ndim, const int
 nspl, std::string fname) {
   // Output sample vector into fname file
@@ -603,7 +515,7 @@ nspl, std::string fname) {
 
 }
 
-void shuffle_spls(RealVector &spls, RealVector &llik) {
+void shuffle_spls(RealVector &spls, RealVector &llik, RealVector &lprior) {
   // Shuffle the samples randomly
   int nspl = llik.size();
   int ndim = spls.size()/nspl;
@@ -611,15 +523,17 @@ void shuffle_spls(RealVector &spls, RealVector &llik) {
   IntVector idx(nspl);
   for (int j=0; j<nspl; j++) idx[j]=j;
 
-  RealVector splsTmp(nspl*ndim), llikTmp(nspl);
+  RealVector splsTmp(nspl*ndim), llikTmp(nspl), lpriorTmp(nspl);
   shuffle (idx.begin(), idx.end(), std::default_random_engine());
   for (int j = 0; j < nspl; j++) {
     llikTmp[j] = llik[idx[j]];
+    lpriorTmp[j] = lprior[idx[j]];
     for (int i = 0; i < ndim; i++) splsTmp[j*ndim+i] = spls[idx[j]*ndim+i];
   }
 
   for (int j = 0; j < nspl; j++) {
     llik[j] = llikTmp[j];
+    lprior[j] = lpriorTmp[j];
     for (int i = 0; i < ndim; i++) spls[j*ndim+i] = splsTmp[j*ndim+i];
   }
 
@@ -640,13 +554,21 @@ void readInitSamples(RealVector &spls, std::string fname) {
   std::ifstream DAT;
   std::stringstream iss;
   DAT.open(fname);
+  double temp;
+  std::string::size_type sz;
+  int i = 0;
 
   while (std::getline(DAT, line)) {
-    iss << line;
-    while (std::getline(iss, token, ' ')) {
-      spls.push_back(std::stod(token));
+
+    while(1){
+      try {
+        temp = std::stod (line,&sz);
+      } catch (const std::exception& ex) {
+        break;
+      }
+      line = line.substr(sz);
+      spls.push_back(temp);
     }
-    iss.clear();
   }
 }
 

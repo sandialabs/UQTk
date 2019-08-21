@@ -83,6 +83,13 @@ MCMC::MCMC(double (*logPosterior)(Array1D<double>&, void *), void *postinfo)
   epscovInit_=false;
   epsMalaInit_=false;
 
+  tmcmcNprocsInit_=false;
+  tmcmcGammaInit_=false;
+  tmcmcCvInit_=false;
+  tmcmcMFactorInit_=false;
+  tmcmcBasisInit_=false;
+  tmcmcCATStepsInit_=false;
+  tmcmcRngsInit_=false;
 
   // Initiate the random number generator seed
   // \todo This needs to be made more generic
@@ -125,6 +132,14 @@ MCMC::MCMC(LikelihoodBase& L)
   epscovInit_=false;
   epsMalaInit_=false;
 
+  tmcmcNprocsInit_=false;
+  tmcmcGammaInit_=false;
+  tmcmcCvInit_=false;
+  tmcmcMFactorInit_=false;
+  tmcmcBasisInit_=false;
+  tmcmcCATStepsInit_=false;
+  tmcmcRngsInit_=false;
+
   // Set the location of the last chain state written (-1 means nothing is written to files yet)
   lastwrite_=-1;
 
@@ -144,6 +159,56 @@ MCMC::MCMC(LikelihoodBase& L)
 
   WRITE_FLAG = 1;
 
+
+  return;
+}
+
+//*****************************************
+// Used for TMCMC, in which likelihood and
+// priors are evaluated using separate drivers
+MCMC::MCMC()
+{
+  FLAG = 2;
+
+  // / Set the initialization flags to false
+  gradflag_=false;
+  tensflag_=false;
+
+  chaindimInit_=false;
+  propcovInit_=false;
+  methodInit_=false;
+  outputInit_=false;
+  adaptstepInit_=false;
+  gammaInit_=false;
+  epscovInit_=false;
+  epsMalaInit_=false;
+
+  tmcmcNprocsInit_=false;
+  tmcmcGammaInit_=false;
+  tmcmcCvInit_=false;
+  tmcmcMFactorInit_=false;
+  tmcmcBasisInit_=false;
+  tmcmcCATStepsInit_=false;
+  tmcmcRngsInit_=false;
+
+  // Set the location of the last chain state written (-1 means nothing is written to files yet)
+  lastwrite_=-1;
+
+  // Initiate the random number generator seed
+  // \todo This needs to be made more generic
+  seed_=13;
+  dsfmt_init_gen_rand(&RandomState,seed_); // you can override with setseed
+
+  // By default the names are not prepended
+  namePrepend_=false;
+
+  // Set defaults
+  this->initDefaults();
+
+  // Set TMCMC defaults
+  this->initTMCMCDefaults();
+
+  WRITE_FLAG = 1;
 
   return;
 }
@@ -217,21 +282,21 @@ void MCMC::initTMCMCDefaults()
   this->default_tmcmc_gamma_ = -1.0;
   this->default_tmcmc_cv_ = 0.1;
   this->default_tmcmc_MFactor_ = 1;
-  this->default_tmcmc_basis_ = false;
+  this->default_tmcmc_basis_ = true;
   this->default_tmcmc_CATSteps_ = 1;
 
   return;
 }
 
-void MCMC::initTMCMCRngsDefaults()
-{
-  this->default_tmcmc_rngs_ = std::vector<std::vector<double>> (this->chainDim_);
-  for(int i=0;i<this->chainDim_;i++){
-    this->default_tmcmc_rngs_[i] = {-1.0, 1.0};
-  }
+// void MCMC::initTMCMCRngsDefaults()
+// {
+//   this->default_tmcmc_rngs_ = std::vector<std::vector<double>> (this->chainDim_);
+//   for(int i=0;i<this->chainDim_;i++){
+//     this->default_tmcmc_rngs_[i] = {-1.0, 1.0};
+//   }
 
-  return;
-}
+//   return;
+// }
 
 void MCMC::printChainSetup()
 {
@@ -391,15 +456,15 @@ void MCMC::initTMCMCCATSteps(int tmcmc_CATSteps)
   return;
 }
 
-void MCMC::initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs)
-{
-  // Initialize the ranges for all samples
-  methodinfo_.tmcmc_rngs.assign(tmcmc_rngs.begin(), tmcmc_rngs.end());
+// void MCMC::initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs)
+// {
+//   // Initialize the ranges for all samples
+//   methodinfo_.tmcmc_rngs.assign(tmcmc_rngs.begin(), tmcmc_rngs.end());
 
-  // Set the initialization flag to True
-  tmcmcRngsInit_=true;
-  return;
-}
+//   // Set the initialization flag to True
+//   tmcmcRngsInit_=true;
+//   return;
+// }
 
 void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen)
 {
@@ -545,7 +610,12 @@ void MCMC::runOptim(Array1D<double>& start)
   return;
 }
 
+void MCMC::runChain(int ncalls)
+{
+  Array1D<double> chstart(this->chainDim_,0.e0);
 
+  this->runChain(ncalls, chstart);
+}
 
 void MCMC::runChain(int ncalls, Array1D<double>& chstart)
 {
@@ -583,7 +653,6 @@ void MCMC::runChain(int ncalls, Array1D<double>& chstart)
 
     if(!epscovInit_)
       this->initEpsCov(this->default_eps_cov_);
-
   }
   else if(!strcmp(this->methodinfo_.type.c_str(),"mala")){
     if(!epsMalaInit_)
@@ -607,12 +676,6 @@ void MCMC::runChain(int ncalls, Array1D<double>& chstart)
 
     if(!tmcmcCATStepsInit_)
       this->initTMCMCCATSteps(this->default_tmcmc_CATSteps_);
-
-    if(!tmcmcRngsInit_){
-      this->initTMCMCRngsDefaults();
-      this->initTMCMCRngs(this->default_tmcmc_rngs_);
-    }
-      
   }
 
   // For simplicity, work variables
@@ -623,34 +686,53 @@ void MCMC::runChain(int ncalls, Array1D<double>& chstart)
   if(!strcmp(this->methodinfo_.type.c_str(),"tmcmc")){
     double logevid;
 
-    std::vector<double> dts; // Obsolete, Dbeta changes are adaptive now.
+    std::vector<double> samples;
+    std::vector<double> logpriors;
+    std::vector<double> logliks;
     std::ofstream evidFile("Evidence.dat");
 
-      // Run TMCMC, get evidence
-      logevid = tmcmc(methodinfo_.tmcmc_rngs, methodinfo_.tmcmc_gamma, ncalls,
-        seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
-        methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
-        methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps);
+    // Run TMCMC, get evidence
+    logevid = tmcmc(samples, logpriors, logliks,
+    methodinfo_.tmcmc_gamma, ncalls,
+    seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
+    methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
+    methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps, WRITE_FLAG);
 
-      evidFile << std::setprecision(18) << logevid << std::endl;
-      // Move residual files out of the way if necessary.
-      std::string filename;
-      for (size_t f = 1000; f > 0; --f) {
-        filename = "samples.dat." + std::to_string(f);
+    // clean up
+    std::ifstream moveFile("tmcmc_moveIntermediateFiles.sh");
+    if (moveFile.is_open()) {
+      std::string moveStr = "./tmcmc_moveIntermediateFiles.sh TMCMCIntermediates";
+      system(moveStr.c_str());
+    }
 
-        std::ifstream sampleFile(filename);
+    // Convert samples to chain format
+    Array1D<double> sample(this->chainDim_);    
+    // std::cout << "hero1" << std::endl;
 
-        if (sampleFile.is_open()) {
-          break;
-        }
-      }
+    for (int i=0; i < ncalls; i++) {
 
-      std::ifstream moveFile("move.sh");
-      if (moveFile.is_open()) {
-        std::string moveStr = "./move.sh Stage" + std::to_string(1) +
-        " " + filename;
-        system(moveStr.c_str());
-      }
+      currState_.step=i+1;
+      for (int j=0; j<this->chainDim_; j++ ){
+        // std::cout << i << " " << j << " " << samples[i*this->chainDim_+j] << std::endl;
+        sample(j) = samples[i*this->chainDim_+j];
+      } 
+      currState_.state=sample;
+      currState_.alfa=0.0;
+      currState_.post=logpriors[i]+logliks[i];
+      fullChain_.PushBack(currState_);
+    }
+
+    evidFile << std::setprecision(18) << logevid << std::endl;
+
+    if (WRITE_FLAG == 1){
+      // Output to file
+      if(!strcmp(output.c_str(),"txt"))
+        this->writeChainTxt(outputinfo_.filename);
+      else  if(!strcmp(output.c_str(),"bin"))
+        this->writeChainBin(outputinfo_.filename);
+      else
+        throw Tantrum((string) "Chain output type is not recognized");
+    }
 
     evidFile.close();
   }
