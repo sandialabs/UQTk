@@ -39,26 +39,21 @@ public:
 
 // Uninformative prior
 double Prior::eval(RealVector& x){
-  double logp = 0.0;
-  return logp; 
+  double logp = -.5*(x[0]*x[0]/3.0 + x[1]*x[1]/3.0);
+  return logp;
 }
 
 int main (int argc, const char *argv[]) {
+
   std::ifstream input_file("mcmcstates_local.dat");
   std::ofstream output_file;
   std::ofstream flag_file;
   std::string line, token;
   std::stringstream iss;
-  std::ifstream delta_file("delta.dat");
-  double delta;
   Likelihood L; 
   Prior P; 
 
-  delta_file >> delta;
-
-  if (argc > 2) {
-    std::string deltaStr(argv[1]);
-    delta = std::stod(deltaStr);
+  if (argc > 1) {
     output_file.open("tmcmc_lp.dat");
   } else {
     output_file.open("tmcmc_ll.dat");
@@ -74,7 +69,7 @@ int main (int argc, const char *argv[]) {
       x.push_back(d);
     }
 
-    if (argc > 2) {
+    if (argc > 1) {
       output_file << std::setprecision(18) << P.eval(x) << "\n";
     } else {
       output_file << std::setprecision(18) << L.eval(x) << "\n";

@@ -71,8 +71,6 @@ public:
   /// \brief Constructor, given a pointer to logPosterior function, a pointer to additional info, e.g. data
   ///        and the chain dimensionality
   MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
-  /// \brief Dummy constructor
-  MCMC(){};
 
   //*****************************************
 
@@ -82,6 +80,10 @@ public:
   void resetChainState();
   dsfmt_t RandomState;
 
+  //*****************************************
+
+  /// \brief Dummy Constructor, used for TMCMC
+  MCMC();
 
   //*****************************************
 
@@ -101,8 +103,8 @@ public:
   /// \brief Set TMCMC defaults
   void initTMCMCDefaults();
 
-  /// \brief Set TMCMC range defaults
-  void initTMCMCRngsDefaults();
+  // /// \brief Set TMCMC range defaults
+  // void initTMCMCRngsDefaults();
 
   /// \brief Print chain information on the screen
   void printChainSetup();
@@ -145,8 +147,8 @@ public:
   void initTMCMCBasis(bool tmcmc_basis);
   /// \brief Initialize the CATMIPs resampling parameter for TMCMC
   void initTMCMCCATSteps(int tmcmc_CATSteps);
-  /// \brief Initialize the ranges for all TMCMC samples
-  void initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs);
+  // /// \brief Initialize the ranges for all TMCMC samples
+  // void initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs);
 
   /// \brief Set output specification, type('txt' or 'bin'), filename, frequency of outputs to the file and to screen.
   void setOutputInfo(string outtype, string file,int freq_file, int freq_screen);
@@ -165,6 +167,9 @@ public:
 
   /// \brief The actual function that generates MCMC
   void runChain(int ncalls, Array1D<double>& chstart);
+
+  /// \brief Start an MCMC chain with trivial initial condition
+  void runChain(int ncalls);
 
   /// \brief Structure that holds the chain state information
   struct chainstate{

@@ -20,8 +20,9 @@ typedef std::vector<int>     IntVector;
 typedef std::vector<bool>    BoolVector;
 typedef std::vector<char>    CharVector;
 
-double tmcmc (std::vector<std::vector<double>> &rngs, double gm, int nspl, int iseed,
+double tmcmc (RealVector &spls, RealVector &lprior, RealVector &llik,
+           double gm, int nspl, int iseed,
            int nProcs, int ndim, double cv, int MFactor,
-           bool basis, int CATSteps) ;
+           bool basis, int CATSteps, int write_flag) ;
 
 #endif

@@ -1,23 +1,18 @@
 #!/bin/bash
+# Parallel evaluation of likelihood
 
 nProc=$1
 SLP1=0.05    # pause between checking existance of "done" files
 
-if [ ! -f "delta.dat" ]
-then
-  touch delta.dat
-  echo 2 > delta.dat
-fi
-
 for k in `seq 1 ${nProc}`
 do
   # echo "Likelihood computation: Launching process ${k} of ${nProc}"
-  rm -rf run_${k}
-  mkdir run_${k}
-  cd run_${k}
+  rm -rf tmcmc_process_${k}
+  mkdir tmcmc_process_${k}
+  cd tmcmc_process_${k}
   cp ../model.x .
   cp ../mcmcstates_${k}.dat mcmcstates_local.dat
-  ./model.x & 
+  ./model.x &
   cd ..
 done
 
@@ -25,11 +20,11 @@ rm -f tmcmc_ll.dat
 list=""
 for k in `seq 1 ${nProc}`
 do
-	while [ ! -f run_${k}/done.txt ]
+	while [ ! -f tmcmc_process_${k}/done.txt ]
 	do
 		sleep ${SLP1}
 	done
-	list="$list run_${k}/tmcmc_ll.dat"
+	list="$list tmcmc_process_${k}/tmcmc_ll.dat"
 done
 
 cat $list > tmcmc_ll.dat
