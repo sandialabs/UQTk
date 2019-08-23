@@ -183,14 +183,14 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,germ_samples):
     Evaluate PCE at a set of samples of the germ of this PCE
     Input:
         pc_model: PC object with into about PCE
-        pc_coeffs: numpy array with PC coefficients of the RVs to be evaluated.
+        pc_coeffs: 2D numpy array with PC coefficients of the RVs to be evaluated.
                    Each column corresponds to one RV.
         germ_samples: numpy array with samples of the PCE germ at which the RVs
                       are to be evaluated. Each line is one sample. The number
                       of colums is the number of RVs.
 
     Output:
-        Numpy array with PCE evaluations
+        2D Numpy array with PCE evaluations
     """
 
     # Get data set dimensions etc.
