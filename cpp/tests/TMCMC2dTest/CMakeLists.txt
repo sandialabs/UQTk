@@ -14,6 +14,9 @@ SET(copy_EXE_FILES
     model.x
    )
 
+file(COPY ${copy_SCRIPT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${copy_DATA_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_executable (model.x model.cpp)
 add_executable (TMCMC2dTest main.cpp)
 
@@ -69,20 +72,4 @@ include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 INSTALL(TARGETS TMCMC2dTest DESTINATION bin/tests/)
 
 add_test(TMCMC2dTest TMCMC2dTest)
-
-
-INSTALL(TARGETS ${copy_EXE_FILES}
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        DESTINATION bin/tests/
-)
-
-INSTALL(FILES ${copy_SCRIPT_FILES}
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        DESTINATION bin/tests/
-)
-
-INSTALL(FILES ${copy_DATA_FILES}
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        DESTINATION bin/tests/
-)
 
