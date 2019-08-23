@@ -184,6 +184,25 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
 
 
     """
+    samples = uqtkarray.dblArray1D(n_samples,0.0)
+
+    npce = pc_model.GetNumberPCTerms()
+
+    # Evaluate PCE for RVs in each dimension
+    # Create and fill UQTk array for PC coefficients
+    p = uqtkarray.dblArray1D(npce,0.0)
+    for ip in range(npce):
+        p[ip] = pc_coeffs[ip]
+
+    pc_model.DrawSampleSet(p, samples)
+
+    #convert back to np array
+
+    pce_samples = np.zeros(n_samples)
+    # Put evaluated samples in full 2D numpy array
+    for isamp in range(n_samples):
+        pce_samples[isamp] = samples[isamp]
+
 
 #   use the routine   void DrawSampleSet(const Array1D<double>& p, Array1D<double>& samples);
 
