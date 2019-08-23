@@ -166,7 +166,7 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
                       of columns is the number of RVs.
 
     Output:
-        Numpy array with PCE evaluations
+        1D Numpy array with PCE evaluations
     """
 
     # Get data set dimensions etc.

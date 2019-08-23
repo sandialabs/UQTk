@@ -64,6 +64,11 @@ except ImportError:
     print("PyUQTk tools module not found")
 
 try:
+    import PyUQTk.PyPCE.pce_tools as pce_tools
+except ImportError:
+    print("PyUQTk pce_tools module not found")
+
+try:
     from heat_transfer_pce_tools import *
 except ImportError:
     print("File with PCE utilities not found.")
@@ -183,9 +188,15 @@ c_k = GalerkinProjection(pc_model,Q_evals)
 # Generate germ samples
 germ_samples=np.random.normal(0,1, (n_MC,ndim))
 # Evaluate the PCE at the germ samples
-pce_evals=evaluate_pce(pc_model,c_k,germ_samples)
+print('np.shape(pc_model) = ', np.shape(pc_model))
+print('np.shape(c_k) = ', np.shape(c_k))
+print('np.shape(germ_samples) = ', np.shape(germ_samples))
+pce_evals=pce_tools.UQTkEvaluatePCE(pc_model,c_k,germ_samples)
+print('np.shape(pce_evals) = ', np.shape(pce_evals))
 #Peform kernel density estimation
 xpts_pce, PDF_data_pce= KDE(pce_evals)
+print('np.shape(xpts_pce) = ', np.shape(xpts_pce))
+print('np.shape(PDF_data_pce) = ', np.shape(PDF_data_pce))
 
 #
 ##### Forward Propagation using PCEs and sparse quadrature ######
