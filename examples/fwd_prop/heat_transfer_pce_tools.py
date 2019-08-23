@@ -156,7 +156,7 @@ def GalerkinProjection(pc_model,f_evaluations):
 
 def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     """
-    Evaluate PCE at a set of samples of the germ of this PCE
+    Evaluate one PCE at a set of samples of the germ of this PCE
     Input:
         pc_model: PC object with info about PCE
         pc_coeffs: 1D numpy array with PC coefficients of the RVs to be evaluated.
