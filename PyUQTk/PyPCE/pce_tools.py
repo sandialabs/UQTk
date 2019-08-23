@@ -174,17 +174,37 @@ def UQTkEvalPC(pce_model,pce_coeffs,germ_sample):
 
     return pce_eval
 ################################################################################
+def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
+    """
+    Draw samples of the germ underneath the pc_model and evaluate one PCE
+    for those samples.
+    If just one sample, return a scalar
+    If more than one sample, return a 1D numpy array with samples
+
+
+
+    """
+
+#   use the routine   void DrawSampleSet(const Array1D<double>& p, Array1D<double>& samples);
+
+    return pce_samples
+################################################################################
 def UQTkEvaluatePCE(pc_model,pc_coeffs,germ_samples):
     """
     TODO: clean up this documentation: what are dimensions of input and output arrays ????
-    TODO: modify routine to allow evaluating just one PCE (instead of defaulting to ndim PCEs)
+    TODO: modify routine evaluate one PCE (instead of defaulting to ndim PCEs) for an arbitrary
+          number of samples
+    TODO: replace germ_samples with samples
+    TODO: replace code with calls to EvalPCAtCustPoints (see awsm_post.py)
+
+    // formerly: Multiple n-dim PCEs at multiple germ samples. (Actually n-dim PCEs in n-dim dimensions)
 
 
     Evaluate PCE at a set of samples of the germ of this PCE
     Input:
         pc_model: PC object with into about PCE
         pc_coeffs: 2D numpy array with PC coefficients of the RVs to be evaluated.
-                   Each column corresponds to one RV.
+                   Each column corresponds to one RV. [n_]
         germ_samples: numpy array with samples of the PCE germ at which the RVs
                       are to be evaluated. Each line is one sample. The number
                       of colums is the number of RVs.
