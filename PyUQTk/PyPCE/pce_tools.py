@@ -208,7 +208,7 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
 
     return pce_samples
 ################################################################################
-def UQTkEvaluatePCE(pc_model,pc_coeffs,germ_samples):
+def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
     """
     TODO: clean up this documentation: what are dimensions of input and output arrays ????
     TODO: modify routine evaluate one PCE (instead of defaulting to ndim PCEs) for an arbitrary
@@ -233,34 +233,31 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,germ_samples):
     """
 
     # Get data set dimensions etc.
-    n_test_samples = germ_samples.shape[0]
-    ndim = germ_samples.shape[1]
     npce = pc_model.GetNumberPCTerms()
 
-    # Put PC germ samples in a UQTk array
-    std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
+    # Put PC samples in a UQTk array
+    std_samples_uqtk = uqtkarray.dblArray2D(samples.shape)
+    std_samples_uqtk.setnpdblArray(np.asfortranarray(samples))
+
+
+
+    # Create and fill UQTk array for PC coefficients
+    c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
+    for ip in range(npce):
+        c_k_1d_uqtk[ip] = pc_coeffs[ip]
+
+    # Create UQTk array to store outputs in
+    rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)
+
+    # Evaluate the PCEs for reach input RV at those random samples
+    pc_model.EvalPCAtCustPoints(rv_from_pce_uqtk,std_samples_uqtk,c_k_1d_uqtk)
 
     # Numpy array to store all RVs evaluated from sampled PCEs
-    rvs_sampled = np.zeros((n_test_samples,ndim))
+    rvs_sampled = np.zeros((n_test_samples,))
 
-    # Evaluate PCE for RVs in each dimension
-    for idim in range(ndim):
-
-        # Create and fill UQTk array for PC coefficients
-        c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
-        for ip in range(npce):
-            c_k_1d_uqtk[ip] = pc_coeffs[ip,idim]
-
-        # Create UQTk array to store outputs in
-        rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)
-
-        # Evaluate the PCEs for reach input RV at those random samples
-        pc_model.EvalPCAtCustPoints(rv_from_pce_uqtk,std_samples_uqtk,c_k_1d_uqtk)
-
-        # Put evaluated samples in full 2D numpy array
-        for isamp in range(n_test_samples):
-            rvs_sampled[isamp,idim] = rv_from_pce_uqtk[isamp]
+    # Put evaluated samples in full 2D numpy array
+    for isamp in range(n_test_samples):
+        rvs_sampled[isamp] = rv_from_pce_uqtk[isamp]
 
     # return numpy array of PCE evaluations
     return rvs_sampled
