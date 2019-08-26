@@ -233,13 +233,13 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
     """
 
     # Get data set dimensions etc.
+    n_test_samples = samples.shape[0]
+    ndim = samples.shape[1]
     npce = pc_model.GetNumberPCTerms()
 
     # Put PC samples in a UQTk array
-    std_samples_uqtk = uqtkarray.dblArray2D(samples.shape)
+    std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
     std_samples_uqtk.setnpdblArray(np.asfortranarray(samples))
-
-
 
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
