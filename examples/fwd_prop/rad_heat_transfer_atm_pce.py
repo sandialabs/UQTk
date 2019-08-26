@@ -163,7 +163,7 @@ if main_verbose > 10:
 print("\nInstantiation complete")
 
 #Get numpy array of quadrature points
-qdpts, totquat = get_quadpts(pc_model,ndim)
+qdpts, totquat = pce_tools.UQTkGetQuadPoints(pc_model)
 
 # Convert Quadrature points in \xi_i to equivalent samples of input parameters
 # (taking advantage of the fact that inputs are assumed to be Gaussian)
@@ -184,19 +184,20 @@ else:
     Q_evals=fwd_model_rad(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_samples,TA_samples,main_verbose)
 
 # Do the actual Galerkin Projection
-c_k = GalerkinProjection(pc_model,Q_evals)
-# Generate germ samples
-germ_samples=np.random.normal(0,1, (n_MC,ndim))
-# Evaluate the PCE at the germ samples
-print('np.shape(pc_model) = ', np.shape(pc_model))
-print('np.shape(c_k) = ', np.shape(c_k))
-print('np.shape(germ_samples) = ', np.shape(germ_samples))
-pce_evals=pce_tools.UQTkEvaluatePCE(pc_model,c_k,germ_samples)
-print('np.shape(pce_evals) = ', np.shape(pce_evals))
+c_k = pce_tools.UQTkGalerkinProjection(pc_model,Q_evals)
+
+#Draw samples of PCE evaulations
+pc_model.SeedBasisRandNumGen(123)
+
+pce_evals = pce_tools.UQTkDrawSamplesPCE(pc_model, c_k, n_MC)
+
+#set random number generator
+# samples = np.random.normal(0,1, (n_MC,ndim))
+# pce_evals = pce_tools.UQTkEvaluatePCE(pc_model,c_k,samples)
+
+
 #Peform kernel density estimation
 xpts_pce, PDF_data_pce= KDE(pce_evals)
-print('np.shape(xpts_pce) = ', np.shape(xpts_pce))
-print('np.shape(PDF_data_pce) = ', np.shape(PDF_data_pce))
 
 #
 ##### Forward Propagation using PCEs and sparse quadrature ######
@@ -216,7 +217,7 @@ if main_verbose > 10:
 print("\nInstantiation complete")
 
 #Get numpy array of quadrature points
-qdpts2, totquat2= get_quadpts(pc_model2,ndim)
+qdpts2, totquat2= pce_tools.UQTkGetQuadPoints(pc_model2)
 
 # Convert Quadrature points in \xi_i to equivalent samples of input parameters
 # (taking advantage of the fact that inputs are assumed to be Gaussian)
@@ -237,12 +238,17 @@ else:
     Q_evals2=fwd_model_rad(Ti_samples2,To_samples2, dw_samples2, kw_samples2,hi_samples2,ho_samples2,TA_samples2,main_verbose)
 
 # Do the actual Galerkin Projection
-c_k2 = GalerkinProjection(pc_model2,Q_evals2)
+c_k2 = pce_tools.UQTkGalerkinProjection(pc_model2,Q_evals2)
 
-# Generate germ samples for KDE
-germ_samples2=np.random.normal(0,1, (n_MC,ndim))
-# Evaluate the PCE at the germ samples
-pce_evals2=evaluate_pce(pc_model2,c_k2,germ_samples2)
+#set random number generator
+pc_model.SeedBasisRandNumGen(456)
+
+#Draw samples of PCE evaulations
+# samples2 = np.random.normal(0,1, (n_MC,ndim))
+# pce_evals2 = pce_tools.UQTkEvaluatePCE(pc_model2,c_k2,samples2)
+
+pce_evals2 = pce_tools.UQTkDrawSamplesPCE(pc_model2, c_k2, n_MC)
+
 #Peform kernel density estimation
 xpts_pce2, PDF_data_pce2= KDE(pce_evals2)
 
@@ -260,6 +266,9 @@ plt.figure(figsize=(10,10))
 plt.plot(xpts_pce, PDF_data_pce, linewidth=2, color='r', label='NISP full quadrature method')
 plt.plot(xpts_MC, PDF_data_MC, linewidth=2, color='b', label='Monte Carlo Sampling')
 plt.plot(xpts_pce2, PDF_data_pce2, linewidth=2, color='g', label= 'NISP sparse quadrature method')
+
+diff = xpts_pce - xpts_pce2
+print('mean diff = ', np.mean(diff))
 
 # Label Axes
 plt.xlabel("Total Heat Flux ($W/m^2$)", size=16)
