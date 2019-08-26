@@ -142,95 +142,63 @@ def UQTkMap2PCE(pc_model,rvs_in,verbose=0):
 ################################################################################
 def UQTkEvalPC(pce_model,pce_coeffs,germ_sample):
     """
-    Evaluate a single PCE (in possibly multiple dimensions) at one germ sample
-
-    Need to add sanity checks etc. on input arguments
-
-    Input:
-        pce_model: PC object with into about PCE
-        pce_coeffs: 1D numpy array with PC coefficients of the RV to be evaluated [n_pce]
-        germ_sample: 1D numpy array with samples of the PCE germ at which the RV
-                     is to be evaluated. [n_dim]
-
-    Output:
-        Value of single PCE evaluation
+    Use UQTkEvaluatePCE instead
     """
-    # Get PCE dimensions etc.
-    n_dim = pce_model.GetNDim()  # Should match germ_sample.shape[1]
-    n_pce = pce_model.GetNumberPCTerms() # Should match len(pce_coeffs)
-
-    # Put PC germ sample in a UQTk array
-    germ_sample_uqtk = uqtkarray.dblArray1D(n_dim,0.0)
-    for id in range(n_dim):
-        germ_sample_uqtk[id] = germ_sample[id]
-
-    # Create and fill UQTk array for PC coefficients
-    c_k_1d_uqtk = uqtkarray.dblArray1D(n_pce,0.0)
-    for ip in range(n_pce):
-        c_k_1d_uqtk[ip] = pce_coeffs[ip]
-
-    # Evaluate the PCEs for reach input RV at those random samples
-    pce_eval = pce_model.EvalPC(c_k_1d_uqtk,germ_sample_uqtk)
-
-    return pce_eval
+    print("Use UQTkEvaluatePCE instead of UQTkEvalPC.")
+    exit(1)
 ################################################################################
 def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
     """
-    Draw samples of the germ underneath the pc_model and evaluate one PCE
+    Draw samples of the germ underneath the pc_model and evaluates one PCE
     for those samples.
-    If just one sample, return a scalar
-    If more than one sample, return a 1D numpy array with samples
 
-
+    Input:
+        pc_model:   PC object with into about PCE
+        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated.
+        n_samples:    number of samples to be drawn
+    Output:
+        1D Numpy array with PCE evaluations
 
     """
-    samples = uqtkarray.dblArray1D(n_samples,0.0)
 
+    #get number of nTerms
     npce = pc_model.GetNumberPCTerms()
 
-    # Evaluate PCE for RVs in each dimension
     # Create and fill UQTk array for PC coefficients
     p = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
         p[ip] = pc_coeffs[ip]
 
+    #create UQTk array to store outputs in
+    samples = uqtkarray.dblArray1D(n_samples,0.0)
+
+    #draw the samples
     pc_model.DrawSampleSet(p, samples)
 
-    #convert back to np array
-
+    #convert samples to a numpy array
     pce_samples = np.zeros(n_samples)
-    # Put evaluated samples in full 2D numpy array
     for isamp in range(n_samples):
         pce_samples[isamp] = samples[isamp]
 
-
-#   use the routine   void DrawSampleSet(const Array1D<double>& p, Array1D<double>& samples);
-
+    #return samples in numpy array
     return pce_samples
 ################################################################################
 def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
     """
-    TODO: clean up this documentation: what are dimensions of input and output arrays ????
-    TODO: modify routine evaluate one PCE (instead of defaulting to ndim PCEs) for an arbitrary
-          number of samples
-    TODO: replace germ_samples with samples
-    TODO: replace code with calls to EvalPCAtCustPoints (see awsm_post.py)
-
-    // formerly: Multiple n-dim PCEs at multiple germ samples. (Actually n-dim PCEs in n-dim dimensions)
-
-
-    Evaluate PCE at a set of samples of the germ of this PCE
+    Evaluate PCE at a set of samples of this PCE
     Input:
-        pc_model: PC object with into about PCE
-        pc_coeffs: 2D numpy array with PC coefficients of the RVs to be evaluated.
-                   Each column corresponds to one RV. [n_]
-        germ_samples: numpy array with samples of the PCE germ at which the RVs
-                      are to be evaluated. Each line is one sample. The number
-                      of colums is the number of RVs.
-
+        pc_model:   PC object with into about PCE
+        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated.
+        samples:    2D numpy array with samples of the PCE at which the RV
+                    are to be evaluated. Each line is one sample.
     Output:
-        2D Numpy array with PCE evaluations
+        1D Numpy array with PCE evaluations
     """
+
+    #need a 1d array passed into pc_coeffs
+    if(len(pc_coeffs.shape) != 1):
+        print("UQTkEvaluatePCE only takes one PCE. pc_coeff needs to be 1 dimension.")
+        exit(1)
 
     # Get data set dimensions etc.
     n_test_samples = samples.shape[0]
