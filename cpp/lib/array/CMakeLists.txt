@@ -12,8 +12,11 @@ add_library(uqtkarray arrayio.cpp arraytools.cpp)
 
 include_directories (../include)  
 
-include_directories (../../../dep/blas)
-include_directories (../../../dep/lapack)
+#find and include blas and lapack
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries(uqtkarray m blas ${BLAS_LIBRARIES})
+target_link_libraries(uqtkarray m lapack ${LAPACK_LIBRARIES})
 
 # Install the library
 INSTALL(TARGETS uqtkarray DESTINATION lib)

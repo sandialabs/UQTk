@@ -64,3 +64,12 @@ if ("${INTEL-GROVER}" STREQUAL "")
 endif()
 add_library(uqtk ${arraysrc} ${toolssrc} ${quadsrc} ${pcesrc} ${klesrc} ${bcssrc} ${tmcmcsrc} ${mcmcsrc} ${mcmcsrc2} ${lregsrc} ${gprocsrc} ${xmlutilssrc} ${infersrc} ${samplingsrc} ${lowranksrc})
 INSTALL(TARGETS uqtk DESTINATION lib)
+
+
+# Copy over header file too
+INSTALL(FILES depblas.h
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION .)
+INSTALL(FILES deplapack.h
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION .)
