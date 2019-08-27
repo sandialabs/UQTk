@@ -39,8 +39,8 @@
 #include "arraytools.h"
 #include "ftndefs.h"
 #include "gen_defs.h"
-#include "depblas.h"
-#include "deplapack.h"
+#include "../depblas.h"
+#include "../deplapack.h"
 
 using namespace std;
 
