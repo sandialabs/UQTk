@@ -28,6 +28,7 @@
 from __future__ import print_function #so the print statements in python2 looks right
 
 import sys
+import argparse
 
 try:
 	import numpy as np
@@ -77,27 +78,57 @@ except ImportError:
 #####################################################################
 
 #####################################################################
+# Parse input arguments
+usage_str = """Script produce a graph comparing PDFs of heat flux generated using
+	NISP full and sparse quadrature methods and a Monte Carlo sampling method"""
+parser = argparse.ArgumentParser(description=usage_str)
+parser.add_argument("-v", "--verbose", help="To display intermediate print statements.", action='store_true')
+parser.add_argument("-r", "--compute_rad", help="To compute radiation.", action='store_true')
+parser.add_argument("--nord", dest="nord", type=int,
+                    default=3, help="the order of the PCE [default = 3]")
+parser.add_argument("--pc_type", dest="pc_type", type=str,
+                    default="HG", help="indicates the polynomial type and weighting function [default = HG]")
+parser.add_argument("-a", dest="pc_alpha", type=float,
+                    default=0.0, help="Free parameter greater than -1. Used with Gamma-Laguerre and Beta-Jacobi PC types. [default = 0.0]")
+parser.add_argument("-b", dest="pc_beta", type=float,
+                    default=1.0, help="Free parameter greater than -1. Used with Gamma-Laguerre and Beta-Jacobi PC types. [default = 1.0]")
+parser.add_argument("--param", dest="param", type=int, default=None,
+					help="The parameter used for quadrature point generation. Equal to the number of quadrature points per dimension for full quadrature or the level for sparse quadrature methods. This parameter is generally set to nord + 1 in order to have the right polynomial exactness.")
+parser.add_argument("--n_MC", dest="n_MC", type=int, default=100000,
+					help = "Number of random samples to use in MC sampling (of the full problem or of the PCE of the solution) [default = 100000]")
+args = parser.parse_args()
+
+main_verbose = args.verbose
+compute_rad = args.compute_rad
+nord = args.nord
+pc_type = args.pc_type
+pc_alpha = args.pc_alpha
+pc_beta = args.pc_beta
+param = args.param
+n_MC = args.n_MC
+if(not param):
+	param = nord + 1
 # Some general settings
-main_verbose = 1
-compute_rad = True # Whether or not radiation is considered
+# main_verbose = 1
+# compute_rad = True # Whether or not radiation is considered
 if main_verbose > 0:
     print("\nConsidering heat transfer with ", end= ' ')
     if not compute_rad:
         print("no ",end= ' ')
     print("radiation.")
 
-nord = 3 # Order of the PCE
+# nord = 3 # Order of the PCE
 # Number of dimensions of the PCE (number of uncertain variables)
 if compute_rad:
     ndim = 7
 else:
     ndim = 6
-pc_type = "HG" # Use Wiener-Hermite PCE since inputs have a normal distribution
-pc_alpha = 0.0
-pc_beta = 1.0
-param= nord+1   # Parameter for quadrature point generation
+# pc_type = "HG" # Use Wiener-Hermite PCE since inputs have a normal distribution
+# pc_alpha = 0.0
+# pc_beta = 1.0
+# param= nord+1   # Parameter for quadrature point generation
                 # Equal to number of quad points per dimension for full quadrature or level for sparse quadrature
-n_MC = 100000   # Number of random samples to use in MC sampling (of the full problem or of the PCE of the solution)
+# n_MC = 100000   # Number of random samples to use in MC sampling (of the full problem or of the PCE of the solution)
 
 
 # Nominal values of the parameters used to calculate the heat flux
@@ -186,15 +217,11 @@ else:
 # Do the actual Galerkin Projection
 c_k = pce_tools.UQTkGalerkinProjection(pc_model,Q_evals)
 
-#Draw samples of PCE evaulations
+#set random number generator
 pc_model.SeedBasisRandNumGen(123)
 
+#Draw samples of PCE evaulations
 pce_evals = pce_tools.UQTkDrawSamplesPCE(pc_model, c_k, n_MC)
-
-#set random number generator
-# samples = np.random.normal(0,1, (n_MC,ndim))
-# pce_evals = pce_tools.UQTkEvaluatePCE(pc_model,c_k,samples)
-
 
 #Peform kernel density estimation
 xpts_pce, PDF_data_pce= KDE(pce_evals)
@@ -244,9 +271,6 @@ c_k2 = pce_tools.UQTkGalerkinProjection(pc_model2,Q_evals2)
 pc_model.SeedBasisRandNumGen(456)
 
 #Draw samples of PCE evaulations
-# samples2 = np.random.normal(0,1, (n_MC,ndim))
-# pce_evals2 = pce_tools.UQTkEvaluatePCE(pc_model2,c_k2,samples2)
-
 pce_evals2 = pce_tools.UQTkDrawSamplesPCE(pc_model2, c_k2, n_MC)
 
 #Peform kernel density estimation
