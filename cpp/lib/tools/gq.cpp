@@ -34,7 +34,7 @@
 
 #include "Array1D.h"
 #include "Array2D.h"
-#include "deplapack.h"
+#include "../deplapack.h"
 #include "gq.h"
 #include "combin.h"
 using namespace std;
