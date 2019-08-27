@@ -30,7 +30,7 @@
 
 #include <math.h>
 #include "kle.h"
-#include "deplapack.h"
+#include "../deplapack.h"
 #include "error_handlers.h"
 
 KLDecompUni::KLDecompUni(const Array1D<double>& tSamples)

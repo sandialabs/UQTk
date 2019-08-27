@@ -37,9 +37,10 @@
 #include "bcs.h"
 #include "tools.h"
 #include "ftndefs.h"
-#include "deplapack.h"
+#include "../deplapack.h"
 #include "arrayio.h"
 #include "arraytools.h"
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,6 +486,3 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     WBCS(PHI, y, sigma2, eta, lambda_init, adaptive, optimal, scale, verbose,
         weights, used, errbars, basis, alpha, Sig);
 }
-
-
-
