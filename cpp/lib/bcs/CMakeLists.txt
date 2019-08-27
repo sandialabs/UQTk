@@ -3,7 +3,7 @@ project(UQTk)
 SET(bcs_HEADERS
   bcs.h
    )
- 
+
 add_library(uqtkbcs bcs.cpp)
 
 include_directories (../include)
@@ -12,7 +12,11 @@ include_directories (../tools)
 include_directories (../quad)
 
 include_directories (../../../dep/slatec)
-include_directories (../../../dep/lapack) 
+
+#find and include blas and lapack
+find_package(LAPACK)
+target_link_libraries(uqtkbcs m lapack ${LAPACK_LIBRARIES})
+
 include_directories (../../../dep/dsfmt)
 include_directories (../../../dep/figtree)
 include_directories (../../../dep/cvode-2.7.0/include)
