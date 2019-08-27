@@ -161,6 +161,11 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
 
     """
 
+    #need a 1d array passed into pc_coeffs
+    if(len(pc_coeffs.shape) != 1):
+        print("UQTkEvaluatePCE only takes one PCE. pc_coeff needs to be 1 dimension.")
+        exit(1)
+
     #get number of nTerms
     npce = pc_model.GetNumberPCTerms()
 
