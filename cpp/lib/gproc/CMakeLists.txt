@@ -13,9 +13,6 @@ include_directories (../quad   )
 include_directories (../pce    )
 include_directories (../bcs    )
 
-
-include_directories (../../../dep/lapack)
-include_directories (../../../dep/blas)
 include_directories (../../../dep/lbfgs)
 include_directories (../../../dep/dsfmt)
 include_directories (../../../dep/figtree)
