@@ -1,4 +1,4 @@
-project (UQTk) 
+project (UQTk)
 
 SET(infer_HEADERS
   inference.h
@@ -16,12 +16,11 @@ include_directories (../pce    )
 include_directories (../mcmc   )
 
 include_directories (../../../dep/slatec)
-include_directories (../../../dep/lapack) 
 include_directories (../../../dep/dsfmt )
 include_directories (../../../dep/figtree )
 include_directories (../../../dep/cvode-2.7.0/include)
 include_directories (../../../dep/lbfgs )
-  
+
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 # Install the library
