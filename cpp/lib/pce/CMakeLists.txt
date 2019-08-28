@@ -2,7 +2,7 @@ project(UQTk)
 
 SET(pce_HEADERS
   PCSet.h
-  PCBasis.h 
+  PCBasis.h
   )
 
 add_library(uqtkpce PCBasis.cpp PCSet.cpp)
@@ -13,9 +13,11 @@ include_directories (../tools  )
 include_directories (../quad   )
 
 # TPL
+find_package(LAPACK)
+target_link_libraries(uqtkpce m lapack ${LAPACK_LIBRARIES})
 include_directories (../../../dep/slatec)
 include_directories (../../../dep/dsfmt )
-include_directories (../../../dep/cvode-2.7.0/include)  
+include_directories (../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 # Install the library

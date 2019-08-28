@@ -30,7 +30,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(INSTALL_LIB_DIR     lib    )
 set(INSTALL_BIN_DIR     bin    )
 set(INSTALL_INCLUDE_DIR include)
-set(INSTALL_INCLUDE_DIR include)
 
 # Make relative paths absolute (needed later on)
 foreach(p LIB BIN INCLUDE)
