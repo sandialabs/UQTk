@@ -46,7 +46,7 @@ int main(int argc, char ** argv){
 	Dimensionality and number of samples requested
 	*************************************************/
 	int dim = 2; 
-	int nCalls = 2000;
+	int nCalls = 1000;
 
 	/*************************************************
 	Initiate and Run MCMC chain
@@ -90,8 +90,8 @@ int main(int argc, char ** argv){
 	cout << var_x2 << endl;
 
 	// check variance
-	assert(fabs(var_x1 - .00996) < .001);
-	assert(fabs(var_x2 - .52747) < .05);
+	assert(fabs(var_x1 - 1./(1./1. + 1./0.01)) < .05);
+	assert(fabs(var_x2 - 1./(1./1. + 1./0.64)) < .05);
 
 	return 0; 
 
