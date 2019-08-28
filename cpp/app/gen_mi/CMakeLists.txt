@@ -3,11 +3,13 @@ add_executable (gen_mi gen_mi.cpp)
 
 target_link_libraries (gen_mi uqtkpce  )
 target_link_libraries (gen_mi uqtkarray)
-target_link_libraries (gen_mi uqtktools) 
+target_link_libraries (gen_mi uqtktools)
 
-target_link_libraries (gen_mi depdsfmt ) 
-target_link_libraries (gen_mi deplapack)
-target_link_libraries (gen_mi depblas  )
+target_link_libraries (gen_mi depdsfmt )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries(gen_mi m blas ${BLAS_LIBRARIES})
+target_link_libraries(gen_mi m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (gen_mi depfigtree )
 target_link_libraries (gen_mi depann   )
 
@@ -44,4 +46,3 @@ include_directories(../../../dep/figtree)
 
 
 INSTALL(TARGETS gen_mi DESTINATION bin)
-
