@@ -1,6 +1,6 @@
 examples/CMakeLists.txt project (UQTk)
 
-add_subdirectory (ops)
+#add_subdirectory (ops)
 add_subdirectory (kle_ex1)
 add_subdirectory (line_infer)
 add_subdirectory (tmcmc_bimodal)

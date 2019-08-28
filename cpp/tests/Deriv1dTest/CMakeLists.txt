@@ -8,6 +8,11 @@ target_link_libraries (Deriv1dTest depdsfmt )
 target_link_libraries (Deriv1dTest depcvode )
 target_link_libraries (Deriv1dTest depnvec  )
 target_link_libraries (Deriv1dTest depslatec)
+<<<<<<< HEAD
+=======
+find_package(BLAS)
+find_package(LAPACK)
+>>>>>>> version that is compiling, missing a lot of functionality right now
 target_link_libraries (Deriv1dTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (Deriv1dTest m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (Deriv1dTest deplbfgs  )

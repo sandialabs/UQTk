@@ -15,23 +15,29 @@ add_subdirectory (CorrTest         )
 add_subdirectory (QuadLUTest       )
 
 # # MCMC class tests
+<<<<<<< HEAD
 add_subdirectory (TMCMC2dTest       )
 add_subdirectory (MCMC2dTest       )
 add_subdirectory (MCMCRandomTest   )
 add_subdirectory (MCMCNestedTest   )
+=======
+#add_subdirectory (MCMC2dTest       )
+#add_subdirectory (MCMCRandomTest   )
+#add_subdirectory (MCMCNestedTest   )
+>>>>>>> version that is compiling, missing a lot of functionality right now
 
 # # PCBasis and PCSet tests
 add_subdirectory (Deriv1dTest      )
-add_subdirectory (SecondDeriv1dTest)
+#add_subdirectory (SecondDeriv1dTest)
 add_subdirectory (GradHessianTest  )
-add_subdirectory (GradientPCETest  )
-add_subdirectory (PCE1dTest        )
-add_subdirectory (PCEImplTest      )
+#add_subdirectory (GradientPCETest  )
+#add_subdirectory (PCE1dTest        )
+#add_subdirectory (PCEImplTest      )
 add_subdirectory (Hessian2dTest    )
 
 # # BCS tests
 add_subdirectory (BCS1dTest        )
-add_subdirectory (BCS2dTest        )
+#add_subdirectory (BCS2dTest        )
 
 # # Low Rank Regression tests
-add_subdirectory (LowRankRegrTest  )
+#add_subdirectory (LowRankRegrTest  )
