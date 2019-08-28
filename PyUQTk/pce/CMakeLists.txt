@@ -16,8 +16,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/kle/) # kle class
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/pce/) # PCSet and PCBasis classes
 
 # include dependencies
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lapack/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/blas/) # blas library headers
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
@@ -32,7 +30,7 @@ SET_SOURCE_FILES_PROPERTIES(pce.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	pce LANGUAGE python SOURCES pce.i 
+	pce LANGUAGE python SOURCES pce.i
 	# array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -56,11 +54,19 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., gfortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray uqtktools depnvec depslatec deplapack depblas depdsfmt depfigtree depann depcvode gfortran ${PYTHON_LIBRARIES})
-  #SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray depnvec depslatec uqtktools deplapack depblas depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray uqtktools depnvec depslatec  depdsfmt depfigtree depann depcvode gfortran ${PYTHON_LIBRARIES})
+  #SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray depnvec depslatec uqtktools   depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
+	find_package(BLAS)
+	find_package(LAPACK)
+	SWIG_LINK_LIBRARIES(pce m blas ${BLAS_LIBRARIES})
+	SWIG_LINK_LIBRARIES(pce m lapack ${LAPACK_LIBRARIES})
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(pce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce uqtktools uqtkquad uqtkarray depnvec   depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+	find_package(BLAS)
+	find_package(LAPACK)
+	SWIG_LINK_LIBRARIES(pce m blas ${BLAS_LIBRARIES})
+	SWIG_LINK_LIBRARIES(pce m lapack ${LAPACK_LIBRARIES})
 endif()
 
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)

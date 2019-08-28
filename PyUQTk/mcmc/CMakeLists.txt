@@ -17,9 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/bcs/) # bcs
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/mcmc/) # mcmc
 
 # include dependencies
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/blas/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lapack/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lbfgs/) # blas library
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lbfgs/) # lbfgs library
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
@@ -33,7 +31,7 @@ SET_SOURCE_FILES_PROPERTIES(mcmc.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	mcmc LANGUAGE python SOURCES mcmc.i 
+	mcmc LANGUAGE python SOURCES mcmc.i
 	# array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -57,10 +55,16 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., gfortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec depslatec depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
+	find_package(BLAS)
+	find_package(LAPACK)
+	SWIG_LINK_LIBRARIES(mcmc blas lapack)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ifport ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec depslatec depdsfmt depann depfigtree depcvode ifcore ifport ${PYTHON_LIBRARIES})
+	find_package(BLAS)
+	find_package(LAPACK)
+	SWIG_LINK_LIBRARIES(mcmc blas lapack)
 endif()
 
 INSTALL(TARGETS _mcmc DESTINATION PyUQTk/)

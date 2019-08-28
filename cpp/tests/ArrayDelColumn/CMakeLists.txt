@@ -8,14 +8,16 @@ target_link_libraries (ArrayDelColumn depdsfmt )
 target_link_libraries (ArrayDelColumn depcvode )
 target_link_libraries (ArrayDelColumn depnvec  )
 target_link_libraries (ArrayDelColumn depslatec)
-target_link_libraries (ArrayDelColumn deplapack)
-target_link_libraries (ArrayDelColumn depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries(ArrayDelColumn m blas ${BLAS_LIBRARIES})
+target_link_libraries(ArrayDelColumn m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (ArrayDelColumn deplbfgs  )
 
 # Link fortran libraries
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  target_link_libraries (ArrayDelColumn gfortran expat stdc++) 
+  target_link_libraries (ArrayDelColumn gfortran expat stdc++)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
   if ("${IntelLibPath}" STREQUAL "")
@@ -42,8 +44,6 @@ include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
 
 include_directories(../../../dep/dsfmt)
-include_directories(../../../dep/lapack)
-include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/cvode-2.7.0/include)
