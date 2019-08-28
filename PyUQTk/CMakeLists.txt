@@ -26,6 +26,7 @@ if ("${PyUQTk}" STREQUAL "ON")
   #add_subdirectory (kle)
   add_subdirectory (pce)
   add_subdirectory (bcs)
+  add_subdirectory (tmcmc)
   add_subdirectory (mcmc)
 
   add_subdirectory(pytests)

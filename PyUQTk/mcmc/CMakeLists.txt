@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/kle/) # kle class
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/pce/) # PCSet and PCBasis classes
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/bcs/) # bcs
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/mcmc/) # mcmc
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/tmcmc/) # tmcmc
 
 # include dependencies
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/blas/) # blas library headers
@@ -41,6 +42,7 @@ SWIG_ADD_LIBRARY(
 	# source code for quad and kle class
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/quad/quad.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/kle/kle.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/tmcmc/tmcmc.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/mcmc/mcmc.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/pce/PCSet.cpp
 
