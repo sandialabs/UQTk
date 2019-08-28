@@ -1,4 +1,4 @@
-%module(directors="1") mcmc
+%module(directors="1") tmcmc
 //=====================================================================================
 //                     The UQ Toolkit (UQTk) version @UQTKVERSION@
 //                     Copyright (@UQTKYEAR@) Sandia Corporation
