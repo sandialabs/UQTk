@@ -16,6 +16,8 @@ include_directories (../pce    )
 include_directories (../mcmc   )
 
 include_directories (../../../dep/slatec)
+find_package(LAPACK)
+target_link_libraries(uqtkinfer  lapack)
 include_directories (../../../dep/dsfmt )
 include_directories (../../../dep/figtree )
 include_directories (../../../dep/cvode-2.7.0/include)

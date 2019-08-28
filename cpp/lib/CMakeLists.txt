@@ -6,15 +6,13 @@ add_subdirectory (array   )
 add_subdirectory (tools   )
 add_subdirectory (quad    )
 add_subdirectory (pce     )
-add_subdirectory (kle     )
+add_subdirectory (kle			)
 add_subdirectory (bcs     )
 add_subdirectory (mcmc    )
 add_subdirectory (tmcmc   )
 add_subdirectory (xmlutils)
 add_subdirectory (lreg    )
 add_subdirectory (gproc   )
-add_subdirectory (sampling)
-add_subdirectory (infer   )
 add_subdirectory (lowrank )
 add_subdirectory (include )
 
@@ -28,7 +26,6 @@ include_directories (tools)
 include_directories (quad)
 include_directories (pce)
 include_directories (bcs)
-include_directories (lreg)
 include_directories (gproc)
 include_directories (mcmc)
 include_directories (tmcmc)
@@ -64,12 +61,3 @@ if ("${INTEL-GROVER}" STREQUAL "")
 endif()
 add_library(uqtk ${arraysrc} ${toolssrc} ${quadsrc} ${pcesrc} ${klesrc} ${bcssrc} ${tmcmcsrc} ${mcmcsrc} ${mcmcsrc2} ${lregsrc} ${gprocsrc} ${xmlutilssrc} ${infersrc} ${samplingsrc} ${lowranksrc})
 INSTALL(TARGETS uqtk DESTINATION lib)
-
-
-# Copy over header file too
-INSTALL(FILES depblas.h
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        DESTINATION cpp)
-INSTALL(FILES deplapack.h
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-        DESTINATION cpp)

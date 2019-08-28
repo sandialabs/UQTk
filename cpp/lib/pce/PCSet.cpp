@@ -38,6 +38,11 @@
 #include "minmax.h"
 #include "arraytools.h"
 
+// extern FTN_FUNC void FTN_NAME(dgmres)(int*, double*, double*, int*, int*, int*,
+//         double*, int*, f77_matvecprod, f77_precond,
+//         int*, double*, int*, int*, double*, int*, int*, double*, double*,
+//         double*, int*, int*, int*, double*, int*);
+
 // Static members need to be pre-declared
 int PCSet::next_index_ = 0;
 PCSet::OMap_t *PCSet::omap_ = NULL;

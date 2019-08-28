@@ -37,7 +37,7 @@
 #include "bcs.h"
 #include "tools.h"
 #include "ftndefs.h"
-#include "../deplapack.h"
+#include "deplapack.h"
 #include "arrayio.h"
 #include "arraytools.h"
 
