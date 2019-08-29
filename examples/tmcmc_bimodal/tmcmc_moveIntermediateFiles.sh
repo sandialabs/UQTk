@@ -11,3 +11,4 @@ rm tmcmc_ll.dat
 mv logprior.dat.* $folderName
 rm tmcmc_lp.dat
 rm mcmcstates_*
+mv tmcmc_process_* $folderName

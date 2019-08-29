@@ -132,17 +132,7 @@ chn  = all_samples[:,0:1+n_all_vars]
 nchn = chn.shape[0]
 
 if generate_plots:
-    ## Plot chains ##################################################################
-    print("\nPlotting chains ... \n")
-    for i in range(n_all_vars):
-        fig = plt.figure(figsize=(10,7))
-        ax=fig.add_axes([0.10,0.15,0.85,0.75])
-        plt.plot(chn[:,0],chn[:,i+1],color='blue',linewidth=2)
-        ax.set_xlabel("MCMC step",fontsize=22)
-        ax.set_ylabel(vnames[i],  fontsize=22)
-        plt.savefig('tmcmc_bimodal.chn_'+vnames[i]+'.pdf')
-        plt.clf()
-
+    ## Scatter plots from posterior ##################################################################
     for i in range(n_all_vars):
         for j in range(i):
             fig = plt.figure(figsize=(10,10))
