@@ -132,6 +132,48 @@ chn  = all_samples[:,0:1+n_all_vars]
 nchn = chn.shape[0]
 
 if generate_plots:
+    
+    ## Scatter plots from intermediate pdfs ##################################################################
+
+    indx = 0
+    while 1:
+        fname = './TMCMCIntermediates/samples.dat.'+str(indx)
+        if os.path.exists(fname):
+            samples_file = open(fname, 'r')
+            
+            # Extract first line to see how many columns we have
+            first_line = samples_file.readline().rstrip('\n')
+            first_line_items = [item for item in first_line.split()]
+            n_cols = len(first_line_items)
+            samples_file.seek(0)
+            
+            samps = []
+            line_no = 0
+            done = 0
+            while not done:
+                line = samples_file.readline()
+                if (line == ""):
+                    done = 1
+                else:
+                    line_no += 1
+                    records = line.split()
+                    num_records = [float(s) for s in records]
+                    samps.append(num_records)
+            samps = np.array(samps)
+            
+            for i in range(n_all_vars):
+                for j in range(i):
+                    fig = plt.figure(figsize=(10,10))
+                    ax=fig.add_axes([0.12,0.12,0.8,0.8])
+                    plt.plot(samps[:,j],samps[:,i],'o',markeredgecolor='blue',markerfacecolor='b',markersize=5)
+                    ax.set_xlabel(vnames[j],fontsize=22)
+                    ax.set_ylabel(vnames[i],fontsize=22)
+                    plt.savefig('tmcmc_bimodal.chn_'+vnames[j]+'_'+vnames[i]+'.intermediate'+str(indx)+'.pdf')
+                    plt.clf()
+            indx = indx+10
+        else:
+            break
+    
     ## Scatter plots from posterior ##################################################################
     for i in range(n_all_vars):
         for j in range(i):
@@ -140,7 +182,7 @@ if generate_plots:
             plt.plot(chn[:,j+1],chn[:,i+1],'o',markeredgecolor='blue',markerfacecolor='b',markersize=5)
             ax.set_xlabel(vnames[j],fontsize=22)
             ax.set_ylabel(vnames[i],fontsize=22)
-            plt.savefig('tmcmc_bimodal.chn_'+vnames[j]+'_'+vnames[i]+'.pdf')
+            plt.savefig('tmcmc_bimodal.chn_'+vnames[j]+'_'+vnames[i]+'.posterior.pdf')
             plt.clf()
 
     ## Plot posterior PDF 'triangle' ################################################
