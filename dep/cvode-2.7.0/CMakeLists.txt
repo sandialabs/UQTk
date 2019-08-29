@@ -18,7 +18,7 @@
 
 # Require a fairly recent cmake version
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 # Project SUNDIALS (initially only C supported)
 
@@ -67,7 +67,7 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 
 # Macros to hide/show cached variables.
 # These two macros can be used to "hide" or "show" in the
-# list of cached variables various variables and/or options 
+# list of cached variables various variables and/or options
 # that depend on other options.
 # Note that once a variable is modified, it will preserve its
 # value (hidding it merely makes it internal)
@@ -178,7 +178,7 @@ SET(PRECISION_LEVEL "#define SUNDIALS_${SUNDIALS_PRECISION}_PRECISION 1")
 IF(UNIX)
   OPTION(USE_GENERIC_MATH "Use generic (std-c) math libraries" ON)
   IF(USE_GENERIC_MATH)
-    # executables will be linked against -lm 
+    # executables will be linked against -lm
     SET(EXTRA_LINK_LIBS -lm)
     # prepare substitution variable GENERIC_MATH_LIB for sundials_config.h
     SET(GENERIC_MATH_LIB "#define SUNDIALS_USE_GENERIC_MATH")
@@ -189,7 +189,7 @@ ENDIF(UNIX)
 # Enable Fortran support?
 # -------------------------------------------------------------
 
-# FCMIX support is an option only if at least one solver that 
+# FCMIX support is an option only if at least one solver that
 # provides such an interface is built.
 
 SHOW_VARIABLE(FCMIX_ENABLE BOOL "Enable Fortran-C support" OFF)
@@ -225,7 +225,7 @@ HIDE_VARIABLE(MPI_MPIF77)
 OPTION(EXAMPLES_ENABLE "Build the SUNDIALS examples" OFF)
 HIDE_VARIABLE(EXAMPLES_INSTALL)
 HIDE_VARIABLE(EXAMPLES_INSTALL_PATH)
-  
+
 # -------------------------------------------------------------
 # Add any other necessary compiler flags & definitions
 # -------------------------------------------------------------
@@ -246,7 +246,7 @@ ENDIF(FCMIX_ENABLE OR LAPACK_ENABLE)
 
 # -------------------------------------------------------------
 # If we have a name-mangling scheme (either automatically
-# inferred or provided by the user), set the SUNDIALS 
+# inferred or provided by the user), set the SUNDIALS
 # compiler preprocessor macro definitions.
 # -------------------------------------------------------------
 
@@ -273,7 +273,7 @@ IF(F77SCHEME_FOUND)
   IF(${CMAKE_Fortran_SCHEME_NO_UNDERSCORES} MATCHES "MYSUB__")
     SET(F77_MANGLE_MACRO1 "#define SUNDIALS_F77_FUNC(name,NAME) NAME ## __")
   ENDIF(${CMAKE_Fortran_SCHEME_NO_UNDERSCORES} MATCHES "MYSUB__")
-  # Symbols with underscores 
+  # Symbols with underscores
   IF(${CMAKE_Fortran_SCHEME_NO_UNDERSCORES} MATCHES "my_sub")
     SET(F77_MANGLE_MACRO2 "#define SUNDIALS_F77_FUNC_(name,NAME) name")
   ENDIF(${CMAKE_Fortran_SCHEME_NO_UNDERSCORES} MATCHES "my_sub")
@@ -361,4 +361,3 @@ INSTALL(
   FILES ${PROJECT_BINARY_DIR}/include/sundials/sundials_config.h
   DESTINATION include/dep/sundials
   )
-

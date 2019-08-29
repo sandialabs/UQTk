@@ -60,6 +60,14 @@ add_subdirectory (doc  )
 find_package(BLAS)
 find_package(LAPACK)
 
+if(NOT LAPACK_FOUND)
+  MESSAGE("-- Not able to find system installed lapack. Using UQTk version of Lapack. If system version of Lapack is desired, please specify LAPACK_LIBRARIES in config file. ")
+endif()
+
+if(NOT BLAS_FOUND)
+  MESSAGE("-- Not able to find system installed Blas. Using UQTk version of Blas. If system version of Blas is desired, please specify BLAS_LIBRARIES in config file. ")
+endif()
+
 # Copy over README file too
 INSTALL(FILES README
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
