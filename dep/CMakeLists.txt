@@ -51,4 +51,17 @@ endif()
 
 
 
+#if we need lapack or blas
+if(NOT LAPACK_FOUND)
+  add_subdirectory(lapack)
+  FILE(GLOB lapacksrc "lapack/*.f")
+  add_library(depuqtk ${lapacksrc})
+endif()
+
+if(NOT BLAS_FOUND)
+  add_subdirectory(blas)
+  FILE(GLOB blassrc "blas/*.f")
+  add_library(depuqtk ${blassrc})
+endif()
+
 INSTALL(TARGETS depuqtk DESTINATION lib)
