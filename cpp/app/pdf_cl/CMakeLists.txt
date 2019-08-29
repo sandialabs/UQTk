@@ -9,8 +9,10 @@ target_link_libraries (pdf_cl depdsfmt )
 target_link_libraries (pdf_cl depcvode )
 target_link_libraries (pdf_cl depnvec  )
 target_link_libraries (pdf_cl depslatec)
-target_link_libraries (pdf_cl deplapack)
-target_link_libraries (pdf_cl depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries (pdf_cl m blas ${BLAS_LIBRARIES})
+target_link_libraries (pdf_cl m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (pdf_cl depfigtree )
 target_link_libraries (pdf_cl depann   )
 
@@ -49,4 +51,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS pdf_cl DESTINATION bin)
-

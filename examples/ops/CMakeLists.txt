@@ -24,8 +24,10 @@ target_link_libraries (Ops.x depdsfmt )
 target_link_libraries (Ops.x depcvode )
 target_link_libraries (Ops.x depnvec  )
 target_link_libraries (Ops.x depslatec)
-target_link_libraries (Ops.x deplapack)
-target_link_libraries (Ops.x depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries (Ops.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (Ops.x m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (Ops.x depfigtree )
 target_link_libraries (Ops.x depann   )
 
@@ -63,8 +65,8 @@ target_link_libraries (LogComp.x depdsfmt )
 target_link_libraries (LogComp.x depcvode )
 target_link_libraries (LogComp.x depnvec  )
 target_link_libraries (LogComp.x depslatec)
-target_link_libraries (LogComp.x deplapack)
-target_link_libraries (LogComp.x depblas  )
+target_link_libraries (LogComp.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (LogComp.x m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (LogComp.x depfigtree )
 target_link_libraries (LogComp.x depann   )
 
@@ -102,10 +104,10 @@ include_directories(../../dep/dsfmt)
 include_directories(../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
 
-INSTALL(TARGETS Ops.x LogComp.x 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS Ops.x LogComp.x
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/ops)
 
-INSTALL(FILES ${copy_FILES} 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_FILES}
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/ops)
