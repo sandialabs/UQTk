@@ -21,23 +21,23 @@ add_subdirectory (MCMC2dTest       )
 add_subdirectory (MCMCRandomTest   )
 add_subdirectory (MCMCNestedTest   )
 =======
-#add_subdirectory (MCMC2dTest       )
-#add_subdirectory (MCMCRandomTest   )
-#add_subdirectory (MCMCNestedTest   )
->>>>>>> version that is compiling, missing a lot of functionality right now
+add_subdirectory (MCMC2dTest       )
+add_subdirectory (MCMCRandomTest   )
+add_subdirectory (MCMCNestedTest   )
+>>>>>>> lapack and blas use built in versions, compiles without errors and tests pass
 
 # # PCBasis and PCSet tests
 add_subdirectory (Deriv1dTest      )
-#add_subdirectory (SecondDeriv1dTest)
+add_subdirectory (SecondDeriv1dTest)
 add_subdirectory (GradHessianTest  )
-#add_subdirectory (GradientPCETest  )
-#add_subdirectory (PCE1dTest        )
-#add_subdirectory (PCEImplTest      )
+add_subdirectory (GradientPCETest  )
+add_subdirectory (PCE1dTest        )
+add_subdirectory (PCEImplTest      )
 add_subdirectory (Hessian2dTest    )
 
 # # BCS tests
 add_subdirectory (BCS1dTest        )
-#add_subdirectory (BCS2dTest        )
+add_subdirectory (BCS2dTest        )
 
 # # Low Rank Regression tests
-#add_subdirectory (LowRankRegrTest  )
+add_subdirectory (LowRankRegrTest  )

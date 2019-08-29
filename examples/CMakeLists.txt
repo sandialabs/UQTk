@@ -1,9 +1,12 @@
 examples/CMakeLists.txt project (UQTk)
 
-#add_subdirectory (ops)
+add_subdirectory (ops)
 add_subdirectory (kle_ex1)
 add_subdirectory (line_infer)
+<<<<<<< HEAD
 add_subdirectory (tmcmc_bimodal)
+=======
+>>>>>>> lapack and blas use built in versions, compiles without errors and tests pass
 add_subdirectory (pce_bcs)
 add_subdirectory (surf_rxn)
 add_subdirectory (uqpc)
