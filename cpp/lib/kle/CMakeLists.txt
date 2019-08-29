@@ -10,7 +10,6 @@ include_directories (../array  )
 include_directories (../tools  )
 
 #find and include lapack
-find_package(LAPACK)
 target_link_libraries(uqtkkle m lapack ${LAPACK_LIBRARIES})
 
 # Install the library

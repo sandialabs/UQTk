@@ -36,14 +36,10 @@ SWIG_ADD_LIBRARY(uqtkarray LANGUAGE python SOURCES uqtkarray.i
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
   SWIG_LINK_LIBRARIES(uqtkarray gfortran ${PYTHON_LIBRARIES})
-	find_package(BLAS)
-	find_package(LAPACK)
 	SWIG_LINK_LIBRARIES(uqtkarray blas lapack)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
   SWIG_LINK_LIBRARIES(uqtkarray ifcore ${PYTHON_LIBRARIES})
-	find_package(BLAS)
-	find_package(LAPACK)
 	SWIG_LINK_LIBRARIES(uqtkarray blas lapack)
 endif()
 

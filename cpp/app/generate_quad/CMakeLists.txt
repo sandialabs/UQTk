@@ -6,8 +6,6 @@ target_link_libraries (generate_quad uqtktools)
 target_link_libraries (generate_quad uqtkarray)
 
 target_link_libraries (generate_quad depdsfmt )
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries(generate_quad m blas ${BLAS_LIBRARIES})
 target_link_libraries(generate_quad m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (generate_quad depfigtree )

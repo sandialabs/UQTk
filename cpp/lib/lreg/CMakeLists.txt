@@ -13,9 +13,6 @@ include_directories (../quad   )
 include_directories (../pce    )
 include_directories (../bcs    )
 
-
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries(uqtklreg m blas ${BLAS_LIBRARIES})
 target_link_libraries(uqtklreg m lapack ${LAPACK_LIBRARIES})
 include_directories (../../../dep/lbfgs)

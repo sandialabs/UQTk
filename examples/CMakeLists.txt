@@ -14,7 +14,6 @@ add_subdirectory (polynomial)
 add_subdirectory (d_spring_series)
 add_subdirectory (iuq)
 
-
 # Add muq example only with the gnu compilers
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND EXISTS ${PATH2MUQ})
    # message(STATUS "Adding MUQ<->UQTk example")
