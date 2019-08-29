@@ -13,8 +13,10 @@ target_link_libraries (trdSpls deplbfgs )
 target_link_libraries (trdSpls depcvode )
 target_link_libraries (trdSpls depnvec  )
 target_link_libraries (trdSpls depslatec)
-target_link_libraries (trdSpls deplapack)
-target_link_libraries (trdSpls depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries (trdSpls m blas ${BLAS_LIBRARIES})
+target_link_libraries (trdSpls m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (trdSpls depfigtree )
 target_link_libraries (trdSpls depann   )
 
@@ -22,8 +24,10 @@ target_link_libraries (trdSpls depann   )
 target_link_libraries (sens uqtkarray)
 
 target_link_libraries (sens depdsfmt )
-target_link_libraries (sens deplapack)
-target_link_libraries (sens depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries (sens m blas ${BLAS_LIBRARIES})
+target_link_libraries (sens m lapack ${LAPACK_LIBRARIES})
 
 # Link fortran libraries
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -61,10 +65,7 @@ include_directories(../../lib/quad   )
 include_directories(../../lib/array  )
 
 include_directories(../../../dep/dsfmt)
-include_directories(../../../dep/lapack)
-include_directories(../../../dep/blas)
 include_directories(../../../dep/figtree)
 
 INSTALL(TARGETS sens DESTINATION bin)
 INSTALL(TARGETS trdSpls DESTINATION bin)
-
