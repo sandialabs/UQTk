@@ -27,6 +27,6 @@ tmcmc_prior_samples.dat: samples from prior pdf (as required by TMCMC) -
 tmcmc_getLL.sh: Shell script that spawns multiple processes for parallel
 							evaluation of likelihood function
 tmcmc_getLP.sh Shell script that spawns multiple processes for parallel
-							evaluation of prior function
+							evaluation of prior PDF
 tmcmc_moveIntermediateFiles.sh: Shell script used for moving all
 							artifacts of TMCMC into a subdirectory
