@@ -45,7 +45,7 @@ int main(int argc, char ** argv){
 	Dimensionality and number of samples requested
 	*************************************************/
 	int dim = 3; 
-	int nCalls = 10000;
+	int nCalls = 5000;
 
 	/*************************************************
 	Initiate and Run MCMC chain
