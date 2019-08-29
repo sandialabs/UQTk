@@ -72,14 +72,13 @@ pcequad=uqtkbin+"/pce_quad"
 
 help_string = """
 Usage:
-  tmcmc_bimodal.py [-h] [--noplots] [--stats]
+  tmcmc_bimodal.py [-h] [--noplots]
 what
   Use TMCMC to sample from a 3-dimensional posterior that's a product of a Gaussian prior and a bimodal likelihood;
   generate plots and statistics of the output
 where
   -h = print help info
   --noplots = do not generate chain and posterior plots [defaults to False]
-  --stats = generate MCMC chain statistics [defaults to False]
 """
 
 #
@@ -87,7 +86,7 @@ where
 #
 try:
     # opts,v_names = getopt.getopt(sys.argv[1:],"hi:s:",["nb="])
-    opts,extra_arguments = getopt.getopt(sys.argv[1:],"h",["noplots","stats"])
+    opts,extra_arguments = getopt.getopt(sys.argv[1:],"h",["noplots"])
 except getopt.GetoptError as err:
     print(str(err))
     print(help_string)
@@ -95,7 +94,6 @@ except getopt.GetoptError as err:
 
 # Default values
 generate_plots = True # Generate chain and posterior pdf plots
-generate_stats = False # By default, do not generate MCMC statistics
 
 print(opts)
 
@@ -105,8 +103,6 @@ for o,a in opts:
         sys.exit(0)
     elif o == "--noplots":
         generate_plots = False
-    elif o == "--stats":
-        generate_stats = True
     else:
         assert False, "unhandled command line parsing option"
 
@@ -190,8 +186,5 @@ if generate_plots:
     ## Plot posterior PDF 'triangle' ################################################
     np_kde = 100
     postp.plot_all_posteriors(chn[:,1:],vnames,np_kde,"tmcmc_bimodal.posteriors",0,dense_plots)
-
-if generate_stats:
-    postp.get_mcmc_stats(all_samples,vnames,"tmcmc_bimodal",0)
 
 print("END: TMCMC example done: check out tmcmc_bimodal.*.pdf files for results.")
