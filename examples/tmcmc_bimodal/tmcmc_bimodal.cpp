@@ -48,7 +48,7 @@ int main(int argc, char ** argv){
 	int nCalls = 5000;
 
 	/*************************************************
-	Initiate and Run MCMC chain
+	Initiate and Run TMCMC
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
@@ -58,6 +58,7 @@ int main(int argc, char ** argv){
 	mchain.setSeed(1);
 	mchain.setWriteFlag(1); 
     mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
+    mchain.initTMCMCNprocs(4);
 	mchain.runChain(nCalls);
 
 	return 0;

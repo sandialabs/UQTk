@@ -37,7 +37,7 @@ public:
 };
 
 
-// Uninformative prior
+// Normal prior
 double Prior::eval(RealVector& x){
   double logp = -.5*(x[0]*x[0]/1.0 + x[1]*x[1]/1.0);
   return logp;

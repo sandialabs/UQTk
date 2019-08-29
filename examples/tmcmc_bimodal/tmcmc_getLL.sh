@@ -1,12 +1,12 @@
 #!/bin/bash
-# Parallel evaluation of likelihood
+# Parallel evaluation of likelihood for TMCMC
 
-nProc=$1
-SLP1=0.05    # pause between checking existance of "done" files
+nProc=$1 # number of processes
+SLP1=0.05 # pause between checking existance of "done" files
 
+# separate processes are run from corresponding subdirectories
 for k in `seq 1 ${nProc}`
 do
-  # echo "Likelihood computation: Launching process ${k} of ${nProc}"
   rm -rf tmcmc_process_${k}
   mkdir tmcmc_process_${k}
   cd tmcmc_process_${k}

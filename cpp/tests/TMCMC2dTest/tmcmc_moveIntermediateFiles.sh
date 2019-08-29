@@ -1,4 +1,5 @@
 #!/bin/bash
+# Moving TMCMC artifact files into a separate directory
 
 folderName=$1
 

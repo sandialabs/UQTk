@@ -9,12 +9,24 @@ Files
 
 tmcmc_bimodal.py: main scripts
 
-tmcmc_bimodal.cpp: C++ code that produces some of the needed functions
+tmcmc_bimodal.cpp: C++ code that produces some of the needed functions - 
+							sets up the MCMC class object, specifying the
+							dimensionality of the problem, number of
+							samples required, number of processes for
+							parallel evaluation of likelihood and prior
 
-bimodal.cpp: C++ code for evaluating the likelihood and prior pdfs
+bimodal.cpp: C++ code for evaluating the likelihood and prior pdfs - 
+							the corresponding executable is invoked
+							multiple times for parallel evaluation
+							of likelihood and prior pdfs
 
-tmcmc_prior_samples.dat: samples from prior pdf (as required by TMCMC) 
+tmcmc_prior_samples.dat: samples from prior pdf (as required by TMCMC) - 
+							3D Normal prior for this example with 5000
+							samples
 
-tmcmc_getLL.sh
-tmcmc_getLP.sh
-tmcmc_moveIntermediateFiles.sh
+tmcmc_getLL.sh: Shell script that spawns multiple processes for parallel
+							evaluation of likelihood function
+tmcmc_getLP.sh Shell script that spawns multiple processes for parallel
+							evaluation of prior function
+tmcmc_moveIntermediateFiles.sh: Shell script used for moving all
+							artifacts of TMCMC into a subdirectory

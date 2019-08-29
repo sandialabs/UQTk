@@ -49,7 +49,7 @@ int main(int argc, char ** argv){
 	int nCalls = 1000;
 
 	/*************************************************
-	Initiate and Run MCMC chain
+	Initiate and Run TMCMC
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
