@@ -25,7 +25,6 @@ include_directories (../pce)
 include_directories (../quad)
 
 include_directories (../../../dep/dsfmt )
-find_package(LAPACK)
 target_link_libraries(uqtktools m lapack ${LAPACK_LIBRARIES})
 include_directories (../../../dep/slatec )
 include_directories (../../../dep/figtree)

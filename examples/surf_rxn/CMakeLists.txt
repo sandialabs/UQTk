@@ -38,8 +38,6 @@ add_executable (SurfRxnDet.x     SurfRxnDet.cpp     Utils.cpp)
 target_link_libraries (SurfRxnNISP.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
 target_link_libraries (SurfRxnNISP.x  depdsfmt deplbfgs depcvode depnvec
 depslatec depfigtree depann)
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (SurfRxnNISP.x m blas ${BLAS_LIBRARIES})
 target_link_libraries (SurfRxnNISP.x m lapack ${LAPACK_LIBRARIES})
 

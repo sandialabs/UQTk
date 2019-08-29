@@ -30,24 +30,18 @@ SET(copy_EXE_FILES
 add_executable (kl_1D.x kl_1D.cpp kl_utils.cpp)
 target_link_libraries (kl_1D.x uqtktools uqtkarray uqtkkle)
 target_link_libraries (kl_1D.x depdsfmt depslatec depann depfigtree)
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (kl_1D.x blas lapack)
 
 # kl_2D.x
 add_executable (kl_2D.x kl_2D.cpp kl_utils.cpp)
 target_link_libraries (kl_2D.x uqtktools uqtkarray uqtkkle)
 target_link_libraries (kl_2D.x depdsfmt depslatec depann depfigtree)
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (kl_2D.x blas lapack)
 
 # kl_2Du.x
 add_executable (kl_2Du.x kl_2Du.cpp kl_utils.cpp)
 target_link_libraries (kl_2Du.x uqtktools uqtkarray uqtkkle)
 target_link_libraries (kl_2Du.x depdsfmt depslatec depann depfigtree)
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (kl_2Du.x blas lapack)
 
 # Link fortran libraries
