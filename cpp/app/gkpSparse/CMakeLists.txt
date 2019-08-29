@@ -7,8 +7,6 @@ target_link_libraries (gkpSparse uqtktools)
 target_link_libraries (gkpSparse uqtkarray)
 
 target_link_libraries (gkpSparse depdsfmt )
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
 target_link_libraries (gkpSparse m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (gkpSparse depfigtree )

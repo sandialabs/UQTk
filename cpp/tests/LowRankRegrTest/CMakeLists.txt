@@ -5,8 +5,6 @@ add_executable (LowRankRegrTest main.cpp)
 target_link_libraries (LowRankRegrTest uqtk )
 
 target_link_libraries (LowRankRegrTest depdsfmt )
-find_package(BLAS)
-find_package(LAPACK)
 target_link_libraries (LowRankRegrTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (LowRankRegrTest m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (LowRankRegrTest depfigtree  )

@@ -13,7 +13,6 @@ include_directories (../tools  )
 include_directories (../quad   )
 
 # TPL
-find_package(LAPACK)
 target_link_libraries(uqtkpce m lapack ${LAPACK_LIBRARIES})
 include_directories (../../../dep/slatec)
 include_directories (../../../dep/dsfmt )

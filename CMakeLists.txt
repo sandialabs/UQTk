@@ -57,6 +57,9 @@ add_subdirectory (examples)
 add_subdirectory (PyUQTk  )
 add_subdirectory (doc  )
 
+find_package(BLAS)
+find_package(LAPACK)
+
 # Copy over README file too
 INSTALL(FILES README
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

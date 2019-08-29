@@ -58,14 +58,10 @@ SWIG_ADD_LIBRARY(
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
   SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec depslatec depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
-	find_package(BLAS)
-	find_package(LAPACK)
 	SWIG_LINK_LIBRARIES(mcmc blas lapack)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
   SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec depslatec depdsfmt depann depfigtree depcvode ifcore ifport ${PYTHON_LIBRARIES})
-	find_package(BLAS)
-	find_package(LAPACK)
 	SWIG_LINK_LIBRARIES(mcmc blas lapack)
 endif()
 

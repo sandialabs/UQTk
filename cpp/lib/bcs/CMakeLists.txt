@@ -13,8 +13,6 @@ include_directories (../quad)
 
 include_directories (../../../dep/slatec)
 
-#find and include blas and lapack
-find_package(LAPACK)
 target_link_libraries(uqtkbcs m lapack ${LAPACK_LIBRARIES})
 
 include_directories (../../../dep/dsfmt)
