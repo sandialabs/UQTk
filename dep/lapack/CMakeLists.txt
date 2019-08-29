@@ -2,9 +2,9 @@
 enable_language(Fortran)
 
 FILE(GLOB slsrc "*.f")
-add_library(deplapack ${slsrc})
+add_library(lapack ${slsrc})
 
-INSTALL(TARGETS deplapack DESTINATION lib)
+INSTALL(TARGETS lapack DESTINATION lib)
 
 SET(lapack_HEADERS
   deplapack.h
