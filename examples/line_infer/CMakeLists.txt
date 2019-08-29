@@ -24,8 +24,10 @@ target_link_libraries (line_infer.x deplbfgs )
 target_link_libraries (line_infer.x depcvode )
 target_link_libraries (line_infer.x depnvec  )
 target_link_libraries (line_infer.x depslatec)
-target_link_libraries (line_infer.x deplapack)
-target_link_libraries (line_infer.x depblas  )
+find_package(BLAS)
+find_package(LAPACK)
+target_link_libraries (line_infer.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (line_infer.x m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (line_infer.x depfigtree  )
 target_link_libraries (line_infer.x depann   )
 
@@ -73,6 +75,6 @@ include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS line_infer.x DESTINATION examples/line_infer)
 
-INSTALL(FILES ${copy_FILES} 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_FILES}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/line_infer)
