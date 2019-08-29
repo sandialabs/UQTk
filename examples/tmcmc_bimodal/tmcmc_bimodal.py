@@ -166,6 +166,8 @@ if generate_plots:
                     fig = plt.figure(figsize=(10,10))
                     ax=fig.add_axes([0.12,0.12,0.8,0.8])
                     plt.plot(samps[:,j],samps[:,i],'o',markeredgecolor='blue',markerfacecolor='b',markersize=5)
+                    plt.xlim(-4,4)
+                    plt.ylim(-4,4)
                     ax.set_xlabel(vnames[j],fontsize=22)
                     ax.set_ylabel(vnames[i],fontsize=22)
                     plt.savefig('tmcmc_bimodal.chn_'+vnames[j]+'_'+vnames[i]+'.intermediate'+str(indx)+'.pdf')
