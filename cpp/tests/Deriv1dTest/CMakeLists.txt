@@ -5,16 +5,13 @@ add_executable (Deriv1dTest main.cpp)
 target_link_libraries (Deriv1dTest uqtk )
 
 target_link_libraries (Deriv1dTest depdsfmt )
-target_link_libraries (Deriv1dTest depcvode )
-target_link_libraries (Deriv1dTest depnvec  )
+target_link_libraries (Deriv1dTest sundials_cvode)
+target_link_libraries (Deriv1dTest sundials_nvecserial)
+target_link_libraries (Deriv1dTest sundials_sunlinsoldense)
+target_link_libraries (Deriv1dTest sundials_sunmatrixdense)
 target_link_libraries (Deriv1dTest depslatec)
-<<<<<<< HEAD
-=======
-find_package(BLAS)
-find_package(LAPACK)
->>>>>>> version that is compiling, missing a lot of functionality right now
-target_link_libraries (Deriv1dTest m blas ${BLAS_LIBRARIES})
-target_link_libraries (Deriv1dTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (Deriv1dTest deplapack)
+target_link_libraries (Deriv1dTest depblas  )
 target_link_libraries (Deriv1dTest deplbfgs  )
 target_link_libraries (Deriv1dTest depfigtree )
 target_link_libraries (Deriv1dTest depann   )
@@ -40,8 +37,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -50,11 +45,16 @@ include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
 
 include_directories(../../../dep/dsfmt)
+include_directories(../../../dep/lapack)
+include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+  include_directories (../../../dep/sundials/include )
+endif()
 
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS Deriv1dTest DESTINATION bin/tests/)
 
