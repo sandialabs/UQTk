@@ -12,6 +12,8 @@ SET(copy_FILES
 
 
 # Ops.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
 add_executable (Ops.x Ops.cpp Utils.cpp)
 add_executable (LogComp.x LogComp.cpp Utils.cpp)
 
@@ -21,8 +23,10 @@ target_link_libraries (Ops.x uqtktools)
 target_link_libraries (Ops.x uqtkarray )
 
 target_link_libraries (Ops.x depdsfmt )
-target_link_libraries (Ops.x depcvode )
-target_link_libraries (Ops.x depnvec  )
+target_link_libraries (Ops.x sundials_cvode)
+target_link_libraries (Ops.x sundials_nvecserial)
+target_link_libraries (Ops.x sundials_sunlinsoldense)
+target_link_libraries (Ops.x sundials_sunmatrixdense)
 target_link_libraries (Ops.x depslatec)
 target_link_libraries (Ops.x deplapack)
 target_link_libraries (Ops.x depblas  )
@@ -60,8 +64,10 @@ target_link_libraries (LogComp.x uqtktools)
 target_link_libraries (LogComp.x uqtkarray)
 
 target_link_libraries (LogComp.x depdsfmt )
-target_link_libraries (LogComp.x depcvode )
-target_link_libraries (LogComp.x depnvec  )
+target_link_libraries (LogComp.x sundials_cvode)
+target_link_libraries (LogComp.x sundials_nvecserial)
+target_link_libraries (LogComp.x sundials_sunlinsoldense)
+target_link_libraries (LogComp.x sundials_sunmatrixdense)
 target_link_libraries (LogComp.x depslatec)
 target_link_libraries (LogComp.x deplapack)
 target_link_libraries (LogComp.x depblas  )
@@ -99,8 +105,7 @@ include_directories(../../cpp/lib/quad   )
 include_directories(../../cpp/lib/tools  )
 
 include_directories(../../dep/dsfmt)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS Ops.x LogComp.x 
               PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 

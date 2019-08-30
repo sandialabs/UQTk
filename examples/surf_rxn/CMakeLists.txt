@@ -30,25 +30,29 @@ SET(copy_PY_FILES
  )
 
 # SurfRxnNISP.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (SurfRxnNISP.x    SurfRxnNISP.cpp    Utils.cpp)
 add_executable (SurfRxnNISP_MC.x SurfRxnNISP_MC.cpp Utils.cpp)
 add_executable (SurfRxnISP.x     SurfRxnISP.cpp     Utils.cpp)
 add_executable (SurfRxnDet.x     SurfRxnDet.cpp     Utils.cpp)
 
-target_link_libraries (SurfRxnNISP.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
-target_link_libraries (SurfRxnNISP.x  depdsfmt deplbfgs depcvode depnvec
-depslatec deplapack depblas depfigtree depann)
+target_link_libraries (SurfRxnNISP.x uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
+target_link_libraries (SurfRxnNISP.x sundials_cvode sundials_nvecserial sundials_sunlinsoldense sundials_sunmatrixdense)
+target_link_libraries (SurfRxnNISP.x  depdsfmt deplbfgs depslatec deplapack depblas depfigtree depann)
 
 target_link_libraries (SurfRxnNISP_MC.x uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
-target_link_libraries (SurfRxnNISP_MC.x depdsfmt deplbfgs depcvode depnvec
+target_link_libraries (SurfRxnNISP_MC.x sundials_cvode sundials_nvecserial sundials_sunlinsoldense sundials_sunmatrixdense)
+target_link_libraries (SurfRxnNISP_MC.x depdsfmt deplbfgs
 depslatec deplapack depblas depfigtree depann)
 
 target_link_libraries (SurfRxnISP.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
-target_link_libraries (SurfRxnISP.x  depdsfmt deplbfgs depcvode depnvec
+target_link_libraries (SurfRxnISP.x sundials_cvode sundials_nvecserial sundials_sunlinsoldense sundials_sunmatrixdense)
+target_link_libraries (SurfRxnISP.x  depdsfmt deplbfgs
 depslatec deplapack depblas depfigtree depann )
 
 target_link_libraries (SurfRxnDet.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
-target_link_libraries (SurfRxnDet.x  depdsfmt deplbfgs depcvode depnvec
+target_link_libraries (SurfRxnDet.x sundials_cvode sundials_nvecserial sundials_sunlinsoldense sundials_sunmatrixdense)
+target_link_libraries (SurfRxnDet.x  depdsfmt deplbfgs
 depslatec deplapack depblas depfigtree depann )
 
 # Link fortran libraries
@@ -109,8 +113,7 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS SurfRxnNISP.x    
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 

@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (pce_eval pce_eval.cpp)
 
 target_link_libraries (pce_eval uqtkpce  )
@@ -8,8 +9,10 @@ target_link_libraries (pce_eval uqtktools)
 target_link_libraries (pce_eval uqtkarray)
 
 target_link_libraries (pce_eval depdsfmt )
-target_link_libraries (pce_eval depcvode )
-target_link_libraries (pce_eval depnvec  )
+target_link_libraries (pce_eval sundials_cvode)
+target_link_libraries (pce_eval sundials_nvecserial)
+target_link_libraries (pce_eval sundials_sunlinsoldense)
+target_link_libraries (pce_eval sundials_sunmatrixdense)
 target_link_libraries (pce_eval depslatec)
 target_link_libraries (pce_eval deplapack)
 target_link_libraries (pce_eval depblas  )
@@ -50,8 +53,7 @@ include_directories(../../lib/tools  )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS pce_eval DESTINATION bin)
 

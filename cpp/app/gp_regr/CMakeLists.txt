@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (gp_regr gp_regr.cpp)
 
 target_link_libraries (gp_regr uqtkgproc )
@@ -11,8 +12,10 @@ target_link_libraries (gp_regr uqtkarray)
 
 target_link_libraries (gp_regr depdsfmt )
 target_link_libraries (gp_regr deplbfgs )
-target_link_libraries (gp_regr depcvode )
-target_link_libraries (gp_regr depnvec  )
+target_link_libraries (gp_regr sundials_cvode)
+target_link_libraries (gp_regr sundials_nvecserial)
+target_link_libraries (gp_regr sundials_sunlinsoldense)
+target_link_libraries (gp_regr sundials_sunmatrixdense)
 target_link_libraries (gp_regr depslatec)
 target_link_libraries (gp_regr deplapack)
 target_link_libraries (gp_regr depblas  )
@@ -57,8 +60,7 @@ include_directories(../../lib/gproc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS gp_regr DESTINATION bin)
 

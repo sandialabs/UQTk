@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (Hessian2dTest main.cpp)
 
 target_link_libraries (Hessian2dTest uqtk )
 
 target_link_libraries (Hessian2dTest depdsfmt )
-target_link_libraries (Hessian2dTest depcvode )
-target_link_libraries (Hessian2dTest depnvec  )
+target_link_libraries (Hessian2dTest sundials_cvode)
+target_link_libraries (Hessian2dTest sundials_nvecserial)
+target_link_libraries (Hessian2dTest sundials_sunlinsoldense)
+target_link_libraries (Hessian2dTest sundials_sunmatrixdense)
 target_link_libraries (Hessian2dTest depslatec)
 target_link_libraries (Hessian2dTest deplapack)
 target_link_libraries (Hessian2dTest depblas  )
@@ -35,8 +38,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -49,9 +50,7 @@ include_directories(../../../dep/lapack)
 include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS Hessian2dTest DESTINATION bin/tests/)
 

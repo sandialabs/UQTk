@@ -6,6 +6,7 @@ SET(copy_FILES
   )
 
 # pce_bcs.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (pce_bcs.x pce_bcs.cpp)
 
 target_link_libraries (pce_bcs.x uqtkbcs  )
@@ -18,8 +19,10 @@ target_link_libraries (pce_bcs.x uqtkxmlutils )
 
 target_link_libraries (pce_bcs.x depdsfmt )
 target_link_libraries (pce_bcs.x deplbfgs )
-target_link_libraries (pce_bcs.x depcvode )
-target_link_libraries (pce_bcs.x depnvec  )
+target_link_libraries (pce_bcs.x sundials_cvode)
+target_link_libraries (pce_bcs.x sundials_nvecserial)
+target_link_libraries (pce_bcs.x sundials_sunlinsoldense)
+target_link_libraries (pce_bcs.x sundials_sunmatrixdense)
 target_link_libraries (pce_bcs.x depslatec)
 target_link_libraries (pce_bcs.x deplapack)
 target_link_libraries (pce_bcs.x depblas  )
@@ -66,8 +69,7 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS pce_bcs.x 
               PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 

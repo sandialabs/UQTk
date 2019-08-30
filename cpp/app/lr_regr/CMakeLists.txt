@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (lr_regr lr_regr.cpp)
 
 target_link_libraries (lr_regr uqtklowrank)
@@ -12,8 +13,10 @@ target_link_libraries (lr_regr uqtkarray)
 
 target_link_libraries (lr_regr depdsfmt )
 target_link_libraries (lr_regr deplbfgs )
-target_link_libraries (lr_regr depcvode )
-target_link_libraries (lr_regr depnvec  )
+target_link_libraries (lr_regr sundials_cvode)
+target_link_libraries (lr_regr sundials_nvecserial)
+target_link_libraries (lr_regr sundials_sunlinsoldense)
+target_link_libraries (lr_regr sundials_sunmatrixdense)
 target_link_libraries (lr_regr depslatec)
 target_link_libraries (lr_regr deplapack)
 target_link_libraries (lr_regr depblas  )
@@ -59,8 +62,7 @@ include_directories(../../lib/lowrank)
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS lr_regr DESTINATION bin)
 

@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (SecondDeriv1dTest main.cpp)
 
 target_link_libraries (SecondDeriv1dTest uqtk )
 
 target_link_libraries (SecondDeriv1dTest depdsfmt )
-target_link_libraries (SecondDeriv1dTest depcvode )
-target_link_libraries (SecondDeriv1dTest depnvec  )
+target_link_libraries (SecondDeriv1dTest sundials_cvode)
+target_link_libraries (SecondDeriv1dTest sundials_nvecserial)
+target_link_libraries (SecondDeriv1dTest sundials_sunlinsoldense)
+target_link_libraries (SecondDeriv1dTest sundials_sunmatrixdense)
 target_link_libraries (SecondDeriv1dTest depslatec)
 target_link_libraries (SecondDeriv1dTest deplapack)
 target_link_libraries (SecondDeriv1dTest depblas  )
@@ -35,8 +38,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -49,9 +50,7 @@ include_directories(../../../dep/lapack)
 include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS SecondDeriv1dTest DESTINATION bin/tests/)
 

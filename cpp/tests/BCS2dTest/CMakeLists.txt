@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (BCS2dTest main.cpp)
 
 # SET(copy_FILES
@@ -11,8 +12,10 @@ add_executable (BCS2dTest main.cpp)
 target_link_libraries (BCS2dTest uqtk )
 
 target_link_libraries (BCS2dTest depdsfmt )
-target_link_libraries (BCS2dTest depcvode )
-target_link_libraries (BCS2dTest depnvec  )
+target_link_libraries (BCS2dTest sundials_cvode)
+target_link_libraries (BCS2dTest sundials_nvecserial)
+target_link_libraries (BCS2dTest sundials_sunlinsoldense)
+target_link_libraries (BCS2dTest sundials_sunmatrixdense)
 target_link_libraries (BCS2dTest depslatec)
 target_link_libraries (BCS2dTest deplapack)
 target_link_libraries (BCS2dTest depblas  )
@@ -41,8 +44,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/bcs    )
 include_directories(../../lib/array  )
@@ -56,9 +57,7 @@ include_directories(../../../dep/lapack)
 include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS BCS2dTest DESTINATION bin/tests/)
 

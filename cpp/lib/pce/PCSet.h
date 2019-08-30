@@ -44,8 +44,11 @@
 
 /*  CVODE headers  */
 #include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts.  */
+#include <cvode/cvode_direct.h>        /* access to CVDls interface            */
 #include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
-#include <cvode/cvode_dense.h>       /* prototype for CVDense                */
+#include <sunmatrix/sunmatrix_dense.h> /* access to dense SUNMatrix            */
+#include <sunlinsol/sunlinsol_dense.h> /* access to dense SUNLinearSolver      */
+// #include <cvode/cvode_dense.h>       /* prototype for CVDense                */
 #include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM        */
 #include <sundials/sundials_types.h> /* definition of type realtype          */
 

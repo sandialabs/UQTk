@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (GradientPCETest main.cpp)
 
 target_link_libraries (GradientPCETest uqtk )
 
 target_link_libraries (GradientPCETest depdsfmt )
-target_link_libraries (GradientPCETest depcvode )
-target_link_libraries (GradientPCETest depnvec  )
+target_link_libraries (GradientPCETest sundials_cvode)
+target_link_libraries (GradientPCETest sundials_nvecserial)
+target_link_libraries (GradientPCETest sundials_sunlinsoldense)
+target_link_libraries (GradientPCETest sundials_sunmatrixdense)
 target_link_libraries (GradientPCETest depslatec)
 target_link_libraries (GradientPCETest deplapack)
 target_link_libraries (GradientPCETest depblas  )
@@ -35,8 +38,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -49,9 +50,7 @@ include_directories(../../../dep/lapack)
 include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS GradientPCETest DESTINATION bin/tests/)
 

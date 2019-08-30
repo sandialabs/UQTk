@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (regression regression.cpp)
 
 target_link_libraries (regression uqtklreg )
@@ -11,8 +12,10 @@ target_link_libraries (regression uqtkarray)
 
 target_link_libraries (regression depdsfmt )
 target_link_libraries (regression deplbfgs )
-target_link_libraries (regression depcvode )
-target_link_libraries (regression depnvec  )
+target_link_libraries (regression sundials_cvode)
+target_link_libraries (regression sundials_nvecserial)
+target_link_libraries (regression sundials_sunlinsoldense)
+target_link_libraries (regression sundials_sunmatrixdense)
 target_link_libraries (regression depslatec)
 target_link_libraries (regression deplapack)
 target_link_libraries (regression depblas  )
@@ -58,8 +61,7 @@ include_directories(../../lib/lreg   )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
 
 INSTALL(TARGETS regression DESTINATION bin)
 

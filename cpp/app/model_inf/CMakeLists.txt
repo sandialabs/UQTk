@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (model_inf model_inf.cpp)
 
 target_link_libraries (model_inf uqtkinfer)
@@ -11,7 +12,10 @@ target_link_libraries (model_inf uqtkarray)
 
 target_link_libraries (model_inf depdsfmt )
 target_link_libraries (model_inf deplbfgs )
-target_link_libraries (model_inf depcvode )
+target_link_libraries (model_inf sundials_cvode)
+target_link_libraries (model_inf sundials_nvecserial)
+target_link_libraries (model_inf sundials_sunlinsoldense)
+target_link_libraries (model_inf sundials_sunmatrixdense)
 target_link_libraries (model_inf depnvec  )
 target_link_libraries (model_inf depslatec)
 target_link_libraries (model_inf deplapack)
@@ -44,7 +48,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
+# link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
 
 include_directories(../../lib/pce     )
 include_directories(../../lib/array   )
@@ -56,8 +60,9 @@ include_directories(../../lib/infer   )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+# include_directories(../../../dep/cvode-2.7.0/include)
+# include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 
 INSTALL(TARGETS model_inf DESTINATION bin)
