@@ -49,7 +49,9 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_HDF5 -I/opt/local/hdf5/include -L/opt/local/hdf5/lib -lhdf5_hl -lhdf5_cpp -lhdf5 -lhdf5_fortran -lhdf5_hl_cpp")
 
 # Sundials
-set(CMAKE_SUNDIALS_DIR "/Users/csafta/local/sundials")
+if(NOT DEFINED CMAKE_SUNDIALS_DIR)
+    message(FATAL_ERROR "You must set path to sundial through CMAKE_SUNDIALS_DIR")
+endif()
 
 add_definitions(-D__wsu)
 add_definitions(-fPIC)

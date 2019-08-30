@@ -16,7 +16,6 @@ include_directories (../quad   )
 include_directories (../../../dep/slatec)
 include_directories (../../../dep/dsfmt )
 include_directories (${CMAKE_SUNDIALS_DIR}/include)  
-#include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 # Install the library
 INSTALL(TARGETS uqtkpce DESTINATION lib)
