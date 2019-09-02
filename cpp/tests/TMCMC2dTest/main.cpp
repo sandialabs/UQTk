@@ -51,14 +51,13 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run TMCMC
 	*************************************************/
-	Array1D<double> g(dim,.1);
-
 	MCMC mchain;
 	mchain.setChainDim(dim);
 	mchain.initMethod("tmcmc");
-	mchain.initChainPropCovDiag(g);
-	mchain.setSeed(13);
+	mchain.setSeed(1);
 	mchain.setWriteFlag(1); 
+	mchain.initTMCMCCv(0.5);
+	mchain.initTMCMCNprocs(4);
 	mchain.runChain(nCalls);
 
 	// Get chain states
@@ -76,6 +75,10 @@ int main(int argc, char ** argv){
 	mean_x2 *= 1./nCalls;
 	cout << mean_x1 << endl;
 	cout << mean_x2 << endl;
+
+	// check mean
+	assert(fabs(mean_x1) < .05);
+	assert(fabs(mean_x1) < .05);
 
 	// get variance
 	double var_x1 = 0;
