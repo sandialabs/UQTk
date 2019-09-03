@@ -59,6 +59,7 @@ int main(int argc, char ** argv){
 	mchain.setWriteFlag(1); 
     mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
     mchain.initTMCMCNprocs(4);
+    mchain.initTMCMCCv(0.1);
 	mchain.runChain(nCalls);
 
 	return 0;
