@@ -217,9 +217,6 @@ else:
 # Do the actual Galerkin Projection
 c_k = pce_tools.UQTkGalerkinProjection(pc_model,Q_evals)
 
-#set random number generator
-pc_model.SeedBasisRandNumGen(123)
-
 #Draw samples of PCE evaulations
 pce_evals = pce_tools.UQTkDrawSamplesPCE(pc_model, c_k, n_MC)
 
@@ -267,8 +264,6 @@ else:
 # Do the actual Galerkin Projection
 c_k2 = pce_tools.UQTkGalerkinProjection(pc_model2,Q_evals2)
 
-#set random number generator
-pc_model.SeedBasisRandNumGen(456)
 
 #Draw samples of PCE evaulations
 pce_evals2 = pce_tools.UQTkDrawSamplesPCE(pc_model2, c_k2, n_MC)
@@ -290,9 +285,6 @@ plt.figure(figsize=(10,10))
 plt.plot(xpts_pce, PDF_data_pce, linewidth=2, color='r', label='NISP full quadrature method')
 plt.plot(xpts_MC, PDF_data_MC, linewidth=2, color='b', label='Monte Carlo Sampling')
 plt.plot(xpts_pce2, PDF_data_pce2, linewidth=2, color='g', label= 'NISP sparse quadrature method')
-
-diff = xpts_pce - xpts_pce2
-print('mean diff = ', np.mean(diff))
 
 # Label Axes
 plt.xlabel("Total Heat Flux ($W/m^2$)", size=16)

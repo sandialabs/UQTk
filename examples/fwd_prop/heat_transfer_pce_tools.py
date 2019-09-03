@@ -87,7 +87,7 @@ def compute_heat_flux(Ti,To,dw,kw,hi,ho):
 
     return (Q,T1,T2)
 
-#
+###################################################################################
 def r_heat_flux(Ti,To,dw,kw,hi,ho,TA, estimates):
     """
     Function to compute Q,T1,and T2 assuming radiative heat transfer occurs.
@@ -114,6 +114,7 @@ def r_heat_flux(Ti,To,dw,kw,hi,ho,TA, estimates):
     Q,T1,T2= optimize.fsolve(equations,estimates)
     return(Q)
 
+###################################################################################
 def fwd_model(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_samples,sub_verbose=0):
     """
     Evaluates the forward model
@@ -148,6 +149,7 @@ def fwd_model(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_sample
     Q_evals = np.array(Q_samples)
     return Q_evals
 
+###################################################################################
 def fwd_model_rad(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_samples,TA_samples,sub_verbose=0):
     """
     Evaluates the forward model with radiation
@@ -189,6 +191,7 @@ def fwd_model_rad(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_sa
     Q_evals = np.array(Q_samples)
     return Q_evals
 
+###################################################################################
 def KDE(fcn_evals):
     """
     Performs kernel density estimation
