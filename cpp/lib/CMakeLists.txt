@@ -1,4 +1,4 @@
-git rebase --continue"project (UQTk)
+project (UQTk)
 
 enable_language(Fortran)
 
