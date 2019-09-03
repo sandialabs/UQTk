@@ -26,8 +26,7 @@ target_link_libraries (TMCMC2dTest depdsfmt )
 target_link_libraries (TMCMC2dTest depcvode )
 target_link_libraries (TMCMC2dTest depnvec  )
 target_link_libraries (TMCMC2dTest depslatec)
-target_link_libraries (TMCMC2dTest deplapack)
-target_link_libraries (TMCMC2dTest depblas  )
+target_link_libraries (TMCMC2dTest m lapack blas)
 target_link_libraries (TMCMC2dTest deplbfgs  )
 
 # Link fortran libraries
@@ -72,4 +71,3 @@ include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 INSTALL(TARGETS TMCMC2dTest DESTINATION bin/tests/)
 
 add_test(TMCMC2dTest TMCMC2dTest)
-

@@ -1,4 +1,4 @@
-project (UQTk)
+cpp/tests/TMCMC2dTest/CMakeLists.txt project (UQTk)
 
 SET(copy_FILES
   tmcmc_getLL.sh
@@ -16,8 +16,7 @@ target_link_libraries (tmcmc_bimodal.x depdsfmt )
 target_link_libraries (tmcmc_bimodal.x depcvode )
 target_link_libraries (tmcmc_bimodal.x depnvec  )
 target_link_libraries (tmcmc_bimodal.x depslatec)
-target_link_libraries (tmcmc_bimodal.x deplapack)
-target_link_libraries (tmcmc_bimodal.x depblas  )
+target_link_libraries (tmcmc_bimodal.x m lapack blas)
 target_link_libraries (tmcmc_bimodal.x deplbfgs  )
 
 
@@ -52,8 +51,6 @@ include_directories(../../cpp/lib/tools  )
 include_directories(../../cpp/lib/mcmc  )
 
 include_directories(../../dep/dsfmt)
-include_directories(../../dep/lapack)
-include_directories(../../dep/blas)
 include_directories(../../dep/slatec)
 include_directories(../../dep/lbfgs)
 include_directories(../../dep/cvode-2.7.0/include)
@@ -61,6 +58,6 @@ include_directories(../../dep/cvode-2.7.0/include)
 INSTALL(TARGETS tmcmc_bimodal.x DESTINATION examples/tmcmc_bimodal)
 INSTALL(TARGETS bimodal.x DESTINATION examples/tmcmc_bimodal)
 
-INSTALL(FILES ${copy_FILES} 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_FILES}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/tmcmc_bimodal)
