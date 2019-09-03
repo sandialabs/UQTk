@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (MultiIndexTest main.cpp)
 
 target_link_libraries (MultiIndexTest uqtk)
 
 target_link_libraries (MultiIndexTest depdsfmt   )
-target_link_libraries (MultiIndexTest depcvode   )
-target_link_libraries (MultiIndexTest depnvec    )
+target_link_libraries (MultiIndexTest sundials_cvode)
+target_link_libraries (MultiIndexTest sundials_nvecserial)
+target_link_libraries (MultiIndexTest sundials_sunlinsoldense)
+target_link_libraries (MultiIndexTest sundials_sunmatrixdense)
 target_link_libraries (MultiIndexTest depslatec  )
 target_link_libraries (MultiIndexTest deplapack  )
 target_link_libraries (MultiIndexTest depblas    )

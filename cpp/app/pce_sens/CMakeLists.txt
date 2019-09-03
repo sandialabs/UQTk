@@ -52,7 +52,6 @@ include_directories(../../lib/tools  )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
 
 INSTALL(TARGETS pce_sens DESTINATION bin)
-

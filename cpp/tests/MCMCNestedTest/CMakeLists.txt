@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMCNestedTest/)
 
 add_executable (MCMCNestedTest main.cpp)
@@ -7,8 +8,10 @@ add_executable (MCMCNestedTest main.cpp)
 target_link_libraries (MCMCNestedTest uqtk  )
 
 target_link_libraries (MCMCNestedTest depdsfmt )
-target_link_libraries (MCMCNestedTest depcvode )
-target_link_libraries (MCMCNestedTest depnvec  )
+target_link_libraries (MCMCNestedTest sundials_cvode)
+target_link_libraries (MCMCNestedTest sundials_nvecserial)
+target_link_libraries (MCMCNestedTest sundials_sunlinsoldense)
+target_link_libraries (MCMCNestedTest sundials_sunmatrixdense)
 target_link_libraries (MCMCNestedTest depslatec)
 target_link_libraries (MCMCNestedTest deplapack)
 target_link_libraries (MCMCNestedTest depblas  )

@@ -1,13 +1,16 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (pdf_cl pdf_cl.cpp)
 
 target_link_libraries (pdf_cl uqtktools)
 target_link_libraries (pdf_cl uqtkarray)
 
 target_link_libraries (pdf_cl depdsfmt )
-target_link_libraries (pdf_cl depcvode )
-target_link_libraries (pdf_cl depnvec  )
+target_link_libraries (pdf_cl sundials_cvode)
+target_link_libraries (pdf_cl sundials_nvecserial)
+target_link_libraries (pdf_cl sundials_sunlinsoldense)
+target_link_libraries (pdf_cl sundials_sunmatrixdense)
 target_link_libraries (pdf_cl depslatec)
 target_link_libraries (pdf_cl deplapack)
 target_link_libraries (pdf_cl depblas  )
@@ -49,4 +52,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS pdf_cl DESTINATION bin)
-

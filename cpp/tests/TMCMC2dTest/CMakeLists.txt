@@ -17,14 +17,18 @@ SET(copy_EXE_FILES
 file(COPY ${copy_SCRIPT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${copy_DATA_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
 add_executable (model.x model.cpp)
 add_executable (TMCMC2dTest main.cpp)
 
 target_link_libraries (TMCMC2dTest uqtk  )
 
 target_link_libraries (TMCMC2dTest depdsfmt )
-target_link_libraries (TMCMC2dTest depcvode )
-target_link_libraries (TMCMC2dTest depnvec  )
+target_link_libraries (TMCMC2dTest sundials_cvode)
+target_link_libraries (TMCMC2dTest sundials_nvecserial)
+target_link_libraries (TMCMC2dTest sundials_sunlinsoldense)
+target_link_libraries (TMCMC2dTest sundials_sunmatrixdense)
 target_link_libraries (TMCMC2dTest depslatec)
 target_link_libraries (TMCMC2dTest deplapack)
 target_link_libraries (TMCMC2dTest depblas  )
@@ -72,4 +76,3 @@ include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 INSTALL(TARGETS TMCMC2dTest DESTINATION bin/tests/)
 
 add_test(TMCMC2dTest TMCMC2dTest)
-

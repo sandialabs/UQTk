@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (ArrayReadAndWrite main.cpp)
 
 target_link_libraries (ArrayReadAndWrite uqtk  )
 
 target_link_libraries (ArrayReadAndWrite depdsfmt )
-target_link_libraries (ArrayReadAndWrite depcvode )
-target_link_libraries (ArrayReadAndWrite depnvec  )
+target_link_libraries (ArrayReadAndWrite sundials_cvode)
+target_link_libraries (ArrayReadAndWrite sundials_nvecserial)
+target_link_libraries (ArrayReadAndWrite sundials_sunlinsoldense)
+target_link_libraries (ArrayReadAndWrite sundials_sunmatrixdense)
 target_link_libraries (ArrayReadAndWrite depslatec)
 target_link_libraries (ArrayReadAndWrite deplapack)
 target_link_libraries (ArrayReadAndWrite depblas  )

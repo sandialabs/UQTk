@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (ArrayDelColumn main.cpp)
 
 target_link_libraries (ArrayDelColumn uqtk )
 
 target_link_libraries (ArrayDelColumn depdsfmt )
-target_link_libraries (ArrayDelColumn depcvode )
-target_link_libraries (ArrayDelColumn depnvec  )
+target_link_libraries (ArrayDelColumn sundials_cvode)
+target_link_libraries (ArrayDelColumn sundials_nvecserial)
+target_link_libraries (ArrayDelColumn sundials_sunlinsoldense)
+target_link_libraries (ArrayDelColumn sundials_sunmatrixdense)
 target_link_libraries (ArrayDelColumn depslatec)
 target_link_libraries (ArrayDelColumn deplapack)
 target_link_libraries (ArrayDelColumn depblas  )
@@ -15,7 +18,7 @@ target_link_libraries (ArrayDelColumn deplbfgs  )
 # Link fortran libraries
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  target_link_libraries (ArrayDelColumn gfortran expat stdc++) 
+  target_link_libraries (ArrayDelColumn gfortran expat stdc++)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
   if ("${IntelLibPath}" STREQUAL "")

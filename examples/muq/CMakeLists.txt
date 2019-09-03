@@ -6,6 +6,7 @@ SET(copy_FILES
 )
 
 # muqPCE2uqtk.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (muqPCE2uqtk.x muqPCE2uqtk.cpp)
 
 # UQTk libraries
@@ -18,8 +19,10 @@ target_link_libraries (muqPCE2uqtk.x uqtkxmlutils )
 
 target_link_libraries (muqPCE2uqtk.x depdsfmt )
 target_link_libraries (muqPCE2uqtk.x deplbfgs )
-target_link_libraries (muqPCE2uqtk.x depcvode )
-target_link_libraries (muqPCE2uqtk.x depnvec )
+target_link_libraries (muqPCE2uqtk.x sundials_cvode)
+target_link_libraries (muqPCE2uqtk.x sundials_nvecserial)
+target_link_libraries (muqPCE2uqtk.x sundials_sunlinsoldense)
+target_link_libraries (muqPCE2uqtk.x sundials_sunmatrixdense)
 target_link_libraries (muqPCE2uqtk.x depslatec )
 target_link_libraries (muqPCE2uqtk.x deplapack )
 target_link_libraries (muqPCE2uqtk.x depblas )
@@ -38,7 +41,7 @@ target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libsundials_cv
 target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libsundials_idas.a)
 target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libsundials_kinsol.a)
 target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libsundials_nvecserial.a)
-#target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libhdf5_hl.a) 
+#target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libhdf5_hl.a)
 #target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libhdf5.a)
 target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libboost_filesystem.a)
 target_link_libraries (muqPCE2uqtk.x ${PATH2MUQ}/muq_external/lib/libboost_system.a)

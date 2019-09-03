@@ -8,7 +8,7 @@ add_subdirectory (blas)
 add_subdirectory (lapack)
 add_subdirectory (dsfmt)
 add_subdirectory (lbfgs)
-add_subdirectory (cvode-2.7.0)
+#add_subdirectory (cvode-2.7.0)
 add_subdirectory (ann)
 add_subdirectory (figtree)
 

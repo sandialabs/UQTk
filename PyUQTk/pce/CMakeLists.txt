@@ -31,7 +31,7 @@ SET_SOURCE_FILES_PROPERTIES(pce.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	pce LANGUAGE python SOURCES pce.i 
+	pce LANGUAGE python SOURCES pce.i
 	# array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -52,7 +52,7 @@ SWIG_ADD_LIBRARY(
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/tools/rosenblatt.cpp
 )
 
-# ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a 
+# ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a
 # sundials_cvode sundials_nvecserial sundials_sunlinsoldense sundials_sunmatrixdense
 
 
@@ -60,11 +60,11 @@ SWIG_ADD_LIBRARY(
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a uqtkquad uqtkarray uqtktools depnvec depslatec deplapack depblas depdsfmt depfigtree depann gfortran ${PYTHON_LIBRARIES})
-  #SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray depnvec depslatec uqtktools deplapack depblas depdsfmt depann depfigtree gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a uqtkquad uqtkarray uqtktools depslatec deplapack depblas depdsfmt depfigtree depann gfortran ${PYTHON_LIBRARIES})
+  #SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray depslatec uqtktools deplapack depblas depdsfmt depann depfigtree gfortran ${PYTHON_LIBRARIES})
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(pce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a uqtktools uqtkquad uqtkarray deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
 endif()
 
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)

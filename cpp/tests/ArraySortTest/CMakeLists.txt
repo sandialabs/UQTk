@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (ArraySortTest main.cpp)
 
 target_link_libraries (ArraySortTest uqtk  )
 
 target_link_libraries (ArraySortTest depdsfmt )
-target_link_libraries (ArraySortTest depcvode )
-target_link_libraries (ArraySortTest depnvec  )
+target_link_libraries (ArraySortTest sundials_cvode)
+target_link_libraries (ArraySortTest sundials_nvecserial)
+target_link_libraries (ArraySortTest sundials_sunlinsoldense)
+target_link_libraries (ArraySortTest sundials_sunmatrixdense)
 target_link_libraries (ArraySortTest depslatec)
 target_link_libraries (ArraySortTest deplapack)
 target_link_libraries (ArraySortTest depblas  )

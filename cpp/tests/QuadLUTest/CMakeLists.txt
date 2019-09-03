@@ -6,13 +6,16 @@ SET(copy_FILES
   )
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/QuadLUTest/)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (QuadLUTest main.cpp)
 
 target_link_libraries (QuadLUTest uqtk  )
 
 target_link_libraries (QuadLUTest depdsfmt )
-target_link_libraries (QuadLUTest depcvode )
-target_link_libraries (QuadLUTest depnvec  )
+target_link_libraries (QuadLUTest sundials_cvode)
+target_link_libraries (QuadLUTest sundials_nvecserial)
+target_link_libraries (QuadLUTest sundials_sunlinsoldense)
+target_link_libraries (QuadLUTest sundials_sunmatrixdense)
 target_link_libraries (QuadLUTest depslatec)
 target_link_libraries (QuadLUTest deplapack)
 target_link_libraries (QuadLUTest depblas  )

@@ -1,4 +1,6 @@
+project(UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (sens sens.cpp)
 add_executable (trdSpls trdSpls.cpp)
 
@@ -10,8 +12,10 @@ target_link_libraries (trdSpls uqtkarray)
 
 target_link_libraries (trdSpls depdsfmt )
 target_link_libraries (trdSpls deplbfgs )
-target_link_libraries (trdSpls depcvode )
-target_link_libraries (trdSpls depnvec  )
+target_link_libraries (trdSpls sundials_cvode)
+target_link_libraries (trdSpls sundials_nvecserial)
+target_link_libraries (trdSpls sundials_sunlinsoldense)
+target_link_libraries (trdSpls sundials_sunmatrixdense)
 target_link_libraries (trdSpls depslatec)
 target_link_libraries (trdSpls deplapack)
 target_link_libraries (trdSpls depblas  )
@@ -67,4 +71,3 @@ include_directories(../../../dep/figtree)
 
 INSTALL(TARGETS sens DESTINATION bin)
 INSTALL(TARGETS trdSpls DESTINATION bin)
-

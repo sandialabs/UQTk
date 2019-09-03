@@ -1,5 +1,7 @@
 project (UQTk)
 
+
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMC2dTest/)
 
 add_executable (MCMC2dTest main.cpp)
@@ -7,8 +9,10 @@ add_executable (MCMC2dTest main.cpp)
 target_link_libraries (MCMC2dTest uqtk  )
 
 target_link_libraries (MCMC2dTest depdsfmt )
-target_link_libraries (MCMC2dTest depcvode )
-target_link_libraries (MCMC2dTest depnvec  )
+target_link_libraries (MCMC2dTest sundials_cvode)
+target_link_libraries (MCMC2dTest sundials_nvecserial)
+target_link_libraries (MCMC2dTest sundials_sunlinsoldense)
+target_link_libraries (MCMC2dTest sundials_sunmatrixdense)
 target_link_libraries (MCMC2dTest depslatec)
 target_link_libraries (MCMC2dTest deplapack)
 target_link_libraries (MCMC2dTest depblas  )

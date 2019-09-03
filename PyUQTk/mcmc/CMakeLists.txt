@@ -24,9 +24,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lbfgs/) # blas library
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/cvode-2.7.0/include) # cvode
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/dep/cvode-2.7.0/include)
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/dep/cvode-2.7.0/include/nvector)
+# cvode
+INCLUDE_DIRECTORIES(${CMAKE_SUNDIALS_DIR}/include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
 SET(CMAKE_SWIG_FLAGS "")
@@ -34,7 +33,7 @@ SET_SOURCE_FILES_PROPERTIES(mcmc.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	mcmc LANGUAGE python SOURCES mcmc.i 
+	mcmc LANGUAGE python SOURCES mcmc.i
 	# array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -59,10 +58,12 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., gfortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray deplapack depblas depslatec depdsfmt depann depfigtree gfortran ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(mcmc ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray depnvec deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ifport ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(mcmc deplbfgs uqtkbcs uqtkpce uqtktools uqtkquad uqtkarray deplapack depblas depslatec depdsfmt depann depfigtree ifcore ifport ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(mcmc ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 endif()
 
 INSTALL(TARGETS _mcmc DESTINATION PyUQTk/)

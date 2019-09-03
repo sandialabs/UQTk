@@ -16,13 +16,17 @@ SET(copy_FILES
   )
 file(COPY ${copy_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
 add_executable (CorrTest main.cpp)
 
 target_link_libraries (CorrTest uqtk )
 
 target_link_libraries (CorrTest depdsfmt )
-target_link_libraries (CorrTest depcvode )
-target_link_libraries (CorrTest depnvec  )
+target_link_libraries (CorrTest sundials_cvode)
+target_link_libraries (CorrTest sundials_nvecserial)
+target_link_libraries (CorrTest sundials_sunlinsoldense)
+target_link_libraries (CorrTest sundials_sunmatrixdense)
 target_link_libraries (CorrTest depslatec)
 target_link_libraries (CorrTest deplapack)
 target_link_libraries (CorrTest depblas  )

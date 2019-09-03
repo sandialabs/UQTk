@@ -1,12 +1,15 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 add_executable (Array1DMiscTest main.cpp)
 
 target_link_libraries (Array1DMiscTest uqtk )
 
 target_link_libraries (Array1DMiscTest depdsfmt )
-target_link_libraries (Array1DMiscTest depcvode )
-target_link_libraries (Array1DMiscTest depnvec  )
+target_link_libraries (Array1DMiscTest sundials_cvode)
+target_link_libraries (Array1DMiscTest sundials_nvecserial)
+target_link_libraries (Array1DMiscTest sundials_sunlinsoldense)
+target_link_libraries (Array1DMiscTest sundials_sunmatrixdense)
 target_link_libraries (Array1DMiscTest depslatec)
 target_link_libraries (Array1DMiscTest deplapack)
 target_link_libraries (Array1DMiscTest depblas  )

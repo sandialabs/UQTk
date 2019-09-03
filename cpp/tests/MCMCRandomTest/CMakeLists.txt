@@ -1,5 +1,6 @@
 project (UQTk)
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMCRandomTest/)
 
 add_executable (MCMCRandomTest main.cpp)
@@ -7,8 +8,10 @@ add_executable (MCMCRandomTest main.cpp)
 target_link_libraries (MCMCRandomTest uqtk  )
 
 target_link_libraries (MCMCRandomTest depdsfmt )
-target_link_libraries (MCMCRandomTest depcvode )
-target_link_libraries (MCMCRandomTest depnvec  )
+target_link_libraries (MCMCRandomTest sundials_cvode)
+target_link_libraries (MCMCRandomTest sundials_nvecserial)
+target_link_libraries (MCMCRandomTest sundials_sunlinsoldense)
+target_link_libraries (MCMCRandomTest sundials_sunmatrixdense)
 target_link_libraries (MCMCRandomTest depslatec)
 target_link_libraries (MCMCRandomTest deplapack)
 target_link_libraries (MCMCRandomTest depblas  )
