@@ -24,10 +24,12 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., gfortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(tmcmc deplapack depblas depslatec depdsfmt gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(tmcmc depslatec depdsfmt gfortran ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(tmcmc m lapack blas)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(tmcmc deplapack depblas depslatec depdsfmt ifcore ifport ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(tmcmc depslatec depdsfmt ifcore ifport ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(tmcmc m lapack blas)
 endif()
 
 INSTALL(TARGETS _tmcmc DESTINATION PyUQTk/)
