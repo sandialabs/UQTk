@@ -32,6 +32,8 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
       ENDIF()
     ENDIF()
 
+    #turn off shared libraries
+    SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Build sundials shared library")
     #build sundials
     ADD_SUBDIRECTORY(dep/sundials)
     INCLUDE_DIRECTORIES(dep/sundials/include)

@@ -19,8 +19,7 @@ include_directories (../../../dep/blas)
 include_directories (../../../dep/lbfgs)
 include_directories (../../../dep/dsfmt)
 include_directories (../../../dep/figtree)
-include_directories (../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
 
 # Install the library
 INSTALL(TARGETS uqtklowrank DESTINATION lib)
