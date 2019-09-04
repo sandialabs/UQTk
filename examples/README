@@ -80,3 +80,9 @@ tmcmc_bimodal
 ==============================
 use TMCMC to sample from a 3-dimensional posterior that is a
 product of a Gaussian prior and a bimodal likelihood
+
+==============================
+dfi
+==============================
+use data-free inference to recover an approximate correlated posterior distribution for parameters of a line model
+given summary statistics on marginals
