@@ -30,7 +30,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(INSTALL_LIB_DIR     lib    )
 set(INSTALL_BIN_DIR     bin    )
 set(INSTALL_INCLUDE_DIR include)
-set(INSTALL_INCLUDE_DIR include)
 
 # Make relative paths absolute (needed later on)
 foreach(p LIB BIN INCLUDE)
@@ -42,15 +41,23 @@ endforeach()
 
 option(PyUQTk "PyUQTk" OFF)
 option(DFI "DFI" OFF)
+MESSAGE("{PROJECT_BINARY_DIR} = ${PROJECT_BINARY_DIR}")
 
 # CXX flags
 #set(CMAKE_CXX_FLAGS "-O2")
 set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_HDF5 -I/opt/local/hdf5/include -L/opt/local/hdf5/lib -lhdf5_hl -lhdf5_cpp -lhdf5 -lhdf5_fortran -lhdf5_hl_cpp")
 
+option(UQTk_ENABLE_SUNDIALS_SUBMODULE_UPDATE "Flag to enable sundials submodule update" OFF)
+
 # Sundials
 if(NOT DEFINED CMAKE_SUNDIALS_DIR)
-    message(FATAL_ERROR "You must set path to sundial through CMAKE_SUNDIALS_DIR")
+    #set path to sundials
+    SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
+    MESSAGE("CMAKE_SUNDIALS_DIR = ${CMAKE_SUNDIALS_DIR}")
+    MESSAGE("NOt defined sundials")
+
+    #message(FATAL_ERROR "You must set path to sundial through CMAKE_SUNDIALS_DIR")
 endif()
 
 add_definitions(-D__wsu)
