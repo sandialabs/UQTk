@@ -14,7 +14,7 @@ add_subdirectory (window)
 add_subdirectory (polynomial)
 add_subdirectory (d_spring_series)
 add_subdirectory (iuq)
-add_subdirectory (dfi_line)
+add_subdirectory (dfi)
 
 
 # Add muq example only with the gnu compilers
