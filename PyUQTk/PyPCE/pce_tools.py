@@ -154,7 +154,7 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
 
     Input:
         pc_model:   PC object with into about PCE
-        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated.
+        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated. [n_dim]
         n_samples:    number of samples to be drawn
     Output:
         1D Numpy array with PCE evaluations
@@ -193,9 +193,9 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
     Evaluate PCE at a set of samples of this PCE
     Input:
         pc_model:   PC object with into about PCE
-        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated.
+        pc_coeffs:  1D numpy array with PC coefficients of the RV to be evaluated. [npce]
         samples:    2D numpy array with samples of the PCE at which the RV
-                    are to be evaluated. Each line is one sample.
+                    are to be evaluated. Each line is one sample. [n_samples, ndim]
     Output:
         1D Numpy array with PCE evaluations
     """
@@ -244,7 +244,7 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     Input:
         pc_model : PC object with info about basis to project on
         f_evaluations: 1D numpy array (vector) with function to be projected,
-                       evaluated at the quadrature points
+                       evaluated at the quadrature points 
     Output:
         1D Numpy array with PC coefficients
     """
