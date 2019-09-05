@@ -41,7 +41,7 @@ foreach(p LIB BIN INCLUDE)
 endforeach()
 
 option(PyUQTk "PyUQTk" OFF)
-option(DFI "DFI" OFF)
+#option(DFI "DFI" OFF)
 
 # CXX flags
 #set(CMAKE_CXX_FLAGS "-O2")
