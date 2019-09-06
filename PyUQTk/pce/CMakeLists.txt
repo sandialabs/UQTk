@@ -22,7 +22,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
 # cvode
-INCLUDE_DIRECTORIES(${CMAKE_SUNDIALS_DIR}/include)
+include_directories (../../dep/sundials/include )
+include_directories ("${PROJECT_BINARY_DIR}/../dep/sundials/include")
+MESSAGE("{PROJECT_BINARY_DIR}/../../dep/sundials/include = ${PROJECT_BINARY_DIR}/../../dep/sundials/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
 
 # INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
@@ -60,11 +63,19 @@ SWIG_ADD_LIBRARY(
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a uqtkquad uqtkarray uqtktools depslatec deplapack depblas depdsfmt depfigtree depann gfortran ${PYTHON_LIBRARIES})
-  #SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray depslatec uqtktools deplapack depblas depdsfmt depann depfigtree gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray uqtktools depslatec deplapack depblas depdsfmt depfigtree depann gfortran ${PYTHON_LIBRARIES})
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a uqtktools uqtkquad uqtkarray deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(pce uqtktools uqtkquad uqtkarray deplapack depblas depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+endif()
+
+if(BUILD_SUNDIALS)
+	SWIG_LINK_LIBRARIES(pce ${PROJECT_BINARY_DIR}/../dep/sundials/src/cvode/libsundials_cvode.a)
+	SWIG_LINK_LIBRARIES(pce ${PROJECT_BINARY_DIR}/../dep/sundials/src/nvector/serial/libsundials_nvecserial.a)
+	SWIG_LINK_LIBRARIES(pce ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunlinsol/dense/libsundials_sunlinsoldense.a)
+	SWIG_LINK_LIBRARIES(pce ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunmatrix/dense/libsundials_sunmatrixdense.a)
+else()
+	SWIG_LINK_LIBRARIES(pce ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 endif()
 
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)

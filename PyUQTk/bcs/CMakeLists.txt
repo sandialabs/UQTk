@@ -21,8 +21,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lapack/) # blas librar
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
-# cvode
-INCLUDE_DIRECTORIES(${CMAKE_SUNDIALS_DIR}/include)
+include_directories (../../dep/sundials/include )
+include_directories ("${PROJECT_BINARY_DIR}/../dep/sundials/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
 INCLUDE_DIRECTORIES(${CMAKE_SUNDIALS_DIR}/lib)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
@@ -56,10 +57,17 @@ SWIG_ADD_LIBRARY(
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
   SWIG_LINK_LIBRARIES(bcs uqtkpce uqtktools uqtkquad uqtkarray  deplapack depblas depslatec depdsfmt depann depfigtree gfortran ${PYTHON_LIBRARIES})
-	SWIG_LINK_LIBRARIES(bcs ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
   SWIG_LINK_LIBRARIES(bcs uqtkpce uqtktools uqtkquad uqtkarray  deplapack depblas depslatec depdsfmt depann depfigtree ifcore ${PYTHON_LIBRARIES})
+endif()
+
+if(BUILD_SUNDIALS)
+	SWIG_LINK_LIBRARIES(bcs ${PROJECT_BINARY_DIR}/../dep/sundials/src/cvode/libsundials_cvode.a)
+	SWIG_LINK_LIBRARIES(bcs ${PROJECT_BINARY_DIR}/../dep/sundials/src/nvector/serial/libsundials_nvecserial.a)
+	SWIG_LINK_LIBRARIES(bcs ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunlinsol/dense/libsundials_sunlinsoldense.a)
+	SWIG_LINK_LIBRARIES(bcs ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunmatrix/dense/libsundials_sunmatrixdense.a)
+else()
 	SWIG_LINK_LIBRARIES(bcs ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 endif()
 

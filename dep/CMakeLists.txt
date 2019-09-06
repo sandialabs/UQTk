@@ -18,6 +18,8 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
     MESSAGE("CMAKE_SUNDIALS_DIR = ${CMAKE_SUNDIALS_DIR}")
     MESSAGE("NOt defined sundials")
 
+    SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
+
     # Process submodule Sundials (includes, cxx flags and lib)
     MESSAGE("-- UQTk uses submodule of sundials located at dep/sundials")
     # Automatically update sundials GIT
