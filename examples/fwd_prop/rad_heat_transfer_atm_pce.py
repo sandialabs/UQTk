@@ -81,7 +81,7 @@ except ImportError:
 # Parse input arguments
 usage_str = """Script produce a graph comparing PDFs of heat flux generated using
 	NISP full and sparse quadrature methods and a Monte Carlo sampling method
-	Look at manual example Forward Propagation of Uncertainty with PyUQTk for more explination"""
+	Look at manual example Forward Propagation of Uncertainty with PyUQTk for more explanation"""
 parser = argparse.ArgumentParser(description=usage_str)
 parser.add_argument("--no_verbose", help="To trun off intermediate print statements.", action='store_false')
 parser.add_argument("-r", "--no_compute_rad", help="To not compute radiation. [Default to include radiation]", action='store_false')
