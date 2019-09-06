@@ -1,13 +1,10 @@
 project (UQTk)
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
-
-link_directories (${INSTALL_LIB_DIR})
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
-
+link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/cvode")
+link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/nvector/serial")
+link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunlinsol/dense")
+link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunmatrix/dense")
 add_executable (ArrayReadAndWrite main.cpp)
 
 target_link_libraries (ArrayReadAndWrite uqtk  )
