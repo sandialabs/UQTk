@@ -1,12 +1,5 @@
 project (UQTk)
 
-
-link_directories(${CMAKE_SUNDIALS_DIR}/lib)
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/cvode")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/nvector/serial")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunlinsol/dense")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunmatrix/dense")
-
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMC2dTest/)
 
 add_executable (MCMC2dTest main.cpp)

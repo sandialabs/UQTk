@@ -1,11 +1,5 @@
 project (UQTk)
 
-link_directories(${CMAKE_SUNDIALS_DIR}/lib)
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/cvode")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/nvector/serial")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunlinsol/dense")
-link_directories("${PROJECT_BINARY_DIR}/../../../dep/sundials/src/sunmatrix/dense")
-
 add_executable (BCS2dTest main.cpp)
 
 # SET(copy_FILES
