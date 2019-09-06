@@ -1,0 +1,26 @@
+c$$$=====================================================================================
+c$$$                     The UQ Toolkit (UQTk) version @UQTKVERSION@
+c$$$                     Copyright (@UQTKYEAR@) Sandia Corporation
+c$$$                     http://www.sandia.gov/UQToolkit/
+c$$$
+c$$$     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
+c$$$     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+c$$$
+c$$$     This file is part of The UQ Toolkit (UQTk)
+c$$$
+c$$$     UQTk is free software: you can redistribute it and/or modify
+c$$$     it under the terms of the GNU Lesser General Public License as published by
+c$$$     the Free Software Foundation, either version 3 of the License, or
+c$$$     (at your option) any later version.
+c$$$
+c$$$     UQTk is distributed in the hope that it will be useful,
+c$$$     but WITHOUT ANY WARRANTY; without even the implied warranty of
+c$$$     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+c$$$     GNU Lesser General Public License for more details.
+c$$$
+c$$$     You should have received a copy of the GNU Lesser General Public License
+c$$$     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+c$$$
+c$$$     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+c$$$     Sandia National Laboratories, Livermore, CA, USA
+c$$$=====================================================================================
