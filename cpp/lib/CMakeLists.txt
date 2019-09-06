@@ -44,8 +44,10 @@ include_directories (../../dep/lbfgs )
 include_directories (../../dep/ann )
 include_directories (../../dep/figtree )
 
-include_directories (../../dep/sundials/include )
-include_directories ("${PROJECT_BINARY_DIR}/../../dep/sundials/include")
+if(BUILD_SUNDIALS)
+	include_directories (../../dep/sundials/include )
+	include_directories ("${PROJECT_BINARY_DIR}/../../dep/sundials/include")
+endif()
 include_directories (${CMAKE_SUNDIALS_DIR}/include)
 
 FILE(GLOB arraysrc "array/*.cpp")

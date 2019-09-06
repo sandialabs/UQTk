@@ -24,9 +24,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lbfgs/) # blas library
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/slatec/) # slatec headers
-include_directories (../../dep/sundials/include )
-include_directories ("${PROJECT_BINARY_DIR}/../dep/sundials/include")
 include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( BUILD_SUNDIALS)
+	include_directories ("${PROJECT_BINARY_DIR}/../dep/sundials/include")
+	include_directories (../../dep/sundials/include )
+endif()
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
 SET(CMAKE_SWIG_FLAGS "")

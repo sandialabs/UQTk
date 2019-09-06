@@ -41,7 +41,6 @@ endforeach()
 
 option(PyUQTk "PyUQTk" OFF)
 option(DFI "DFI" OFF)
-MESSAGE("{PROJECT_BINARY_DIR} = ${PROJECT_BINARY_DIR}")
 
 # CXX flags
 #set(CMAKE_CXX_FLAGS "-O2")

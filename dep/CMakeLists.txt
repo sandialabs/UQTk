@@ -15,8 +15,6 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
     #set path to sundials
     SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
-    MESSAGE("CMAKE_SUNDIALS_DIR = ${CMAKE_SUNDIALS_DIR}")
-    MESSAGE("NOt defined sundials")
 
     SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
 
@@ -24,7 +22,6 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
     MESSAGE("-- UQTk uses submodule of sundials located at dep/sundials")
     # Automatically update sundials GIT
     # For development purpose inside of sundials, we can disable this update
-    MESSAGE("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}/../")
       IF (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
         MESSAGE(STATUS "Git submodule updating")
         EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
@@ -42,8 +39,6 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
     #build sundials
     ADD_SUBDIRECTORY(sundials)
     INCLUDE_DIRECTORIES(sundials/include)
-    MESSAGE("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    MESSAGE("sundials_INCLUDE_DIRS_RET = ${sundials_INCLUDE_DIRS_RET}")
     include_directories("${PROJECT_BINARY_DIR}/sundials/include")
 endif()
 add_subdirectory (ann)

@@ -50,8 +50,10 @@ include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories (../../../dep/sundials/include )
-include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
-include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( NOT BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+  include_directories (${CMAKE_SUNDIALS_DIR}/include)
+endif()
 
 INSTALL(TARGETS SecondDeriv1dTest DESTINATION bin/tests/)
 

@@ -52,8 +52,9 @@ include_directories(../../lib/tools  )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-include_directories (../../../dep/sundials/include )
-include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
 include_directories (${CMAKE_SUNDIALS_DIR}/include)
-
+if( BUILD_SUNDIALS)
+  include_directories (../../../dep/sundials/include )
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+endif()
 INSTALL(TARGETS pce_eval DESTINATION bin)
