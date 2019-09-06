@@ -18,6 +18,12 @@ file(COPY ${copy_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 
+link_directories (${INSTALL_LIB_DIR})
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
 add_executable (CorrTest main.cpp)
 
 target_link_libraries (CorrTest uqtk )
@@ -71,9 +77,9 @@ include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
+#include_directories(../../../dep/cvode-2.7.0/include)
 
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+#include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS CorrTest DESTINATION bin/tests/)
 

@@ -13,16 +13,20 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
     FIND_PACKAGE(GIT)
 
+    #set path to sundials
+    SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
+    MESSAGE("CMAKE_SUNDIALS_DIR = ${CMAKE_SUNDIALS_DIR}")
+    MESSAGE("NOt defined sundials")
+
     # Process submodule Sundials (includes, cxx flags and lib)
     MESSAGE("-- UQTk uses submodule of sundials located at dep/sundials")
     # Automatically update sundials GIT
     # For development purpose inside of sundials, we can disable this update
-    MESSAGE("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
-    IF (UQTk_ENABLE_SUNDIALS_SUBMODULE_UPDATE)
-      IF (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    MESSAGE("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}/../")
+      IF (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
         MESSAGE(STATUS "Git submodule updating")
         EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
                         RESULT_VARIABLE GIT_SUBMODULE_RESULT)
         IF (NOT GIT_SUBMODULE_RESULT EQUAL "0")
           MESSAGE(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMODULE_RESULT}")
@@ -30,16 +34,15 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
       ELSE()
         MESSAGE(FATAL_ERROR "Git submodule updating fails ")
       ENDIF()
-    ENDIF()
 
     #turn off shared libraries
     SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Build sundials shared library")
     #build sundials
-    ADD_SUBDIRECTORY(dep/sundials)
-    INCLUDE_DIRECTORIES(dep/sundials/include)
+    ADD_SUBDIRECTORY(sundials)
+    INCLUDE_DIRECTORIES(sundials/include)
     MESSAGE("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     MESSAGE("sundials_INCLUDE_DIRS_RET = ${sundials_INCLUDE_DIRS_RET}")
-    include_directories("${PROJECT_BINARY_DIR}/dep/sundials/include")
+    include_directories("${PROJECT_BINARY_DIR}/sundials/include")
 endif()
 add_subdirectory (ann)
 add_subdirectory (figtree)

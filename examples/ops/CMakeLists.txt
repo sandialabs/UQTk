@@ -13,6 +13,11 @@ SET(copy_FILES
 
 # Ops.x
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
 
 add_executable (Ops.x Ops.cpp Utils.cpp)
 add_executable (LogComp.x LogComp.cpp Utils.cpp)
@@ -105,12 +110,20 @@ include_directories(../../cpp/lib/quad   )
 include_directories(../../cpp/lib/tools  )
 
 include_directories(../../dep/dsfmt)
-include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${INSTALL_LIB_DIR})
+include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+include_directories (/Users/kjohnst/UQTk-SNL/dep/sundials/include/ )
+MESSAGE("{PROJECT_BINARY_DIR}/../../../dep/sundials/src = ${PROJECT_BINARY_DIR}/../../../dep/sundials/src")
+#include_directories (${CMAKE_SUNDIALS_DIR}/include)
+MESSAGE("{CMAKE_SUNDIALS_DIR}/include = ${CMAKE_SUNDIALS_DIR}/include")
+include_directories(/Users/kjohnst/UQTk-build/dep/sundials/include)
 
-INSTALL(TARGETS Ops.x LogComp.x 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS Ops.x LogComp.x
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/ops)
 
-INSTALL(FILES ${copy_FILES} 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_FILES}
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/ops)

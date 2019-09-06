@@ -1,6 +1,14 @@
 project (UQTk)
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
+link_directories (${INSTALL_LIB_DIR})
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
+
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMCRandomTest/)
 
 add_executable (MCMCRandomTest main.cpp)
@@ -52,9 +60,9 @@ include_directories(../../../dep/lapack)
 include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
+#include_directories(../../../dep/cvode-2.7.0/include)
 
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+#include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS MCMCRandomTest DESTINATION bin/tests/)
 

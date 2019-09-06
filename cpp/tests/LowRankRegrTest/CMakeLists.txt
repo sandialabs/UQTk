@@ -42,8 +42,6 @@ include_directories(../../lib/lowrank)
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
 
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
-
 INSTALL(TARGETS LowRankRegrTest DESTINATION bin/tests/)
 
 add_test(LowRankRegrTest LowRankRegrTest)

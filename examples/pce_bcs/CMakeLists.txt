@@ -7,6 +7,12 @@ SET(copy_FILES
 
 # pce_bcs.x
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
 add_executable (pce_bcs.x pce_bcs.cpp)
 
 target_link_libraries (pce_bcs.x uqtkbcs  )
@@ -69,10 +75,18 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${INSTALL_LIB_DIR})
+include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+include_directories (/Users/kjohnst/UQTk-SNL/dep/sundials/include/ )
+MESSAGE("{PROJECT_BINARY_DIR}/../../../dep/sundials/src = ${PROJECT_BINARY_DIR}/../../../dep/sundials/src")
+#include_directories (${CMAKE_SUNDIALS_DIR}/include)
+MESSAGE("{CMAKE_SUNDIALS_DIR}/include = ${CMAKE_SUNDIALS_DIR}/include")
+include_directories(/Users/kjohnst/UQTk-build/dep/sundials/include)
 
-INSTALL(TARGETS pce_bcs.x 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS pce_bcs.x
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/pce_bcs)
 
 INSTALL(FILES ${copy_FILES} DESTINATION examples/pce_bcs)

@@ -1,6 +1,12 @@
 project (UQTk)
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+link_directories (${INSTALL_LIB_DIR})
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
 add_executable (pce_rv pce_rv.cpp)
 
 target_link_libraries (pce_rv uqtkpce  )
@@ -51,7 +57,13 @@ include_directories(../../lib/tools  )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+
+include_directories (${INSTALL_LIB_DIR})
+include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+include_directories (/Users/kjohnst/UQTk-SNL/dep/sundials/include/ )
+MESSAGE("{PROJECT_BINARY_DIR}/../../../dep/sundials/src = ${PROJECT_BINARY_DIR}/../../../dep/sundials/src")
+#include_directories (${CMAKE_SUNDIALS_DIR}/include)
+MESSAGE("{CMAKE_SUNDIALS_DIR}/include = ${CMAKE_SUNDIALS_DIR}/include")
+include_directories(/Users/kjohnst/UQTk-build/dep/sundials/include)
 
 INSTALL(TARGETS pce_rv DESTINATION bin)
-

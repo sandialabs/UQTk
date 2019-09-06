@@ -9,6 +9,12 @@ SET(copy_FILES
   )
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
+
 add_executable (bimodal.x bimodal.cpp)
 add_executable (tmcmc_bimodal.x tmcmc_bimodal.cpp)
 
@@ -59,7 +65,7 @@ include_directories(../../dep/lapack)
 include_directories(../../dep/blas)
 include_directories(../../dep/slatec)
 include_directories(../../dep/lbfgs)
-include_directories(../../dep/cvode-2.7.0/include)
+
 
 INSTALL(TARGETS tmcmc_bimodal.x DESTINATION examples/tmcmc_bimodal)
 INSTALL(TARGETS bimodal.x DESTINATION examples/tmcmc_bimodal)

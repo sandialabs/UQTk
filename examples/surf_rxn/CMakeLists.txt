@@ -1,14 +1,14 @@
 project (UQTk)
 
 SET(copy_CPP_FILES
-   SurfRxnNISP.cpp 
+   SurfRxnNISP.cpp
    SurfRxnNISP_MC.cpp
    SurfRxnISP.cpp
    SurfRxnDet.cpp
    Utils.cpp
-   model.h 
-   XMLreader.h 
-   posterior.h 
+   model.h
+   XMLreader.h
+   posterior.h
    Utils.h
   )
 
@@ -31,6 +31,11 @@ SET(copy_PY_FILES
 
 # SurfRxnNISP.x
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
+link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
+
 add_executable (SurfRxnNISP.x    SurfRxnNISP.cpp    Utils.cpp)
 add_executable (SurfRxnNISP_MC.x SurfRxnNISP_MC.cpp Utils.cpp)
 add_executable (SurfRxnISP.x     SurfRxnISP.cpp     Utils.cpp)
@@ -113,23 +118,31 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories (${CMAKE_SUNDIALS_DIR}/include)  
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${INSTALL_LIB_DIR})
+include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+include_directories (/Users/kjohnst/UQTk-SNL/dep/sundials/include/ )
+MESSAGE("{PROJECT_BINARY_DIR}/../../../dep/sundials/src = ${PROJECT_BINARY_DIR}/../../../dep/sundials/src")
+#include_directories (${CMAKE_SUNDIALS_DIR}/include)
+MESSAGE("{CMAKE_SUNDIALS_DIR}/include = ${CMAKE_SUNDIALS_DIR}/include")
+include_directories(/Users/kjohnst/UQTk-build/dep/sundials/include)
 
-INSTALL(TARGETS SurfRxnNISP.x    
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnNISP.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnNISP_MC.x 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnNISP_MC.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnISP.x     
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnISP.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnDet.x     
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnDet.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
 
 INSTALL(FILES ${copy_CPP_FILES} DESTINATION examples/surf_rxn)
 INSTALL(FILES ${copy_XML_FILES} DESTINATION examples/surf_rxn)
-INSTALL(FILES ${copy_PY_FILES} 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_PY_FILES}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)

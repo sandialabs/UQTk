@@ -50,16 +50,6 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 
 option(UQTk_ENABLE_SUNDIALS_SUBMODULE_UPDATE "Flag to enable sundials submodule update" OFF)
 
-# Sundials
-if(NOT DEFINED CMAKE_SUNDIALS_DIR)
-    #set path to sundials
-    SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
-    MESSAGE("CMAKE_SUNDIALS_DIR = ${CMAKE_SUNDIALS_DIR}")
-    MESSAGE("NOt defined sundials")
-
-    #message(FATAL_ERROR "You must set path to sundial through CMAKE_SUNDIALS_DIR")
-endif()
-
 add_definitions(-D__wsu)
 add_definitions(-fPIC)
 add_definitions(-w)
