@@ -60,8 +60,6 @@ include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
 
 include_directories(../../../dep/dsfmt)
-include_directories(../../../dep/lapack)
-include_directories(../../../dep/blas)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/cvode-2.7.0/include)

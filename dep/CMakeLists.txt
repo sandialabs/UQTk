@@ -27,7 +27,6 @@ include_directories("../cpp/lib/include")
 find_package(BLAS)
 find_package(LAPACK)
 
-
 #if we need lapack or blas
 if(NOT LAPACK_FOUND)
   add_subdirectory(lapack)
