@@ -9,10 +9,7 @@ add_subdirectory (pce     )
 add_subdirectory (kle     )
 add_subdirectory (bcs     )
 add_subdirectory (mcmc    )
-<<<<<<< HEAD
 add_subdirectory (tmcmc   )
-=======
->>>>>>> lapack and blas use built in versions, compiles without errors and tests pass
 add_subdirectory (xmlutils)
 add_subdirectory (lreg    )
 add_subdirectory (gproc   )

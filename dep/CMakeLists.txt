@@ -27,29 +27,6 @@ include_directories("../cpp/lib/include")
 find_package(BLAS)
 find_package(LAPACK)
 
-#if we need lapack or blas
-if(NOT LAPACK_FOUND)
-  add_subdirectory(lapack)
-  FILE(GLOB lapacksrc "lapack/*.f")
-endif()
-
-if(NOT BLAS_FOUND)
-  add_subdirectory(blas)
-  FILE(GLOB blassrc "blas/*.f")
-endif()
-
-
-if(NOT BLAS_FOUND AND NOT LAPACK_FOUND)
-  add_library(depuqtk ${lapacksrc} ${blassrc} ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
-elseif(NOT BLAS_FOUND)
-  add_library(depuqtk ${blassrc} ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
-elseif(NOT LAPACK_FOUND)
-  add_library(depuqtk ${lapacksrc} ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
-else()
-  add_library(depuqtk ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
-endif()
-
-
 
 #if we need lapack or blas
 if(NOT LAPACK_FOUND)

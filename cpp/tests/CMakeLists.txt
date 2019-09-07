@@ -15,16 +15,10 @@ add_subdirectory (CorrTest         )
 add_subdirectory (QuadLUTest       )
 
 # # MCMC class tests
-<<<<<<< HEAD
 add_subdirectory (TMCMC2dTest       )
 add_subdirectory (MCMC2dTest       )
 add_subdirectory (MCMCRandomTest   )
 add_subdirectory (MCMCNestedTest   )
-=======
-add_subdirectory (MCMC2dTest       )
-add_subdirectory (MCMCRandomTest   )
-add_subdirectory (MCMCNestedTest   )
->>>>>>> lapack and blas use built in versions, compiles without errors and tests pass
 
 # # PCBasis and PCSet tests
 add_subdirectory (Deriv1dTest      )
