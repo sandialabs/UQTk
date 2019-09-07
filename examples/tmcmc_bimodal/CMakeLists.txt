@@ -1,4 +1,4 @@
-cpp/tests/TMCMC2dTest/CMakeLists.txt project (UQTk)
+project (UQTk)
 
 SET(copy_FILES
   tmcmc_getLL.sh

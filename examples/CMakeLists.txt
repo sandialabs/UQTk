@@ -1,4 +1,4 @@
-examples/CMakeLists.txt project (UQTk)
+project (UQTk)
 
 add_subdirectory (ops)
 add_subdirectory (kle_ex1)
