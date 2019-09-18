@@ -21,8 +21,8 @@ target_link_libraries (pce_bcs.x deplbfgs )
 target_link_libraries (pce_bcs.x depcvode )
 target_link_libraries (pce_bcs.x depnvec  )
 target_link_libraries (pce_bcs.x depslatec)
-target_link_libraries (pce_bcs.x deplapack)
-target_link_libraries (pce_bcs.x depblas  )
+target_link_libraries (pce_bcs.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (pce_bcs.x m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (pce_bcs.x depfigtree )
 target_link_libraries (pce_bcs.x depann   )
 
@@ -69,8 +69,8 @@ include_directories(../../dep/figtree)
 include_directories(../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
 
-INSTALL(TARGETS pce_bcs.x 
-              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS pce_bcs.x
+              PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
               DESTINATION examples/pce_bcs)
 
 INSTALL(FILES ${copy_FILES} DESTINATION examples/pce_bcs)

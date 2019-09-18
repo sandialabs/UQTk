@@ -14,8 +14,8 @@ include_directories (../pce    )
 include_directories (../bcs    )
 
 
-include_directories (../../../dep/lapack)
-include_directories (../../../dep/blas)
+target_link_libraries(uqtklowrank m blas ${BLAS_LIBRARIES})
+target_link_libraries(uqtklowrank m lapack ${LAPACK_LIBRARIES})
 include_directories (../../../dep/lbfgs)
 include_directories (../../../dep/dsfmt)
 include_directories (../../../dep/figtree)

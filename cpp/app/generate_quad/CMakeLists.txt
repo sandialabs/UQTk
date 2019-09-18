@@ -6,8 +6,8 @@ target_link_libraries (generate_quad uqtktools)
 target_link_libraries (generate_quad uqtkarray)
 
 target_link_libraries (generate_quad depdsfmt )
-target_link_libraries (generate_quad deplapack)
-target_link_libraries (generate_quad depblas  )
+target_link_libraries(generate_quad m blas ${BLAS_LIBRARIES})
+target_link_libraries(generate_quad m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (generate_quad depfigtree )
 target_link_libraries (generate_quad depann   )
 
@@ -45,4 +45,3 @@ include_directories(../../../dep/figtree)
 
 
 INSTALL(TARGETS generate_quad DESTINATION bin)
-

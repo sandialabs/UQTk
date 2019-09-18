@@ -79,7 +79,7 @@ def main(argv):
     parser.add_argument("-p", "--pdom",     dest="pdomain_file", type=str,   default=None, help="Parameter domain file")
     parser.add_argument("-c", "--pcfile",   dest="inpc_file",    type=str,   default=None, help="Input PC coef. file")
     parser.add_argument("-d", "--pcdim",    dest="in_pcdim",     type=int,   default=None, help="Input PC stoch. dimension")
-    parser.add_argument("-x", "--pctype",   dest="pc_type",      type=str,   default='LU',    help="PC type",     choices=['HG','LU','LU_N','GLG','JB','SW'])
+    parser.add_argument("-x", "--pctype",   dest="pc_type",      type=str,   default='LU',    help="PC type",     choices=['HG','LU','LU_N','LG','JB','SW'])
     parser.add_argument("-o", "--pcord",    dest="in_pcord",     type=int,   default=1,       help="Input PC order")
     parser.add_argument("-m", "--method",   dest="fit_method",   type=str,   default='proj',  help="Surrogate construction method", choices=['proj','lsq','bcs'])
     parser.add_argument("-s", "--sampl",    dest="sam_method",   type=str,   default='quad',  help="Sampling method", choices=['quad','rand'])

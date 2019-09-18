@@ -14,9 +14,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/quad/) # quad clas
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/kle/) # kle class
 
 # include dependencies
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/blas/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lapack/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # blas library headers
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt library headers
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
 SET(CMAKE_SWIG_FLAGS "")
@@ -24,7 +22,7 @@ SET_SOURCE_FILES_PROPERTIES(kle.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	kle LANGUAGE python SOURCES kle.i 
+	kle LANGUAGE python SOURCES kle.i
 	# array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -46,10 +44,14 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., gfortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(kle uqtktools uqtkquad uqtkarray deplapack depdsfmt depblas gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(kle uqtktools uqtkquad uqtkarray  depdsfmt  gfortran ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES (kle m blas ${BLAS_LIBRARIES})
+	SWIG_LINK_LIBRARIES (kle m lapack ${LAPACK_LIBRARIES})
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(kle uqtktools uqtkquad uqtkarray deplapack depdsfmt depblas ifcore ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(kle uqtktools uqtkquad uqtkarray  depdsfmt  ifcore ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES (kle m blas ${BLAS_LIBRARIES})
+	SWIG_LINK_LIBRARIES (kle m lapack ${LAPACK_LIBRARIES})
 endif()
 
 INSTALL(TARGETS _kle DESTINATION PyUQTk/)

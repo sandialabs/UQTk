@@ -14,10 +14,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/tools/) # tools li
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/quad/) # quad class
 
 # include dependencies
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/blas/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/lapack/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # blas library headers
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # blas library headers
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/dsfmt/) # dsfmt library headers
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../dep/figtree/) # figtree library headers
 # INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
 SET(CMAKE_SWIG_FLAGS "")
@@ -25,7 +24,7 @@ SET_SOURCE_FILES_PROPERTIES(quad.i PROPERTIES CPLUSPLUS ON)
 
 # compile swig with cpp extensions
 SWIG_ADD_LIBRARY(
-	quad LANGUAGE python SOURCES quad.i 
+	quad LANGUAGE python SOURCES quad.i
 	# # array tools needed to compile misc tools source files
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arrayio.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/array/arraytools.cpp
@@ -46,10 +45,12 @@ SWIG_ADD_LIBRARY(
 # link python and 3rd party libraries, e.g., fortran and blas
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  SWIG_LINK_LIBRARIES(quad uqtkarray uqtktools deplapack depdsfmt depblas depfigtree depann gfortran ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(quad uqtkarray uqtktools depdsfmt depfigtree depann gfortran ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(quad blas lapack)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel
-  SWIG_LINK_LIBRARIES(quad uqtkarray uqtktools deplapack depdsfmt depblas depfigtree depann ifcore ${PYTHON_LIBRARIES})
+  SWIG_LINK_LIBRARIES(quad uqtkarray uqtktools depdsfmt depfigtree depann ifcore ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(quad blas lapack)
 endif()
 
 

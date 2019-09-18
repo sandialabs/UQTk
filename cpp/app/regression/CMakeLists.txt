@@ -14,8 +14,8 @@ target_link_libraries (regression deplbfgs )
 target_link_libraries (regression depcvode )
 target_link_libraries (regression depnvec  )
 target_link_libraries (regression depslatec)
-target_link_libraries (regression deplapack)
-target_link_libraries (regression depblas  )
+target_link_libraries (regression m blas ${BLAS_LIBRARIES})
+target_link_libraries (regression m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (regression depfigtree )
 target_link_libraries (regression depann   )
 
@@ -62,4 +62,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS regression DESTINATION bin)
-

@@ -30,7 +30,6 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(INSTALL_LIB_DIR     lib    )
 set(INSTALL_BIN_DIR     bin    )
 set(INSTALL_INCLUDE_DIR include)
-set(INSTALL_INCLUDE_DIR include)
 
 # Make relative paths absolute (needed later on)
 foreach(p LIB BIN INCLUDE)
@@ -41,7 +40,7 @@ foreach(p LIB BIN INCLUDE)
 endforeach()
 
 option(PyUQTk "PyUQTk" OFF)
-option(DFI "DFI" OFF)
+#option(DFI "DFI" OFF)
 
 # CXX flags
 #set(CMAKE_CXX_FLAGS "-O2")
@@ -57,6 +56,17 @@ add_subdirectory (cpp     )
 add_subdirectory (examples)
 add_subdirectory (PyUQTk  )
 add_subdirectory (doc  )
+
+find_package(BLAS)
+find_package(LAPACK)
+
+if(NOT LAPACK_FOUND)
+  MESSAGE("-- Not able to find system installed lapack. Using UQTk version of Lapack. If system version of Lapack is desired, please specify LAPACK_LIBRARIES in config file. ")
+endif()
+
+if(NOT BLAS_FOUND)
+  MESSAGE("-- Not able to find system installed Blas. Using UQTk version of Blas. If system version of Blas is desired, please specify BLAS_LIBRARIES in config file. ")
+endif()
 
 # Copy over README file too
 INSTALL(FILES README

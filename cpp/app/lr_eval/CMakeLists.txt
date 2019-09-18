@@ -15,8 +15,8 @@ target_link_libraries (lr_eval deplbfgs )
 target_link_libraries (lr_eval depcvode )
 target_link_libraries (lr_eval depnvec  )
 target_link_libraries (lr_eval depslatec)
-target_link_libraries (lr_eval deplapack)
-target_link_libraries (lr_eval depblas  )
+target_link_libraries(lr_eval m blas ${BLAS_LIBRARIES})
+target_link_libraries(lr_eval m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (lr_eval depfigtree )
 target_link_libraries (lr_eval depann   )
 
@@ -63,4 +63,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS lr_eval DESTINATION bin)
-

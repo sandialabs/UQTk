@@ -25,7 +25,7 @@
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 /// \file gq.cpp
-/// \brief Utilities to generate quadrature rules. 
+/// \brief Utilities to generate quadrature rules.
 
 #include "stdio.h"
 #include "stdlib.h"
@@ -52,7 +52,7 @@ double jpolp_gq(int n, double a, double b, double x) ;
 double lgpol_gq(int n, double a, double x) ;
 double fact_gq (int n) ;
 
-/* 
+/*
   Gauss Quadrature for:
   kind = 1 -> Legendre
          2 -> Chebyshev, 1st kind
@@ -87,10 +87,10 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
   /* Test if n=1 */
   if ( n==1) {
     if ( kind == 1 ) { /* Legendre */
-      x[0] = 0.0 ; w[0] = 2.0 ; 
+      x[0] = 0.0 ; w[0] = 2.0 ;
     }
     else if ( kind == 4 ) { /* Hermite */
-      x[0] = 0.0 ; 
+      x[0] = 0.0 ;
       //#ifdef HERMITE_PROB
       //w[0]=1.0;
       //#else
@@ -98,7 +98,7 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
       //#endif
     }
     else if ( kind == 5 ) { /* Jacobi */
-      x[0] = (b-a)/(2.0+a+b); 
+      x[0] = (b-a)/(2.0+a+b);
       w[0] = -(4.0+a+b)/(2.0+a+b)*tgamma(2.0+a)*tgamma(2.0+b)/tgamma(2.0+a+b)/2.0*pow(2.0,a+b)
 	/(jpolp_gq(1,a,b,x[0])*jpol_gq(2,a,b,x[0])) ;
     }
@@ -117,10 +117,10 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
       double di = (double) i+1;
       sdag[i] = sqrt(di*di / ( ( 2.0*di-1.0 ) * ( 2.0*di+1.0 ) ));
     }
-  } 
+  }
   else if ( kind == 4 ) { /* Hermite */
     for ( int i=0; i<n  ; i++ ) x[i] = 0.0 ;
-    for ( int i=0; i<n-1; i++ ) 
+    for ( int i=0; i<n-1; i++ )
       //#ifdef HERMITE_PROB
       //sdag[i] = sqrt((double) i+1);
       //#else
@@ -130,7 +130,7 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
   else if ( kind == 5 ) { /* Jacobi */
     double ab2 = a*a-b*b;
     double apb = a+b;
-    for ( int i=0; i<n  ; i++ ) { 
+    for ( int i=0; i<n  ; i++ ) {
       double dn = 2.0*((double) i + 1.0) ;
       if ( fabs((dn+apb-2.0)*(dn+apb)) < 1.e-10 )
         x[i] = 0.0 ;
@@ -158,7 +158,7 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
   int nloc = n, ldz=1 ;
   //cout<<"calling dstev"<<endl;
   //dstev_ ( (char *) "N", &nloc, x, sdag, NULL, &ldz, NULL, &info ) ;
-  FTN_NAME(dsteqr)( (char *) "N", &nloc, x, sdag, NULL, &ldz, NULL, &info ); 
+  FTN_NAME(dsteqr)( (char *) "N", &nloc, x, sdag, NULL, &ldz, NULL, &info );
 
   if ( info != 0 ) {
     cout<<"Error in gq(): dstev returned error :"<<info<<endl<<flush ;
@@ -171,12 +171,12 @@ void gq ( const int kind, const int n, const double a, const double b, double *x
     for ( int i=0; i<n  ; i++ ) {
       w[i] = 2.0*(1.0-x[i]*x[i])/pow((dn+1.0)*lpol_gq(n+1,x[i]),2) ;
     }
-  } 
+  }
   else if ( kind == 4 ) { /* Hermite */
     double dn = (double) n;
       for ( int i=0; i<n  ; i++ ){
       //#ifdef HERMITE_PROB
-      //w[i] = fact_gq(n)*sqrt(2.0*DPI)/pow(dn*hpol_gq(n-1,x[i]),2);  
+      //w[i] = fact_gq(n)*sqrt(2.0*DPI)/pow(dn*hpol_gq(n-1,x[i]),2);
       //#else
       //w[i] = pow(2.0,n-1)*fact_gq(n)*sqrt(DPI)/pow(dn*hpol_phys_gq(n-1,x[i]),2);
           // Can we have some comments on what the reason for these tests is?
@@ -216,7 +216,7 @@ void gchb(const int kind, const int n, double *x, double *w )
   {
     double dtheta = DPI/((double) n) ;
     double theta  = 0.5*dtheta ;
-    for ( int i = 0 ; i < n ; i++ ) 
+    for ( int i = 0 ; i < n ; i++ )
     {
       w[n-1-i] = dtheta ;
       x[n-1-i] = cos(theta) ;
@@ -227,14 +227,14 @@ void gchb(const int kind, const int n, double *x, double *w )
   {
     double dtheta = DPI/((double) n + 1.0 ) ;
     double theta   = dtheta ;
-    for ( int i = 0 ; i < n ; i++ ) 
+    for ( int i = 0 ; i < n ; i++ )
     {
       w[n-1-i] = dtheta*pow(sin(theta),2) ;
       x[n-1-i] = cos(theta) ;
       theta += dtheta ;
     }
   }
-  
+
   else
   {
     cout<<"ERROR in gchb() : kind should be either 1 or 2 : "<<kind<<endl<<flush ;
@@ -245,10 +245,10 @@ void gchb(const int kind, const int n, double *x, double *w )
 
 }
 
-/* 
+/*
   Gauss Quadrature for generic recursions
  */
-void gq_gen(Array1D<double>& a, Array1D<double>& b, const double amu0, 
+void gq_gen(Array1D<double>& a, Array1D<double>& b, const double amu0,
             Array1D<double>& x, Array1D<double>& w)
 {
   int i;
@@ -256,7 +256,7 @@ void gq_gen(Array1D<double>& a, Array1D<double>& b, const double amu0,
   int ldz = n;
   int info ;
 
-  /* take sqrt of the off-diagonal */  
+  /* take sqrt of the off-diagonal */
   for (i=1;i<n;i++) b(i)=sqrt(b(i));
   for (i=0;i<n;i++) x(i)=a(i);
 
@@ -286,7 +286,7 @@ void vandermonde_gq(Array1D<double>& x, Array1D<double>& w, Array1D<double>& q) 
   int n = x.XSize() ;
 
   for (int i=0; i<n; i++) w(i) = q(i) ;
-      
+
   for ( int k=0; k<n-1; k++ )
     for (int i=n-1; i>=k+1; i--)
       w(i) = w(i)-x(k)*w(i-1);
@@ -319,7 +319,7 @@ double lpol_gq(int n, double x) {
   //return ( ((2.0*dn-1.0)*x*lpol_gq(n-1,x)-(dn-1.0)*lpol_gq(n-2,x))/dn ) ;
   return ( pn1 ) ;
 }
- 
+
 /* Hermite - probabilist */
 double hpol_gq(int n, double x) {
   if ( n==-1) return (0.0) ;

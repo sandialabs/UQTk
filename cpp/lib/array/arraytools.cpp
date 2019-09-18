@@ -65,7 +65,7 @@ void array2Dto1D(Array2D<T> &arr_2d, Array1D<T> &arr)
 {
   int nd  = arr_2d.XSize();
   int one = arr_2d.YSize();
-  
+
   // Size check
   CHECKEQ(one,1);
 
@@ -86,7 +86,7 @@ void paste(Array1D<T>& arr1,Array1D<T>& arr2,Array2D<T>& arr)
 {
   int n=arr1.XSize();
   int m=arr2.XSize();
-  
+
   // Size check
   CHECKEQ(n,m);
 
@@ -634,7 +634,7 @@ void shell_sort (int *a, int n) {
       int k = a[i];
       for ( j = i; j >= h && k < a[j - h]; j -= h)
         a[j] = a[j - h];
-      
+
       a[j] = k;
 
     }
@@ -765,7 +765,7 @@ void shell_sort_all(Array2D<double>& array,Array1D<int>& newInd, Array1D<int>& o
       }
     }
   }
-  
+
   return;
 
 }
@@ -888,7 +888,7 @@ void intersect(Array1D<int> &A, Array1D<int> &B, Array1D<int> &C,Array1D<int> &i
 
 }
 
-// Finds common entries in 1D arrays 'A' and 'B' and returns them in 'C', sorted in ascending order 
+// Finds common entries in 1D arrays 'A' and 'B' and returns them in 'C', sorted in ascending order
 void intersect(Array1D<int> &A, Array1D<int> &B, Array1D<int> &C)
 {
     C.Clear() ;
@@ -1616,7 +1616,7 @@ Array2D<double> copy(Array2D<double>& in_array){
   return out;
 }
 
-// Deletes matrix columns or rows. 
+// Deletes matrix columns or rows.
 Array2D<double> mtxdel(Array2D<double>& A, int index, int dim){
   // deletes column when dim = 1
   // deletes row when dim = 0
@@ -1909,7 +1909,7 @@ Array2D<double> dotmult(Array2D<double>& A, Array2D<double>& B){
 
   int n1 = A.YSize();
   int m1 = B.YSize();
-  
+
   // Size check
   CHECKEQ(n1,m1);
 
@@ -1951,7 +1951,7 @@ Array2D<double> dotdivide(Array2D<double>& A, Array2D<double>& B){
 
   int n1 = A.YSize();
   int m1 = B.YSize();
-  
+
   // Size check
   CHECKEQ(n1,m1);
 
@@ -2168,7 +2168,7 @@ Array2D<double> AinvH(Array2D<double> &A,Array2D<double> &H){
   Array2D<double> X = H;
 
   FTN_NAME(dposv)( &uplo, &n,&k, L.GetArrayPointer(), &n, X.GetArrayPointer(), &n, &info  );
-  
+
   return X;
 }
 
@@ -2186,7 +2186,7 @@ Array1D<double> Ainvb(Array2D<double> &A,Array1D<double> &b){
   Array1D<double> x = b;
 
   FTN_NAME(dposv)( &uplo, &n,&k, L.GetArrayPointer(), &n, x.GetArrayPointer(), &n, &info  );
-  
+
   return x;
 }
 // Least squares solution for overdetermined system

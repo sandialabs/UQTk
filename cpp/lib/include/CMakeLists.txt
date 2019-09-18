@@ -4,6 +4,8 @@ SET(misc_HEADERS
   ftndefs.h
   gen_defs.h
   uqtkconfig.h
+  depblas.h
+  deplapack.h
   )
 
 # Install the header files

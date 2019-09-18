@@ -42,6 +42,7 @@
 #include "arraytools.h"
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //  __        __  ____     ____   ____
 //  \ \      / / | __ )   / ___| / ___|
@@ -485,6 +486,3 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     WBCS(PHI, y, sigma2, eta, lambda_init, adaptive, optimal, scale, verbose,
         weights, used, errbars, basis, alpha, Sig);
 }
-
-
-

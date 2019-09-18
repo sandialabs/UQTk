@@ -11,8 +11,8 @@ target_link_libraries (pce_resp depdsfmt )
 target_link_libraries (pce_resp depcvode )
 target_link_libraries (pce_resp depnvec  )
 target_link_libraries (pce_resp depslatec)
-target_link_libraries (pce_resp deplapack)
-target_link_libraries (pce_resp depblas  )
+target_link_libraries (pce_resp m blas ${BLAS_LIBRARIES})
+target_link_libraries (pce_resp m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (pce_resp depfigtree )
 target_link_libraries (pce_resp depann   )
 
@@ -53,4 +53,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS pce_resp DESTINATION bin)
-

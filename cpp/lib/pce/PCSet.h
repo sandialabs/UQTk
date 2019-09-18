@@ -72,8 +72,8 @@ public:
   ///
   /// Implementation type sp_type has three options "ISP" (intrusive methods), "NISP" (non-intrusive),
   /// or "NISPnoq" (non-intrusive without quadrature initialization)
-  /// \note alpha and betta are parameters only relevant for GLG, JB or SW chaoses
-  PCSet(const string sp_type, const int order, const int n_dim, const string pc_type, 
+  /// \note alpha and betta are parameters only relevant for LG, JB or SW chaoses
+  PCSet(const string sp_type, const int order, const int n_dim, const string pc_type,
         const double alpha=0.0, const double betta=1.0);
 
 
@@ -85,7 +85,7 @@ public:
   ///
   /// Implementation type sp_type has three options "ISP" (intrusive methods), "NISP" (non-intrusive),
   /// or "NISPnoq" (non-intrusive without quadrature initialization)
-  /// \note alpha and betta are parameters only relevant for GLG, JB or SW chaoses
+  /// \note alpha and betta are parameters only relevant for LG, JB or SW chaoses
   PCSet(const string sp_type, const int order, const int n_dim, const string pc_type, const string pc_seq,
         const double alpha=0.0, const double betta=1.0);
 
@@ -95,8 +95,8 @@ public:
   ///
   /// Implementation type sp_type has three options "ISP" (intrusive methods), "NISP" (non-intrusive),
   /// or "NISPnoq" (non-intrusive without quadrature initialization)
-  /// \note alpha and betta are parameters only relevant for GLG, JB or SW chaoses
-  PCSet(const string sp_type, const Array1D<int>& maxOrders, const int n_dim, const string pc_type, 
+  /// \note alpha and betta are parameters only relevant for LG, JB or SW chaoses
+  PCSet(const string sp_type, const Array1D<int>& maxOrders, const int n_dim, const string pc_type,
         const double alpha=0.0, const double betta=1.0);
 
   /// \brief Constructor: initializes the PC basis set for a given
@@ -105,8 +105,8 @@ public:
   /// Implementation type sp_type has three options
   /// "ISP" (intrusive methods), "NISP" (non-intrusive),
   /// or "NISPnoq" (non-intrusive without quadrature initialization)
-  /// \note alpha and betta are parameters only relevant for GLG, JB or SW chaoses
-  PCSet(const string sp_type, const Array2D<int>& customMultiIndex, const string pc_type, 
+  /// \note alpha and betta are parameters only relevant for LG, JB or SW chaoses
+  PCSet(const string sp_type, const Array2D<int>& customMultiIndex, const string pc_type,
         const double alpha=0.0, const double betta=1.0);
 
   /// \brief Destructor: cleans up all memory and destroys object
@@ -137,7 +137,7 @@ public:
   /// Set the quadrature rule
   /////////////////////////////////////////////////////////////////////////////////////////
 
-  /// \brief Obtain 1d quadrature points and weights 
+  /// \brief Obtain 1d quadrature points and weights
   /// \note This is used in triple or quadruple product computation for which the default quadrature is not enough
   void SetQd1d(Array1D<double>& qdpts1d,Array1D<double>& wghts1d, int nqd);
 
@@ -527,7 +527,7 @@ public:
   /// \brief Returns quad products indices (int*/double* version)
   void GetQuadProd(int *nQuad, int *iProd, int *jProd, int *kProd, double *Cijkl) const;
   /// \brief Returns quad products indices (Array version)
-  void GetQuadProd(Array1D<int> &nQuad, Array1D<int> &iProd, Array1D<int> &jProd, Array1D<int> &kProd, 
+  void GetQuadProd(Array1D<int> &nQuad, Array1D<int> &iProd, Array1D<int> &jProd, Array1D<int> &kProd,
 		   Array1D<double> &Cijkl) const;
 
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -640,7 +640,7 @@ public:
   /// Moment/sensitivity extraction given coefficients
   /////////////////////////////////////////////////////////////////////////////////////////
 
-  /// \brief Compute the mean of the PC given coefficients in double *coef 
+  /// \brief Compute the mean of the PC given coefficients in double *coef
   /// (seeking the zero-th order multiindex)
   double ComputeMean(const double *coef);
 
@@ -829,7 +829,7 @@ public:
   /// \brief String indicator of PC type
   string pcType_;
 
-  /// \brief String indicator of multiindex ordering 
+  /// \brief String indicator of multiindex ordering
   string pcSeq_;
 
   /// \brief Pointer to the class that defines the basis type and functions
@@ -949,7 +949,7 @@ public:
   /// \brief Number of free parameters to specify the basis
   int narg_;
 
-  /// \brief Parameter alpha for PCs that require a parameter (GLG,SW,JB)
+  /// \brief Parameter alpha for PCs that require a parameter (LG,SW,JB)
   double alpha_;
   /// \brief Parameter beta for PCs that require two parameters (SW,JB)
   double beta_;

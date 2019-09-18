@@ -11,8 +11,8 @@ target_link_libraries (pce_quad depdsfmt )
 target_link_libraries (pce_quad depcvode )
 target_link_libraries (pce_quad depnvec  )
 target_link_libraries (pce_quad depslatec)
-target_link_libraries (pce_quad deplapack)
-target_link_libraries (pce_quad depblas  )
+target_link_libraries (pce_quad m blas ${BLAS_LIBRARIES})
+target_link_libraries (pce_quad m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (pce_quad depfigtree )
 target_link_libraries (pce_quad depann   )
 
@@ -52,4 +52,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS pce_quad DESTINATION bin)
-

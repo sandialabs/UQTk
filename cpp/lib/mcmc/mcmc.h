@@ -71,8 +71,6 @@ public:
   /// \brief Constructor, given a pointer to logPosterior function, a pointer to additional info, e.g. data
   ///        and the chain dimensionality
   MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
-  /// \brief Dummy constructor
-  MCMC(){};
 
   //*****************************************
 
@@ -82,6 +80,10 @@ public:
   void resetChainState();
   dsfmt_t RandomState;
 
+  //*****************************************
+
+  /// \brief Dummy Constructor, used for TMCMC
+  MCMC();
 
   //*****************************************
 
@@ -97,6 +99,12 @@ public:
 
   /// \brief Set defaults
   void initDefaults();
+
+  /// \brief Set TMCMC defaults
+  void initTMCMCDefaults();
+
+  // /// \brief Set TMCMC range defaults
+  // void initTMCMCRngsDefaults();
 
   /// \brief Print chain information on the screen
   void printChainSetup();
@@ -123,6 +131,25 @@ public:
   /// \brief Initialize epsilon for MALA
   void initEpsMALA(double eps_mala);
 
+  /// \brief Initialize the number of processes for TMCMC
+  void initTMCMCNprocs(int tmcmc_nprocs);
+  /// \brief Initialize the the coefficient behind the covariance scaling
+  ///        factor for TMCMC
+  void initTMCMCGamma(double tmcmc_gamma);
+  /// \brief Initialize the maximum allowed coefficient of variation for
+  ///        the weights in TMCMC
+  void initTMCMCCv(double tmcmc_cv);
+  /// \brief Initialize the multiplicative factor for chain length to
+  ///        encourage mixing in TMCMC
+  void initTMCMCMFactor(int tmcmc_MFactor);
+  /// \brief Initialize the choice to resample according to BASIS and
+  ///        CATMIPs in TMCMC
+  void initTMCMCBasis(bool tmcmc_basis);
+  /// \brief Initialize the CATMIPs resampling parameter for TMCMC
+  void initTMCMCCATSteps(int tmcmc_CATSteps);
+  // /// \brief Initialize the ranges for all TMCMC samples
+  // void initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs);
+
   /// \brief Set output specification, type('txt' or 'bin'), filename, frequency of outputs to the file and to screen.
   void setOutputInfo(string outtype, string file,int freq_file, int freq_screen);
 
@@ -140,6 +167,9 @@ public:
 
   /// \brief The actual function that generates MCMC
   void runChain(int ncalls, Array1D<double>& chstart);
+
+  /// \brief Start an MCMC chain with trivial initial condition
+  void runChain(int ncalls);
 
   /// \brief Structure that holds the chain state information
   struct chainstate{
@@ -261,7 +291,23 @@ private:
     Array1D<int> adaptstep;
     /// Chain proposal distributions (before the adaptivity starts)
     Array2D<double> chcov;
-    /// Method type, 'am' or 'ss'
+
+    /// In TMCMC, the number of processes to use for parallel likelihood evaluation
+    int tmcmc_nprocs;
+    /// In TMCMC, the coefficient behind the covariance scaling factor
+    double tmcmc_gamma;
+    /// In TMCMC, the maximum allowed coefficient of variation for the weights
+    double tmcmc_cv;
+    /// In TMCMC, the multiplicative factor for chain length to encourage mixing
+    int tmcmc_MFactor;
+    /// In TMCMC, resample according to BASIS and CATMIPs
+    bool tmcmc_basis;
+    /// In TMCMC, CATMIPs resampling parameter
+    int tmcmc_CATSteps;
+    /// In TMCMC, the ranges for all samples
+    std::vector<std::vector<double>> tmcmc_rngs;
+
+    /// Method type, 'am' or 'ss' or 'tmcmc'
     string type;
   }  methodinfo_;
 
@@ -317,6 +363,13 @@ private:
   bool gammaInit_;
   bool epscovInit_;
   bool epsMalaInit_;
+  bool tmcmcNprocsInit_;
+  bool tmcmcGammaInit_;
+  bool tmcmcCvInit_;
+  bool tmcmcMFactorInit_;
+  bool tmcmcBasisInit_;
+  bool tmcmcCATStepsInit_;
+  bool tmcmcRngsInit_;
   //@}
 
   /// \brief Flag that indicates whether gradient information is given or not
@@ -333,6 +386,17 @@ private:
   double default_gamma_;
   double default_eps_cov_;
   double default_eps_mala_;
+  //@}
+
+  //@{
+  /// \brief TMCMC Defaults
+  int default_tmcmc_nprocs_;
+  double default_tmcmc_gamma_;
+  double default_tmcmc_cv_;
+  int default_tmcmc_MFactor_;
+  bool default_tmcmc_basis_;
+  int default_tmcmc_CATSteps_;
+  std::vector<std::vector<double>> default_tmcmc_rngs_;
   //@}
 
   /// \brief Lower bounds

@@ -1,0 +1,30 @@
+#!/bin/bash
+# Parallel evaluation of prior for TMCMC
+
+nProc=$1 # number of processes
+SLP1=0.05 # pause between checking existance of "done" files
+
+# separate processes are run from corresponding subdirectories
+for k in `seq 1 ${nProc}`
+do
+  rm -rf tmcmc_process_${k}
+  mkdir tmcmc_process_${k}
+  cd tmcmc_process_${k}
+  cp ../model.x .
+  cp ../mcmcstates_${k}.dat mcmcstates_local.dat
+  ./model.x -p &
+  cd ..
+done
+
+rm -f tmcmc_lp.dat
+list=""
+for k in `seq 1 ${nProc}`
+do
+	while [ ! -f tmcmc_process_${k}/done.txt ]
+	do
+		sleep ${SLP1}
+	done
+	list="$list tmcmc_process_${k}/tmcmc_lp.dat"
+done
+
+cat $list > tmcmc_lp.dat

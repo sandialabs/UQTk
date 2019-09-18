@@ -38,6 +38,11 @@
 #include "minmax.h"
 #include "arraytools.h"
 
+// extern FTN_FUNC void FTN_NAME(dgmres)(int*, double*, double*, int*, int*, int*,
+//         double*, int*, f77_matvecprod, f77_precond,
+//         int*, double*, int*, int*, double*, int*, int*, double*, double*,
+//         double*, int*, int*, int*, double*, int*);
+
 // Static members need to be pre-declared
 int PCSet::next_index_ = 0;
 PCSet::OMap_t *PCSet::omap_ = NULL;
@@ -2998,8 +3003,8 @@ bool PCSet::IsInDomain(double x)
     if(fabs(x)>1)
       return false;
 
-  // For GLG and SW, the domain is [0,\infty)
-  if( !strcmp(type.c_str(),"GLG") or !strcmp(type.c_str(),"SW") )
+  // For LG and SW, the domain is [0,\infty)
+  if( !strcmp(type.c_str(),"LG") or !strcmp(type.c_str(),"SW") )
     if(x<0)
       return false;
 

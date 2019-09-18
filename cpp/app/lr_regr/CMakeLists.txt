@@ -15,8 +15,8 @@ target_link_libraries (lr_regr deplbfgs )
 target_link_libraries (lr_regr depcvode )
 target_link_libraries (lr_regr depnvec  )
 target_link_libraries (lr_regr depslatec)
-target_link_libraries (lr_regr deplapack)
-target_link_libraries (lr_regr depblas  )
+target_link_libraries (lr_regr m blas ${BLAS_LIBRARIES})
+target_link_libraries (lr_regr m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (lr_regr depfigtree )
 target_link_libraries (lr_regr depann   )
 
@@ -63,4 +63,3 @@ include_directories(../../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS lr_regr DESTINATION bin)
-

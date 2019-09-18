@@ -28,6 +28,7 @@
 from __future__ import print_function #so the print statements in python2 looks right
 
 import sys
+import argparse
 
 try:
 	import numpy as np
@@ -64,6 +65,11 @@ except ImportError:
     print("PyUQTk tools module not found")
 
 try:
+    import PyUQTk.PyPCE.pce_tools as pce_tools
+except ImportError:
+    print("PyUQTk pce_tools module not found")
+
+try:
     from heat_transfer_pce_tools import *
 except ImportError:
     print("File with PCE utilities not found.")
@@ -72,30 +78,60 @@ except ImportError:
 #####################################################################
 
 #####################################################################
-# Some general settings
-main_verbose = 1
-compute_rad = True # Whether or not radiation is considered
+# Parse input arguments
+usage_str = """Script produce a graph comparing PDFs of heat flux generated using
+	NISP full and sparse quadrature methods and a Monte Carlo sampling method
+	Look at manual example Forward Propagation of Uncertainty with PyUQTk for more explanation"""
+parser = argparse.ArgumentParser(description=usage_str)
+parser.add_argument("--no_verbose", help="To trun off intermediate print statements.", action='store_false')
+parser.add_argument("-r", "--no_compute_rad", help="To not compute radiation. [Default to include radiation]", action='store_false')
+parser.add_argument("--nord", dest="nord", type=int,
+                    default=3, help="the order of the PCE [default = 3]")
+parser.add_argument("--ndim", dest="ndim", type=int,
+                    default=None, help="the number of dimensions of the PCE [default: 7 with radiation, 6 without radiation]")
+parser.add_argument("--pc_type", dest="pc_type", type=str,
+                    default="HG", help="indicates the polynomial type and weighting function [default = HG]")
+parser.add_argument("-a", dest="pc_alpha", type=float,
+                    default=0.0, help="Free parameter greater than -1. Used with Gamma-Laguerre and Beta-Jacobi PC types. [default = 0.0]")
+parser.add_argument("-b", dest="pc_beta", type=float,
+                    default=1.0, help="Free parameter greater than -1. Used with Gamma-Laguerre and Beta-Jacobi PC types. [default = 1.0]")
+parser.add_argument("--param", dest="param", type=int, default=None,
+					help="The parameter used for quadrature point generation. Equal to the number of quadrature points per dimension for full quadrature or the level for sparse quadrature methods. This parameter is generally set to nord + 1 in order to have the right polynomial exactness. [Default is nord + 1]")
+parser.add_argument("--n_MC", dest="n_MC", type=int, default=100000,
+					help = "Number of random samples to use in MC sampling (of the full problem or of the PCE of the solution) [default = 100000]")
+args = parser.parse_args()
+
+#save parsed arguments in variables
+main_verbose = args.no_verbose
+compute_rad = args.no_compute_rad
+nord = args.nord
+ndim = args.ndim
+pc_type = args.pc_type
+pc_alpha = args.pc_alpha
+pc_beta = args.pc_beta
+param = args.param
+n_MC = args.n_MC
+
+#set param if not set in command line
+if(not param):
+	param = nord + 1
+
 if main_verbose > 0:
     print("\nConsidering heat transfer with ", end= ' ')
     if not compute_rad:
         print("no ",end= ' ')
     print("radiation.")
 
-nord = 3 # Order of the PCE
 # Number of dimensions of the PCE (number of uncertain variables)
-if compute_rad:
-    ndim = 7
-else:
-    ndim = 6
-pc_type = "HG" # Use Wiener-Hermite PCE since inputs have a normal distribution
-pc_alpha = 0.0
-pc_beta = 1.0
-param= nord+1   # Parameter for quadrature point generation
-                # Equal to number of quad points per dimension for full quadrature or level for sparse quadrature
-n_MC = 100000   # Number of random samples to use in MC sampling (of the full problem or of the PCE of the solution)
+if(not ndim):
+	if compute_rad:
+	    ndim = 7
+	else:
+	    ndim = 6
 
 
 # Nominal values of the parameters used to calculate the heat flux
+#These values are the same as shown in tha table in example forward propgation of uncertainty with PyUQTk in the manual
 Ti = 293.0 # Room temperature in K
 To = 273.0 # Outside temperature in K
 dw = 0.01  # Window thickness in m
@@ -158,7 +194,7 @@ if main_verbose > 10:
 print("\nInstantiation complete")
 
 #Get numpy array of quadrature points
-qdpts, totquat = get_quadpts(pc_model,ndim)
+qdpts, totquat = pce_tools.UQTkGetQuadPoints(pc_model)
 
 # Convert Quadrature points in \xi_i to equivalent samples of input parameters
 # (taking advantage of the fact that inputs are assumed to be Gaussian)
@@ -179,11 +215,12 @@ else:
     Q_evals=fwd_model_rad(Ti_samples,To_samples, dw_samples, kw_samples,hi_samples,ho_samples,TA_samples,main_verbose)
 
 # Do the actual Galerkin Projection
-c_k = GalerkinProjection(pc_model,Q_evals)
-# Generate germ samples
-germ_samples=np.random.normal(0,1, (n_MC,ndim))
-# Evaluate the PCE at the germ samples
-pce_evals=evaluate_pce(pc_model,c_k,germ_samples)
+c_k = pce_tools.UQTkGalerkinProjection(pc_model,Q_evals)
+
+pc_model.SeedBasisRandNumGen(123)
+#Draw samples of PCE evaulations
+pce_evals = pce_tools.UQTkDrawSamplesPCE(pc_model, c_k, n_MC)
+
 #Peform kernel density estimation
 xpts_pce, PDF_data_pce= KDE(pce_evals)
 
@@ -205,7 +242,7 @@ if main_verbose > 10:
 print("\nInstantiation complete")
 
 #Get numpy array of quadrature points
-qdpts2, totquat2= get_quadpts(pc_model2,ndim)
+qdpts2, totquat2= pce_tools.UQTkGetQuadPoints(pc_model2)
 
 # Convert Quadrature points in \xi_i to equivalent samples of input parameters
 # (taking advantage of the fact that inputs are assumed to be Gaussian)
@@ -226,12 +263,12 @@ else:
     Q_evals2=fwd_model_rad(Ti_samples2,To_samples2, dw_samples2, kw_samples2,hi_samples2,ho_samples2,TA_samples2,main_verbose)
 
 # Do the actual Galerkin Projection
-c_k2 = GalerkinProjection(pc_model2,Q_evals2)
+c_k2 = pce_tools.UQTkGalerkinProjection(pc_model2,Q_evals2)
 
-# Generate germ samples for KDE
-germ_samples2=np.random.normal(0,1, (n_MC,ndim))
-# Evaluate the PCE at the germ samples
-pce_evals2=evaluate_pce(pc_model2,c_k2,germ_samples2)
+
+#Draw samples of PCE evaulations
+pce_evals2 = pce_tools.UQTkDrawSamplesPCE(pc_model2, c_k2, n_MC)
+
 #Peform kernel density estimation
 xpts_pce2, PDF_data_pce2= KDE(pce_evals2)
 

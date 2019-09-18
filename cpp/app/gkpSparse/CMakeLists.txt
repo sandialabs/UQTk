@@ -7,8 +7,8 @@ target_link_libraries (gkpSparse uqtktools)
 target_link_libraries (gkpSparse uqtkarray)
 
 target_link_libraries (gkpSparse depdsfmt )
-target_link_libraries (gkpSparse deplapack)
-target_link_libraries (gkpSparse depblas  )
+target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
+target_link_libraries (gkpSparse m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (gkpSparse depfigtree )
 target_link_libraries (gkpSparse depann   )
 
@@ -44,4 +44,3 @@ include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
 
 INSTALL(TARGETS gkpSparse DESTINATION bin)
-

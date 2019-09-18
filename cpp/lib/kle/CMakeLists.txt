@@ -9,7 +9,8 @@ include_directories (../include)
 include_directories (../array  )
 include_directories (../tools  )
 
-include_directories (../../../dep/lapack)
+#find and include lapack
+target_link_libraries(uqtkkle m lapack ${LAPACK_LIBRARIES})
 
 # Install the library
 INSTALL(TARGETS uqtkkle DESTINATION lib)

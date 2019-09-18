@@ -1,14 +1,14 @@
 project (UQTk)
 
 SET(copy_CPP_FILES
-   SurfRxnNISP.cpp 
+   SurfRxnNISP.cpp
    SurfRxnNISP_MC.cpp
    SurfRxnISP.cpp
    SurfRxnDet.cpp
    Utils.cpp
-   model.h 
-   XMLreader.h 
-   posterior.h 
+   model.h
+   XMLreader.h
+   posterior.h
    Utils.h
   )
 
@@ -37,19 +37,28 @@ add_executable (SurfRxnDet.x     SurfRxnDet.cpp     Utils.cpp)
 
 target_link_libraries (SurfRxnNISP.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
 target_link_libraries (SurfRxnNISP.x  depdsfmt deplbfgs depcvode depnvec
-depslatec deplapack depblas depfigtree depann)
+depslatec depfigtree depann)
+target_link_libraries (SurfRxnNISP.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (SurfRxnNISP.x m lapack ${LAPACK_LIBRARIES})
 
 target_link_libraries (SurfRxnNISP_MC.x uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
 target_link_libraries (SurfRxnNISP_MC.x depdsfmt deplbfgs depcvode depnvec
-depslatec deplapack depblas depfigtree depann)
+depslatec depfigtree depann)
+
+target_link_libraries (SurfRxnNISP_MC.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (SurfRxnNISP_MC.x m lapack ${LAPACK_LIBRARIES})
 
 target_link_libraries (SurfRxnISP.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
 target_link_libraries (SurfRxnISP.x  depdsfmt deplbfgs depcvode depnvec
-depslatec deplapack depblas depfigtree depann )
+depslatec  depfigtree depann )
+target_link_libraries (SurfRxnISP.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (SurfRxnISP.x m lapack ${LAPACK_LIBRARIES})
 
 target_link_libraries (SurfRxnDet.x  uqtkpce uqtkmcmc uqtkquad uqtktools uqtkarray uqtkxmlutils)
 target_link_libraries (SurfRxnDet.x  depdsfmt deplbfgs depcvode depnvec
-depslatec deplapack depblas depfigtree depann )
+depslatec  depfigtree depann )
+target_link_libraries (SurfRxnDet.x m blas ${BLAS_LIBRARIES})
+target_link_libraries (SurfRxnDet.x m lapack ${LAPACK_LIBRARIES})
 
 # Link fortran libraries
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -112,21 +121,21 @@ include_directories(../../dep/figtree)
 include_directories(../../dep/cvode-2.7.0/include)
 include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
 
-INSTALL(TARGETS SurfRxnNISP.x    
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnNISP.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnNISP_MC.x 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnNISP_MC.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnISP.x     
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnISP.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
-INSTALL(TARGETS SurfRxnDet.x     
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(TARGETS SurfRxnDet.x
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)
 
 INSTALL(FILES ${copy_CPP_FILES} DESTINATION examples/surf_rxn)
 INSTALL(FILES ${copy_XML_FILES} DESTINATION examples/surf_rxn)
-INSTALL(FILES ${copy_PY_FILES} 
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+INSTALL(FILES ${copy_PY_FILES}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION examples/surf_rxn)

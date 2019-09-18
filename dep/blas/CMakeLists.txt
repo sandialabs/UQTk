@@ -2,9 +2,9 @@
 enable_language(Fortran)
 
 FILE(GLOB slsrc "*.f")
-add_library(depblas ${slsrc})
+add_library(blas ${slsrc})
 
-INSTALL(TARGETS depblas DESTINATION lib)
+INSTALL(TARGETS blas DESTINATION lib)
 
 # Install the header files
 SET(blas_HEADERS
@@ -12,4 +12,3 @@ SET(blas_HEADERS
   )
 
 INSTALL(FILES ${blas_HEADERS} DESTINATION include/dep)
-
