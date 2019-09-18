@@ -5,8 +5,8 @@ read -p "enter directory: " directory_list
 
 echo "Changing from directory: $directory_list"
 #file that all changed names get saved to
-FILECHANGED="files_changed.new"
-FILE_NOT_CHANGED="files_not_changed.new"
+FILECHANGED="files_changed.txt"
+FILE_NOT_CHANGED="files_not_changed.txt"
 
 for directory in $directory_list; do
   #for all the python files and shell scripts
@@ -27,7 +27,7 @@ for directory in $directory_list; do
         echo "$i" >> $FILECHANGED
 
       #if needed copy the first line then do header
-    elif [ "$(head -2 $i |tail -1 | head -c2)" == "#=" ] || [ "$(head -2 $i |tail -1 | head -c3)" == "# =" ]
+      elif [ "$(head -2 $i |tail -1 | head -c2)" == "#=" ] || [ "$(head -2 $i |tail -1 | head -c3)" == "# =" ]
       then
           NEWFILE="${i}.new"
           [ -f "$NEWFILE" ] && echo "Sorry, $NEWFILE already exists" && continue
@@ -79,7 +79,7 @@ for directory in $directory_list; do
         echo "$i" >> $FILECHANGED
 
       #if needed copy the first line then do header
-    elif [ "$(head -2 $i |tail -1 | head -c3)" == "//=" ]
+      elif [ "$(head -2 $i |tail -1 | head -c3)" == "//=" ]
       then
           NEWFILE="${i}.new"
           [ -f "$NEWFILE" ] && echo "Sorry, $NEWFILE already exists" && continue
@@ -130,7 +130,7 @@ for directory in $directory_list; do
         echo "$i" >> $FILECHANGED
 
       #if needed copy the first line then do header
-    elif [ "$(head -2 $i |tail -1 | head -c4)" == "/* ="  ]
+      elif [ "$(head -2 $i |tail -1 | head -c4)" == "/* ="  ]
       then
           NEWFILE="${i}.new"
           [ -f "$NEWFILE" ] && echo "Sorry, $NEWFILE already exists" && continue
@@ -178,7 +178,7 @@ for directory in $directory_list; do
           echo "$i" >> $FILECHANGED
 
         #if needed copy the first line then do header
-      elif [ "$(head -2 $i |tail -1 | head -c5)" == "c$$$="  ]
+        elif [ "$(head -2 $i |tail -1 | head -c5)" == "c$$$="  ]
         then
             NEWFILE="${i}.new"
             [ -f "$NEWFILE" ] && echo "Sorry, $NEWFILE already exists" && continue
