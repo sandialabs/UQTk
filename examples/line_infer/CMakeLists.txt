@@ -11,10 +11,6 @@ SET(copy_FILES
 
 # line_infer.x
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/cvode)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/nvector/serial)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunlinsol/dense)
-link_directories(/Users/kjohnst/UQTk-build/dep/sundials/src/sunmatrix/dense)
 
 add_executable (line_infer.x line_infer.cpp)
 
