@@ -1,3 +1,30 @@
+/* =====================================================================================
+
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
+
+     This file is part of The UQ Toolkit (UQTk)
+
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
+
+     UQTk is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     BSD 3 Clause License for more details.
+
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Sandia National Laboratories, Livermore, CA, USA
+===================================================================================== */
 #include "tmcmc.h"
 
 #define BETA_MAX 0.3
@@ -59,7 +86,7 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
   dsfmt_init_gen_rand(&RandomState,iseed);
 
   /* Generate Initial Random Samples */
-  /* Check if an initial sample file exists, otherwise 
+  /* Check if an initial sample file exists, otherwise
     generate from a d-dim hypercube */
   spls.clear();
   readInitSamples(spls, "tmcmc_prior_samples.dat");
@@ -205,7 +232,7 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
     /* Control Parameter, Covariance rescaling */
     std::transform(cvmat.begin(), cvmat.end(), cvmat.begin(),
                    std::bind2nd(std::multiplies<double>(),gm2));
-    
+
 
     /* Cholesky factorization of the proposal covariance, in-place */
     int chol_info=0;
@@ -292,7 +319,7 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
           splCand[ispl*ndim+i] += Lnrv;
         } /* done generating candidate */
       }
-    
+
 
       /* Compute new likelihoods */
       RealVector splsComp;

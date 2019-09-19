@@ -1,3 +1,30 @@
+/* =====================================================================================
+
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
+
+     This file is part of The UQ Toolkit (UQTk)
+
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
+
+     UQTk is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     BSD 3 Clause License for more details.
+
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Sandia National Laboratories, Livermore, CA, USA
+===================================================================================== */
 //dfi.h
 #ifndef DFI_H_
 #define DFI_H_
@@ -35,7 +62,7 @@
 
 //data container for surrogate model
 class DFIsurr{
-	
+
 	public:
 
 	//model surrogate containers
@@ -51,7 +78,7 @@ class DFIsurr{
         //surrogate defined flag
         bool surrDefined;
 
-        //PCset defines and initializes polynomial chaos basis function set 
+        //PCset defines and initializes polynomial chaos basis function set
         //PCSet *surrmodelreac;
         PCSet* surrModel;
 
@@ -59,7 +86,7 @@ class DFIsurr{
         Array2D<double> PCEcoefficients;
         //container for evaluated PCE basis functions
         Array2D<double> psiPCE;
-	
+
 	//Array1D<double> evaluateSurr();
 	void evaluateSurr(Array1D<double> & modelOutput, Array1D<double> & params);
 };
@@ -67,11 +94,11 @@ class DFIsurr{
 
 
 
-//data container 
+//data container
 class dataPosteriorInformation{
-	
+
 	public:
-	
+
 	int seed;
 	//dimension of the data space
 	int dataDim;
@@ -79,20 +106,20 @@ class dataPosteriorInformation{
 	int paramDim;
 	//the number of constraints to impose
 	int numConstraints;
-       
-	 
-	//boolean flag indicating that the data likelihood function is running for noise optimzation 
+
+
+	//boolean flag indicating that the data likelihood function is running for noise optimzation
 	bool errorOpt;
-	//boolean flag indicating that the the data chain has achieved burn-in 
+	//boolean flag indicating that the the data chain has achieved burn-in
 	bool dataChainBurnedIn;
 	//counter for entry in data chain
 	int dataChain_count;
-        
+
 
 	//container for passing noisy data sample to 1D noise optimization chain
 	Array1D<double> optErrorParameters;
-        
-	//containers for data signal, i.e. y=f(x)       
+
+	//containers for data signal, i.e. y=f(x)
 	Array1D<double> trueDatax;
 	Array1D<double> trueDatay;
 	//container for error signal (e.g. noise + bias)
@@ -105,7 +132,7 @@ class dataPosteriorInformation{
 	Array1D<double> hyperparameters;
 	//container for parameters for surrogate data model
 	Array1D<double> surrParameters;
-        
+
 	//ABC stuff
 	//container to store labels describing the statistics to enforce as constraints
 	vector<string> statLabels;
@@ -113,42 +140,42 @@ class dataPosteriorInformation{
 	vector<double> statValues;
 	//container to store the values of the ABC deltas for approximately enforcing statistics as contraints
 	vector<double> statDeltas;
-       
- 
+
+
 	//parameter chain write options
 	int paramWriteFlag;
 	string burninParamWriteFile;
 	string mainParamWriteFile;
-        
-	//length of parameter chains    
+
+	//length of parameter chains
 	int parameterBurnInNumSamples;
 	int parameterChainNumSamples;
 
 
 	//surrogate model
-	DFIsurr surrModelObj;	
+	DFIsurr surrModelObj;
 	int numSurr;
 	vector<DFIsurr> surrModels;
 
 };
 
-//data container 
+//data container
 class parameterPosteriorInformation{
-	
+
 	public:
 	Array1D<double> dataChainState;
-	//container for passing optimal error parameters to inner likelihood during error optimation 
+	//container for passing optimal error parameters to inner likelihood during error optimation
 	Array1D<double> optErrorParams;
 	Array1D<double> hyperparameters;
 	bool errorOpt;
-	//the input 'x' possibly required to compute the model function y=f(x)	
+	//the input 'x' possibly required to compute the model function y=f(x)
 	Array1D<double> trueDatax;
 
 	/* pointer to surrogate model object */
 	DFIsurr * surrModelObj_;
 
-	vector<DFIsurr> * surrModels_; 
-	
+	vector<DFIsurr> * surrModels_;
+
 };
 
 //============================================
@@ -162,7 +189,7 @@ double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInf
 double userComputeParamLogLikelihood(parameterPosteriorInformation * paramPostInfo, Array1D<double> modelDataOut, Array1D<double> parameters, Array1D<double> hyperparameters);
 //compute statistics from inner parameter chain
 void userComputeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::chainstate> & parameterChain);
-//define the target data signal 
+//define the target data signal
 void userDefineData(dataPosteriorInformation & dataPostInfo);
 //define the constraints
 void userDefineConstraints(dataPosteriorInformation & dataPostInfo);
@@ -192,9 +219,9 @@ void computeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::chain
 class DFI{
 
 	private:
-	//seed 
+	//seed
 	int seed;
-	
+
 
 	//metadata container to pass by argument to data MCMC chain
 	dataPosteriorInformation dataPostInfo;
@@ -220,12 +247,12 @@ class DFI{
 	int dataChainNumSamples_burnin;
 	//length of error model parameter optimization chain
 	double errorOptChainNumSamples;
-	//target data chain acceptance ratio (a burn-in parameter)      
+	//target data chain acceptance ratio (a burn-in parameter)
 	double targetDataChainAcceptanceRatio;
 	double dataChainAcceptanceRatio;
 	double dataPosteriorMode;
 
-	//intial data chain (Gaussian) proposal covariance      
+	//intial data chain (Gaussian) proposal covariance
         double dataChainPropCov_init;
         double dataChainPropCov_fac;
 
@@ -237,9 +264,9 @@ class DFI{
 	//model surrogate containers
 
 	//surrogate defined flag
-	//bool surrDefined;	
-	
-	//PCset defines and initializes polynomial chaos basis function set 
+	//bool surrDefined;
+
+	//PCset defines and initializes polynomial chaos basis function set
 	//PCSet *surrmodelreac;
 	//PCSet* surrModel;
 
@@ -250,10 +277,10 @@ class DFI{
 	//===================================================
 
 
-	//=====wrappers for user specified functions========= 
+	//=====wrappers for user specified functions=========
 //compute parameter (truth model and error model) parameter posterior
 //double computeParamLogPosterior(parameterPosteriorInformation * paramPostInfo, Array1D<double> parameters);
-	//define the target data signal 
+	//define the target data signal
 	void defineData(dataPosteriorInformation & dataPostInfo){
 		userDefineData(dataPostInfo);
 	};
@@ -268,12 +295,12 @@ class DFI{
 	//run the true data model
 	void runModel(Array1D<double> &modelDataY, Array1D<double> &modelDataX, Array1D<double> & parameters, Array1D<double> &hyperparameters){
 
-	/* if a surrogate is defined use it */	
+	/* if a surrogate is defined use it */
 	if (dataPostInfo.surrModelObj.surrDefined){
 
 		/* map parameters of interest to surrogate parameters */
 		//userSurrMap(dataPostInfo.surrParameters, parameters, hyperparameters);
-	
+
 		/* check if parameters are within surrogate bounds */
 		bool inBounds=true;
 		for (int i=0; i<parameters.XSize();i++){
@@ -282,18 +309,18 @@ class DFI{
 				std::cout<<"Out of bounds: param("<<i+1<<"<<) = "<<parameters(i)<<std::endl;
 			}
 		}
-	
-		if (inBounds){	
+
+		if (inBounds){
 			dataPostInfo.surrModelObj.evaluateSurr(modelDataY, parameters);
 		}else{
 			userRunModel(modelDataY, modelDataX, parameters, hyperparameters);
 		}
 
 	}else{
-		//run user specified detailed model	
+		//run user specified detailed model
 		userRunModel(modelDataY, modelDataX, parameters, hyperparameters);
 	}
-	
+
 	//	userRunModel(modelDataY, modelDataX, parameters, hyperparameters);
 
 	};

@@ -2,7 +2,7 @@ app
 
 For more information, see Chapter 4, Source Code description in the UQTk Manual
 
-􏰠- generate_quad: Quadrature point/weight generation 􏰠
+- generate_quad: Quadrature point/weight generation 􏰠
 - gen_mi: Polynomial multiindex generation
 - gp_regr: Gaussian process regression
 - lr_regr: Low-rank regression

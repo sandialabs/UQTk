@@ -1,30 +1,31 @@
 #!/usr/bin/env python
 #=====================================================================================
-#                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-#                    Copyright (2013) Sandia Corporation
-#                     http://www.sandia.gov/UQToolkit/
 #
-#    Copyright (2013) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-#    with Sandia Corporation, the U.S. Government retains certain rights in this software.
+#                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+#                          Copyright (@UQTKYEAR@) NTESS
+#                        https://www.sandia.gov/UQToolkit/
+#                        https://github.com/sandialabs/UQTk
 #
-#    This file is part of The UQ Toolkit (UQTk)
+#     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+#     retains certain rights in this software.
 #
-#    UQTk is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#     This file is part of The UQ Toolkit (UQTk)
 #
-#    UQTk is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Lesser General Public License for more details.
+#     UQTk is open source software: you can redistribute it and/or modify
+#     it under the terms of BSD 3-Clause License
 #
-#    You should have received a copy of the GNU Lesser General Public License
-#    along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+#     UQTk is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     BSD 3 Clause License for more details.
 #
-#    Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
-#    Sandia National Laboratories, Livermore, CA, USA
-#====================================================================================
+#     You should have received a copy of the BSD 3 Clause License
+#     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+#
+#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Sandia National Laboratories, Livermore, CA, USA
+#=====================================================================================
 
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri

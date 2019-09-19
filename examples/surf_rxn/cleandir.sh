@@ -1,4 +1,31 @@
 #!/bin/bash
+#=====================================================================================
+#
+#                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+#                          Copyright (@UQTKYEAR@) NTESS
+#                        https://www.sandia.gov/UQToolkit/
+#                        https://github.com/sandialabs/UQTk
+#
+#     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+#     retains certain rights in this software.
+#
+#     This file is part of The UQ Toolkit (UQTk)
+#
+#     UQTk is open source software: you can redistribute it and/or modify
+#     it under the terms of BSD 3-Clause License
+#
+#     UQTk is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     BSD 3 Clause License for more details.
+#
+#     You should have received a copy of the BSD 3 Clause License
+#     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+#
+#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Sandia National Laboratories, Livermore, CA, USA
+#=====================================================================================
 
 # python
 /bin/rm -rf *.pyc
@@ -16,4 +43,3 @@
 /bin/rm -rf surf_rxn.in.parsed.xml surf_rxn.in.xml
 /bin/rm -rf input.dat output.dat input_fcn.dat output_fcn.dat input_val.dat
 /bin/rm -rf xy*.dat
-

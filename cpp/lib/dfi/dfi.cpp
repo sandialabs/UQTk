@@ -1,3 +1,30 @@
+/* =====================================================================================
+
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
+
+     This file is part of The UQ Toolkit (UQTk)
+
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
+
+     UQTk is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     BSD 3 Clause License for more details.
+
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Sandia National Laboratories, Livermore, CA, USA
+===================================================================================== */
 //dfi.cpp
 #include "dfi.h"
 //user defined functions
@@ -9,10 +36,10 @@ DFI::DFI(){
 	/*set seed for rng*/
 	seed=13;
 
-	std::cout<<"constructor..."<<std::endl;	
+	std::cout<<"constructor..."<<std::endl;
 	std::cout<<endl;
 
-	/*structure passed to data likelihood function*/  
+	/*structure passed to data likelihood function*/
         //dataPosteriorInformation dataPostInfo;
         dataPostInfo.dataChainBurnedIn=false;
         dataPostInfo.dataChain_count=0;
@@ -29,25 +56,25 @@ DFI::DFI(){
         dataChainNumSamples_burnin=500;
         //length of error model parameter optimization chain
         errorOptChainNumSamples=1000;
-        //target data chain acceptance ratio (a burn-in parameter)      
+        //target data chain acceptance ratio (a burn-in parameter)
         targetDataChainAcceptanceRatio=0.20;
         dataChainAcceptanceRatio=0.0;
         dataPosteriorMode=0.0;
-        
-        /*intial data chain proposal covariances*/      
+
+        /*intial data chain proposal covariances*/
         dataChainPropCov_fac = 0.1;
         //dataChainPropCov_init =pow(1.0e-7,2);
-        
+
         dataChainPropCovMatrix.Resize(dataPostInfo.dataDim,dataPostInfo.dataDim,0.0);
-	
+
 	//by default surrogate is not defined
 	dataPostInfo.surrModelObj.surrDefined=false;
 
-	
+
 	//set lengths of parameter chains
         dataPostInfo.parameterBurnInNumSamples=10000;
         dataPostInfo.parameterChainNumSamples=50000;
-	
+
         //write parameter chains to file (1=yes)
         dataPostInfo.paramWriteFlag=0;
         dataPostInfo.burninParamWriteFile="parameterChainBurnin.dat";
@@ -73,7 +100,7 @@ DFI::DFI(){
 //another constructor
 DFI::DFI(string inputfile){
 
-	std::cout<<"constructor using info user input file: "<<inputfile<<std::endl;	
+	std::cout<<"constructor using info user input file: "<<inputfile<<std::endl;
 	std::cout<<endl;
 	std::cout<<"parsing inputs by keyword..."<<std::endl;
 
@@ -93,7 +120,7 @@ DFI::DFI(string inputfile){
        while (iss >>svalue )   {
 
         //parse the string in svalue
-        //dvalue =atof(svalue.c_str());  
+        //dvalue =atof(svalue.c_str());
         //cout<<svalue<<dvalue<<" ";
 
       //keyword searches
@@ -116,10 +143,10 @@ DFI::DFI(string inputfile){
 
 	}
 
-	std::cout<<"constructor..."<<std::endl;	
+	std::cout<<"constructor..."<<std::endl;
 	std::cout<<endl;
 
-	//structure passed to data likelihood function  
+	//structure passed to data likelihood function
         //dataPosteriorInformation dataPostInfo;
         dataPostInfo.dataChainBurnedIn=false;
         dataPostInfo.dataChain_count=0;
@@ -136,25 +163,25 @@ DFI::DFI(string inputfile){
         dataChainNumSamples_burnin=100;
         //length of error model parameter optimization chain
         errorOptChainNumSamples=1000;
-        //target data chain acceptance ratio (a burn-in parameter)      
+        //target data chain acceptance ratio (a burn-in parameter)
         targetDataChainAcceptanceRatio=0.20;
         dataChainAcceptanceRatio=0.0;
         dataPosteriorMode=0.0;
-        
-        /*intial data chain proposal covariances*/      
+
+        /*intial data chain proposal covariances*/
         dataChainPropCov_fac = 0.1;
         //dataChainPropCov_init =pow(1.0e-7,2);
-        
+
         dataChainPropCovMatrix.Resize(dataPostInfo.dataDim,dataPostInfo.dataDim,0.0);
-	
+
 	//by default surrogate is not defined
 	dataPostInfo.surrModelObj.surrDefined=false;
 
-	
+
 	//set lengths of parameter chains
         dataPostInfo.parameterBurnInNumSamples=10000;
         dataPostInfo.parameterChainNumSamples=50000;
-	
+
         //write parameter chains to file (1=yes)
         dataPostInfo.paramWriteFlag=0;
         dataPostInfo.burninParamWriteFile="parameterChainBurnin.dat";
@@ -173,8 +200,8 @@ DFI::DFI(string inputfile){
 
 	//redirect printf statements
 	//setvbuf(stdout, NULL,_IOFBF,1024);
-	
-	exit(1);	
+
+	exit(1);
 
 
 }
@@ -182,8 +209,8 @@ DFI::DFI(string inputfile){
 
 DFI::~DFI(){
 
-	
-	
+
+
 }
 
 
@@ -220,7 +247,7 @@ void DFI::dataInference(){
 
 
 
-        //test that data posterior function is deterministic    
+        //test that data posterior function is deterministic
 /*
         cout<<dataInferenceLogPosterior(initData, (void*) &dataPostInfo)<<endl;
         cout<<dataInferenceLogPosterior(initData, (void*) &dataPostInfo)<<endl;
@@ -275,7 +302,7 @@ void DFI::dataInference(){
         for (int i=0;i<optimalErrorParams.XSize();i++){
                 optErrParamsFile<< setprecision(15)<<optimalErrorParams(i)<<endl;
         }
-        //      
+        //
 
         //set the initial nominal error model parameters
         for (int i=0; i<optimalErrorParams.XSize();i++){
@@ -299,15 +326,15 @@ void DFI::dataInference(){
         cout<<"    STARTING OUTER (DATA) BURN-IN CHAINLETS"<<endl;
         cout<<endl;
         cout<<"============================================="<<endl;
-	
+
 	dataPostInfo.errorOpt=false;
-        
+
 	//define initial MCMC proposal distributioni (iid-Gaussian) covariance matrix
         dataChainPropCov_init=noisyData(0)*dataChainPropCov_fac;
 	for (int i=0; i< dataPostInfo.dataDim; i++){
                 dataChainPropCovMatrix(i,i) = pow(dataChainPropCov_init,2.0);
         }
-        
+
 	int dataBurninCount=0;
         while (dataChainAcceptanceRatio< targetDataChainAcceptanceRatio){
                 dataBurninCount++;
@@ -364,11 +391,11 @@ void DFI::dataInference(){
 	//end of burn-in loop
         }
 	//=================================================================
-       
 
 
 
- 
+
+
 	//================MAIN DATA CHAIN ================================
         cout<<endl;
         cout<<"============================================="<<endl;
@@ -377,7 +404,7 @@ void DFI::dataInference(){
         cout<<endl;
         cout<<"============================================="<<endl;
         //
-        
+
 	dataPostInfo.dataChainBurnedIn=true;
         MCMC dataChain(dataInferenceLogPosterior,(void*) &dataPostInfo);
         dataChain.setChainDim(dataPostInfo.dataDim);
@@ -410,7 +437,7 @@ void DFI::dataInference(){
                 cout<<endl;
         }
 	//==================================================
-	
+
 }
 
 
@@ -419,7 +446,7 @@ void DFI::dataRefit(){
 
 
 
-	//structure passed to data likelihood function  
+	//structure passed to data likelihood function
         //dataPosteriorInformation dataPostInfo;
         //dataPostInfo.dataChainBurnedIn=false;
 
@@ -458,7 +485,7 @@ void DFI::dataRefit(){
         //write parameter chains to file (1=yes)
         //dataPostInfo.paramWriteFlag=0;
 
-        //define the initial noisy data chain state 
+        //define the initial noisy data chain state
         //userDefineData(&dataPostInfo);
         defineData(dataPostInfo);
 
@@ -479,7 +506,7 @@ void DFI::dataRefit(){
 
         //preform parameter inference
         Array1D<double> dataSample(dataPostInfo.dataDim,0.0);
-        //parameter chain container     
+        //parameter chain container
         Array1D<MCMC::chainstate> parameterChainEntries;
 
         stringstream chainoutname;
@@ -496,15 +523,15 @@ void DFI::dataRefit(){
                 std::cout<<"Refitting data chain sample "<<i<<" of "<<dataChainLength<<std::endl;
 		chainoutname <<"parameterChainBurnin_"<<i<<".refit";
                 dataPostInfo.burninParamWriteFile=chainoutname.str();;
-                //clear the stringstream 
+                //clear the stringstream
                 chainoutname.str("");
                 chainoutname <<"parameterChain_"<<i<<".refit";
                 dataPostInfo.mainParamWriteFile=chainoutname.str();
                 chainoutname.str("");
-                
+
 		//need to pass reference to dataPostInfo, function expects a pointer
 		parameterInference(&dataPostInfo, dataSample, parameterChainEntries);
-                
+
 		cout<<endl; //skip a line to make the log file more readable
                 //write out chain samples and compute parameter limits
                 chainsampsfilename.str("");
@@ -534,7 +561,7 @@ void DFI::dataRefit(){
 
         }
 
-	//limits filename 
+	//limits filename
         stringstream limitsfilename;
         limitsfilename <<"kdeLimits.dat";
         //create file for write
@@ -566,14 +593,14 @@ void DFI::buildSurrogateModel(){
         //use user specified nominal model parameter values
         specifyNominalParams(dataPostInfo);
 	//make sure data is defined
-	defineData(dataPostInfo);	
+	defineData(dataPostInfo);
 	//=======================================
 
 
 	//Array1D<double> inputParameters;
 	//runModel(dataPostInfo.trueDatay, dataPostInfo.trueDatax, dataPostInfo.nominalParameters, dataPostInfo.hyperparameters);
 
-	//set PCE spectral-projection type, order, dimension, basis type  
+	//set PCE spectral-projection type, order, dimension, basis type
 	//(&(sparams(casei-1)))->surrmodelreac = new PCSet("NISPnoq",(&(sparams(casei-1)))->R,1,"LU");
 
 
@@ -582,12 +609,12 @@ void DFI::buildSurrogateModel(){
 	//PCE dimension equal to truth model paramter dimension
 	int PCEdim=dataPostInfo.nominalParameters.XSize();
 	dataPostInfo.surrModelObj.PCEdim=PCEdim;
-	
+
 	//surrogate limits
 	dataPostInfo.surrModelObj.surrHi.Resize(PCEdim,0.0);
 	dataPostInfo.surrModelObj.surrLo.Resize(PCEdim,0.0);
 
-/*	
+/*
 	dataPostInfo.surrModelObj.surrLo(0) = 0.4*dataPostInfo.nominalParameters(0);
 	dataPostInfo.surrModelObj.surrHi(0) = 1.6*dataPostInfo.nominalParameters(0);
 */
@@ -596,7 +623,7 @@ void DFI::buildSurrogateModel(){
 		dataPostInfo.surrModelObj.surrHi(i) = 1.2*dataPostInfo.nominalParameters(i);
 		std::cout<<"lo= "<< dataPostInfo.surrModelObj.surrLo(i) <<", hi= "<< dataPostInfo.surrModelObj.surrHi(i)<<std::endl;
 	}
-	
+
 	/* write surrogate limits to file */
         stringstream surrLimitsFilename;
         surrLimitsFilename <<"limits_1.surr";
@@ -611,7 +638,7 @@ void DFI::buildSurrogateModel(){
 
 
 
-	
+
 	// Legendre-uniform PCE
 	dataPostInfo.surrModelObj.surrModel = new PCSet("NISPnoq",PCEorder,PCEdim,"LU");
 	dataPostInfo.surrModelObj.numPCETerms = dataPostInfo.surrModelObj.surrModel ->GetNumberPCTerms();
@@ -625,8 +652,8 @@ void DFI::buildSurrogateModel(){
 	// Gauss-Hermite PCE
 	//surrModel = new PCSet("NISPnoq",numPCETerms,1,"HG");
 
-	int numQuadPts=dataPostInfo.surrModelObj.numPCETerms;	
-	//set the quadrature rule: grid-type, full/sparse,	
+	int numQuadPts=dataPostInfo.surrModelObj.numPCETerms;
+	//set the quadrature rule: grid-type, full/sparse,
 	//surrModel->SetQuadRule("CC","full",numQuadPts);
 	dataPostInfo.surrModelObj.surrModel->SetQuadRule("CC","full",numQuadPts);
 	//surrModel->SetQuadRule("HG","full",numQuadPts);
@@ -635,7 +662,7 @@ void DFI::buildSurrogateModel(){
 	Array2D<double> quadPoints;
  	//surrModel->GetQuadPoints(quadPoints);
 	dataPostInfo.surrModelObj.surrModel->GetQuadPoints(quadPoints);
-	numQuadPts=quadPoints.XSize();	
+	numQuadPts=quadPoints.XSize();
 
 
 
@@ -656,7 +683,7 @@ void DFI::buildSurrogateModel(){
 
 	/* bug, works in 1D */
 	//Array2D<double> modelDataQuad(numQuadPts,dataPostInfo.dataDim,0.0);
-	
+
 	Array2D<double> modelDataQuad(quadPoints.XSize(),dataPostInfo.dataDim,0.0);
 	Array1D<double> modelDataOut(dataPostInfo.dataDim,0.0);
 	Array1D<double> quadPoint(dataPostInfo.nominalParameters.XSize(),0.0);
@@ -669,18 +696,18 @@ void DFI::buildSurrogateModel(){
 		std::cout<<"Quad point "<<i+1<<" (";
 
 
-		//loop over parameters*/	
+		//loop over parameters*/
 		//normalize input to standard interval [-1, 1]
 		/*
 		quadPoint(0) = ((dataPostInfo.surrModelObj.surrLo(0)+dataPostInfo.surrModelObj.surrHi(0))/2.0) + quadPoints(i,0)*((dataPostInfo.surrModelObj.surrHi(0)-dataPostInfo.surrModelObj.surrLo(0))/2.0);
 		*/
 		//quadPoint(1) = ((dataPostInfo.surrModelObj.surrLo(0)+dataPostInfo.surrModelObj.surrHi(0))/2.0) + quadPoints(i,0)*((dataPostInfo.surrModelObj.surrHi(0)-dataPostInfo.surrModelObj.surrLo(0))/2.0);
-		
+
 		for (int j=0; j<quadPoints.YSize();j++){
 			quadPoint(j) = ((dataPostInfo.surrModelObj.surrLo(j)+dataPostInfo.surrModelObj.surrHi(j))/2.0) + quadPoints(i,j)*((dataPostInfo.surrModelObj.surrHi(j)-dataPostInfo.surrModelObj.surrLo(j))/2.0);
 		}
-		
-		//run the model 
+
+		//run the model
 		for (int j=0; j<quadPoints.YSize()-1;j++){
 			std::cout<<quadPoint(j)<<", ";
 		}
@@ -692,24 +719,24 @@ void DFI::buildSurrogateModel(){
 		//get_molfrac_case_H2O2(params, (*sparams1).Nt, target_mol, &(*sparams1).SpeciesNames, &(*sparams1).SpeciesInit, &(*sparams1).target_species, (*sparams1).chgflag, (*sparams1).number_of_reactions);
 
 		//store model data evaluated at each quadrature point (i)
-		for (int j=0; j<dataPostInfo.dataDim; j++){ 
+		for (int j=0; j<dataPostInfo.dataDim; j++){
 			modelDataQuad(i,j) = modelDataOut(j);
 		}
 
 	}
 	//==============================================================
-	
+
 	//====== write out data at quadrature points ===================
 	std::cout<<"Write out model data at quadrature points:"<<std::endl;
 	//loop over quadrature points
 	//for (int i=0; i<numQuadPts; i++){
 	for (int i=0; i<quadPoints.XSize(); i++){
-		
+
 	//	quadPoint(0) = ((dataPostInfo.surrModelObj.surrLo(0)+dataPostInfo.surrModelObj.surrHi(0))/2.0) + quadPoints(i,0)*((dataPostInfo.surrModelObj.surrHi(0)-dataPostInfo.surrModelObj.surrLo(0))/2.0);
 	//	std::cout<<"("<<quadPoint(0)<<"): ";
-		
+
 		//for (int j=0; j<PCEdim; j++){
-		
+
 		std::cout<<"(";
 		for (int j=0; j<quadPoints.YSize()-1; j++){
 			quadPoint(j) = ((dataPostInfo.surrModelObj.surrLo(j)+dataPostInfo.surrModelObj.surrHi(j))/2.0) + quadPoints(i,j)*((dataPostInfo.surrModelObj.surrHi(j)-dataPostInfo.surrModelObj.surrLo(j))/2.0);
@@ -717,10 +744,10 @@ void DFI::buildSurrogateModel(){
 		}
 		quadPoint(quadPoints.YSize()-1) = ((dataPostInfo.surrModelObj.surrLo(quadPoints.YSize()-1)+dataPostInfo.surrModelObj.surrHi(quadPoints.YSize()-1))/2.0) + quadPoints(i,quadPoints.YSize()-1)*((dataPostInfo.surrModelObj.surrHi(quadPoints.YSize()-1)-dataPostInfo.surrModelObj.surrLo(quadPoints.YSize()-1))/2.0);
 		std::cout<<quadPoint(quadPoints.YSize()-1)<<") : ";
-		
-		
+
+
 		//loop over data points
-		for (int j=0; j<dataPostInfo.dataDim; j++){ 
+		for (int j=0; j<dataPostInfo.dataDim; j++){
 			std::cout<<modelDataQuad(i,j)<<" ";
 		}
 		std::cout<<std::endl;
@@ -730,7 +757,7 @@ void DFI::buildSurrogateModel(){
 
 	//Array1D<double> TargetSpeciesVec(nquad); // npt-sized vector of solution evaluations
 	//Array1D<double> cvec(nTerms); // Vector of PC mode coefficients
-	
+
 	Array1D<double> coeffVector(dataPostInfo.surrModelObj.numPCETerms,0.0); //vector of PC mode coefficients
 	Array1D<double> dataAtQuadPt(numQuadPts,0.0); //vector of data values at each quad point
 
@@ -742,7 +769,7 @@ void DFI::buildSurrogateModel(){
 //	std::cout<<"foo"<<std::endl;
 
 
-	
+
 	//===== determine PCE mode coefficient by Galerkin projection =======
 	std::cout<<"Compute PCE coefficients..."<<std::endl;
 	std::cout<<"Number of Quad points = "<<numQuadPts<<std::endl;
@@ -758,13 +785,13 @@ void DFI::buildSurrogateModel(){
 		// Evaluate PC mode coefficients by Galerkin Projection
 		//surrModel->GalerkProjection(dataAtQuadPt,coeffVector);
 		dataPostInfo.surrModelObj.surrModel->GalerkProjection(dataAtQuadPt,coeffVector);
-		
+
 		///(*sparams1).surrmodelreac)->GalerkProjection(TargetSpeciesVec,cvec);
-		
+
 		for (int j=0; j<dataPostInfo.surrModelObj.numPCETerms; j++){
 			//cmat(j,i) = cvec(j); //the coefficients are time dependent H2O2 concentrations at the time points Nt
 			//(*sparams1).PCEcoefficients(kk*( ndom*(*sparams1).Nt ) +  k*(*sparams1).Nt +i,j) =cvec(j);
-	
+
 			//PCEcoefficients(i,j) =coeffVector(j);
 			dataPostInfo.surrModelObj.PCEcoefficients(i,j) =coeffVector(j);
                 }
@@ -783,7 +810,7 @@ void DFI::buildSurrogateModel(){
         //write parameter limits to file
         for (int i=0;i<dataPostInfo.surrModelObj.PCEcoefficients.XSize();i++){
         	for (int j=0;j<dataPostInfo.surrModelObj.PCEcoefficients.YSize();j++){
-		
+
                 	PCEcoeffsFile <<setprecision(15)<< dataPostInfo.surrModelObj.PCEcoefficients(i,j)<<" ";
 		}
 		PCEcoeffsFile <<std::endl;
@@ -804,13 +831,13 @@ void DFI::loadSurrogateModel(){
         //use user specified nominal model parameter values
         specifyNominalParams(dataPostInfo);
 	//make sure data is defined
-	defineData(dataPostInfo);	
+	defineData(dataPostInfo);
 	//=======================================
 
 	dataPostInfo.surrModels.resize(dataPostInfo.numSurr);
 
 	for (int k=0;k<dataPostInfo.numSurr;k++){
-	
+
 	//==== check if surrogate coefficients file exists =========
 	stringstream pcecoeffsFilename;
         pcecoeffsFilename <<"PCEcoeffs_"<<k+1<<".dat";
@@ -851,18 +878,18 @@ void DFI::loadSurrogateModel(){
 			PCEdim++;
 		}
 	}
-	
+
 	int PCEorder=2;
-	
+
 	dataPostInfo.surrModelObj.PCEdim=PCEdim;
-	
+
 	dataPostInfo.surrModelObj.surrModel = new PCSet("NISPnoq",PCEorder,PCEdim,"LU");
 	dataPostInfo.surrModelObj.numPCETerms = dataPostInfo.surrModelObj.surrModel ->GetNumberPCTerms();
 
 	/* Find number of data points in surrogate coefficients file */
 	int surrDim=0;
 	while ( getline(infile, line)  ){
-		surrDim++;	
+		surrDim++;
 	}
 
 	dataPostInfo.surrModelObj.PCEcoefficients.Resize(surrDim,dataPostInfo.surrModelObj.numPCETerms,0.0);
@@ -889,7 +916,7 @@ void DFI::loadSurrogateModel(){
                 std::cout<<std::endl;
 	}
 	std::cout<<"PCE coeffs1: ==================="<<std::endl;
-*/	
+*/
 	//=== evaluate model at nominal parameter values=======
 	Array1D<double> sampleParam(dataPostInfo.nominalParameters.XSize());
 	for (int i=0;i<dataPostInfo.nominalParameters.XSize();i++){
@@ -898,15 +925,15 @@ void DFI::loadSurrogateModel(){
 	Array1D<double> modelDataOut(dataPostInfo.dataDim,0.0);
 	//run model
 	userRunModel(modelDataOut, dataPostInfo.trueDatax, sampleParam, dataPostInfo.hyperparameters);
-	
+
 	std::cout<<"Detailed model output for nominal parameter values:"<<std::endl;
-	for (int i=0; i<dataPostInfo.dataDim; i++){ 
+	for (int i=0; i<dataPostInfo.dataDim; i++){
 		std::cout<<modelDataOut(i)<<" ";
 	}
 	std::cout<<std::endl;
 	//=====================================================
 
-	
+
 	//=== evaluate surrogate at nominal parameter values=====
 	//evaluated PCE basis functions
 	//dataPostInfo.surrModelObj.psiPCE.Resize(1,dataPostInfo.surrModelObj.numPCETerms,0.0);
@@ -920,23 +947,23 @@ void DFI::loadSurrogateModel(){
 	}
 
 	std::cout<<"Surrogate model output for nominal parameter values:"<<std::endl;
-	
+
 	/* sum over each data point (in "PCEcoeffs.dat" rows index data points, columns index PCE coefficients) */
-	for (int i=0; i<surrDim; i++){ 
-	
+	for (int i=0; i<surrDim; i++){
+
  		dataPostInfo.surrModelObj.surrModel->EvalBasisAtCustPts(point,dataPostInfo.surrModelObj.psiPCE);
 		//sum over PCE terms
-		for (int j=0;j<dataPostInfo.surrModelObj.numPCETerms;j++){	
+		for (int j=0;j<dataPostInfo.surrModelObj.numPCETerms;j++){
 			surrModelDataOut(i)+=dataPostInfo.surrModelObj.PCEcoefficients(i,j)*dataPostInfo.surrModelObj.psiPCE(0,j);
 		}
 		std::cout<<surrModelDataOut(i)<<" ";
-	
+
 	}
 	std::cout<<std::endl;
 	//=====================================================
-	
+
 	//=== evaluate using member function==================
-	
+
 	std::cout<<"Surrogate model function:"<<std::endl;
 	//for (int j=8;j<12;j++){
 	Array1D<double> foo(dataPostInfo.nominalParameters.XSize(),0.0);
@@ -944,20 +971,20 @@ void DFI::loadSurrogateModel(){
 	for (int i=0;i<dataPostInfo.nominalParameters.XSize();i++){
 		foo(i)=dataPostInfo.nominalParameters(i);
 	}
-	
+
 		//dataPostInfo.surrModelObj.evaluateSurr(surrModelDataOut, dataPostInfo.nominalParameters*j/10.0);
 		dataPostInfo.surrModelObj.evaluateSurr(surrModelDataOut, foo);
 
 	//	std::cout<<foo(0)<<": ";
 
-		for (int i=0; i<dataPostInfo.dataDim; i++){ 
+		for (int i=0; i<dataPostInfo.dataDim; i++){
 
 			std::cout<<surrModelDataOut(i)<<" ";
 
 		}
 		std::cout<<std::endl;
 	//}
-	
+
 	//====================================================
 
 
@@ -984,7 +1011,7 @@ void DFI::testSurrogateModel(){
         //use user specified nominal model parameter values
         specifyNominalParams(&dataPostInfo);
 	//make sure data is defined
-	defineData(&dataPostInfo);	
+	defineData(&dataPostInfo);
 	//=======================================
 
 */
@@ -995,7 +1022,7 @@ void DFI::testSurrogateModel(){
 	int numDim=1;
 	int numSamples=100;
 /*
-	Array2D<double> LHCsamps(numDim,numSamples,0.0); 
+	Array2D<double> LHCsamps(numDim,numSamples,0.0);
 
 	//Sampling smpl;
 	Sampling smpl(std::string("qmc"),2);
@@ -1012,37 +1039,37 @@ void DFI::testSurrogateModel(){
 		std::cout<<std::endl;
 	}
 */
-	
 
 
-	//run 
-		
+
+	//run
+
 	Array1D<double> modelDataOut(dataPostInfo.dataDim,0.0);
 	Array1D<double> surrModelDataOut(dataPostInfo.dataDim,0.0);
 	//Array1D<double> surrError(dataPostInfo.dataDim,0.0);
 
-	
+
 	Array1D<double> sampleParam(dataPostInfo.nominalParameters.XSize(),0.0 );
 	srand(seed);
 	double surrError=0.0;
 	for (int i=0; i<numSamples; i++){
 
-	
+
 		//what?
 		//Array1D<double> sampleParam(dataPostInfo.nominalParameters(0),lo + LHCsamps(0,i)*(hi-lo) );
-	
-		//generate a random sample for each parameter	
+
+		//generate a random sample for each parameter
 		double rand_num = (double) rand() /RAND_MAX;
-		//std::cout<<"random number: "<<rand_num<<std::endl;	
+		//std::cout<<"random number: "<<rand_num<<std::endl;
 
 		std::cout<<std::endl;
 		std::cout<<"Parameter sample "<<i+1<<": ";
 		for (int i=0; i<sampleParam.XSize();i++){
 			sampleParam(i)= dataPostInfo.surrModelObj.surrLo(i) +  rand_num*(dataPostInfo.surrModelObj.surrHi(i) -  dataPostInfo.surrModelObj.surrLo(i));
 			std::cout<<sampleParam(i)<<" ";
-		}	
+		}
 		std::cout<<std::endl;
-	
+
 
         	//run model
         	userRunModel(modelDataOut, dataPostInfo.trueDatax, sampleParam, dataPostInfo.hyperparameters);
@@ -1058,7 +1085,7 @@ void DFI::testSurrogateModel(){
 			std::cout<<surrModelDataOut(j)<<" ";
 		}
 		std::cout<<std::endl;
-	
+
 		//double surrError=0.0;
 		for (int j=0; j<dataPostInfo.dataDim; j++){
 			//surrError=max(surrError, fabs( (modelDataOut(j) - surrModelDataOut(j))/modelDataOut(j)) );
@@ -1066,7 +1093,7 @@ void DFI::testSurrogateModel(){
 		}
 
 	}
-	surrError = pow(surrError/(numSamples*dataPostInfo.dataDim) ,0.5);	
+	surrError = pow(surrError/(numSamples*dataPostInfo.dataDim) ,0.5);
 	std::cout<<"RMS relative error= "<<surrError<<std::endl;
 
 	}else{
@@ -1090,13 +1117,13 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 	int numFiles=0;
 	int numColumns=0;
 	int numRows=0;
-	//number of dimensions for KDE density 
-        int numDim=KDEdim.XSize();; 
-	
+	//number of dimensions for KDE density
+        int numDim=KDEdim.XSize();;
+
 	//containers for KDE limits
 	Array1D<double> lo(1,0.0);
         Array1D<double> hi(1,0.0);
-	
+
 	//flag for checkiung if we have already read one set of max/min from any file
         bool firstMaxMin=true;
 	while(refitFileExist){
@@ -1106,10 +1133,10 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 		if (infile.good()){
 			numFiles++;
 			std::cout<<refitChainFileName.str()<<" found, computing parameter bounds"<<std::endl;
-			
+
 			//find the number of parameters (number of columns) and refit chain length (number of rows) from the first discovered file
 			if (numFiles==1){
-				
+
 				//determine number of entries in data chain file
 				ifstream countFileLines(refitChainFileName.str().c_str());
 				string line;
@@ -1126,13 +1153,13 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 				while (parseLine>>colstring){
 					numColumns++;
 				}
-	
+
 				//estimate KDE limits from this first file
         			lo.Resize(numColumns,0.0);
         			hi.Resize(numColumns,0.0);
-				
-			}	
-			
+
+			}
+
 			Array2D<double> readChainTemp(numRows,numColumns,0.0);
 			read_datafile(readChainTemp,refitChainFileName.str().c_str());
 			for (int j=0;j<numRows;j++){
@@ -1149,18 +1176,18 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 				//we have read at least one set of values already
                         	firstMaxMin=false;
 			}
-                
 
-	
-	
+
+
+
 		}
 		else{
 			//break out
 			refitFileExist=false;
-		}		
+		}
 	}
 	std::cout<<std::endl;
-	std::cout<<numFiles<<" parameter chain (refit) files found, with "<<numColumns<<" parameters and "<<numRows<<" chain entries"<<std::endl;	
+	std::cout<<numFiles<<" parameter chain (refit) files found, with "<<numColumns<<" parameters and "<<numRows<<" chain entries"<<std::endl;
 	std::cout<<"The estimated KDE limits for the "<<numColumns<<" parameters are:"<<std::endl;
 	for (int i=0;i<numColumns; i++){
 		std::cout<<"min(param"<<i+1<<")="<<lo(i)<<", max(param"<<i+1<<")="<<hi(i)<<std::endl;
@@ -1169,18 +1196,18 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 
 
 	//check if any of the dimensions requested in KDEdim exceed the dimension of the loaded chain files
-	
-
- 
 
 
-	
+
+
+
+
 	//======= build KDE posteriors ====================
 	int n_kde=64;
 	//read in each file
-	//container for reading samples from file 
+	//container for reading samples from file
         Array2D<double> refitChain(numRows,numColumns,0.0);
-	//container for samples from select dimensions for constructing marginal KDE 
+	//container for samples from select dimensions for constructing marginal KDE
         Array2D<double> refitChainMarg(numRows,numDim,0.0);
 	//
 	//Array2D<double> grid(n_kde,numColumns);
@@ -1190,13 +1217,13 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 	/*
 	for (int j=0;j<numColumns;j++){
 		for (int i=0;i<n_kde;i++){
-			grid(i,j)=lo(j) + i*( hi(j)-lo(j) )/(n_kde-1);		
+			grid(i,j)=lo(j) + i*( hi(j)-lo(j) )/(n_kde-1);
 		}
 	}
 	*/
 	for (int j=0;j<numDim;j++){
 		for (int i=0;i<n_kde;i++){
-			grid(i,j)=lo(KDEdim(j)-1) + i*( hi(KDEdim(j)-1)-lo(KDEdim(j)-1) )/(n_kde-1);		
+			grid(i,j)=lo(KDEdim(j)-1) + i*( hi(KDEdim(j)-1)-lo(KDEdim(j)-1) )/(n_kde-1);
 		}
 	}
 
@@ -1204,15 +1231,15 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 	//generate KDE points array
 	generate_multigrid(points,grid);
 
-	int totpts = (int) points.XSize();	
+	int totpts = (int) points.XSize();
 	Array1D<double> pooleddensKDE(totpts,0.0);
 	stringstream KDEFileName;
 	for (int i=0; i<numFiles; i++){
 		refitChainFileName.str("");
 		refitChainFileName<<"parameterChain_"<<i<<".refit";
-		std::cout<<"reading "<<refitChainFileName.str()<<" and computing KDE density"<<std::endl; 
+		std::cout<<"reading "<<refitChainFileName.str()<<" and computing KDE density"<<std::endl;
 		read_datafile(refitChain,refitChainFileName.str().c_str());
-	
+
 		//just copy what is needed
 		for (int j=0; j<numRows; j++){
 			for (int k=0; k<numDim; k++){
@@ -1228,12 +1255,12 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 		Array1D<double> densKDE(totpts,0.0);
 		getPdf_cl(refitChainMarg, points, densKDE, 1, 1.0);
 
-		
+
 		for (int j=0;j<totpts;j++){
 			pooleddensKDE(j)=pooleddensKDE(j)+densKDE(j);
 		}
-	
-		//===write pooled KDE density to file========== 
+
+		//===write pooled KDE density to file==========
         	KDEFileName.str("");
 		KDEFileName <<"KDE_"<<i<<".dat";
 	        //create file for write
@@ -1250,7 +1277,7 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 		//==============================================
 
 	}
-	
+
 
 
 
@@ -1258,10 +1285,10 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 	for (int i=0;i<totpts;i++){
 		pooleddensKDE(i)=pooleddensKDE(i)/( (double) numFiles);
 	}
-	
 
 
-	//===write pooled KDE density to file========== 
+
+	//===write pooled KDE density to file==========
         stringstream pooledKDEFileName;
         pooledKDEFileName <<"pooledKDE.dat";
         //create file for write
@@ -1278,11 +1305,11 @@ void DFI::buildKDE(Array1D<int> KDEdim){
 	//=============================================
 	//generate samples using rejection sampling
 
-	
+
 	//=================================================
 
 
-	
+
 /*
 	ofstream paramChainFile;
 	paramChainFile.open(paramChainFilePath.str().c_str());
@@ -1338,7 +1365,7 @@ void DFIsurr::evaluateSurr(Array1D<double> & modelOutput, Array1D<double> & para
                 std::cout<<std::endl;
 	}
 	std::cout<<"PCE coeffs: ==================="<<std::endl;
-	*/  
+	*/
 
 //std::cout<<"bar"<<std::endl;
 
@@ -1346,7 +1373,7 @@ void DFIsurr::evaluateSurr(Array1D<double> & modelOutput, Array1D<double> & para
 
 	//works in 1D
 	//Array2D<double>point (1,1, (params(0) - (surrHi(0) + surrLo(0))/2.0 )/( (surrHi(0) - surrLo(0))/2.0)    );
-	
+
 	//Array2D<double>point (1,params.XSize(),0.0);
 	Array2D<double>point (1,PCEdim,0.0);
 	//for (int i=0; i<params.XSize(); i++){
@@ -1394,7 +1421,7 @@ double dataInferenceLogPosterior(Array1D<double>& m, void *info){
         //cast void pointer to appropriate type
         dataPosteriorInformation * dataPostInfo = (dataPosteriorInformation *) info;
 
-        //parameter chain container     
+        //parameter chain container
         Array1D<MCMC::chainstate> parameterChainEntries;
 
         //for a given data set (m), compute the parameter chain (parameterChainEntries)
@@ -1424,7 +1451,7 @@ double dataInferenceLogPosterior(Array1D<double>& m, void *info){
                 dataProposalFile<<endl;
 
          	dataPostInfo->dataChain_count++;
-	}	
+	}
 
 	 //compute statistics using the parameter chain
         Array1D<double> parameterStatistics(dataPostInfo->numConstraints,0.0);
@@ -1435,7 +1462,7 @@ double dataInferenceLogPosterior(Array1D<double>& m, void *info){
                 //cout<<"       stat "<<j+1<<": "<<parameterStatistics(j)<<", ";
         }
 
-        //compute approximate Bayesian likelhood (ABC) 
+        //compute approximate Bayesian likelhood (ABC)
         double dataInferenceLogLikelihood=0.0;
         Array1D<double> deltas(dataPostInfo->numConstraints,0.0);
 
@@ -1497,7 +1524,7 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
 
         //if this is a noise strength optimzation case, the state 'm' is the noise strength sample
         if (dataPostInfo->errorOpt){
-                //running noise optimization, error parameters are not inferred this parameter chain 
+                //running noise optimization, error parameters are not inferred this parameter chain
                 parameterDimension=parameterDimension -dataPostInfo->nominalErrorParameters.XSize();
                 //set the optimal noise strength (log)
                 //paramPostInfo.optNoiseStrength=m;
@@ -1556,7 +1583,7 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
         }
 
         //================BURN-IN PARAMETER CHAIN ================================
-        //counter for number of burn-in chains run 
+        //counter for number of burn-in chains run
 	int burnInChainCount=0;
         while (parameterPosteriorRelativeChange > 0.01){
                 burnInChainCount++;
@@ -1627,7 +1654,7 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
                 cout <<initParameter(i)<<" ";
         }
         cout <<endl;
-        //get the parameter chain       
+        //get the parameter chain
         parameterChain.getFullChain(parameterChainEntries);
 	//============================================================================
 
@@ -1652,7 +1679,7 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
                 }
                 cout<<endl;
         }
-	//============================================================        
+	//============================================================
 
 
 
@@ -1677,7 +1704,7 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
 
 double parameterInferenceLogPosterior(Array1D<double>& parameters, void *info){
         //this is a wrapper function that calls the user defined function
-        
+
 	//cast void pointer to appropriate type
         parameterPosteriorInformation * paramPostInfo = (parameterPosteriorInformation *) info;
 
@@ -1695,11 +1722,11 @@ double parameterInferenceLogPosterior(Array1D<double>& parameters, void *info){
 
 
         //=====================================================================
-        //original approach     
+        //original approach
         //generate model predicted data invoking the truth model
-        userRunModel(modelDataOut,paramPostInfo->trueDatax, parameters, paramPostInfo->hyperparameters); 
+        userRunModel(modelDataOut,paramPostInfo->trueDatax, parameters, paramPostInfo->hyperparameters);
         //compute parameter loglikelihood: p(lambda|Data), lambda={inferred truth & error model parameters}
-//      parameterLogPosterior=userComputeParamLogLikelihood(paramPostInfo,modelDataOut,parameters,paramPostInfo->hyperparameters); 
+//      parameterLogPosterior=userComputeParamLogLikelihood(paramPostInfo,modelDataOut,parameters,paramPostInfo->hyperparameters);
         //====================================================================
 
 
@@ -1722,8 +1749,8 @@ double parameterInferenceLogPosterior(Array1D<double>& parameters, void *info){
                 //paramPostInfo->hyperparameters(0)=0.4+ x(i)*0.04*sqrt(2.0);
                 paramPostInfo->hyperparameters(1)=1.0+ x(i,0)*0.08;
                 funcEval(i)=userComputeParamLogLikelihood(paramPostInfo,modelDataOut,parameters,paramPostInfo->hyperparameters);
-        }       
-        //compute quadrature 
+        }
+        //compute quadrature
         parameterLogPosterior=dot(w,funcEval);
         //=============================================================
 
@@ -1746,6 +1773,3 @@ double computeParamLogLikelihood(parameterPosteriorInformation * paramPostInfo, 
 void computeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::chainstate> & parameterChain){
         return userComputeStatistics(parameterStatistics, parameterChain);
 };
-
-
-

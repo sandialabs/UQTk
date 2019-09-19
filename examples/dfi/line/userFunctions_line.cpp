@@ -1,3 +1,30 @@
+/* =====================================================================================
+
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
+
+     This file is part of The UQ Toolkit (UQTk)
+
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
+
+     UQTk is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     BSD 3 Clause License for more details.
+
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
+
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Sandia National Laboratories, Livermore, CA, USA
+===================================================================================== */
 #include "dfi.h"
 
 #ifndef USER_FUNCS_H_
@@ -12,13 +39,13 @@ void userSpecifyNominalParams(dataPosteriorInformation & dataPostInfo){
 
         //define the initial nominal model parameters
         dataPostInfo.nominalParameters.Resize(2,0.0);
-        //rate constant 
+        //rate constant
         dataPostInfo.nominalParameters(0)=1.0;
         dataPostInfo.nominalParameters(1)=0.2;
 
 	//define the initial error model parameters
         dataPostInfo.nominalErrorParameters.Resize(1,0.0);
-        
+
 	//if optimal estimate exists, use it
 	ifstream infile("optimalErrorParams.dat");
         if (infile.good()){
@@ -38,8 +65,8 @@ void userDefineConstraints(dataPosteriorInformation & dataPostInfo){
 	//=========================================================
 	//===== USER DEFINED ======================================
 	//=========================================================
-        
-	
+
+
 
 	//place information (label, value, ABC delta) for each constraint here
         //1
@@ -71,27 +98,27 @@ void userDefineData(dataPosteriorInformation &dataPostInfo){
 	//=========================================================
 
         /*resize containters to data dimension*/
-        dataPostInfo.trueDatax.Resize(dataPostInfo.dataDim,0.0);              
-        dataPostInfo.trueDatay.Resize(dataPostInfo.dataDim,0.0);              
-        /*extra containers if needed ...*/ 
-	dataPostInfo.error.Resize(dataPostInfo.dataDim,0.0);          
+        dataPostInfo.trueDatax.Resize(dataPostInfo.dataDim,0.0);
+        dataPostInfo.trueDatay.Resize(dataPostInfo.dataDim,0.0);
+        /*extra containers if needed ...*/
+	dataPostInfo.error.Resize(dataPostInfo.dataDim,0.0);
 
-        /*generate initial guess of noise signal*/ 
+        /*generate initial guess of noise signal*/
         dsfmt_gv_init_gen_rand(dataPostInfo.seed);
         for (int i=0; i< dataPostInfo.dataDim; i++){
-                dataPostInfo.error(i)=dsfmt_gv_genrand_nrv(); //normally distributed random variable;   
+                dataPostInfo.error(i)=dsfmt_gv_genrand_nrv(); //normally distributed random variable;
                 //dataPostInfo.noise(i) = dsfmt_gv_genrand_urv(); //uniformly distributed random variable
         }
 
-        //define the data input 'x', i.e. y=f(x) 
-        //====================  
+        //define the data input 'x', i.e. y=f(x)
+        //====================
         cout <<"Determine data input space 'x', i.e. y=f(x)"<<endl;
         cout <<"Data dimension =  "<<dataPostInfo.dataDim<<endl;
         double x_min=0.0;
         double x_max=1.0;
         for (int i=0; i<dataPostInfo.dataDim; i++){
               dataPostInfo.trueDatax(i)=x_min + (x_max-x_min)*i/(dataPostInfo.dataDim-1.0);
-              cout<<"x("<<i+1<<"): "<< dataPostInfo.trueDatax(i)<<endl;      
+              cout<<"x("<<i+1<<"): "<< dataPostInfo.trueDatax(i)<<endl;
       }
 	/* write the input space 'x' to file */
         stringstream inputspaceFilename;
@@ -103,13 +130,13 @@ void userDefineData(dataPosteriorInformation &dataPostInfo){
         }
         inputspaceFile.close();
 
-        //====================  
-        //define the data output 'y', i.e. y=f(x) 
-        cout<<"Model output data (no error) using nominal parameter values:"<<endl; 
+        //====================
+        //define the data output 'y', i.e. y=f(x)
+        cout<<"Model output data (no error) using nominal parameter values:"<<endl;
         userRunModel(dataPostInfo.trueDatay, dataPostInfo.trueDatax, dataPostInfo.nominalParameters, dataPostInfo.hyperparameters);
         for (int i=0; i<dataPostInfo.dataDim; i++){
-                cout<<"x("<<i+1<<"): "<< dataPostInfo.trueDatax(i)<<", y("<<i+1<<"): "<<dataPostInfo.trueDatay(i)<<endl;      
-        }       
+                cout<<"x("<<i+1<<"): "<< dataPostInfo.trueDatax(i)<<", y("<<i+1<<"): "<<dataPostInfo.trueDatay(i)<<endl;
+        }
 
 
 	//=========================================================
@@ -120,7 +147,7 @@ void userRunModel(Array1D<double> &modelDatay, Array1D<double> & modelDatax, Arr
 	//=========================================================
 	//===== USER DEFINED ======================================
 	//=========================================================
-        
+
 
 
         for (int i=0; i<modelDatay.XSize(); i++){
@@ -129,9 +156,9 @@ void userRunModel(Array1D<double> &modelDatay, Array1D<double> & modelDatax, Arr
                 modelDatay(i) = parameters(0)*modelDatax(i) + parameters(1);
         }
         //==================================================================================
-	
 
-	
+
+
 	//=========================================================
         return;
 }
@@ -144,7 +171,7 @@ double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInf
 	//===== USER DEFINED ======================================
 	//=========================================================
 
-	
+
 
         int numDataPoints= paramPostInfo->dataChainState.XSize();
         //cout <<numDataPoints<<endl;
@@ -157,7 +184,7 @@ double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInf
 
 	/* if a surrogate is defined use it */
         if (paramPostInfo->surrModelObj_->surrDefined){
-                // check if parameters are within surrogate bounds 
+                // check if parameters are within surrogate bounds
                 bool inBounds=true;
                 for (int i=0; i<parameters.XSize();i++){
                         if (  (parameters(i) < paramPostInfo->surrModelObj_->surrLo(i)) || (parameters(i) >paramPostInfo->surrModelObj_->surrHi(i)) ){
@@ -175,23 +202,23 @@ double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInf
 
                 paramPostInfo->surrModelObj_->evaluateSurr(modelDataOut, parameters);
         }else{
-                //run the full model     
+                //run the full model
                 userRunModel(modelDataOut, paramPostInfo->trueDatax, parameters, paramPostInfo->hyperparameters);
         }
 
 
 
         //=====================================================================
-        //original approach     
+        //original approach
         //generate model predicted data invoking the truth model
-	
+
 	//if a surrogate is defined
-	//paramPostInfo->surrModelObj_->evaluateSurr(modelDataOut, parameters); 
+	//paramPostInfo->surrModelObj_->evaluateSurr(modelDataOut, parameters);
 
 
 	//otherwise call the user defined detailed model
 	//userRunModel(modelDataOut,paramPostInfo->trueDatax, parameters, paramPostInfo->hyperparameters);
-        
+
 	//compute parameter loglikelihood: p(lambda|Data), lambda={inferred truth & error model parameters}
 	parameterLogPosterior=userComputeParamLogLikelihood(paramPostInfo,modelDataOut,parameters,paramPostInfo->hyperparameters);
         //==============================================================
@@ -217,7 +244,7 @@ double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInf
                 paramPostInfo->hyperparameters(1)=1.0+ x(i,0)*0.08;
                 funcEval(i)=userComputeParamLogLikelihood(paramPostInfo,modelDataOut,parameters,paramPostInfo->hyperparameters);
         }
-        //compute quadrature 
+        //compute quadrature
         parameterLogPosterior=dot(w,funcEval);
          //=============================================================
 */
@@ -239,7 +266,7 @@ double userComputeParamLogLikelihood(parameterPosteriorInformation * paramPostIn
 	//=========================================================
 	//===== USER DEFINED ======================================
 	//=========================================================
-        
+
 
 
 	//cout<<parameters(0)<<", "<<parameters(1)<<endl;
@@ -258,7 +285,7 @@ double userComputeParamLogLikelihood(parameterPosteriorInformation * paramPostIn
         double modelError=0.0;
         double sumError=0.0;
         for (int i=0; i < modelDataOut.XSize(); i++){
-                //compute error pointwise  
+                //compute error pointwise
                 modelError  = paramPostInfo->dataChainState(i)  - modelDataOut(i);  // "DATA BEING TESTED" - "DATA GENERATED FROM INFERENCE"
                 //likrlihood is the product of pointwise liklihoods (sum of logs)
                 sumError += log(sig) + pow(modelError,2.0)/( 2.0*(sig*sig) ); // Error measure: Gaussian measurement noise model
@@ -274,7 +301,7 @@ void userComputeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::c
 	//=========================================================
 	//===== USER DEFINED ======================================
 	//=========================================================
-        
+
 
 
         //calculate statistics of the parameter chain
@@ -296,7 +323,7 @@ void userComputeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::c
                 parameterStatistics(3)=pow(parameterStatistics(3)/(1.0*parameterChain.XSize()) ,0.5);
         //============================================================================
 
-        
+
 	//=========================================================
         return;
 }
