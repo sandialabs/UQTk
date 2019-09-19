@@ -1,27 +1,28 @@
 /* =====================================================================================
-                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-                     Copyright (@UQTKYEAR@) Sandia Corporation
-                     http://www.sandia.gov/UQToolkit/
 
-     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
 
      This file is part of The UQ Toolkit (UQTk)
 
-     UQTk is free software: you can redistribute it and/or modify
-     it under the terms of the GNU Lesser General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
 
      UQTk is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU Lesser General Public License for more details.
+     BSD 3 Clause License for more details.
 
-     You should have received a copy of the GNU Lesser General Public License
-     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -39,21 +40,21 @@
 #include "assert.h"
 
 
-using namespace std; 
+using namespace std;
 
 
 int main(){
 
 	// get pc object
 	Array1D<double> ck(10,0.0);
-	Array2D<int> mindex(10,2); 
+	Array2D<int> mindex(10,2);
 
 	// set ck values
 	ck(0) = 0.666666666666664;
-	ck(1) = 1.600000000000499; 
+	ck(1) = 1.600000000000499;
 	ck(2) = 1.000000000000289;
 	ck(5) = -0.6666666666668039;
-	ck(6) = 0.4000000000008473; 
+	ck(6) = 0.4000000000008473;
 
 	// set mindex values
 	mindex(0,0) = 0; mindex(0,1) = 0;
@@ -64,7 +65,7 @@ int main(){
 	mindex(5,0) = 0; mindex(5,1) = 2;
 	mindex(6,0) = 3; mindex(6,1) = 0;
 	mindex(7,0) = 2; mindex(7,1) = 1;
-	mindex(8,0) = 1; mindex(8,1) = 2;  
+	mindex(8,0) = 1; mindex(8,1) = 2;
 	mindex(9,0) = 0; mindex(9,1) = 3;
 
 	// set pc model given multiindex
@@ -72,8 +73,8 @@ int main(){
 
 	// get 2d quadrature points
 	Quad q("LU","sparse",2,5);
-	Array2D<double> x; 
-	Array1D<double> w; 
+	Array2D<double> x;
+	Array1D<double> w;
 	q.SetRule();
 	q.GetRule(x,w);
 	// printarray(x);
@@ -84,21 +85,21 @@ int main(){
 	// printarray(y);
 
 	// get projection matrix
-	Array2D<double> Phi; 
+	Array2D<double> Phi;
 	pcmodel.EvalBasisAtCustPts(x,Phi);
 	// printarray(Phi);
 
 	// Main inputs are Phi, ydata, sigma
-	double sigma = 1e-8; 
+	double sigma = 1e-8;
 
 	// params
-	double eta = 1e-12; 
-	Array1D<double> lambda_init; 
-	double scale = .1; 
+	double eta = 1e-12;
+	Array1D<double> lambda_init;
+	double scale = .1;
 
 	// outputs
 	Array1D<double> weights, errbars, basis, alpha;
-	Array1D<int> used; 
+	Array1D<int> used;
 	double lambda=0.0;
 
 
@@ -127,6 +128,6 @@ int main(){
 
 
 
-	return 0; 
+	return 0;
 
 }

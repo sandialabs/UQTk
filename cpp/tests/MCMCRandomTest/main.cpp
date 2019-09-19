@@ -1,27 +1,28 @@
 /* =====================================================================================
-                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-                     Copyright (@UQTKYEAR@) Sandia Corporation
-                     http://www.sandia.gov/UQToolkit/
 
-     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
 
      This file is part of The UQ Toolkit (UQTk)
 
-     UQTk is free software: you can redistribute it and/or modify
-     it under the terms of the GNU Lesser General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
 
      UQTk is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU Lesser General Public License for more details.
+     BSD 3 Clause License for more details.
 
-     You should have received a copy of the GNU Lesser General Public License
-     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -35,7 +36,7 @@
 #include "arraytools.h"
 #include "assert.h"
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Define Likelihood function
@@ -43,7 +44,7 @@ Define Likelihood function
 class Likelihood: public LikelihoodBase{
 public:
 	Likelihood(){};
-	~Likelihood(){}; 
+	~Likelihood(){};
 	double eval(Array1D<double>&);
 };
 
@@ -57,7 +58,7 @@ double Likelihood::eval(Array1D<double>& x){
 	// // y1 = x[0]
 	// // y2 = x[1]
 	// // return -.5*(y1**2/.1**2 + y2**2/.8**2)
-  return lnpost; 
+  return lnpost;
 }
 
 /*************************************************
@@ -73,7 +74,7 @@ int main(int argc, char ** argv){
 	int nCalls = 100;
 	Array1D<double> x(dim,0);
 
-	Likelihood L; 
+	Likelihood L;
 	cout << "L.eval(x) = " << L.eval(x) << endl;
 
 	/*************************************************
@@ -81,32 +82,32 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain(L); 
+	MCMC mchain(L);
 	mchain.setChainDim(dim);
 	mchain.initMethod("am");
 	mchain.initChainPropCovDiag(g);
 	mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
-	mchain.setWriteFlag(0); 
+	mchain.setWriteFlag(0);
 	mchain.runChain(nCalls,x);
 	Array2D<double> samples;
     mchain.getSamples(samples);
 	samples = Trans(samples);
-	// printarray(samples); 
+	// printarray(samples);
 
 	/*************************************************
 	Initiate and Run a second MCMC chain
 	*************************************************/
-	MCMC mchain2(L); 
+	MCMC mchain2(L);
 	mchain2.setChainDim(dim);
 	mchain2.initMethod("am");
 	mchain2.initChainPropCovDiag(g);
 	// mchain2.setSeed(130);
-	mchain2.setWriteFlag(0); 
+	mchain2.setWriteFlag(0);
 	mchain2.runChain(nCalls,x);
 	Array2D<double> samples2;
     mchain2.getSamples(samples2);
 	samples2 = Trans(samples2);
-	// printarray(samples2); 
+	// printarray(samples2);
 
 	// test to make sure two MCMC objects do not
 	// affect each others random number generation
@@ -118,6 +119,6 @@ int main(int argc, char ** argv){
 
 
 
-	return 0; 
+	return 0;
 
 }

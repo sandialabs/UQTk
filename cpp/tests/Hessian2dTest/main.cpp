@@ -1,27 +1,28 @@
 /* =====================================================================================
-                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-                     Copyright (@UQTKYEAR@) Sandia Corporation
-                     http://www.sandia.gov/UQToolkit/
 
-     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
 
      This file is part of The UQ Toolkit (UQTk)
 
-     UQTk is free software: you can redistribute it and/or modify
-     it under the terms of the GNU Lesser General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
 
      UQTk is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU Lesser General Public License for more details.
+     BSD 3 Clause License for more details.
 
-     You should have received a copy of the GNU Lesser General Public License
-     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -37,7 +38,7 @@
 #include "assert.h"
 
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Begin main code
@@ -50,9 +51,9 @@ int main(int argc, char ** argv){
 	// Set up quadrature rule
 	Array2D<double> xq;
 	Array1D<double> wq;
-	Array2D<int> index; 
+	Array2D<int> index;
 
-	int ndim1 = 2; 
+	int ndim1 = 2;
 	int level1 = 5;
 
 	Quad q("LU","sparse",ndim1,level1);
@@ -63,21 +64,21 @@ int main(int argc, char ** argv){
 	Array1D<double> y0(xq.XSize(),0);
 	for (int i = 0; i < xq.XSize(); i++){
 		y0(i) = ( -.5*( sqrt(2)*xq(i,0)*xq(i,0) + sqrt(3)*xq(i,1)*xq(i,1)) + xq(i,0)*xq(i,0)*xq(i,1) );
-	} 
+	}
 
 	// Define PCSet object with quadrature rule above
-	int nord = 3; 
+	int nord = 3;
 	PCSet pcmodel("NISPnoq",nord,ndim1,"LU");
 	pcmodel.SetQuadRule(q);
 
 	// get multiindex
-	Array2D<int> mindex0; 
+	Array2D<int> mindex0;
 	pcmodel.GetMultiIndex(mindex0);
 	pcmodel.PrintMultiIndex();
 	// write_datafile(mindex0, "mindex.dat");
 
 	// get coefficients
-	Array1D<double> ck0; 
+	Array1D<double> ck0;
 	pcmodel.GalerkProjection(y0,ck0);
 	// write_datafile_1d(ck0, "ck.dat");
 
@@ -88,13 +89,13 @@ int main(int argc, char ** argv){
 	// get 1d legendre polynomials
 	int ndim = 2;
 
-	// The first step, after reading in mindex, is to initialize the PCSet object. 
+	// The first step, after reading in mindex, is to initialize the PCSet object.
 	PCSet polymodel("NISPnoq",mindex0,"LU");
 	polymodel.PrintMultiIndex();
 
 	//compute the hessian at a single x point
 	Array1D<double> xpnt(ndim,0.0);
-	Array2D<double> hessian; 
+	Array2D<double> hessian;
 	polymodel.ddPhi(xpnt,mindex0,hessian,ck0);
 	cout << fabs(hessian(0,0) - (-sqrt(2))) << endl;
 	cout << fabs(hessian(1,1) - (-sqrt(3))) << endl;
@@ -105,6 +106,6 @@ int main(int argc, char ** argv){
 	assert(fabs(hessian(0,1) - (2*xpnt(0))) <= 1e-12);
 
 
-	return 0; 
+	return 0;
 
 }

@@ -1,27 +1,28 @@
 /* =====================================================================================
-                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-                     Copyright (@UQTKYEAR@) Sandia Corporation
-                     http://www.sandia.gov/UQToolkit/
 
-     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
 
      This file is part of The UQ Toolkit (UQTk)
 
-     UQTk is free software: you can redistribute it and/or modify
-     it under the terms of the GNU Lesser General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
 
      UQTk is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU Lesser General Public License for more details.
+     BSD 3 Clause License for more details.
 
-     You should have received a copy of the GNU Lesser General Public License
-     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -32,7 +33,7 @@
 #include "arrayio.h"
 #include "arraytools.h"
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Begin main code
@@ -42,8 +43,8 @@ int main(int argc, char ** argv){
 	/**********************************
 	Read and write 1D Array
 	*********************************/
-	
-	int dim = 3; 
+
+	int dim = 3;
 
 	// Create dim-D array with all ones
 	Array1D<double> x(dim,1);
@@ -60,10 +61,10 @@ int main(int argc, char ** argv){
 	/**********************************
 	Fill in normal r.v.'s to 1D Array
 	*********************************/
-	
+
 	// Feed in normal random numbers to array
-	dsfmt_t RandomState; 
-	int seed = 1; 
+	dsfmt_t RandomState;
+	int seed = 1;
 	dsfmt_init_gen_rand(&RandomState,seed);
 	for (int i = 0; i < dim; i++){
 		x(i) = dsfmt_genrand_nrv(&RandomState);
@@ -77,16 +78,16 @@ int main(int argc, char ** argv){
 	*********************************/
 
 	// add two arrays and print output
-	Array1D<double> z = add(x,y); 
-	printarray(z); 
+	Array1D<double> z = add(x,y);
+	printarray(z);
 
 	// multiply array by scalar and print output
-	z = scale(z,3.14159); 
-	printarray(z); 
+	z = scale(z,3.14159);
+	printarray(z);
 
 	// dot product of array
-	double a = dot(z,z); 
-	cout << a << endl; 
+	double a = dot(z,z);
+	cout << a << endl;
 
 	// delete ith element of array
 	z.erase(1);
@@ -96,6 +97,6 @@ int main(int argc, char ** argv){
 	z.PushBack(1);
 	printarray(z);
 
-	return 0; 
+	return 0;
 
 }

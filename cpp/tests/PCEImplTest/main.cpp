@@ -1,27 +1,28 @@
 /* =====================================================================================
-                     The UQ Toolkit (UQTk) version @UQTKVERSION@
-                     Copyright (@UQTKYEAR@) Sandia Corporation
-                     http://www.sandia.gov/UQToolkit/
 
-     Copyright (@UQTKYEAR@) Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000
-     with Sandia Corporation, the U.S. Government retains certain rights in this software.
+                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+                          Copyright (@UQTKYEAR@) NTESS
+                        https://www.sandia.gov/UQToolkit/
+                        https://github.com/sandialabs/UQTk
+
+     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+     retains certain rights in this software.
 
      This file is part of The UQ Toolkit (UQTk)
 
-     UQTk is free software: you can redistribute it and/or modify
-     it under the terms of the GNU Lesser General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+     UQTk is open source software: you can redistribute it and/or modify
+     it under the terms of BSD 3-Clause License
 
      UQTk is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU Lesser General Public License for more details.
+     BSD 3 Clause License for more details.
 
-     You should have received a copy of the GNU Lesser General Public License
-     along with UQTk.  If not, see <http://www.gnu.org/licenses/>.
+     You should have received a copy of the BSD 3 Clause License
+     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact Bert Debusschere <bjdebus@sandia.gov>
+     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -37,7 +38,7 @@
 #include "assert.h"
 
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Begin main code
@@ -48,7 +49,7 @@ int main(int argc, char ** argv){
 
 
 	// Set up PC parameters
-	int ndim = 3; 
+	int ndim = 3;
 	int nord = 3;
 	string pctype = "HG";
 	string impl = "ISP";
@@ -58,7 +59,7 @@ int main(int argc, char ** argv){
 	PCSet pcmodel(impl,nord,ndim,pctype);
 
 
-	cout << "====> Testing norm computation: " << endl;	
+	cout << "====> Testing norm computation: " << endl;
 
 	Array1D<double> normsq, normsq_exact;
 	// Get the norms computed by quadrature
@@ -79,7 +80,7 @@ int main(int argc, char ** argv){
 
 	if (impl == "NISP"){
 		// Testing Galerkin projection
-		cout << "====> Testing Galerkin projection: " << endl;	
+		cout << "====> Testing Galerkin projection: " << endl;
 
 		// Get the quadrature points
 		Array2D<double> x;
@@ -93,21 +94,21 @@ int main(int argc, char ** argv){
 			for (int j = 0; j < ndim; j++)
 				sum += (x(i,j)/(j+1));
 			y(i) = pow(sum,nord);
-		} 
+		}
 
-		
+
 		// Get coefficients via Galerkin projection
-		Array1D<double> ck; 
+		Array1D<double> ck;
 		pcmodel.GalerkProjection(y,ck);
-		
+
 		// Evaluate PC at quadrature points
 		// PC should be exactly matching the polynomial test function
 		Array1D<double> ytest(x.XSize(),0);
 		pcmodel.EvalPCAtCustPoints(ytest,x,ck);
-		double error = 0.0; 
+		double error = 0.0;
 		for (int i = 0; i < x.XSize(); i++){
 			error += pow(y(i) - ytest(i),2);
-		} 
+		}
 		double rms_error=sqrt(error/x.XSize());
 		if ( rms_error > 1e-10 ){
 			cout << "PC type = " << pctype << ", Dim = " << ndim << ", Order = " << nord << endl;
@@ -119,11 +120,11 @@ int main(int argc, char ** argv){
 	}
 
 	else if (impl == "ISP"){
-		cout << "ISP tests not implemented yet. " << endl;	
-		//cout << "====> Testing triple products: " << endl;	
-		//cout << "====> Testing 4-tuple products: " << endl;	
+		cout << "ISP tests not implemented yet. " << endl;
+		//cout << "====> Testing triple products: " << endl;
+		//cout << "====> Testing 4-tuple products: " << endl;
 	}
 
-	return 0; 
+	return 0;
 
 }
