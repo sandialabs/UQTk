@@ -7,8 +7,10 @@ add_executable (MCMCRandomTest main.cpp)
 target_link_libraries (MCMCRandomTest uqtk  )
 
 target_link_libraries (MCMCRandomTest depdsfmt )
-target_link_libraries (MCMCRandomTest depcvode )
-target_link_libraries (MCMCRandomTest depnvec  )
+target_link_libraries (MCMCRandomTest sundials_cvode)
+target_link_libraries (MCMCRandomTest sundials_nvecserial)
+target_link_libraries (MCMCRandomTest sundials_sunlinsoldense)
+target_link_libraries (MCMCRandomTest sundials_sunmatrixdense)
 target_link_libraries (MCMCRandomTest depslatec)
 target_link_libraries (MCMCRandomTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCRandomTest m lapack ${LAPACK_LIBRARIES})
@@ -35,8 +37,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -47,9 +47,6 @@ include_directories(../../lib/mcmc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS MCMCRandomTest DESTINATION bin/tests/)
 

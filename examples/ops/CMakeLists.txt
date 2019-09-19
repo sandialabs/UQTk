@@ -12,6 +12,14 @@ SET(copy_FILES
 
 
 # Ops.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+if( BUILD_SUNDIALS)
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/cvode")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/nvector/serial")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/sunlinsol/dense")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/sunmatrix/dense")
+endif()
+
 add_executable (Ops.x Ops.cpp Utils.cpp)
 add_executable (LogComp.x LogComp.cpp Utils.cpp)
 
@@ -21,8 +29,10 @@ target_link_libraries (Ops.x uqtktools)
 target_link_libraries (Ops.x uqtkarray )
 
 target_link_libraries (Ops.x depdsfmt )
-target_link_libraries (Ops.x depcvode )
-target_link_libraries (Ops.x depnvec  )
+target_link_libraries (Ops.x sundials_cvode)
+target_link_libraries (Ops.x sundials_nvecserial)
+target_link_libraries (Ops.x sundials_sunlinsoldense)
+target_link_libraries (Ops.x sundials_sunmatrixdense)
 target_link_libraries (Ops.x depslatec)
 target_link_libraries (Ops.x m blas ${BLAS_LIBRARIES})
 target_link_libraries (Ops.x m lapack ${LAPACK_LIBRARIES})
@@ -60,8 +70,10 @@ target_link_libraries (LogComp.x uqtktools)
 target_link_libraries (LogComp.x uqtkarray)
 
 target_link_libraries (LogComp.x depdsfmt )
-target_link_libraries (LogComp.x depcvode )
-target_link_libraries (LogComp.x depnvec  )
+target_link_libraries (LogComp.x sundials_cvode)
+target_link_libraries (LogComp.x sundials_nvecserial)
+target_link_libraries (LogComp.x sundials_sunlinsoldense)
+target_link_libraries (LogComp.x sundials_sunmatrixdense)
 target_link_libraries (LogComp.x depslatec)
 target_link_libraries (LogComp.x m blas ${BLAS_LIBRARIES})
 target_link_libraries (LogComp.x m lapack ${LAPACK_LIBRARIES})
@@ -99,8 +111,12 @@ include_directories(../../cpp/lib/quad   )
 include_directories(../../cpp/lib/tools  )
 
 include_directories(../../dep/dsfmt)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../dep/sundials/include")
+  include_directories (../../dep/sundials/include/ )
+endif()
+
 
 INSTALL(TARGETS Ops.x LogComp.x
               PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

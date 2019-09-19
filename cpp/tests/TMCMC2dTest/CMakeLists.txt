@@ -23,8 +23,10 @@ add_executable (TMCMC2dTest main.cpp)
 target_link_libraries (TMCMC2dTest uqtk  )
 
 target_link_libraries (TMCMC2dTest depdsfmt )
-target_link_libraries (TMCMC2dTest depcvode )
-target_link_libraries (TMCMC2dTest depnvec  )
+target_link_libraries (TMCMC2dTest sundials_cvode)
+target_link_libraries (TMCMC2dTest sundials_nvecserial)
+target_link_libraries (TMCMC2dTest sundials_sunlinsoldense)
+target_link_libraries (TMCMC2dTest sundials_sunmatrixdense)
 target_link_libraries (TMCMC2dTest depslatec)
 target_link_libraries (TMCMC2dTest m lapack blas)
 target_link_libraries (TMCMC2dTest deplbfgs  )
@@ -50,8 +52,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -62,9 +62,6 @@ include_directories(../../lib/mcmc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS TMCMC2dTest DESTINATION bin/tests/)
 

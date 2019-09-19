@@ -5,8 +5,10 @@ add_executable (ArrayReadAndWrite main.cpp)
 target_link_libraries (ArrayReadAndWrite uqtk  )
 
 target_link_libraries (ArrayReadAndWrite depdsfmt )
-target_link_libraries (ArrayReadAndWrite depcvode )
-target_link_libraries (ArrayReadAndWrite depnvec  )
+target_link_libraries (ArrayReadAndWrite sundials_cvode)
+target_link_libraries (ArrayReadAndWrite sundials_nvecserial)
+target_link_libraries (ArrayReadAndWrite sundials_sunlinsoldense)
+target_link_libraries (ArrayReadAndWrite sundials_sunmatrixdense)
 target_link_libraries (ArrayReadAndWrite depslatec)
 target_link_libraries(ArrayReadAndWrite m blas ${BLAS_LIBRARIES})
 target_link_libraries(ArrayReadAndWrite m lapack ${LAPACK_LIBRARIES})
@@ -32,7 +34,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
@@ -44,9 +45,6 @@ include_directories(../../lib/mcmc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS ArrayReadAndWrite DESTINATION bin/tests/)
 

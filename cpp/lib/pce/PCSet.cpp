@@ -2096,7 +2096,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
 
   // Create cvode solver
   void *cvode_mem = NULL;
-  cvode_mem = CVodeCreate(CV_ADAMS, CV_NEWTON);
+  cvode_mem = CVodeCreate(CV_ADAMS);
   this->Check_CVflag(cvode_mem, "PCSet::LogInt : CVodeCreate", 0) ;
 
   /* Allocate memory */
@@ -2105,9 +2105,23 @@ void PCSet::LogInt(const double* p1, double* p2) const
   cvflag = CVodeSVtolerances(cvode_mem, relT, absT);
   this->Check_CVflag(&cvflag, "CVodeSVtolerances", 1) ;
 
-  // Set dense solver
-  cvflag = CVDense(cvode_mem, (this->nPCTerms_) );
-  this->Check_CVflag(&cvflag, "PCSet::LogInt : CVDense", 1) ;
+  /* Create dense SUNMatrix for use in linear solves */
+  SUNMatrix denseMat = NULL;
+  denseMat = SUNDenseMatrix( (this->nPCTerms_) ,  (this->nPCTerms_) );
+  this->Check_CVflag((void *)denseMat, "SUNDenseMatrix", 0);
+
+  /* Create dense SUNLinearSolver object for use by CVode */
+  SUNLinearSolver linsolve=NULL;
+  linsolve = SUNDenseLinearSolver(u, denseMat);
+  this->Check_CVflag((void *)linsolve, "SUNDenseLinearSolver", 0);
+
+   /* Call CVDlsSetLinearSolver to attach the matrix and linear solver to CVode */
+  cvflag = CVDlsSetLinearSolver(cvode_mem, linsolve, denseMat);
+  this->Check_CVflag(&cvflag, "CVDlsSetLinearSolver", 1);
+
+  // // Set dense solver
+  // cvflag = CVDense(cvode_mem, (this->nPCTerms_) );
+  // this->Check_CVflag(&cvflag, "PCSet::LogInt : CVDense", 1) ;
 
   /* Set work array */
   cvflag = CVodeSetUserData(cvode_mem,  (void *) f_data);

@@ -5,8 +5,10 @@ add_executable (MultiIndexTest main.cpp)
 target_link_libraries (MultiIndexTest uqtk)
 
 target_link_libraries (MultiIndexTest depdsfmt   )
-target_link_libraries (MultiIndexTest depcvode   )
-target_link_libraries (MultiIndexTest depnvec    )
+target_link_libraries (MultiIndexTest sundials_cvode)
+target_link_libraries (MultiIndexTest sundials_nvecserial)
+target_link_libraries (MultiIndexTest sundials_sunlinsoldense)
+target_link_libraries (MultiIndexTest sundials_sunmatrixdense)
 target_link_libraries (MultiIndexTest depslatec  )
 target_link_libraries (MultiIndexTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MultiIndexTest m lapack ${LAPACK_LIBRARIES})
@@ -38,7 +40,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
@@ -52,9 +53,6 @@ include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS MultiIndexTest DESTINATION bin/tests/)
 

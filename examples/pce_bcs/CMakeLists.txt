@@ -6,6 +6,14 @@ SET(copy_FILES
   )
 
 # pce_bcs.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+if( BUILD_SUNDIALS)
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/cvode")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/nvector/serial")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/sunlinsol/dense")
+  link_directories("${PROJECT_BINARY_DIR}/../../dep/sundials/src/sunmatrix/dense")
+endif()
+
 add_executable (pce_bcs.x pce_bcs.cpp)
 
 target_link_libraries (pce_bcs.x uqtkbcs  )
@@ -18,8 +26,10 @@ target_link_libraries (pce_bcs.x uqtkxmlutils )
 
 target_link_libraries (pce_bcs.x depdsfmt )
 target_link_libraries (pce_bcs.x deplbfgs )
-target_link_libraries (pce_bcs.x depcvode )
-target_link_libraries (pce_bcs.x depnvec  )
+target_link_libraries (pce_bcs.x sundials_cvode)
+target_link_libraries (pce_bcs.x sundials_nvecserial)
+target_link_libraries (pce_bcs.x sundials_sunlinsoldense)
+target_link_libraries (pce_bcs.x sundials_sunmatrixdense)
 target_link_libraries (pce_bcs.x depslatec)
 target_link_libraries (pce_bcs.x m blas ${BLAS_LIBRARIES})
 target_link_libraries (pce_bcs.x m lapack ${LAPACK_LIBRARIES})
@@ -66,8 +76,11 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../dep/sundials/include")
+  include_directories (../../dep/sundials/include/ )
+endif()
 
 INSTALL(TARGETS pce_bcs.x
               PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

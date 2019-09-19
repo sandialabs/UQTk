@@ -31,7 +31,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
@@ -41,8 +40,6 @@ include_directories(../../lib/lowrank)
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/figtree)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS LowRankRegrTest DESTINATION bin/tests/)
 
