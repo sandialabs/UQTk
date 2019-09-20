@@ -21,8 +21,10 @@ add_executable (CorrTest main.cpp)
 target_link_libraries (CorrTest uqtk )
 
 target_link_libraries (CorrTest depdsfmt )
-target_link_libraries (CorrTest depcvode )
-target_link_libraries (CorrTest depnvec  )
+target_link_libraries (CorrTest sundials_cvode)
+target_link_libraries (CorrTest sundials_nvecserial)
+target_link_libraries (CorrTest sundials_sunlinsoldense)
+target_link_libraries (CorrTest sundials_sunmatrixdense)
 target_link_libraries (CorrTest depslatec)
 target_link_libraries (CorrTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (CorrTest m lapack ${LAPACK_LIBRARIES})
@@ -52,8 +54,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -65,9 +65,6 @@ include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
 include_directories(../../../dep/figtree)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS CorrTest DESTINATION bin/tests/)
 

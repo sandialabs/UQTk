@@ -8,13 +8,17 @@ SET(copy_FILES
   tmcmc_bimodal.py
   )
 
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
 add_executable (bimodal.x bimodal.cpp)
 add_executable (tmcmc_bimodal.x tmcmc_bimodal.cpp)
 
 target_link_libraries (tmcmc_bimodal.x uqtk  )
 target_link_libraries (tmcmc_bimodal.x depdsfmt )
-target_link_libraries (tmcmc_bimodal.x depcvode )
-target_link_libraries (tmcmc_bimodal.x depnvec  )
+target_link_libraries (tmcmc_bimodal.x sundials_cvode)
+target_link_libraries (tmcmc_bimodal.x sundials_nvecserial)
+target_link_libraries (tmcmc_bimodal.x sundials_sunlinsoldense)
+target_link_libraries (tmcmc_bimodal.x sundials_sunmatrixdense)
 target_link_libraries (tmcmc_bimodal.x depslatec)
 target_link_libraries (tmcmc_bimodal.x m lapack blas)
 target_link_libraries (tmcmc_bimodal.x deplbfgs  )
@@ -53,7 +57,7 @@ include_directories(../../cpp/lib/mcmc  )
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/slatec)
 include_directories(../../dep/lbfgs)
-include_directories(../../dep/cvode-2.7.0/include)
+
 
 INSTALL(TARGETS tmcmc_bimodal.x DESTINATION examples/tmcmc_bimodal)
 INSTALL(TARGETS bimodal.x DESTINATION examples/tmcmc_bimodal)

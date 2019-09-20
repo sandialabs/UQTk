@@ -6,7 +6,39 @@ enable_language(CXX)
 add_subdirectory (slatec)
 add_subdirectory (dsfmt)
 add_subdirectory (lbfgs)
-add_subdirectory (cvode-2.7.0)
+# Sundials
+if(NOT DEFINED CMAKE_SUNDIALS_DIR)
+
+    FIND_PACKAGE(GIT)
+
+    #set path to sundials
+    SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
+
+    SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
+
+    # Process submodule Sundials (includes, cxx flags and lib)
+    MESSAGE("-- UQTk uses submodule of sundials located at dep/sundials")
+    # Automatically update sundials GIT
+    # For development purpose inside of sundials, we can disable this update
+      IF (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
+        MESSAGE(STATUS "Git submodule updating")
+        EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
+                        RESULT_VARIABLE GIT_SUBMODULE_RESULT)
+        IF (NOT GIT_SUBMODULE_RESULT EQUAL "0")
+          MESSAGE(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMODULE_RESULT}")
+        ENDIF()
+      ELSE()
+        MESSAGE(FATAL_ERROR "Git submodule updating fails ")
+      ENDIF()
+
+    #turn off shared libraries
+    SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Build sundials shared library")
+    #build sundials
+    ADD_SUBDIRECTORY(sundials)
+    INCLUDE_DIRECTORIES(sundials/include)
+    include_directories("${PROJECT_BINARY_DIR}/sundials/include")
+endif()
 add_subdirectory (ann)
 add_subdirectory (figtree)
 

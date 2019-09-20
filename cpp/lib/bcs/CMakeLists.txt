@@ -17,8 +17,12 @@ target_link_libraries(uqtkbcs m lapack ${LAPACK_LIBRARIES})
 
 include_directories (../../../dep/dsfmt)
 include_directories (../../../dep/figtree)
-include_directories (../../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
+
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+if( BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+  include_directories (../../../dep/sundials/include )
+endif()
 
 # Install the library
 INSTALL(TARGETS uqtkbcs DESTINATION lib)

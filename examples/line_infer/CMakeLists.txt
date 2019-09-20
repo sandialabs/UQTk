@@ -10,6 +10,8 @@ SET(copy_FILES
   )
 
 # line_infer.x
+link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+
 add_executable (line_infer.x line_infer.cpp)
 
 target_link_libraries (line_infer.x uqtkpce  )
@@ -21,8 +23,10 @@ target_link_libraries (line_infer.x uqtkxmlutils )
 
 target_link_libraries (line_infer.x depdsfmt )
 target_link_libraries (line_infer.x deplbfgs )
-target_link_libraries (line_infer.x depcvode )
-target_link_libraries (line_infer.x depnvec  )
+target_link_libraries (line_infer.x sundials_cvode)
+target_link_libraries (line_infer.x sundials_nvecserial)
+target_link_libraries (line_infer.x sundials_sunlinsoldense)
+target_link_libraries (line_infer.x sundials_sunmatrixdense)
 target_link_libraries (line_infer.x depslatec)
 target_link_libraries (line_infer.x m blas ${BLAS_LIBRARIES})
 target_link_libraries (line_infer.x m lapack ${LAPACK_LIBRARIES})
@@ -68,8 +72,7 @@ include_directories(../../cpp/lib/xmlutils   )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/figtree)
-include_directories(../../dep/cvode-2.7.0/include)
-include_directories("${PROJECT_BINARY_DIR}/../../dep/cvode-2.7.0/include")
+
 
 INSTALL(TARGETS line_infer.x DESTINATION examples/line_infer)
 

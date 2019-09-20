@@ -11,8 +11,10 @@ add_executable (QuadLUTest main.cpp)
 target_link_libraries (QuadLUTest uqtk  )
 
 target_link_libraries (QuadLUTest depdsfmt )
-target_link_libraries (QuadLUTest depcvode )
-target_link_libraries (QuadLUTest depnvec  )
+target_link_libraries (QuadLUTest sundials_cvode)
+target_link_libraries (QuadLUTest sundials_nvecserial)
+target_link_libraries (QuadLUTest sundials_sunlinsoldense)
+target_link_libraries (QuadLUTest sundials_sunmatrixdense)
 target_link_libraries (QuadLUTest depslatec)
 target_link_libraries (QuadLUTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (QuadLUTest m lapack ${LAPACK_LIBRARIES})
@@ -40,8 +42,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
 endif()
 
-link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
-
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
 include_directories(../../lib/include)
@@ -52,9 +52,6 @@ include_directories(../../lib/mcmc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
-include_directories(../../../dep/cvode-2.7.0/include)
-
-include_directories("${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/include")
 
 INSTALL(TARGETS QuadLUTest DESTINATION bin/tests/)
 
