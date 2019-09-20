@@ -34,6 +34,12 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
     #turn off shared libraries
     SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Build sundials shared library")
+    #turn off example generation of all kinds
+    SET(EXAMPLES_ENABLE_C OFF CACHE BOOL "Sundials examples in c")
+    SET(EXAMPLES_ENABLE_F77 OFF CACHE BOOL "Sundials examples in fortran 77")
+    SET(EXAMPLES_ENABLE_CXX OFF CACHE BOOL "Sundials examples in c++")
+    SET(EXAMPLES_ENABLE_F90 OFF CACHE BOOL "Sundials examples in fortran 90")
+    SET(EXAMPLES_ENABLE_CUDA OFF CACHE BOOL "Sundials examples in cuda")
     #build sundials
     ADD_SUBDIRECTORY(sundials)
     INCLUDE_DIRECTORIES(sundials/include)
