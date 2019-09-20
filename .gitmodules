@@ -1,0 +1,4 @@
+[submodule "dep/sundials"]
+	path = dep/sundials
+	url = https://github.com/LLNL/sundials.git
+
