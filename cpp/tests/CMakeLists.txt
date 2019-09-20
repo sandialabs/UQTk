@@ -27,6 +27,7 @@ add_subdirectory (GradHessianTest  )
 add_subdirectory (GradientPCETest  )
 add_subdirectory (PCE1dTest        )
 add_subdirectory (PCEImplTest      )
+add_subdirectory (PCELogTest       )
 add_subdirectory (Hessian2dTest    )
 
 # # BCS tests
