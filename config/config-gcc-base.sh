@@ -42,16 +42,8 @@ while getopts ":h" opt; do
   esac
 done
 
-# If UQTk is installed in a directory with the version number after "UQTk", then define the suffix here
-# (The test below may seem a bit convoluted, but basically it checks to see if the version number
-# has a "." in it, which differentiates it from the placeholder string we have in place for
-# our development branches of the code)
-UQTK_VERSION=@UQTKVERSION@
-if [[ "$UQTK_VERSION" == *.* ]]; then
-  VERSION_SUFFIX=_v$UQTK_VERSION
-fi
-
-UQTK_SRC_DIR=$PWD/../UQTk$VERSION_SUFFIX
+# If UQTk is installed in a directory other than "UQTk", then modify the line below accordingly
+UQTK_SRC_DIR=$PWD/../UQTk
 UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
 
 echo "This script assumes the UQTk source code is in $UQTK_SRC_DIR"
