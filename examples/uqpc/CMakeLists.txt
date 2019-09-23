@@ -18,6 +18,7 @@ SET(copy_FILES
  example_1.x
  example_2.x
  example_3.x
+ README
  )
 
 

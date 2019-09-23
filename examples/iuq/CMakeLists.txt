@@ -16,6 +16,7 @@ SET(copy_FILES
  plot_prpost.py
  plot_fit1d.py
  plot_shade.py
+ README
  )
 
 

@@ -3,6 +3,7 @@ project (UQTk)
 SET(copy_FILES
   muqPCE2uqtk.cpp
   genzGP.py
+  README
 )
 
 # muqPCE2uqtk.x

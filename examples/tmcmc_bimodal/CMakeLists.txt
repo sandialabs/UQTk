@@ -6,6 +6,7 @@ SET(copy_FILES
   tmcmc_moveIntermediateFiles.sh
   tmcmc_prior_samples.dat
   tmcmc_bimodal.py
+  README
   )
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)

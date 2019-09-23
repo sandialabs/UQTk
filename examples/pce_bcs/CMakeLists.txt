@@ -3,6 +3,7 @@ project (UQTk)
 SET(copy_FILES
   pce_bcs.cpp
   pce_bcs.h
+  README
   )
 
 # pce_bcs.x

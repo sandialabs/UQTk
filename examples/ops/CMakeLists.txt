@@ -8,6 +8,7 @@ SET(copy_FILES
   Utils.cpp
   Utils.h
   test_all.sh
+  README
   )
 
 

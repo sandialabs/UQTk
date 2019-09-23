@@ -7,6 +7,7 @@ SET(copy_FILES
   XMLreader.h
   line_infer.xml.templ
   line_infer.py
+  README
   )
 
 # line_infer.x
