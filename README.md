@@ -1,6 +1,8 @@
 # Sandia National Labs
 # Uncertainty Quantification Toolkit (UQTk) version @UQTKVERSION@
 
+#### Bert Debusschere, Cosmin Safta, Khachik Sargsyan, Katherine Johnston, Prashant Rai, Mohammad Khalil, Tiernan Casey, Xiaoshu Zeng
+
 ## Overview
 The UQ Toolkit (UQTk) is a collection of libraries and tools for the
 quantification of uncertainty in numerical model predictions. Version
@@ -97,3 +99,8 @@ To cite UQTk, please use the following publications:
   url       = {http://www.springer.com/us/book/9783319123844}
 }
 ```
+
+## Contact Us
+For more information, visit the [UQTk website at https://www.sandia.gov/UQToolkit/](https://www.sandia.gov/UQToolkit/) or
+contact the [UQTk Developers at <uqtk-developers@software.sandia.gov>](mailto:uqtk-developers@software.sandia.gov)
+Sandia National Laboratories, Livermore, CA, USA.
