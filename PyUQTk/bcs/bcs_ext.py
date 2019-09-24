@@ -1,3 +1,5 @@
+%pythoncode %{
+
 #=====================================================================================
 #
 #                      The UQ Toolkit (UQTk) version @UQTKVERSION@
@@ -25,7 +27,6 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
-%pythoncode %{
 
 import numpy as np
 import matplotlib.pyplot as mpl

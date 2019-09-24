@@ -25,7 +25,7 @@
 //
 //     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 //     Sandia National Laboratories, Livermore, CA, USA
-=====================================================================================
+//=====================================================================================
 
 %{
 #define SWIG_FILE_WITH_INIT
