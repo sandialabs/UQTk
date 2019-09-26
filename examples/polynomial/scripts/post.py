@@ -80,6 +80,9 @@ try:
     import pymc
     have_pymc = True
 except ImportError:
+    import pymc3 as pymc
+    have_pymc = True
+except ImportError:
     print("PyMC is required for some of the MCMC postprocessing codes.")
     print("Will proceed without, but some convergence tests will not be available.")
     have_pymc = False
