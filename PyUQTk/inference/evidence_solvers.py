@@ -27,6 +27,10 @@
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
+#=====================================================================================
+#     For more info, see also the UQTk manual section on "Bayesian Evidence Estimation"
+#=====================================================================================
+
 # Import python libraries.
 import numpy as npy
 import os
