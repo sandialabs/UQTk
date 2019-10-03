@@ -28,6 +28,7 @@
 #=====================================================================================
 #=====================================================================================
 
+
 import os
 import argparse
 import numpy as np
@@ -39,8 +40,7 @@ from PyUQTk.plotting.pdfs import plot_pdf1d, plot_pdf2d
 plt.rc('legend', loc='best', fontsize=12)
 plt.rc('lines', linewidth=4, color='r')
 plt.rc('axes', linewidth=2, grid=True, labelsize=22)
-plt.rc('xtick', labelsize=10)
-plt.rc('ytick', labelsize=10)
+
 
 usage_str = 'Script to plot PDFs given samples, either triangular or individual.'
 parser = argparse.ArgumentParser(description=usage_str)
@@ -62,6 +62,8 @@ parser.add_argument("-e", "--every", dest="every", type=int, default=1,
                     help="Samples thinning")
 parser.add_argument("-s", "--nsamxi", type=int, dest="nsam_xi", default=1,
                     help="Number of xi samples per posterior sample")
+parser.add_argument("-x", "--lsize", type=int, dest="lsize", default=10,
+                    help="Label size")
 args = parser.parse_args()
 
 # check if ind_show indeed counts from 1
@@ -80,6 +82,11 @@ every = args.every
 nominal_file = args.nominal_file
 prangeshow_file = args.prangeshow_file
 nsam_xi = args.nsam_xi
+lsize = args.lsize
+
+plt.rc('axes', labelsize=lsize)
+plt.rc('xtick', labelsize=lsize)
+plt.rc('ytick', labelsize=lsize)
 
 if (nsam_xi > 1):
     assert(burnin == 0)
@@ -148,7 +155,7 @@ for i in range(npar):
     x0, x1 = thisax.get_xlim()
     y0, y1 = thisax.get_ylim()
     # thisax.set_aspect((x1 - x0) / (y1 - y0))
-    thisax.set_title('PDF of ' + names[ind_show[i]], fontsize=22)
+    thisax.set_title('PDF of ' + names[ind_show[i]], fontsize=lsize)
 
     if plot_type == 'tri':
         if i == 0:
@@ -174,7 +181,7 @@ for i in range(npar):
 
         for isam_xi in range(nsam_xi):
             plot_pdf2d(samples[isam_xi::nsam_xi, j], samples[isam_xi::nsam_xi, i],
-                       pltype='kde', ncont=20, ax=thisax)
+                       pltype='kde', ncont=10, ax=thisax)
         #plot_pdf2d(samples[:, j], samples[:, i], pltype='sam', mstyle='x', ax=thisax)
 
         if nominal_file is not None:

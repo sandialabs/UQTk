@@ -80,7 +80,7 @@ def plot_pdf1d(sams, pltype='hist', color='b', lw=1, nom_height_factor=10., ax=N
 #############################################################
 
 
-def plot_pdf2d(samsx, samsy, pltype='kde', ncont=10, color=None, lwidth=2, mstyle='o', ax=None):
+def plot_pdf2d(samsx, samsy, pltype='kde', ncont=10, color=None, lwidth=1, mstyle='o', ax=None):
     if ax is None:
         ax = plt.gca()
 
