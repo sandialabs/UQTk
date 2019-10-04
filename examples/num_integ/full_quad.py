@@ -28,8 +28,6 @@
 #=====================================================================================
 import sys
 import os
-#uqtksrc=os.environ['UQTK_SRC']
-#sys.path.append(uqtksrc+"/../UQTk-install")
 
 try:
 	from numpy import *
@@ -43,30 +41,55 @@ import matplotlib.pyplot as plt
 import numpy as np
 ####################################################################
 
+#check which python version, handle input differently for 2 vs 3
+if sys.version_info[0] < 3:
+	python3 = False
+else:
+	python3 = True
 
 ###### User Input #######
 
 #Obtain desired model from user
-model= input("Please enter desired model from choices:\ngenz_osc\ngenz_exp\ngenz_cont\ngenz_gaus\
-	\ngenz_cpeak\ngenz_ppeak\n\n")
+if python3:
+    model= input("Please enter desired model from choices:\ngenz_osc\ngenz_exp\ngenz_cont\ngenz_gaus\
+        \ngenz_cpeak\ngenz_ppeak\n\n")
+else: 
+    model= raw_input("Please enter desired model from choices:\ngenz_osc\ngenz_exp\ngenz_cont\ngenz_gaus\
+        \ngenz_cpeak\ngenz_ppeak\n\n")
 #Check that model selected is one listed
 model_choices=['genz_osc', 'genz_exp', 'genz_cont','genz_gaus','genz_cpeak', 'genz_ppeak']
 while not(model in model_choices):
-	model=input("Please choose from listed models: ")
+    if python3:
+        model=input("Please choose from listed models: ")
+    else:
+        model=raw_input("Please choose from listed models: ")
 
 #Obtain number of dimensions from user
-ndim=input("Please enter desired dimension: ")
+if python3:
+    ndim=input("Please enter desired dimension: ")
+else:
+    ndim=raw_input("Please enter desired dimension: ")
 #Ask for valid input if dimension is not a positive integer
 while not str.isdigit(ndim) or ndim=="0":
-	ndim=input("Please enter a positive integer: ")
+    if python3:
+        ndim=input("Please enter a positive integer: ")
+    else:
+        ndim=raw_input("Please enter a positive integer: ")
 #Change type of ndim to integer
 ndim=int(ndim)
 
 #Obtain desired maximum number of quadrature points from user
-q_pts= input("Enter the desired maximum number of quadrature points per dimension: ")
+if python3:
+    q_pts= input("Enter the desired maximum number of quadrature points per dimension: ")
+else:
+    q_pts=raw_input("Enter the desired maximum number of quadrature points per dimension: ")
+
 #Ask for valid input if q_pts is not a positive integer
 while not str.isdigit(q_pts) or q_pts=="0":
-	q_pts=input("Please enter a positive integer: ")
+    if python3:
+        q_pts=input("Please enter a positive integer: ")
+    else:
+        q_pts=raw_input("Please enter a positive integer: ")
 #Change type of q_pts to integer
 q_pts=int(q_pts)
 

@@ -28,8 +28,6 @@
 #=====================================================================================
 import sys
 import os
-uqtksrc=os.environ['UQTK_SRC']
-sys.path.append(uqtksrc+"/../UQTk-install")
 
 try:
 	from numpy import *
