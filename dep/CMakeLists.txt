@@ -9,7 +9,7 @@ add_subdirectory (lbfgs)
 # Sundials
 if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
-    FIND_PACKAGE(GIT)
+    FIND_PACKAGE(Git)
 
     #set path to sundials
     SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
