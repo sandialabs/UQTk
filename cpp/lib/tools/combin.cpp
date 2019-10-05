@@ -141,129 +141,78 @@ void get_perm(int nn, int* perm,int seed)
 
 
 
-// Computes incomplete Gamma integral
+/*
+Computes lower incomplete gamma integral, based on rewriting
+https://www.cfa.harvard.edu/sma/miriad/wbcorrTest/downLoad/NewFormat/miriad-sma3.1.2/src/subs/gamma.f
+in C.
+*/
 double gammai ( const double p, const double x )
-//****************************************************************************80
-//
-//  Purpose:
-//
-//    GAMMDS computes the incomplete Gamma integral.
-//
-//  Discussion:
-//
-//    The parameters must be positive.  An infinite series is used.
-//
-//  Licensing:
-//
-//    This code is distributed under the GNU LGPL license.
-//
-//  Modified:
-//
-//    22 January 2008
-//
-//  Author:
-//
-//    Original FORTRAN77 version by Chi Leung Lau.
-//    C++ version by John Burkardt.
-//
-//  Reference:
-//
-//    Chi Leung Lau,
-//    Algorithm AS 147:
-//    A Simple Series for the Incomplete Gamma Integral,
-//    Applied Statistics,
-//    Volume 29, Number 1, 1980, pages 113-114.
-//
-//  Parameters:
-//
-//    Input, double X, P, the arguments of the incomplete
-//    Gamma integral.  X and P must be greater than 0.
-//
-//    Output, int *IFAULT, error flag.
-//    0, no errors.
-//    1, X <= 0 or P <= 0.
-//    2, underflow during the computation.
-//
-//    Output, double GAMMDS, the value of the incomplete
-//    Gamma integral.
-/////////////////////////////////////////////////////////////////////////////////////////
-// The code is taken from http://people.sc.fsu.edu/~jburkardt/cpp_src/asa147/asa147.html
-// UQTk group has modified the code in the following way:
-// - Renamed this function from gammds to gammai for backward compatibility
-// - Instead of integer fault indicator, we throw Tantrum and exit when parameters or arguments are outside bounds
-// - Log of complete gamma function is computed by lgamma instead of being computed by another function from the same code-suite
-// - Instead of an underflow error-message, implemented an approximation (i.e. returning 1) for large arguments when the output value is near 1
 {
-  double a;
-  double arg;
-  double c;
-  double e = 1.0E-09;
-  double f;
-  //int ifault2;
-  double uflo = 1.0E-37;
-  double value;
 //
 //  Check the input.
 //
-  if ( x <= 0.0 )
+  if ( x == 0.0 )
+    return 0.0;
+
+  if ( x < 0.0 )
   {
-    throw Tantrum("gammai() error:: the argument of the incomplete gamma function is non-positive. Exit.");
-    value = 0.0;
-    return value;
+
+    throw Tantrum("gammai() error:: the argument of the incomplete gamma function is non-positive. Exiting.");
+    exit(1);
   }
 
   if ( p <= 0.0 )
   {
-    throw Tantrum("gammai() error:: the parameter of the incomplete gamma function is non-positive. Exit.");
-    value = 0.0;
-    return value;
+    throw Tantrum("gammai() error:: the parameter of the incomplete gamma function is non-positive. Exiting.");
+    exit(1);
   }
-//
-//
-  arg = p * log ( x ) - lgamma ( p + 1.0 ) - x;
 
-  if ( arg < log ( uflo ))
+  if (x <= p + 1.0)
   {
-    if (x<1)
-      return 0.0;
-    else
-      return 1.0;
+
+    double ap = p;
+    double sum = 1./p;
+    double del = sum;
+    while (fabs(del) > fabs(sum)*1.0e-12){
+      ap += 1.0;
+      del *= (x/ap);
+      sum += del;
+      }
+    return sum * exp(-x + p*log(x) - lgamma(p));
   }
 
-
-  f = exp ( arg );
-
-  if ( f < uflo )
+  else
   {
-    if (x<1)
-      return 0.0;
-    else
-      return 1.0;
+      double gold = 0.0;
+      double a0 = 1.0;
+      double a1 = x;
+      double b0 = 0.0;
+      double b1 = 1.0;
+      double fac = 1.0;
+
+      for (int i=1; i<=100; i++){
+        double ana = float(i) - p;
+        a0 = (a1 + a0*ana) * fac;
+        b0 = (b1 + b0*ana) * fac;
+        double anf = float(i) * fac;
+        a1 = x*a0 + anf*a1;
+        b1 = x*b0 + anf*b1;
+        if (a1!=0){
+          fac = 1./a1;
+          double g = b1 * fac;
+          if (abs((g-gold)/g) <= 1.0e-12)
+            return 1.- g * exp(-x + p*log(x) - lgamma(p));
+          else
+            gold = g;
+        }
+
+      }
+
+
   }
 
-//
-//  Series begins.
-//
-  c = 1.0;
-  value = 1.0;
-  a = p;
-
-  for ( ; ; )
-  {
-    a = a + 1.0;
-    c = c * x / a;
-    value = value + c;
-
-    if ( c <= e * value )
-    {
-      break;
-    }
-  }
-
-  value = value * f;
-
-  return value;
 }
+
 
 // Beta function
 double beta(const double z, const double w)
@@ -273,84 +222,45 @@ double beta(const double z, const double w)
 
 
 
-// Computes incomplete Beta function
-double betai ( const double p, const double q, const double x )
-//****************************************************************************
-//
-//  Purpose:
-//
-//    BETAIN computes the incomplete Beta function ratio.
-//
-//  Licensing:
-//
-//    This code is distributed under the GNU LGPL license.
-//
-//  Modified:
-//
-//    23 January 2008
-//
-//  Author:
-//
-//    Original FORTRAN77 version by KL Majumder, GP Bhattacharjee.
-//    C++ version by John Burkardt.
-//
-//  Reference:
-//
-//    KL Majumder, GP Bhattacharjee,
-//    Algorithm AS 63:
-//    The incomplete Beta Integral,
-//    Applied Statistics,
-//    Volume 22, Number 3, 1973, pages 409-411.
-//
-//  Parameters:
-//
-//    Input, double X, the argument, between 0 and 1.
-//
-//    Input, double P, Q, the parameters, which
-//    must be positive.
-//
-//    Input, double BETA, the logarithm of the complete
-//    beta function.
-//
-//    Output, int *IFAULT, error flag.
-//    0, no error.
-//    nonzero, an error occurred.
-//
-//    Output, double BETAIN, the value of the incomplete
-//    Beta function ratio.
-/////////////////////////////////////////////////////////////////////////////////////////
-// The code is taken from http://people.sc.fsu.edu/~jburkardt/cpp_src/asa063/asa063.html
-// UQTk group has modified the code in the following way:
-// - Renamed this function from betain to betai for backward compatibility
-// - Instead of integer fault indicator, we throw Tantrum and exit when parameters or arguments are outside bounds
-// - Log of complete beta function is computed instead of being given as an argument
-//
-{
-  double acu = 0.1E-14;
-  double ai;
-  //double betain;
-  double cx;
-  bool indx;
-  int ns;
-  double pp;
-  double psq;
-  double qq;
-  double rx;
-  double temp;
-  double term;
-  double value;
-  double xx;
 
+/*
+Implementation of incomplete beta function using https://codeplea.com/incomplete-beta-function-c (the code itself is in https://github.com/codeplea/incbeta/blob/master/incbeta.c)
+*/
+/*
+ * zlib License
+ *
+ * Regularized Incomplete Beta Function
+ *
+ * Copyright (c) 2016, 2017 Lewis Van Winkle
+ * http://CodePlea.com
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgement in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
+#define STOP 1.0e-8
+#define TINY 1.0e-30
 
-
-
-  value = x;
+double betai(double a, double b, double x) {
 //
 //  Check the input arguments.
 //
-  if ( p <= 0.0 || q <= 0.0 )
+  if ( a <= 0.0 || b <= 0.0 )
   {
     throw Tantrum("betai() error:: parameters of the incomplete beta function are negative. Exit.");
+    exit(1);
 
     return 0.0;
   }
@@ -358,188 +268,114 @@ double betai ( const double p, const double q, const double x )
   if ( x < 0.0 || 1.0 < x )
   {
     throw Tantrum("betai() error:: argument of the incomplete beta function are outside bounds [0,1]. Exit.");
+    exit(1);
 
     return 0.0;
   }
-//
-//  Special cases.
-//
-  if ( x == 0.0 || x == 1.0 )
-  {
-    return value;
-  }
+ //   if (x < 0.0 || x > 1.0) return 1.0/0.0; //give error
 
-  // Added by Sandia UQTk group
-  double lbeta=lgamma(p)+lgamma(q)-lgamma(p+q);
-
-//
-//  Change tail if necessary and determine S.
-//
-  psq = p + q;
-  cx = 1.0 - x;
-
-  if ( p < psq * x )
-  {
-    xx = cx;
-    cx = x;
-    pp = q;
-    qq = p;
-    indx = true;
-  }
-  else
-  {
-    xx = x;
-    pp = p;
-    qq = q;
-    indx = false;
-  }
-
-  term = 1.0;
-  ai = 1.0;
-  value = 1.0;
-  ns = ( int ) ( qq + cx * psq );
-//
-//  Use the Soper reduction formula.
-//
-  rx = xx / cx;
-  temp = qq - ai;
-  if ( ns == 0 )
-  {
-    rx = xx;
-  }
-
-  for ( ; ; )
-  {
-    term = term * temp * rx / ( pp + ai );
-    value = value + term;;
-    temp = fabs ( term );
-
-    if ( temp <= acu && temp <= acu * value )
-    {
-      value = value * exp ( pp * log ( xx )
-      + ( qq - 1.0 ) * log ( cx ) - lbeta ) / pp;
-
-      if ( indx )
-      {
-        value = 1.0 - value;
-      }
-      break;
+    /*The continued fraction converges nicely for x < (a+1)/(a+b+2)*/
+    if (x > (a+1.0)/(a+b+2.0)) {
+        return (1.0-betai(b,a,1.0-x)); /*Use the fact that beta is symmetrical.*/
     }
 
-    ai = ai + 1.0;
-    ns = ns - 1;
+    /*Find the first part before the continued fraction.*/
+    const double lbeta_ab = lgamma(a)+lgamma(b)-lgamma(a+b);
+    const double front = exp(log(x)*a+log(1.0-x)*b-lbeta_ab) / a;
 
-    if ( 0 <= ns )
-    {
-      temp = qq - ai;
-      if ( ns == 0 )
-      {
-        rx = xx;
-      }
-    }
-    else
-    {
-      temp = psq;
-      psq = psq + 1.0;
-    }
-  }
+    /*Use Lentz's algorithm to evaluate the continued fraction.*/
+    double f = 1.0, c = 1.0, d = 0.0;
 
-  return value;
+    int i, m;
+    for (i = 0; i <= 200; ++i) {
+        m = i/2;
+
+        double numerator;
+        if (i == 0) {
+            numerator = 1.0; /*First numerator is 1.0.*/
+        } else if (i % 2 == 0) {
+            numerator = (m*(b-m)*x)/((a+2.0*m-1.0)*(a+2.0*m)); /*Even term.*/
+        } else {
+            numerator = -((a+m)*(a+b+m)*x)/((a+2.0*m)*(a+2.0*m+1)); /*Odd term.*/
+        }
+
+        /*Do an iteration of Lentz's algorithm.*/
+        d = 1.0 + numerator * d;
+        if (fabs(d) < TINY) d = TINY;
+        d = 1.0 / d;
+
+        c = 1.0 + numerator / c;
+        if (fabs(c) < TINY) c = TINY;
+
+        const double cd = c*d;
+        f *= cd;
+
+        /*Check for stop.*/
+        if (fabs(1.0-cd) < STOP) {
+            return front * (f-1.0);
+        }
+    }
+
+    return 1.0/0.0; /*Needed more loops, did not converge.*/
 }
 
-// Calculates di-gamma function
+
+
+/*
+Calculates di-gamma function, also called psi-function, defined as the derivative of log-gamma function: psi(x) = d log (Gamma(x))/d x
+The calculation relies on analytic derivative of the Lanczos approximation of the Gamma function https://en.wikipedia.org/wiki/Lanczos_approximation
+Note that the function in principle can be defined for non-integer negative values (e.g. see https://www.codecogs.com/library/maths/special/gamma/psi.php), but here we constrain the domain to be the positive semi-axis only.
+Also, inspired by this Matlab implementation https://www.mathworks.com/matlabcentral/fileexchange/978-special-functions-math-library, which did not work correctly as is.
+*/
 double digama ( double x )
-//****************************************************************************80
-//
-//  Purpose:
-//
-//    DIGAMA calculates DIGAMMA ( X ) = d ( LOG ( GAMMA ( X ) ) ) / dX
-//
-//  Licensing:
-//
-//    This code is distributed under the GNU LGPL license.
-//
-//  Modified:
-//
-//    03 June 2013
-//
-//  Author:
-//
-//    Original FORTRAN77 version by Jose Bernardo.
-//    C++ version by John Burkardt.
-//
-//  Reference:
-//
-//    Jose Bernardo,
-//    Algorithm AS 103:
-//    Psi ( Digamma ) Function,
-//    Applied Statistics,
-//    Volume 25, Number 3, 1976, pages 315-317.
-//
-//  Parameters:
-//
-//    Input, double X, the argument of the digamma function.
-//    0 < X.
-//
-//    Output, int *IFAULT, error flag.
-//    0, no error.
-//    1, X <= 0.
-//
-//    Output, double DIGAMA, the value of the digamma function at X.
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-// The code is taken from http://people.sc.fsu.edu/~jburkardt/cpp_src/asa103/asa103.cpp
-// UQTk group has modified the code in the following way:
-// - Instead of integer fault indicator, we throw Tantrum and exit when parameters or arguments are outside bounds
-//
 {
-  double euler_mascheroni = 0.57721566490153286060;
-  double r;
-  double value;
-  double x2;
-//
-//  Check the input.
-//
   if ( x <= 0.0 )
   {
-    value = 0.0;
     throw Tantrum("digama() error:: argument of the digamma function is non-positive. Exit.");
-    return value;
+    exit(1);
   }
-//
-//  Initialize.
-//
-  x2 = x;
-  value = 0.0;
-//
-//  Use approximation for small argument.
-//
-  if ( x2 <= 0.00001 )
-  {
-    value = - euler_mascheroni - 1.0 / x2;
-    return value;
-  }
-//
-//  Reduce to DIGAMA(X + N).
-//
-  while ( x2 < 8.5 )
-  {
-    value = value - 1.0 / x2;
-    x2 = x2 + 1.0;
-  }
-//
-//  Use Stirling's (actually de Moivre's) expansion.
-//
-  r = 1.0 / x2;
-  value = value + log ( x2 ) - 0.5 * r;
-  r = r * r;
-  value = value
-    - r * ( 1.0 / 12.0
-    - r * ( 1.0 / 120.0
-    - r *   1.0 / 252.0 ) );
 
-  return value;
+  if (x<0.5)
+      return digama(1.-x) - 4.*atan(1.)/tan(4.*atan(1.)*x);
+
+  double g=607./128.; // best results when 4<=g<=5
+
+double c[15] = {0.99999999999999709182,
+      57.156235665862923517,
+     -59.597960355475491248,
+      14.136097974741747174,
+      -0.49191381609762019978,
+        .33994649984811888699e-4,
+        .46523628927048575665e-4,
+       -.98374475304879564677e-4,
+        .15808870322491248884e-3,
+       -.21026444172410488319e-3,
+        .21743961811521264320e-3,
+       -.16431810653676389022e-3,
+        .84418223983852743293e-4,
+       -.26190838401581408670e-4,
+        .36899182659531622704e-5};
+
+        double n=0.;
+        double d=0.;
+double dz = 0.0;
+double dd = 0.0;
+
+        for (int k=14; k>=1; k--){
+          dz = 1./(x+float(k));
+          dd = c[k]*dz;
+          d += dd;
+          n -= dd*dz;
+        }
+        d += c[0];
+        double gg = x + g +0.5;
+        double f = log(gg) + (n/d - g/gg) - 1./x;
+
+
+
+        return f;
 }
+
 //****************************************************************************
 
 
