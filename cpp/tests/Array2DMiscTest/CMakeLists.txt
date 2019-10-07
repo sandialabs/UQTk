@@ -26,7 +26,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     target_link_libraries (Array2DMiscTest ${IntelLibPath}/libifcore.a)
     target_link_libraries (Array2DMiscTest ${IntelLibPath}/libifport.a)
   endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # using Clang
   if ("${ClangLibPath}" STREQUAL "")
     target_link_libraries (Array2DMiscTest gfortran stdc++)

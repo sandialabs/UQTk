@@ -25,7 +25,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   else()
     target_link_libraries (ArrayReadAndWrite ${IntelLibPath}/libifcore.a)
   endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # using Clang
   if ("${ClangLibPath}" STREQUAL "")
     target_link_libraries (ArrayReadAndWrite gfortran expat stdc++)
