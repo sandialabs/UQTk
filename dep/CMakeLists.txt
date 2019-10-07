@@ -7,6 +7,7 @@ add_subdirectory (slatec)
 add_subdirectory (dsfmt)
 add_subdirectory (lbfgs)
 # Sundials
+SET(BUILD_SUNDIALS OFF CACHE BOOL "To build sundials (vs specifying sundials directly)")
 if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
     FIND_PACKAGE(Git)
