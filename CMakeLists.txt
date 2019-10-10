@@ -49,6 +49,12 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 
 option(UQTk_ENABLE_SUNDIALS_SUBMODULE_UPDATE "Flag to enable sundials submodule update" OFF)
 
+SET(BUILD_SUNDIALS OFF CACHE BOOL "BUILD_SUNDIALS is OFF by default")
+if(NOT DEFINED CMAKE_SUNDIALS_DIR)
+    UNSET(BUILD_SUNDIALS CACHE)
+    SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
+endif()
+
 add_definitions(-D__wsu)
 add_definitions(-fPIC)
 add_definitions(-w)

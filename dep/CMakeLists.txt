@@ -6,8 +6,8 @@ enable_language(CXX)
 add_subdirectory (slatec)
 add_subdirectory (dsfmt)
 add_subdirectory (lbfgs)
+
 # Sundials
-SET(BUILD_SUNDIALS OFF CACHE BOOL "BUILD_SUNDIALS is OFF by default")
 if(NOT DEFINED CMAKE_SUNDIALS_DIR)
 
     FIND_PACKAGE(Git)
@@ -15,7 +15,7 @@ if(NOT DEFINED CMAKE_SUNDIALS_DIR)
     #set path to sundials
     SET(CMAKE_SUNDIALS_DIR ${CMAKE_INSTALL_PREFIX})
 
-    SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
+    #SET(BUILD_SUNDIALS ON CACHE BOOL "To build sundials (vs specifying sundials directly)")
 
     # Process submodule Sundials (includes, cxx flags and lib)
     MESSAGE("-- UQTk uses submodule of sundials located at dep/sundials")
