@@ -123,6 +123,8 @@ MCMC::MCMC(LikelihoodBase& L)
   // / Set the initialization flags to false
   gradflag_=false;
   tensflag_=false;
+  fcnAcceptFlag_=false;
+  fcnRejectFlag_=false;
 
   chaindimInit_=false;
   propcovInit_=false;
@@ -174,6 +176,8 @@ MCMC::MCMC()
   // / Set the initialization flags to false
   gradflag_=false;
   tensflag_=false;
+  fcnAcceptFlag_=false;
+  fcnRejectFlag_=false;
 
   chaindimInit_=false;
   propcovInit_=false;
