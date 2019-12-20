@@ -221,6 +221,7 @@ class model_letter(model):
             [ln_likelihood, ln_prior]: a list with the natural log of the
                 likelihood and prior  for the current sample
         """
+
         # Extract data from model_info
         param_names_dict = self.model_info['param_names_dict']
         model_name = self.model_info["model_name"]
@@ -230,17 +231,6 @@ class model_letter(model):
         # Noise model parameters
         # sig_index = param_names_dict['sigma']
         # sig = fit_params[sig_index]  # assumed standard deviation of noise model
-
-        #compute the difference between observations and forward model using model specific routine
-        self.model_info["fit_params"] = fit_params
-        y_diff = self.get_y_diff()
-
-        n_data = len(y_diff)
-
-        # Compute log likelihood in three terms
-        ln_like  = -np.dot(y_diff,y_diff)/(2.0*sig*sig)
-        ln_like += -n_data*math.log(sig)
-        ln_like += -0.5*n_data*math.log(2.0*math.pi)
 
         #Calculate prior
 
@@ -263,13 +253,25 @@ class model_letter(model):
             elif(fit_params[i] > splhi[i]):
                 return [-sys.maxsize, ln_prior]
 
-        #Show round number every 100000 samples
+
+        #compute the difference between observations and forward model using model specific routine
+        self.model_info["fit_params"] = fit_params
+        y_diff = self.get_y_diff()
+
+        n_data = len(y_diff)
+
+        # Compute log likelihood in three terms
+        ln_like  = -np.dot(y_diff,y_diff)/(2.0*sig*sig)
+        ln_like += -n_data*math.log(sig)
+        ln_like += -0.5*n_data*math.log(2.0*math.pi)
+
+        #Show round number every 100000 samples for checking progress
         self.model_info["number"] += 1
         if (self.model_info["number"] % 100000 ==0):
             print(self.model_info["number"])
 
         #return a list of log likelihood and log prior
-        return [ln_like, math.log(1/area)]
+        return [ln_like, ln_prior]
 
     ####################################################################################
     def get_y_diff(self):
