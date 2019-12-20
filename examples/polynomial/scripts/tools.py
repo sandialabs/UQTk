@@ -259,9 +259,9 @@ class model_letter(model):
         #when out of range return ln_like = -max because its the log
         for i in range(len(spllo)):
             if(fit_params[i] < spllo[i]):
-                return [-sys.maxint, ln_prior]
+                return [-sys.maxsize, ln_prior]
             elif(fit_params[i] > splhi[i]):
-                return [-sys.maxint, ln_prior]
+                return [-sys.maxsize, ln_prior]
 
         #Show round number every 100000 samples
         self.model_info["number"] += 1
