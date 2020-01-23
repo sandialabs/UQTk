@@ -232,11 +232,20 @@ class model_letter(model):
         # sig_index = param_names_dict['sigma']
         # sig = fit_params[sig_index]  # assumed standard deviation of noise model
 
-        #Calculate prior
-
         #Read in bounds
         spllo = self.model_info["spllo"]
         splhi = self.model_info["splhi"]
+
+        #consider when out of bounds
+        #when out of range return ln_like = -max because its the log
+        for i in range(len(spllo)):
+            if(fit_params[i] < spllo[i]):
+                return [-sys.maxsize, -sys.maxsize]
+            elif(fit_params[i] > splhi[i]):
+                return [-sys.maxsize, -sys.maxsize]
+
+
+        #Calculate prior
 
         #find area of prior range
         area = 1;
@@ -244,15 +253,6 @@ class model_letter(model):
             area = area * (splhi[i] - spllo[i])
 
         ln_prior = math.log(1/area)
-
-        #consider when out of bounds
-        #when out of range return ln_like = -max because its the log
-        for i in range(len(spllo)):
-            if(fit_params[i] < spllo[i]):
-                return [-sys.maxsize, ln_prior]
-            elif(fit_params[i] > splhi[i]):
-                return [-sys.maxsize, ln_prior]
-
 
         #compute the difference between observations and forward model using model specific routine
         self.model_info["fit_params"] = fit_params
