@@ -1,5 +1,3 @@
-examplepickleuqpc example
-
 A collection of scripts that propagate input parameter uncertainties to output
 via PC expansions.
 
@@ -22,20 +20,20 @@ Files
 
 - plot_prep.py: plotting before surrogate construction
 
-- plot.py: plotting after surrogate construction, reading the pickel file
+- plot.py: plotting after surrogate construction, reading the pickle file
   results.pk produced by uq_pc.py.
 
 
   Other Scripts:
-- prepare_inpc.py: Prepares PC coefficients file gven marginal PCs or samples.
+- prepare_inpc.py: Prepares PC coefficients file given marginal PCs or samples.
 
-- generate_inputsamples.py: Auxiliary script to generate eaxmple jointly
+- generate_inputsamples.py: Auxiliary script to generate example jointly
   distributed random samples.
 
-- join_results.py: Auxillary script as an example of joining a set of surrogate
+- join_results.py: Auxiliary script as an example of joining a set of surrogate
   construction pickle files into a single file results.pk
 
-- model_sens.x: Auxillary script as a sensativity evaulation black-box for
+- model_sens.x: Auxiliary script as a sensitivity evaluation black-box for
   given PC coefficients
 
 - transpose_file.x: Transpose a given matrix file.
@@ -44,7 +42,7 @@ Files
 
 - getrange.x: Get parameter ranges of a given set of samples.
 
-- example_0.x: Minial example window. Assumes input.dat (Nxd) and
+- example_0.x: Minimal example window. Assumes input.dat (Nxd) and
   output.dat (NxL) are given
 
 - example_1.x: Surrogate construction example workflow

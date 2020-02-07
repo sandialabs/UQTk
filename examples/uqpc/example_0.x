@@ -37,8 +37,8 @@ export UQPC=${UQTK_INS}/examples/uqpc
 ###########################################################
 
 # Use all inputs as training, and no validation
-cp input.dat ptrain.dat
-cp output.dat ytrain.dat
+cp ${UQPC}/input.dat ptrain.dat
+cp ${UQPC}/output.dat ytrain.dat
 
 # Get ranges of inputs, with 10% 'cushion' from the dimension-wise extreme samples
 ${UQPC}/getrange.x ptrain.dat 0.1 > param_range.txt

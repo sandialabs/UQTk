@@ -121,7 +121,7 @@ def main(argv):
     parser.add_argument("-o", "--output", dest="output_file",
                         type=str, default='ytrain.dat', help="Output file name")
     parser.add_argument("-x", "--xinput", dest="xinput_file",
-                        type=str, default='xcond.dat',
+                        type=str, default=None,
                         help="X-conditions (design input) file name; used for modelname='ex_xp'")
     parser.add_argument("-m", "--modelname", dest="model_name",
                         type=str, default='example', help="Model name")
@@ -132,7 +132,10 @@ def main(argv):
     args = parser.parse_args()
 
     modelPar = np.loadtxt(args.input_file, ndmin=2)
-    xPar = np.loadtxt(args.xinput_file, ndmin=2)
+    if args.xinput_file is not None:
+        xPar = np.loadtxt(args.xinput_file, ndmin=2)
+    else:
+        xPar = None
 
     output = model(modelPar, xPar=xPar, modelname=args.model_name)
     output *= args.factor
