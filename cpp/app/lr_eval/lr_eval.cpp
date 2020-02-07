@@ -69,10 +69,7 @@ using namespace std;
 /// Displays information about this program
 int usage(){
   printf("usage : lr_eval [-h] [-b<basistype>] [-r<rank>] [-t<xdatafile>] ");
-  printf("[-o<intpar>] [-i<maxiter] [-l<dblpar] [-s<strpar>]\n");
-
   printf(" -h                 : print out this help message \n");
-
   printf(" -b <basistype>     : basistype - PC, POL (default=%s) \n",BTYPE);
   printf(" -r <rank>          : integer parameter - (max rank of approximation) (default=%d) \n",INTPAR);
   printf(" -t <xdatafile>    : optional filename of x-values for validation/plotting \n");
@@ -88,7 +85,7 @@ int usage(){
 /******************************************************************************/
 
 /******************************************************************************/
-/// \brief  Main program of inferring PC expansion of a response curve given data
+/// Main program for canonical low-rank tensor evaluation
 int main (int argc, char *argv[]) {
 
 
@@ -104,7 +101,7 @@ int main (int argc, char *argv[]) {
   /// Read the user input
   int c;
 
-  while ((c=getopt(argc,(char **)argv,"hx:y:b:r:t:o:i:s:l:"))!=-1){
+  while ((c=getopt(argc,(char **)argv,"hb:r:t:"))!=-1){
     switch (c) {
     case 'h':
       usage();
