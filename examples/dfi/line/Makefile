@@ -2,8 +2,8 @@ SHELL = /bin/bash
 TARGET = dfi_line.exe
 
 UQTK_LIBS= -L$(UQTK_INS)/lib \
--luqtk -luqtkdfi -ldepuqtk -ldepcvode -ldeplapack -ldepnvec -ldepblas -lgfortran
-UQTK_INCL= -I$(UQTK_INS)/include/uqtk -I$(UQTK_INS)/include/dep
+-luqtk -luqtkdfi -ldepuqtk -l sundials_cvode -lblas -llapack -lgfortran
+UQTK_INCL= -I$(UQTK_INS)/include/uqtk -I$(UQTK_INS)/include/dep -I$(UQTK_INS)/include
 
 CXX = g++
 CFLAGS= -std=c++11
