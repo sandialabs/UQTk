@@ -105,28 +105,30 @@ def thread_command(running, cpu, lock, tasks):
     """A task entity for each of the running threads.  All arguments are
     passed by reference (in Python, objects are passed by reference while
     literals are passed by value)."""
+    #my_task=None
     while True:
+        #print(tasks)
         lock.acquire_lock()
         if len(tasks) > 0:
             my_task = tasks.pop()
             lock.release_lock()
-            #print "Running",my_task,"on cpu",cpu
+            print("Running",my_task,"on cpu",cpu)
         else:
             lock.release_lock()
-            #print "Task queue on cpu",cpu,"is done"
+            print("Task queue on cpu",cpu,"is done")
             break
-	# This does not work...
-	# Need to first change to the directory where the task script is
-	# and then run the script without the path in it...
-        #run_command(my_task,my_task)
-    dir = my_task[0]
-    script = my_task[1]
-    #print cpu, dir, script
-    starttime = time.time()
-    run_command_in_dir(dir,script,script)
-    stoptime = time.time()
-    print("CPU",cpu,"finished task in",dir,"in",(stoptime-starttime),"seconds")
-    #    print "=============================================================================="
+    # This does not work...
+    # Need to first change to the directory where the task script is
+    # and then run the script without the path in it...
+            #run_command(my_task,my_task)
+        dir = my_task[0]
+        script = my_task[1]
+        #print cpu, dir, script
+        starttime = time.time()
+        run_command_in_dir(dir,script,script)
+        stoptime = time.time()
+        print("CPU",cpu,"finished task in",dir,"in",(stoptime-starttime),"seconds")
+        #    print "=============================================================================="
     lock.acquire_lock()
     running[0] -= 1
     lock.release_lock()
@@ -202,7 +204,7 @@ def main(args):
     # Parallel mode
     else:
         running = [0]  # only arrays and lists are passed by reference
-        cpus = avail_cpus(ncpus)	# can give optional argument with number of cpus available in the system
+        cpus = avail_cpus(ncpus)    # can give optional argument with number of cpus available in the system
         lock = thread.allocate_lock()
         # Make the same number of threads as there are cpus.
         for cpu in cpus:
@@ -214,7 +216,7 @@ def main(args):
         # Wait for threads to finish (I don't think there is a wait_threads)
         while running[0] > 0:
            time.sleep(2) # sleep for 10 seconds before checking if the threads have finished.
-        		   # to avoid spending too much cpu time waiting
+                   # to avoid spending too much cpu time waiting
 
         # All done.
         print("All threads have exited.")
