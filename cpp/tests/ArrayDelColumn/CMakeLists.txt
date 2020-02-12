@@ -10,8 +10,8 @@ target_link_libraries (ArrayDelColumn sundials_nvecserial)
 target_link_libraries (ArrayDelColumn sundials_sunlinsoldense)
 target_link_libraries (ArrayDelColumn sundials_sunmatrixdense)
 target_link_libraries (ArrayDelColumn depslatec)
-target_link_libraries(ArrayDelColumn m blas ${BLAS_LIBRARIES})
 target_link_libraries(ArrayDelColumn m lapack ${LAPACK_LIBRARIES})
+target_link_libraries(ArrayDelColumn m blas ${BLAS_LIBRARIES})
 target_link_libraries (ArrayDelColumn deplbfgs  )
 
 # Link fortran libraries

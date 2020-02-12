@@ -10,8 +10,8 @@ target_link_libraries (Array1DMiscTest sundials_nvecserial)
 target_link_libraries (Array1DMiscTest sundials_sunlinsoldense)
 target_link_libraries (Array1DMiscTest sundials_sunmatrixdense)
 target_link_libraries (Array1DMiscTest depslatec)
-target_link_libraries (Array1DMiscTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (Array1DMiscTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (Array1DMiscTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (Array1DMiscTest deplbfgs  )
 
 # Link fortran libraries

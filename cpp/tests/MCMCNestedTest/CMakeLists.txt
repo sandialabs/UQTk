@@ -12,8 +12,8 @@ target_link_libraries (MCMCNestedTest sundials_nvecserial)
 target_link_libraries (MCMCNestedTest sundials_sunlinsoldense)
 target_link_libraries (MCMCNestedTest sundials_sunmatrixdense)
 target_link_libraries (MCMCNestedTest depslatec)
-target_link_libraries (MCMCNestedTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCNestedTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (MCMCNestedTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCNestedTest deplbfgs  )
 
 # Link fortran libraries

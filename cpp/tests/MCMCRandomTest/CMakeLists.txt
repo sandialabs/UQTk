@@ -12,8 +12,8 @@ target_link_libraries (MCMCRandomTest sundials_nvecserial)
 target_link_libraries (MCMCRandomTest sundials_sunlinsoldense)
 target_link_libraries (MCMCRandomTest sundials_sunmatrixdense)
 target_link_libraries (MCMCRandomTest depslatec)
-target_link_libraries (MCMCRandomTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCRandomTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (MCMCRandomTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCRandomTest deplbfgs  )
 
 # Link fortran libraries
