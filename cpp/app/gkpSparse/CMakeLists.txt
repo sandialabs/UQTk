@@ -7,8 +7,8 @@ target_link_libraries (gkpSparse uqtktools)
 target_link_libraries (gkpSparse uqtkarray)
 
 target_link_libraries (gkpSparse depdsfmt )
-target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
 target_link_libraries (gkpSparse m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
 target_link_libraries (gkpSparse depfigtree )
 target_link_libraries (gkpSparse depann   )
 
@@ -27,7 +27,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   else()
     target_link_libraries (gkpSparse ${IntelLibPath}/libifcore.a ${IntelLibPath}/libifport.a)
   endif()
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
   if ("${ClangLibPath}" STREQUAL "")
     target_link_libraries (gkpSparse gfortran stdc++)
