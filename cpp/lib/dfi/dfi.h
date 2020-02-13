@@ -25,7 +25,6 @@
      Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-//dfi.h
 #ifndef DFI_H_
 #define DFI_H_
 
@@ -42,13 +41,12 @@
 #include "arraytools.h"
 #include <string>
 #include <iostream>
-//#include <fstream>
 //for setting stdout precision
 #include <iomanip>
 
 #include "sampling.hpp"
 
-//for UQTk KDE function
+//for UQTk KDE functionality
 #include "tools.h"
 
 //for PCE surrogate construction
@@ -66,8 +64,7 @@ class DFIsurr{
 	public:
 
 	//model surrogate containers
-	int i;
-
+	
 	//PCE dimension
 	int PCEdim;
 
@@ -79,15 +76,16 @@ class DFIsurr{
         bool surrDefined;
 
         //PCset defines and initializes polynomial chaos basis function set
-        //PCSet *surrmodelreac;
         PCSet* surrModel;
 
+	//number of PCE terms
         int numPCETerms;
+	//cotainer for coeefficients
         Array2D<double> PCEcoefficients;
         //container for evaluated PCE basis functions
         Array2D<double> psiPCE;
 
-	//Array1D<double> evaluateSurr();
+	// surrogate evaulation function
 	void evaluateSurr(Array1D<double> & modelOutput, Array1D<double> & params);
 };
 
@@ -133,7 +131,7 @@ class dataPosteriorInformation{
 	//container for parameters for surrogate data model
 	Array1D<double> surrParameters;
 
-	//ABC stuff
+	//ABC data likelihood containers
 	//container to store labels describing the statistics to enforce as constraints
 	vector<string> statLabels;
 	//container to store the values of the statistics to enforce as constraints
@@ -144,7 +142,9 @@ class dataPosteriorInformation{
 
 	//parameter chain write options
 	int paramWriteFlag;
+	//burn in chain file
 	string burninParamWriteFile;
+	//parameter chainfile
 	string mainParamWriteFile;
 
 	//length of parameter chains
@@ -171,7 +171,7 @@ class parameterPosteriorInformation{
 	//the input 'x' possibly required to compute the model function y=f(x)
 	Array1D<double> trueDatax;
 
-	/* pointer to surrogate model object */
+	// pointer to surrogate model object
 	DFIsurr * surrModelObj_;
 
 	vector<DFIsurr> * surrModels_;
@@ -195,13 +195,11 @@ void userDefineData(dataPosteriorInformation & dataPostInfo);
 void userDefineConstraints(dataPosteriorInformation & dataPostInfo);
 //specify the nominal values of the parameters
 void userSpecifyNominalParams(dataPosteriorInformation & dataPostInfo);
-//specify the mapping from parameters of interest to model surrogate parameters
-//void userSurrMap(dataPosteriorInformation & dataPostInfo);
 //=============================================
 
-//function to be passed to UQTk MCMC object
+//data log postrior function to be passed to UQTk MCMC object for data chain
 double dataInferenceLogPosterior(Array1D<double>& m, void *info);
-//function to be passed to UQTk MCMC object
+//parameter log posterior function to be passed to UQTk MCMC object for parameter chains
 double parameterInferenceLogPosterior(Array1D<double>& beta, void *info);
 
 //define inner parameter inference
@@ -237,7 +235,7 @@ class DFI{
 
 	//container for noisy data
 	Array1D<double> noisyData;
-	/*data scale*/
+	//data scale (defines an approximate scale for the noise to be added)
 	double dataScale;
 
 
@@ -249,37 +247,21 @@ class DFI{
 	double errorOptChainNumSamples;
 	//target data chain acceptance ratio (a burn-in parameter)
 	double targetDataChainAcceptanceRatio;
+	//data chain acceptance ratio
 	double dataChainAcceptanceRatio;
+	//data chain mode ratio
 	double dataPosteriorMode;
 
 	//intial data chain (Gaussian) proposal covariance
         double dataChainPropCov_init;
+	//scale for setting proposal covariance
         double dataChainPropCov_fac;
 
 
 	//data chain proposal covariance matrix
 	Array2D<double> dataChainPropCovMatrix;
 
-	//===================================================
-	//model surrogate containers
-
-	//surrogate defined flag
-	//bool surrDefined;
-
-	//PCset defines and initializes polynomial chaos basis function set
-	//PCSet *surrmodelreac;
-	//PCSet* surrModel;
-
-	//int numPCETerms;
-	//Array2D<double> PCEcoefficients;
-	//container for evaluated PCE basis functions
-	//Array2D<double> psiPCE;
-	//===================================================
-
-
 	//=====wrappers for user specified functions=========
-//compute parameter (truth model and error model) parameter posterior
-//double computeParamLogPosterior(parameterPosteriorInformation * paramPostInfo, Array1D<double> parameters);
 	//define the target data signal
 	void defineData(dataPosteriorInformation & dataPostInfo){
 		userDefineData(dataPostInfo);
@@ -295,7 +277,7 @@ class DFI{
 	//run the true data model
 	void runModel(Array1D<double> &modelDataY, Array1D<double> &modelDataX, Array1D<double> & parameters, Array1D<double> &hyperparameters){
 
-	/* if a surrogate is defined use it */
+	//if a surrogate is defined, use it 
 	if (dataPostInfo.surrModelObj.surrDefined){
 
 		/* map parameters of interest to surrogate parameters */
@@ -321,8 +303,6 @@ class DFI{
 		userRunModel(modelDataY, modelDataX, parameters, hyperparameters);
 	}
 
-	//	userRunModel(modelDataY, modelDataX, parameters, hyperparameters);
-
 	};
 	//===================================================
 
@@ -338,8 +318,6 @@ class DFI{
 	void dataInference();
 	//perform data refitting
 	void dataRefit();
-	//compute model evidence
-	//void computeEvidence();
 	//build KDE densities
 	void buildKDE(Array1D<int> KDEdim);
 	//generate samples from a pdf

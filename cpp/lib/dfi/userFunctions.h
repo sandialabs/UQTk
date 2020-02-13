@@ -28,12 +28,19 @@
 #ifndef USER_FUNCS_H_
 #define USER_FUNCS_H_
 
+// specification of the nominal values for parameters
 void userSpecifyNominalParams(dataPosteriorInformation & dataPostInfo);
+// specification of constraint information on parameters (e.g. statistics etc.), and adherence coefficients (ABC deltas)
 void userDefineConstraints(dataPosteriorInformation & dataPostInfo);
+// specification of (noisy) data, e.g. read from file
 void userDefineData(dataPosteriorInformation &dataPostInfo);
+//  specification of the fitting model
 void userRunModel(Array1D<double> &modelDatay, Array1D<double> & modelDatax, Array1D<double> &parameters, Array1D<double> &hyperparameters);
+// specification of user-defined parameter posterior (likelihood x prior). Runs the model and computes the likelihood
 double userComputeParamLogPosterior(parameterPosteriorInformation * paramPostInfo, Array1D<double> parameters);
+// specification of user-defined parameter likelihood function
 double userComputeParamLogLikelihood(parameterPosteriorInformation * paramPostInfo, Array1D<double> modelDataOut, Array1D<double> parameters, Array1D<double> hyperparameters);
+// specification of user defined statistics of the parameter posterior (e.g. moments)
 void userComputeStatistics(Array1D<double> &parameterStatistics, Array1D<MCMC::chainstate> & parameterChain);
 
 #endif  //USER_FUNCS_H_

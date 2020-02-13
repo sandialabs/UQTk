@@ -4,7 +4,8 @@ SET(copy_FILES
   main.cpp
   Makefile
   userFunctions_line.cpp
-  )
+  dfi.input  
+)
 
 INSTALL(
         FILES ${copy_FILES} 

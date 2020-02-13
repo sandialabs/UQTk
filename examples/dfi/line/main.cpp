@@ -33,31 +33,11 @@
 //for setting stdout precision
 #include <iomanip>
 
-//#include "mcmc.h"
-//#include "quad.h"
-//#include "arrayio.h"
-//#include "dsfmt_add.h"
-//#include <sys/time.h>
-//#include "arraytools.h"
 #include <ctime>
 #include <string>
 #include <vector>
-//#include "math.h"
 
 #include "dfi.h"
-//#include "molfrac.h"
-//#include "def.h"
-
-//#include "foo.h"
-
-/*
-#ifndef FOO_BAR_BAZ_H_
-#define FOO_BAR_BAZ_H_
-#endif  // FOO_BAR_BAZ_H_
-*/
-
-//seed
-//uint32_t seed=13;
 
 int main (int argc, char *argv[]) {
 
@@ -74,7 +54,7 @@ int main (int argc, char *argv[]) {
         else if (strcmp(argv[1],"datainference")==0) {
                 std::cout<<"Running data inference"<<std::endl;
 		DFI dfiObject1;
-		//DFI dfiObject2("dfi.input");
+		//DFI dfiObject1("dfi.input");
 
 	        dfiObject1.buildSurrogateModel();
 	        dfiObject1.loadSurrogateModel();
@@ -87,14 +67,7 @@ int main (int argc, char *argv[]) {
 	        dfiObject1.buildSurrogateModel();
 	        //dfiObject1.loadSurrogateModel();
                 dfiObject1.dataRefit();
-        }/*
-        //refit the consistent data
-        else if(strcmp(argv[1],"evidence")==0){
-                cout<<"Computing model evidence"<<endl;
-		DFI dfiObject1;
-                dfiObject1.computeEvidence();
         }
-	*/
 	//build surrogate model
         else if(strcmp(argv[1],"buildSurrogate")==0){
                 cout<<"Building surrogate model"<<endl;
@@ -163,13 +136,6 @@ int main (int argc, char *argv[]) {
                 std::cout<<"Error: input keyword not recognized"<<std::endl;
         }
 	//============================================
-
-//	DFI dfiObject1;
-
-//	dfiObject1.dataInference();
-
-//	DFI dfiObject2("foo");
-//	exit(1);
 
 	std::cout<<std::endl;
 	std::cout<<"======================"<<std::endl;
