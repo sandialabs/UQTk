@@ -21,7 +21,8 @@ target_link_libraries (tmcmc_bimodal.x sundials_nvecserial)
 target_link_libraries (tmcmc_bimodal.x sundials_sunlinsoldense)
 target_link_libraries (tmcmc_bimodal.x sundials_sunmatrixdense)
 target_link_libraries (tmcmc_bimodal.x depslatec)
-target_link_libraries (tmcmc_bimodal.x m lapack blas)
+target_link_libraries (tmcmc_bimodal.x m lapack)
+target_link_libraries (tmcmc_bimodal.x m blas)
 target_link_libraries (tmcmc_bimodal.x deplbfgs  )
 
 

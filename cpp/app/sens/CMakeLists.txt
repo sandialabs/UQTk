@@ -25,8 +25,8 @@ target_link_libraries (trdSpls depann   )
 target_link_libraries (sens uqtkarray)
 
 target_link_libraries (sens depdsfmt )
-find_package(BLAS)
-find_package(LAPACK)
+#find_package(BLAS)
+#find_package(LAPACK)
 target_link_libraries (sens m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (sens m blas ${BLAS_LIBRARIES})
 
