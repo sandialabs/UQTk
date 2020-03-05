@@ -42,12 +42,13 @@ while getopts ":h" opt; do
   esac
 done
 
-# If UQTk is installed in a directory other than "UQTk", then modify the line below accordingly
-UQTK_SRC_DIR=$PWD/../UQTk
+# Adjust the UQTK_SRC_DIR to point to where the UQTk source directory is. Feel free
+# to update the desired installation directory as you prefer.
+UQTK_SRC_DIR=@UQTKSRCDIR@
 UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
 
 echo "This script assumes the UQTk source code is in $UQTK_SRC_DIR"
-echo "and will be installed in $UQTK_INSTALL_DIR"
+echo "and that UQTk will be installed in $UQTK_INSTALL_DIR"
 
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_Fortran_COMPILER=gfortran                \
