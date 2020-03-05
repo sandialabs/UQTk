@@ -29,7 +29,7 @@
 
 usage ()
 {
-  echo "No command-line parameters, execute as is"
+  echo "No command-line parameters, run as is from a build directory"
   exit
 }
 
