@@ -1,0 +1,12 @@
+dep directory
+
+contains external dependencies
+
+- ann: Approximate Nearest Neighbors library
+- blas: Netlib’s BLAS library (linear algebra)
+- cvode-2.7.0: SUNDIALS’ CVODE library (ODE solvers)
+- dsfmt: dsfmt library (random number generators)
+- figtreen: Fast Improved Gauss Transform library
+- lapack: Netlib’s LAPACK library (linear algebra)
+- lbfgs: lbfgs library (optimization)
+- slatec: Netlib’s SLATEC library (general purpose math)

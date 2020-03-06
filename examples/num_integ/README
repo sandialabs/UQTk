@@ -1,0 +1,18 @@
+num_integ
+
+contains a collection of Python scripts that can be used to perform numerical
+integration on six Genz functions: oscillatory, exponential, continuous,
+Gaussian, corner-peak, and product-peak. Quadrature and Monte Carlo integration
+methods are both employed in this example.
+
+For more information, look in UQTk manual under
+Numerical integration
+
+================================================================================
+Files
+
+full_quad.py: produces a graph comparing full quadrature and Monte Carlo integration methods
+
+quad_tools.py: contains all functions needed for quad integration
+
+sparse_quad.py: produces a graph comparing sparse quadrature and Monte Carlo integration methods.

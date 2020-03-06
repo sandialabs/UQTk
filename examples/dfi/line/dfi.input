@@ -1,0 +1,10 @@
+seed					13
+data_space_dimenion			10
+data_chain_burnin_samples		10
+data_chain_samples			10
+target_chain_accept			0.2
+parameter_chain_burnin_samples		10
+parameter_chain_samples			10
+error_optimization_chain_samples	1000
+data_chain_propcov_fac			0.1
+TEST

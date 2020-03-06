@@ -1,0 +1,23 @@
+line_infer example
+
+
+contains example that the slope and intercept of a line from noisy data using
+Bayes’ rule. The C++ libraries are called directly from the driver program.
+By changing the likelihood function and the input data, this program can be
+tailored to other inference problems.
+
+For more information, look in UQTk manual under
+Bayesian Inference of a Line
+
+================================================================================
+Files
+
+line_infer.py: main scripts
+
+line_infer.cpp: C++ code that produces some of the needed functions
+
+line_infer.xml.templ: template for the xml file needed to run example
+
+model.h
+posterior.h
+XMLreader.h

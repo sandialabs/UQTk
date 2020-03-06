@@ -1,0 +1,54 @@
+Licensing information, downloaded 3/7/13 from http://users.eecs.northwestern.edu/~nocedal/lbfgsb.html
+
+L-BFGS-B
+========
+Software for Large-scale Bound-constrained Optimization L-BFGS-B is a limited-memory
+quasi-Newton code for bound-constrained optimization, i.e. for problems where the only
+constraints are of the form l<= x <= u. The current release is version 3.0. The
+distribution file was last changed on 02/08/11.
+
+(If you have an optimization problem with general constraints, try KNITRO® )
+Downloading and Installing L-BFGS-B
+
+    Condition for Use: This software is freely available, but we expect that all
+    publications describing  work using this software , or all commercial products using
+    it, quote at least one of the references given below. This software is released under
+    the "New BSD License" (aka "Modified BSD License" or "3-clause license").
+
+You are welcome to grab the full Unix distribution, containing source code, Makefiles and User Guide.
+
+L-BFGS-B was upgraded on August 2, 2011 from version Lbfgsb.2.1 to version Lbfgsb.3.0
+(see reference 3. below).
+
+Click here to download L-BFGS-B version Lbfgsb.2.1
+
+Click here to download L-BFGS-B version Lbfgsb.3.0
+
+Both versions can be installed using the same commands:
+
+Save the gz file in a fresh subdirectory on your system. To install, first type
+
+    gunzip Lbfgsb.m.n.tar.gz
+
+to produce a file Lbfgsb.m.n.tar.  Then, type
+
+    tar -xvf Lbfgsb.m.n.tar
+
+to create the directory Lbfgsb.m.n containing the source code, Makefiles and User Guide.
+Authors
+
+    Ciyou Zhu, Richard Byrd, Jorge Nocedal and Jose Luis Morales. 
+
+Test results comparing L-BFGS-B (version Lbfgsb.2.1) and MINOS can be found here
+
+References
+==========
+    R. H. Byrd, P. Lu and J. Nocedal. A Limited Memory Algorithm for Bound Constrained
+       Optimization, (1995), SIAM Journal on Scientific and Statistical Computing , 16, 5, pp. 1190-1208.
+    C. Zhu, R. H. Byrd and J. Nocedal. L-BFGS-B: Algorithm 778: L-BFGS-B, FORTRAN
+       routines for large scale bound constrained optimization (1997), ACM Transactions
+       on Mathematical Software, Vol 23, Num. 4, pp. 550 - 560.
+    J.L. Morales and J. Nocedal. L-BFGS-B: Remark on Algorithm 778: L-BFGS-B, FORTRAN
+       routines for large scale bound constrained optimization (2011), to appear in ACM
+       Transactions on Mathematical Software.
+

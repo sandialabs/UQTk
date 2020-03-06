@@ -1,0 +1,3 @@
+tests
+
+This directory contains the code for the tests run using ctest after build. 

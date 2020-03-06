@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SurfRxnDemo>
+    
+    <!-- Data and noise type for inference-->
+    <Data file="inputdata.dat" noise="const_stn">
+        
+        <noise_types>
+            <const_stn stdfrac="0.1"/> <!-- Constant stdev/mean ratio -->
+            <const_stdev stdev="0.1"/> <!-- Constant stdev Not implemented yet-->
+        </noise_types>
+        
+    </Data>
+    
+    <!-- MCMC specific information -->
+    <MCMC name="SurfRxnInference" method="am" chainparam="default" output="txt">
+        
+        <method_types>
+            <am  nsteps="10000" gamma="0.01" eps_cov="1e-8" adstart="1000" adstep="10" adstop="10000000" />
+            <ss  nsteps="10000"/>
+        </method_types>
+        
+        <!-- Specifies chain start and (initial) proposal sigmas -->
+        <chainparam_types>
+            <default/>  <!-- default takes values from model block -->
+            <file chstart="chain_st.dat" chsig="chain_sg.dat" /> <!-- read from files -->
+        </chainparam_types>
+        
+        <!-- Specifies the output types and options -->
+        <output_types>
+            <txt file="chain.dat" freq="1000" screen="10000"/> <!-- Text file -->
+            <bin file="chain.bin" freq="1000" screen="10000"/> <!-- Binary file -->
+        </output_types>
+        
+    </MCMC>
+    
+    <!-- PC specific information for uncertainty propagation -->
+    <PC type="PCTYPE" order="PCORDER" inpc="default">
+      <inpc_types>
+        <default/> <!-- default takes values from model block -->
+        <file name="PCcoeff.dat"/>
+      </inpc_types>
+    </PC>
+    
+    <!-- Model parameters -->
+    <ModelParameters>
+        
+        <!-- all parameters with their nominal value.
+         
+         value: nominal value for deterministic run
+              : initial chain position for inference
+              : nominal or 0th order term for isp/nisp
+         
+         type: det: deterministic, no further specification needed
+         
+         type: infer: sought by inference code
+           sigma: proposal sigma
+           prior: prior type
+           pr1,pr2: prior parameters
+         
+         type: uncertain: sought by isp/nisp codes
+           cf_X: PC coefficients, X>0
+         -->
+        <param_a value="1.6"   type="det" />
+        <param_b value="20.75" type="uncertain" cf_1="0.10375" /> <!-- use cf_1=0.10375 for 0.5%  uncertainty to compare ISP/NISP--><!-- use cf_1=2.075 to compare with prob3 --><!-- use b=21.75 for non-oscillatory regime-->
+        <param_c value="0.04"  type="det"/>
+        <param_d value="1.0"    type="det" />
+        <param_e value="0.36"  type="det"/>
+        <param_f value="0.016" type="det"/>
+        
+    </ModelParameters>
+    
+    <!-- Run settings such as time step, output interval, ... -->
+    <RunSettings>
+        
+        <!-- Parameters in time integration
+         end : end time
+         step: time step
+         -->
+        <IntegrationParams end="1.e3" step="1.e-2"/>
+        
+        <!-- IO settings:
+         screenIOInt : interval for writing info to screen, in steps
+         fileIOInt   : interval for writing info to file, in steps
+         fileName    : name of file for IO
+         -->
+        <IOParams screenIOInt="100000" fileIOInt="100" fileName="solution.dat"/>
+        
+    </RunSettings>
+    
+</SurfRxnDemo>

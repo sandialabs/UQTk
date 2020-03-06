@@ -1,0 +1,53 @@
+A collection of scripts that propagate input parameter uncertainties to output
+via PC expansions.
+
+As a special, and most commonly used, case the scripts can construct a PC
+surrogate for a multi-output computational model. The latter is as a black box
+simulation code. The workflow also provides tools for global sensitivity
+analysis of the outputs of this black box model with respect to its input
+parameters or input PC germs.
+
+For more information, look in UQTk manual under
+Forward Propagation of Uncertainties, Surrogate Construction
+and Global Sensitivity Analysis
+
+================================================================================
+Files
+
+- uq_pc.py: the main script, see ./up_pc.py -h for options
+
+- model.py: black-box example model
+
+- plot_prep.py: plotting before surrogate construction
+
+- plot.py: plotting after surrogate construction, reading the pickle file
+  results.pk produced by uq_pc.py.
+
+
+  Other Scripts:
+- prepare_inpc.py: Prepares PC coefficients file given marginal PCs or samples.
+
+- generate_inputsamples.py: Auxiliary script to generate example jointly
+  distributed random samples.
+
+- join_results.py: Auxiliary script as an example of joining a set of surrogate
+  construction pickle files into a single file results.pk
+
+- model_sens.x: Auxiliary script as a sensitivity evaluation black-box for
+  given PC coefficients
+
+- transpose_file.x: Transpose a given matrix file.
+
+- scale.x: scale a given matrix file to or from a given hypercube to [-1,1]^d.
+
+- getrange.x: Get parameter ranges of a given set of samples.
+
+- example_0.x: Minimal example window. Assumes input.dat (Nxd) and
+  output.dat (NxL) are given
+
+- example_1.x: Surrogate construction example workflow
+
+- example_2.x: Uncertainty propagation example workflow
+
+- example_3.x: Surrogate-for-time-series (i.e. each output is a snapshot)
+  example workflow

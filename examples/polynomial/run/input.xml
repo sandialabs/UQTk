@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<awsm_fit>
+
+  <!--  case: polynomial
+              [Add your own case and put the name to run]
+        mode: single-model: take the first model name from the models section
+             multi-model : run code for all models in the models section, and make graphs comparing them
+  -->
+  <case_info case = "polynomial" mode = "multi-model">
+    <models>
+      <model name = "model_A"/>
+      <model name = "model_B"/>
+      <model name = "model_C"/>
+      <model name = "model_D"/>
+      <model name = "model_E"/>
+    </models>
+  </case_info>
+
+  <!-- information need to get the data
+        size_range : upper limit of possiblities for random parameters,
+                     if >1, chooses integers from [-size_range, size_range]
+                     if = 1, chooses uniform form [-1,1]
+        power : power of the resulting polynomial
+        error_level : sigms for adding gaussian noise, should be smaller for smaller size_range
+        number_of_points : number of random data points to choose
+  -->
+  <get_data_info size_range = "1" power = "3" error_level = "0.005" number_of_points = "15"/>
+
+
+  <case_types>
+
+    <!-- case information:
+      input_file : name of file with data to calibrate to,
+                   get_data.py will write to this file, fit.py and post.py will read from this file
+      coeff_input_file : file to save random coefficents to in get_data, post will read this file
+      rand_seed : [optional] specify integer random number seed to make operations reproducible for testing purposes
+    -->
+    <polynomial input_file = "x_y_data.csv" coeff_input_file = "coeff.csv" error_file = "error.csv" rand_seed = "0">
+
+      <!-- The different types of models for each case
+            [You can add your indiviula models here]
+      -->
+      <model_types>
+
+        <model_A>
+          <!-- MCMC Chain options:
+            n_steps: number of MCMC steps to take
+            method: type of MCMC to preform
+            burnin: number of burnin samples for the adaptive method
+            scale_fac: the scale factor
+            gamma: the gamma factor, changing this can help change the mixing of the MCMC chains
+            output_file: name of the file that fit.py save to and post.py read form
+          -->
+          <mcmc_settings n_steps = "50000" method = "am" burnin = "50000" scale_fac = "20.0" gamma = "0.75"
+            output_file = "MCMC_samples_polynomial_mA.dat"/>
+
+          <!-- Post Processing options:
+            skip: number of steps to skip from the beginning of the chain (to remove the section that is not in
+                  statistical steady state yet)
+            stride: stride to use in reading in MCMC chain states for postprocessing (e.g. every 10 states)
+          -->
+          <post_proc_settings skip = "10000" stride = "10"/>
+
+
+          <!-- Model Settings:
+            All the settings in this section will be passed on to the model code in a dictionary
+            with the same tags as they appear here. (Assumes all settings are float values.)
+            name: name of the parameter
+            cini: starting point for that parameter
+            spllo: lower bound of the parameter
+            splhi: upper bound of the parameter
+          -->
+          <infer_params>
+            <param name = "a" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "b" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <!-- <param name = "sigma" cini = "1.0"  spllo = "1.0e-20"  splhi = "10.0" /> -->
+          </infer_params>
+        </model_A>
+
+        <model_B>
+          <!-- MCMC Chain options:
+            n_steps: number of MCMC steps to take
+            method: type of MCMC to preform
+            burnin: number of burnin samples for the adaptive method
+            scale_fac: the scale factor
+            gamma: the gamma factor, changing this can help change the mixing of the MCMC chains
+            output_file: name of the file that fit.py save to and post.py read form
+          -->
+          <mcmc_settings n_steps = "50000" method = "am" burnin = "50000" scale_fac = "20.0" gamma = ".75"
+            output_file = "MCMC_samples_polynomial_mB.dat"/>
+
+
+          <!-- Post Processing options:
+            skip: number of steps to skip from the beginning of the chain (to remove the section that is not in
+                  statistical steady state yet)
+            stride: stride to use in reading in MCMC chain states for postprocessing (e.g. every 10 states)
+          -->
+          <post_proc_settings skip = "10000" stride = "10"/>
+
+          <!-- Model Settings:
+            All the settings in this section will be passed on to the model code in a dictionary
+            with the same tags as they appear here. (Assumes all settings are float values.)
+            name: name of the parameter
+            cini: starting point for that parameter
+            spllo: lower bound of the parameter
+            splhi: upper bound of the parameter
+          -->
+          <infer_params>
+            <param name = "a" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "b" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "c" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <!-- <param name = "sigma" cini = "1.0"  spllo = "1.0e-20"  splhi = "10.0" /> -->
+          </infer_params>
+        </model_B>
+
+        <model_C>
+          <!-- MCMC Chain options:
+            n_steps: number of MCMC steps to take
+            method: type of MCMC to preform
+            burnin: number of burnin samples for the adaptive method
+            scale_fac: the scale factor
+            gamma: the gamma factor, changing this can help change the mixing of the MCMC chains
+            output_file: name of the file that fit.py save to and post.py read form
+          -->
+          <mcmc_settings n_steps = "100000" method = "am" burnin = "50000" scale_fac = "20.0" gamma = ".75"
+            output_file = "MCMC_samples_polynomial_mC.dat"/>
+
+
+          <!-- Post Processing options:
+            skip: number of steps to skip from the beginning of the chain (to remove the section that is not in
+                  statistical steady state yet)
+            stride: stride to use in reading in MCMC chain states for postprocessing (e.g. every 10 states)
+          -->
+          <post_proc_settings skip = "50000" stride = "10"/>
+
+          <!-- Model Settings:
+            All the settings in this section will be passed on to the model code in a dictionary
+            with the same tags as they appear here. (Assumes all settings are float values.)
+            name: name of the parameter
+            cini: starting point for that parameter
+            spllo: lower bound of the parameter
+            splhi: upper bound of the parameter
+          -->
+          <infer_params>
+            <param name = "a" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "b" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "c" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "d" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <!-- <param name = "sigma" cini = "1.0"  spllo = "1.0e-20"  splhi = "10.0" /> -->
+          </infer_params>
+        </model_C>
+
+        <model_D>
+          <!-- MCMC Chain options:
+            n_steps: number of MCMC steps to take
+            method: type of MCMC to preform
+            burnin: number of burnin samples for the adaptive method
+            scale_fac: the scale factor
+            gamma: the gamma factor, changing this can help change the mixing of the MCMC chains
+            output_file: name of the file that fit.py save to and post.py read form
+          -->
+          <mcmc_settings n_steps = "100000" method = "am" burnin = "50000" scale_fac = "20.0" gamma = "0.75"
+            output_file = "MCMC_samples_polynomial_mD.dat"/>
+
+          <!-- Post Processing options:
+            skip: number of steps to skip from the beginning of the chain (to remove the section that is not in
+                  statistical steady state yet)
+            stride: stride to use in reading in MCMC chain states for postprocessing (e.g. every 10 states)
+          -->
+          <post_proc_settings skip = "50000" stride = "10"/>
+
+          <!-- Model Settings:
+            All the settings in this section will be passed on to the model code in a dictionary
+            with the same tags as they appear here. (Assumes all settings are float values.)
+            name: name of the parameter
+            cini: starting point for that parameter
+            spllo: lower bound of the parameter
+            splhi: upper bound of the parameter
+          -->
+          <infer_params>
+            <param name = "a" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "b" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "c" cini = "0.0"  spllo = "-30.0" splhi = "50.0" />
+            <param name = "d" cini = "0.0"  spllo = "-50.0" splhi = "50.0" />
+            <param name = "e" cini = "0.0"  spllo = "-30.0" splhi = "50.0" />
+            <!-- <param name = "sigma" cini = "1.0"  spllo = "1.0e-20"  splhi = "10.0" /> -->
+          </infer_params>
+        </model_D>
+
+        <model_E>
+          <!-- MCMC Chain options:
+            n_steps: number of MCMC steps to take
+            method: type of MCMC to preform
+            burnin: number of burnin samples for the adaptive method
+            scale_fac: the scale factor
+            gamma: the gamma factor, changing this can help change the mixing of the MCMC chains
+            output_file: name of the file that fit.py save to and post.py read form
+          -->
+          <mcmc_settings n_steps = "100000" method = "am" burnin = "50000" scale_fac = "20.0" gamma = "0.75"
+            output_file = "MCMC_samples_polynomial_mE.dat"/>
+
+
+          <!-- Post Processing options:
+            skip: number of steps to skip from the beginning of the chain (to remove the section that is not in
+                  statistical steady state yet)
+            stride: stride to use in reading in MCMC chain states for postprocessing (e.g. every 10 states)
+          -->
+          <post_proc_settings skip = "50000" stride = "10"/>
+
+          <!-- Model Settings:
+            All the settings in this section will be passed on to the model code in a dictionary
+            with the same tags as they appear here. (Assumes all settings are float values.)
+            name: name of the parameter
+            cini: starting point for that parameter
+            spllo: lower bound of the parameter
+            splhi: upper bound of the parameter
+          -->
+          <infer_params>
+            <param name = "a" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "b" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "c" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "d" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "e" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <param name = "f" cini = "0.0"  spllo = "-30.0" splhi = "30.0" />
+            <!-- <param name = "sigma" cini = "1.0"  spllo = "1.0e-20"  splhi = "10.0" /> -->
+          </infer_params>
+        </model_E>
+
+
+      </model_types>
+    </polynomial>
+  </case_types>
+</awsm_fit>

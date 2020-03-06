@@ -1,0 +1,17 @@
+app
+
+For more information, see Chapter 4, Source Code description in the UQTk Manual
+
+- generate_quad: Quadrature point/weight generation 􏰠
+- gen_mi: Polynomial multiindex generation
+- gp_regr: Gaussian process regression
+- lr_regr: Low-rank regression
+- model_inf: Model parameter inference
+- pce_eval: PC evaluation
+- pce_quad: PC generation from samples
+- pce_resp: PC projection via quadrature integration
+- pce_rv: PC-related random variable generation
+- pce_sens: PC sensitivity extraction
+- pdf_cl: Kernel Density Estimation
+- regression: Linear parametric regression
+- sens: Sobol sensitivity indices via Monte-Carlo sampling

@@ -1,0 +1,88 @@
+EXAMPLES
+
+==============================
+d_spring_series
+==============================
+Example with springs in series to demonstrate dimensionality
+reduction through basis adaptation (Xiaoshu Zeng, Aug 2018)
+
+==============================
+fwd_prop
+==============================
+forward propagation with heat transfer example
+
+==============================
+kle_ex1
+==============================
+Karhunen-Loeve expansion example
+
+==============================
+line_infer
+==============================
+Example to calibrate parameters of a linear models
+
+==============================
+muq
+==============================
+inference between MUQ and UQTk
+
+
+==============================
+num_integ
+==============================
+Examples on quadrature and Monte Carlo integrations
+
+==============================
+ops
+==============================
+operations with Polynomial Chaos expansions
+
+==============================
+pce_bcs
+==============================
+Example to construct sparse Polynomial Chaos expansions
+
+==============================
+polynomial
+==============================
+Example of polynomial model fit with MCMC
+
+==============================
+sensMC
+==============================
+Monte-Carlo based sensitivity index computation
+
+==============================
+surf_rxn
+==============================
+surface reaction example for forward and inverse UQ
+
+
+==============================
+uqpc
+==============================
+construct Polynomial Chaos surrogates for multiple outputs/functions
+
+
+==============================
+iuq
+==============================
+surrogate-enabled inverse UQ workflow
+
+==============================
+window
+==============================
+extended version of fwd_prop demonstrating forward propagation
+using a number of methods on more complicated examples
+
+==============================
+tmcmc_bimodal
+==============================
+use TMCMC to sample from a 3-dimensional posterior that is a
+product of a Gaussian prior and a bimodal likelihood
+
+==============================
+dfi
+==============================
+use data-free inference to recover an approximate correlated posterior distribution for parameters of a line model
+given summary statistics on marginals

@@ -1,0 +1,26 @@
+FIGTree: Fast Improved Gauss Transform with Tree Data Structure LICENSE
+
+This code extends Vikas Raykar's version of the IFGT code, which 
+was provided under the GNU Lesser General Public License (LGPL). 
+As a result, the FIGTree library is also released under the LGPL.
+
+IMPROVED FAST GAUSS TRANSFORM (IFGT) LICENSE
+
+Copyright Information The code was written by Vikas C. Raykar and Changjiang Yang 
+is copyrighted under the Lesser GPL:
+
+Copyright (C) 2006 Vikas C. Raykar and Changjiang Yang
+
+This program is free software; you can redistribute it and/or modify 
+it under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation; version 2.1 or later. 
+This program is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+GNU Lesser General Public License for more details. You should 
+have received a copy of the GNU Lesser General Public License along 
+with this program; if not, write to the Free Software Foundation, Inc., 
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  The author may 
+be contacted via email at: vikas (at) umiacs (.) umd (.) edu and 
+cyang (at) sarnoff (.) com.
+

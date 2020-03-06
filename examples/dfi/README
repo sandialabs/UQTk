@@ -1,0 +1,7 @@
+==============================
+dfi
+==============================
+use data-free inference to recover an approximate correlated posterior distribution for parameters of a line model
+given summary statistics on marginals
+
+To run this example, compile it via "make" in the line directory, then run it using: "./dfi_line.exe datainference"

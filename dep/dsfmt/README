@@ -1,0 +1,12 @@
+SIMD-oriented Fast Mersenne Twister (SFMT) random number library downloaded from:
+      http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
+
+Note: the include file dSFMT.h has been customized for the UQTk toolkit usage. See the comments
+      at the top of this header file.
+
+March 6, 2011 (Cosmin) :
+ - March 2011: using current version 2.1
+ - dsfmt_add.c is a wrapper to generate single values for normal (using Box-Muller
+   transform) and uniform random variables
+ - compiled with DSFMT_MEXP=216091 which means the period for the random number 
+   generator is 2^216091-1
