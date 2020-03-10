@@ -1,12 +1,12 @@
 # Sandia National Labs
-# Uncertainty Quantification Toolkit (UQTk) version @UQTKVERSION@
+# Uncertainty Quantification Toolkit (UQTk) version 3.1.0
 
 #### Bert Debusschere, Cosmin Safta, Khachik Sargsyan, Katherine Johnston, Prashant Rai, Mohammad Khalil, Tiernan Casey, Xiaoshu Zeng, Kenny Chowdhary
 
 ## Overview
 The UQ Toolkit (UQTk) is a collection of libraries and tools for the
 quantification of uncertainty in numerical model predictions. Version
-@UQTKVERSION@ offers Polynomial Chaos Expansions to represent random variables,
+3.1.0 offers Polynomial Chaos Expansions to represent random variables,
 intrusive and non-intrusive methods for propagating uncertainties through
 computational models, tools for sensitivity analysis, methods for sparse
 surrogate construction, and Bayesian inference tools for inferring parameters

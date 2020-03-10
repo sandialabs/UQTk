@@ -1,11 +1,11 @@
 c$$$=====================================================================================
 c$$$
-c$$$                      The UQ Toolkit (UQTk) version @UQTKVERSION@
-c$$$                          Copyright (@UQTKYEAR@) NTESS
+c$$$                      The UQ Toolkit (UQTk) version 3.1.0
+c$$$                          Copyright (2020) NTESS
 c$$$                        https://www.sandia.gov/UQToolkit/
 c$$$                        https://github.com/sandialabs/UQTk
 c$$$
-c$$$     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+c$$$     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 c$$$     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 c$$$     retains certain rights in this software.
 c$$$
