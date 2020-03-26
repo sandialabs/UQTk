@@ -149,6 +149,7 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
   int iter = 0;
 
   double beta = 0.0, dBeta = 0.0, evid = 0.0;
+  double max_llik;
 
   do { // Start algorithm
     iter++;
@@ -162,9 +163,12 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
 
     dBeta = std::min(BETA_MAX,1.0-beta);
 
+    /* used to normalize log_likelihood values for weight computations */
+    max_llik = *std::max_element(llik.begin(), llik.end());
+
     /* Adapt delta beta as needed */
     do {
-      for (int j=0; j < nspl; j++) w[j] = exp(dBeta*llik[j]);
+      for (int j=0; j < nspl; j++) w[j] = exp(dBeta*(llik[j]-max_llik));
       wsum   = std::accumulate(w.begin(), w.end(), 0.0);
       wmean  = wsum / w.size();
       w2mean = std::inner_product(w.begin(), w.end(), w.begin(), 0.0)/ w.size();
