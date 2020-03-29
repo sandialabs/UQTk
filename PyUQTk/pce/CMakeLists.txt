@@ -67,7 +67,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	SWIG_LINK_LIBRARIES(pce m lapack ${LAPACK_LIBRARIES})
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 	# using Intel
-  SWIG_LINK_LIBRARIES(pce uqtktools uqtkquad uqtkarray depslatec depdsfmt depann depfigtree depcvode ifcore ${PYTHON_LIBRARIES})
+	SWIG_LINK_LIBRARIES(pce uqtkquad uqtkarray uqtktools depslatec depdsfmt depfigtree depann ifcore ${PYTHON_LIBRARIES})
 	SWIG_LINK_LIBRARIES(pce m blas ${BLAS_LIBRARIES})
 	SWIG_LINK_LIBRARIES(pce m lapack ${LAPACK_LIBRARIES})
 endif()
