@@ -750,7 +750,7 @@ def plot_all_posteriors(d0,vnames,np_kde,out_file_base,debug=0,dense=False,truth
                 plt.close()
 
 ###################################################################################################
-def get_mcmc_stats(all_samples,v_names,out_file_base,debug,stats_types=['all']):
+def get_mcmc_stats(all_samples,v_names,out_file_base,debug,stats_types=['all'], return_cov = False):
     """
     Generate statistics of the passed in MCMC samples.
     Assumes that the first column of all_samples contains the step number, and the last two
@@ -938,6 +938,9 @@ def get_mcmc_stats(all_samples,v_names,out_file_base,debug,stats_types=['all']):
         # for i_v in range(n_vars):
         #     pymc.Matplot.autocorrelation(var_samples[:,i_v], v_names[i_v])
         # print "  See plots *-acf.png"
+
+    if return_cov:
+        return var_samples[i_map,:], par_cov
 
     return var_samples[i_map,:]
 
