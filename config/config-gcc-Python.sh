@@ -55,6 +55,5 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_C_COMPILER=gcc            \
       -DCMAKE_CXX_COMPILER=g++          \
       -DPYTHON_EXECUTABLE:FILEPATH=/opt/local/bin/python \
-      -DPYTHON_LIBRARY:FILEPATH=/opt/local/Library/Frameworks/Python.framework/Versions/3.7/lib/libpython3.7.dylib \
       -DPyUQTk=ON \
       $UQTK_SRC_DIR
