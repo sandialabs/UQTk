@@ -64,7 +64,7 @@ double Likelihood::eval(Array1D<double>& x){
 Begin main code
 *************************************************/
 int main(int argc, char ** argv){
-
+    cout << "Seg Fault occurs after this" << endl;
 /*************************************************
 	Initial start for MCMC chain
 	and set Likelihood function
@@ -83,12 +83,12 @@ int main(int argc, char ** argv){
 
 	MCMC mchain(L);
 	mchain.setChainDim(dim);
-	mchain.initMethod("am");
-	mchain.initChainPropCovDiag(g);
-	mchain.setSeed(13);
+	mchain.initMethod("mala");
+	//mchain.initChainPropCovDiag(g);
+	//mchain.setSeed(13);
 	// mchain.printChainSetup();
 	// mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
-	mchain.setWriteFlag(0);
+	//mchain.setWriteFlag(0);
 	mchain.runChain(nCalls,x);
 
 	// Get chain states
