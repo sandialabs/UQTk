@@ -124,6 +124,100 @@ int main(int argc, char ** argv){
 	assert(fabs((sqrt(var_x1) - .1)) < .01);
 	assert(fabs((sqrt(var_x2) - .8)) < .01);
     
+    /*************************************************
+    Initiate and Run MCMC-SS chain
+    *************************************************/
+    Array1D<double> g1(dim,.1);
+
+    MCMC mchain1(L);
+    mchain1.setChainDim(dim);
+    mchain1.initMethod("ss");
+    mchain1.initChainPropCovDiag(g1);
+    mchain1.setSeed(13);
+    // mchain.printChainSetup();
+    // mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
+    mchain1.setWriteFlag(0);
+    mchain1.runChain(nCalls,x);
+
+    // Get chain states
+    Array1D<MCMC::chainstate> chainstates1;
+    mchain1.getFullChain(chainstates1);
+
+    // get mean from chainstates
+    double mean_x3 = 0;
+    double mean_x4 = 0;
+    for (int i = nBurn; i < nCalls; i++){
+        mean_x3 += chainstates(i).state(0);
+        mean_x4 += chainstates(i).state(1);
+    }
+    mean_x3 *= 1./(nCalls-nBurn+1);
+    mean_x4 *= 1./(nCalls-nBurn+1);
+    cout << mean_x3 << endl;
+    cout << mean_x4 << endl;
+
+    // get variance
+    double var_x3 = 0;
+    double var_x4 = 0;
+    for (int i = nBurn; i < nCalls; i=i+1){
+        var_x3 += pow(chainstates(i).state(0) - mean_x1,2);
+        var_x4 += pow(chainstates(i).state(1) - mean_x2,2);
+    }
+    var_x3 *= 1./(nCalls-nBurn);
+    var_x4 *= 1./(nCalls-nBurn);
+    cout << var_x1 << endl;
+    cout << var_x2 << endl;
+
+    // check variance
+    assert(fabs((sqrt(var_x3) - .1)) < .01);
+    assert(fabs((sqrt(var_x4) - .8)) < .01);
+    
+    /*************************************************
+    Initiate and Run TMCMC chain
+    *************************************************/
+    /*Array1D<double> g2(dim,.1);
+
+    MCMC mchain2(L);
+    mchain2.setChainDim(dim);
+    mchain2.initMethod("tmcmc");
+    mchain2.initChainPropCovDiag(g2);
+    mchain2.setSeed(13);
+    // mchain.printChainSetup();
+    // mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
+    mchain2.setWriteFlag(0);
+    mchain2.runChain(nCalls,x);
+
+    // Get chain states
+    Array1D<MCMC::chainstate> chainstates2;
+    mchain2.getFullChain(chainstates2);
+
+    // get mean from chainstates
+    double mean_x5 = 0;
+    double mean_x6 = 0;
+    for (int i = nBurn; i < nCalls; i++){
+        mean_x5 += chainstates(i).state(0);
+        mean_x6 += chainstates(i).state(1);
+    }
+    mean_x5 *= 1./(nCalls-nBurn+1);
+    mean_x6 *= 1./(nCalls-nBurn+1);
+    cout << mean_x1 << endl;
+    cout << mean_x2 << endl;
+
+    // get variance
+    double var_x5 = 0;
+    double var_x6 = 0;
+    for (int i = nBurn; i < nCalls; i=i+1){
+        var_x1 += pow(chainstates(i).state(0) - mean_x1,2);
+        var_x2 += pow(chainstates(i).state(1) - mean_x2,2);
+    }
+    var_x5 *= 1./(nCalls-nBurn);
+    var_x6 *= 1./(nCalls-nBurn);
+    cout << var_x1 << endl;
+    cout << var_x2 << endl;
+
+    // check variance
+    assert(fabs((sqrt(var_x5) - .1)) < .01);
+    assert(fabs((sqrt(var_x6) - .8)) < .01);*/
+    
 	return 0;
 
 }

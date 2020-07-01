@@ -19,7 +19,6 @@ add_subdirectory (TMCMC2dTest       )
 add_subdirectory (MCMC2dTest       )
 add_subdirectory (MCMCRandomTest   )
 add_subdirectory (MCMCNestedTest   )
-add_subdirectory (MALA2dTest       )
 
 # # PCBasis and PCSet tests
 add_subdirectory (Deriv1dTest      )
