@@ -164,13 +164,72 @@ int main(int argc, char ** argv){
     }
     var_x3 *= 1./(nCalls-nBurn);
     var_x4 *= 1./(nCalls-nBurn);
-    cout << var_x1 << endl;
-    cout << var_x2 << endl;
+    cout << var_x3 << endl;
+    cout << var_x4 << endl;
 
     // check variance
     assert(fabs((sqrt(var_x3) - .1)) < .01);
     assert(fabs((sqrt(var_x4) - .8)) < .01);
     
-	return 0;
+    /*************************************************
+     TMCMC 2d Test
+     ***********************************************/
+    
+	/*************************************************
+    Dimensionality and number of samples requested
+    *************************************************/
+    dim = 2;
+    nCalls = 1000;
+
+    /*************************************************
+    Initiate and Run TMCMC
+    *************************************************/
+    MCMC mchain2;
+    mchain2.setChainDim(dim);
+    mchain2.initMethod("tmcmc");
+    mchain2.setSeed(1);
+    mchain2.setWriteFlag(1);
+    mchain2.initTMCMCCv(0.5);
+    mchain2.initTMCMCNprocs(4);
+    mchain2.runChain(nCalls);
+
+    // Get chain states
+    Array1D<MCMC::chainstate> chainstates2;
+    mchain2.getFullChain(chainstates2);
+
+    // get mean from chainstates
+    double mean_x5 = 0;
+    double mean_x6 = 0;
+    for (int i = 0; i < nCalls; i++){
+        mean_x5 += chainstates2(i).state(0);
+        mean_x6 += chainstates2(i).state(1);
+    }
+    mean_x5 *= 1./nCalls;
+    mean_x6 *= 1./nCalls;
+    cout << mean_x5 << endl;
+    cout << mean_x6 << endl;
+
+    // check mean
+    assert(fabs(mean_x5) < .05);
+    assert(fabs(mean_x6) < .05);
+
+    // get variance
+    double var_x5 = 0;
+    double var_x6 = 0;
+    for (int i = 0; i < nCalls; i=i+1){
+        var_x5 += pow(chainstates(i).state(0) - mean_x1,2);
+        var_x6 += pow(chainstates(i).state(1) - mean_x2,2);
+    }
+    var_x5 *= 1./(nCalls-1);
+    var_x6 *= 1./(nCalls-1);
+    cout << var_x5 << endl;
+    cout << var_x6 << endl;
+
+    // check variance
+    assert(fabs(var_x5 - 1./(1./1. + 1./0.01)) < .05);
+    assert(fabs(var_x6 - 1./(1./1. + 1./0.64)) < .05);
+
+    return 0;
+
 
 }

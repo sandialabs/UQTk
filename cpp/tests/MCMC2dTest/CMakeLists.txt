@@ -1,5 +1,24 @@
 project (UQTk)
 
+SET(copy_SCRIPT_FILES
+  tmcmc_getLL.sh
+  tmcmc_getLP.sh
+  tmcmc_moveIntermediateFiles.sh
+  )
+
+SET(copy_DATA_FILES
+  tmcmc_prior_samples.dat
+  )
+
+SET(copy_EXE_FILES
+    model.x
+   )
+
+file(COPY ${copy_SCRIPT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${copy_DATA_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+add_executable (model.x model.cpp)
+
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMC2dTest/)
 
 add_executable (MCMC2dTest main.cpp)
