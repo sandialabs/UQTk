@@ -49,6 +49,20 @@ public:
   };
   virtual ~LikelihoodBase(){};
 };
+
+class base{
+public:
+    virtual double fun(double* x, int n){return 0.0;}
+};
+
+class main{
+public:
+    base* b_;
+
+    main(base& b){
+        b_ = &b;
+    }
+};
 //*****************************************
 
 /// \class MCMC
