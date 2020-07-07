@@ -254,6 +254,11 @@ public:
     /// \brief Initialize epsilon for MALA
     void initEpsMALA(double eps_mala);
     
+    
+    // Get functions:
+    /// \brief Get epsilon for MALA
+    double getEpsMALA():
+    
 private:
     double eps_mala; // Epsilon for MALA algorithm
     
@@ -276,8 +281,10 @@ class MMALA:public MALA{};
 /// \brief Single-Site Markov Chain Monte Carlo class. Derived from the base class for MCMC
 ///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
 class SS:public MCMC{
+    /// \brief Get function for number of sub steps
+    int getNSubSteps();
 private:
-    int nSubSteps_ = this -> GetChainDim(); // This could be a problem line if the chain dimensions change but since it isn't a const int I think that code will call the getChainDim function when nSubSteps_ is called for in the code
+    int nSubSteps_ = this -> GetChainDim();
 };
 
 //*****************************************
@@ -295,6 +302,17 @@ public:
     void initAMGamma(double gamma);
     /// \brief Initialize the covariance 'nugget' for aMCMC
     void initEpsCov(double eps_cov);
+    
+    // Get functions for any variables
+    
+    /// \brief Get function for the size=3 vector (t_start,t_step,t_end) that indicates when the adaptivity starts, how often the proposal covariance is updated and when the adaptivity ends, respectively
+    void getAdaptSteps(Array1D<int> adaptstep_);
+    /// \brief Get function for the coefficient behind the covariance scaling factor
+    double getGamma();
+    /// \brief Get function for the offset epsilon for Cholesky to be computationally feasible
+    double getEpsCov();
+    /// \brief Get function for number of sub steps
+    int getNSubSteps();
     
 private:
     double gamma; // The coefficient behind the covariance scaling factor
@@ -323,11 +341,11 @@ public:
     
     // Initalization and set functions:
     
-    /// \brief Set the default values for TMCMC function
+    /// \brief Set the default values for TMCMC function (Probably don't need this)
     void initDefaults();
     /// \brief Initialize the number of processes for TMCMC
     void initTMCMCNprocs(int tmcmc_nprocs);
-    /// \brief Initialize the the coefficient behind the covariance scaling
+    /// \brief Initialize the coefficient behind the covariance scaling
     ///        factor for TMCMC
     void initTMCMCGamma(double tmcmc_gamma);
     /// \brief Initialize the maximum allowed coefficient of variation for
@@ -341,6 +359,25 @@ public:
     void initTMCMCBasis(bool tmcmc_basis);
     /// \brief Initialize the CATMIPs resampling parameter for TMCMC
     void initTMCMCCATSteps(int tmcmc_CATSteps);
+    
+    // Get functions:
+    
+    /// \brief Get the number of processes for TMCMC
+    int getTMCMCNprocs();
+    /// \brief Get the coefficient behind the covariance scaling
+    ///        factor for TMCMC
+    double getTMCMCGamma();
+    /// \brief Get the maximum allowed coefficient of variation for
+    ///        the weights in TMCMC
+    double getTMCMCCv();
+    /// \brief Initialize the multiplicative factor for chain length to
+    ///        encourage mixing in TMCMC
+    int getTMCMCMFactor();
+    /// \brief Get the choice to resample according to BASIS and
+    ///        CATMIPs in TMCMC
+    bool getTMCMCBasis();
+    /// \brief Get the CATMIPs resampling parameter for TMCMC
+    int getTMCMCCATSteps();
     
 private:
     int TMCMCNprocs; // The number of processes to use for parallel likelihood evaluation
