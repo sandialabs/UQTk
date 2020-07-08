@@ -428,3 +428,130 @@ void MCMC::runOptim(Array1D<double>& start){
 
   return;
 }
+
+void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
+  // Check mandatory information
+  if(!chaindimInit_){
+    throw Tantrum((string) "Chain dimensionality needs to be initialized");
+  }
+
+  // Check what is not initialized and use defaults instead
+  // \todo Specify defaults somewhere more transparently
+
+  // Set defaults proposal covariance
+  if(!propcovInit_){
+    Array1D<double> chsig(this->chainDim_,0.e0);
+    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    this->initChainPropCovDiag(chsig);
+  }
+
+  // Set defaults output format
+  if (!outputInit_){
+    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
+  }
+
+  if(!adaptstepInit_){
+    this->initAdaptSteps((int) ncalls/10,10,ncalls);
+  }
+  if(!gammaInit_){
+    this->initAMGamma(this->default_gamma_);
+  }
+  if(!epscovInit_){
+    this->initEpsCov(this->default_eps_cov_);
+  }
+  
+  // Work variables for simplicity
+  string output=outputinfo_.type;
+
+  // Initial chain state
+  currState_.step=0;
+  currState_.state=chstart;
+  currState_.alfa=0.0;
+  currState_.post=this->evalLogPosterior(chstart);
+  this->updateMode();
+  fullChain_.PushBack(currState_);
+
+  // Number of accepted steps and number of all trials
+  int nacc=0;
+  int nall=0;
+
+  // No new mode found yet
+  newMode_=false;
+
+  for(int t = 1; t < nCalls, ++t){
+    currState_.step=t;
+    double sum_alpha=0.0;
+
+    // Create a new proposed sample
+    for(int is = 0; is  < nSubSteps_; ++is){
+      Array1D<double> m_cand;
+      proposal(currState_.state, m_cand, t);
+
+      // Evaluate the posterior at the new sample point
+      double eval_cand = this->evalLogPosterior(m_cand);
+
+      // Evaluate the new|old and old|new proposals
+      double old_given_new = this->probOldNew(currState_.state, m_cand);
+      double new_given_old = this->probOldNew(m_cand,currState_.state);
+
+      // Accept or reject it
+      double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
+      sum_alpha += alpha;
+      if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
+        nacc++;
+        currState_.state = m_cand;
+        currState_.post = eval_cand;
+        if (this->fcnAcceptFlag_)
+          this->fcnAccept_(this->postInfo_);
+      } // If state not accepted, keep previous state as the current state
+      else{
+        if (this->fcnRejectFlag_)
+          this->fcnReject_(this->postInfo_);
+      }
+
+      ++nall; 
+    }
+
+    currState_.alfa = sum_alpha / nSubSteps_;
+
+    // Append the current state to the array of all past states
+    fullChain_.PushBack(currState_);
+
+    // Keep track of the mode (among the locations visited so far)
+    // \todo maybe only store tmode_(we save the full chain anyway)
+    if (currState_.post > modeState_.post){
+      this->updateMode();
+      newMode_=true;
+    }
+
+    accRatio_ = (double) nacc/nall;
+
+    if(WRITE_FLAG == 1){
+      // Output to Screen
+      if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
+
+        printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current MAP params: ");
+        for(int ic=0;ic<this->chainDim_;ic++)
+          printf("par(%d)=%f ",ic,modeState_.state(ic));
+        cout << endl;
+
+      }
+        
+        // Output to File
+      if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
+
+        if(!strcmp(output.c_str(),"txt"))
+          this->writeChainTxt(outputinfo_.filename);
+        else  if(!strcmp(output.c_str(),"bin"))
+          this->writeChainBin(outputinfo_.filename);
+        else
+          throw Tantrum((string) "Chain output type is not recognized");
+        lastwrite_ = t;
+      }
+    }
+  }
+
+  return;
+}

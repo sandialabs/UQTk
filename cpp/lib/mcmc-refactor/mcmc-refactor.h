@@ -171,7 +171,7 @@ public:
     /// \brief The optimization routine
     void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
-    void runChain(int ncalls, Array1D<double>& chstart);
+    virtual void runChain(int ncalls, Array1D<double>& chstart);
     /// \brief Start an MCMC chain with trivial initial condition
     void runChain(int ncalls);
     
@@ -224,7 +224,7 @@ private:
     int seed_; // Random seed for MCMC
     
     /// \brief Pure virtual proposal function that will exist in all instances of the derived classes
-    virtual void proposal() = 0;
+    void virtual proposal() = 0;
     
     double probOldNew(Array1D<double>& a, Array1D<double>& b); // Evaluate old|new probabilities and new|old probabilities
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
