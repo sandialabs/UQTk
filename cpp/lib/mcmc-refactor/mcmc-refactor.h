@@ -149,12 +149,6 @@ public:
     /// \brief Get the upper bounds based on an index i
     double getUpper(int i);
     
-    
-    // Print functions:
-    
-    /// \brief Function to print the chain information on the screen
-    void printChainSetup();
-    
     // Chain Functions:
     
     /// \brief Reset the chain state
@@ -352,6 +346,12 @@ public:
     double getEpsCov();
     /// \brief Get function for number of sub steps
     int getNSubSteps();
+    
+    // Print functions:
+    
+    /// \brief Function to print the chain information on the screen
+    void printChainSetup();
+
     
 private:
     double gamma; // The coefficient behind the covariance scaling factor
