@@ -67,7 +67,7 @@ public:
 
 /// \class MCMC
 /// \brief Markov Chain Monte Carlo base class.
-///        Implemented the basic and most general MCMC algorithms (Metropolis-Hastings)
+///        Implemented the basic and most general MCMC algorithms
 class MCMC{
 public:
     // Constructors:
@@ -75,12 +75,12 @@ public:
     /// \brief Constructor when given a pointer to a logPosterior function and a pointer to additional information (e.g. data)
     MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
     /// \brief Constructor when given a Likelihood Base class object
-    MCMC(LikelihoodBase& L);
+    //MCMC(LikelihoodBase& L);
     /// \brief Dummy Constructor, used for TMCMC
     MCMC();
     
     // Destructor:
-    ~MCMC();
+    ~MCMC(){};
     
     // Set or initialization functions:
     
@@ -122,11 +122,40 @@ public:
     /// \brief Get the name of the chain file
     string getFilename();
     /// \brief Get the value of the write flag;
+    /// \note Why is this a string?
     string getWriteFlag();
+    /// \brief Get the value of the write flag as an integer
+    int getWriteFlag();
     /// \brief Get samples of the chain with burnin and thining
     void getSamples(int burnin, int every,Array2D<double>& samples);
     /// \brief Get all samples of the chain
     void getSamples(Array2D<double>& samples);
+    /// \brief Get gradient function by passing in log posterior pointer
+    void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+    /// \brief Get metric tensor function
+    void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
+    /// \brief Get the accept and reject functions given a pointer
+    void getFcnAccept(void (*fcnAccept)(void *));
+    void getFcnReject(void (*fcnReject)(void *));
+    /// \brief Get the proposal covariance matrix as a 2d-array
+    void getChainPropCov(Array2D<double>& propcov);
+    /// \brief Get the output file type as a string
+    string getOutputType();
+    /// \brief Get the output file name as a string
+    string getOutputName();
+    /// \brief Get the frequency of output to file
+    int getFileFreq();
+    /// \brief Get the frequency of output to the screen
+    int getScreenFreq();
+    /// \brief Get if the names are prepended
+    bool getNamesPrepended();
+    /// \brief Get the seed used for random generation
+    int getSeed();
+    /// \brief Get the lower bounds based on an index i
+    double getLower(int i);
+    /// \brief Get the upper bounds based on an index i
+    double getUpper(int i);
+    
     
     // Print functions:
     
@@ -165,6 +194,8 @@ public:
     bool newModeFound();
     /// \brief Get the chain's acceptance ratio
     void getAcceptRatio(double * accrat);
+    /// \brief Get the chain's acceptance ratio as a double
+    double getAcceptRatio();
     /// \brief Get the MCMC chain dimensionality
     int GetChainDim() const;
     /// \brief Function to evaluate the log-posterior
@@ -205,7 +236,8 @@ private:
     Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for MCMC
     
-    // Write a virtual function for proposals here and then overwrite it in the subsequent sections
+    /// \brief Pure virtual proposal function that will exist in all instances of the derived classes
+    virtual void proposal() = 0;
     
     double probOldNew(Array1D<double>& a, Array1D<double>& b); // Evaluate old|new probabilities and new|old probabilities
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
