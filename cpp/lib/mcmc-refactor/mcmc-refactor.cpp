@@ -887,5 +887,9 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   evidFile.close();
 }
 
+void MCMC::runChain(int ncalls){
+  Array1D<double> chstart(chainDim_,0.e0);
 
+  this->runChain(ncalls, chstart);
+}
 
