@@ -893,3 +893,21 @@ void MCMC::runChain(int ncalls){
   this->runChain(ncalls, chstart);
 }
 
+bool MCMC::newModeFound(){
+  return newMode_;
+}
+
+void MCMC::getAcceptRatio(double * accrat){
+  *accrat = accRatio_;
+
+  return;
+}
+
+double MCMC::getAcceptRatio(){
+  return accRatio_;
+}
+
+int MCMC::GetChainDim() const{
+  return chainDim_;
+}
+
