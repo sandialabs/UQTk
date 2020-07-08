@@ -485,7 +485,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
     // Create a new proposed sample
     for(int is = 0; is  < nSubSteps_; ++is){
       Array1D<double> m_cand;
-      proposal(currState_.state, m_cand, t);
+      this -> proposal(currState_.state, m_cand, t);
 
       // Evaluate the posterior at the new sample point
       double eval_cand = this->evalLogPosterior(m_cand);
@@ -555,3 +555,337 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   return;
 }
+
+void MALA::runChain(int ncalls, Array1D<double>& chstart){
+  // Check mandatory information
+  if(!chaindimInit_){
+    throw Tantrum((string) "Chain dimensionality needs to be initialized");
+  }
+
+  // Check what is not initialized and use defaults instead
+  // \todo Specify defaults somewhere more transparently
+
+  // Set defaults proposal covariance
+  if(!propcovInit_){
+    Array1D<double> chsig(this->chainDim_,0.e0);
+    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    this->initChainPropCovDiag(chsig);
+  }
+
+  // Set defaults output format
+  if (!outputInit_){
+    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
+  }
+
+  if(!epsMalaInit_){
+    this->initEpsMALA(default_eps_mala_);
+  }
+  
+  // Work variables for simplicity
+  string output=outputinfo_.type;
+
+  // Initial chain state
+  currState_.step=0;
+  currState_.state=chstart;
+  currState_.alfa=0.0;
+  currState_.post=this->evalLogPosterior(chstart);
+  this->updateMode();
+  fullChain_.PushBack(currState_);
+
+  // Number of accepted steps and number of all trials
+  int nacc=0;
+  int nall=0;
+
+  // No new mode found yet
+  newMode_=false;
+
+  for(int t = 1; t < nCalls, ++t){
+    currState_.step=t;
+    double sum_alpha=0.0;
+
+    // Create a new proposed sample
+    for(int is = 0; is  < nSubSteps_; ++is){
+      Array1D<double> m_cand;
+      this -> proposal(currState_.state, m_cand);
+
+      // Evaluate the posterior at the new sample point
+      double eval_cand = this->evalLogPosterior(m_cand);
+
+      // Evaluate the new|old and old|new proposals
+      double old_given_new = this->probOldNew(currState_.state, m_cand);
+      double new_given_old = this->probOldNew(m_cand,currState_.state);
+
+      // Accept or reject it
+      double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
+      sum_alpha += alpha;
+      if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
+        nacc++;
+        currState_.state = m_cand;
+        currState_.post = eval_cand;
+        if (this->fcnAcceptFlag_)
+          this->fcnAccept_(this->postInfo_);
+      } // If state not accepted, keep previous state as the current state
+      else{
+        if (this->fcnRejectFlag_)
+          this->fcnReject_(this->postInfo_);
+      }
+
+      ++nall; 
+    }
+
+    currState_.alfa = sum_alpha / nSubSteps_;
+
+    // Append the current state to the array of all past states
+    fullChain_.PushBack(currState_);
+
+    // Keep track of the mode (among the locations visited so far)
+    // \todo maybe only store tmode_(we save the full chain anyway)
+    if (currState_.post > modeState_.post){
+      this->updateMode();
+      newMode_=true;
+    }
+
+    accRatio_ = (double) nacc/nall;
+
+    if(WRITE_FLAG == 1){
+      // Output to Screen
+      if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
+
+        printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current MAP params: ");
+        for(int ic=0;ic<this->chainDim_;ic++)
+          printf("par(%d)=%f ",ic,modeState_.state(ic));
+        cout << endl;
+
+      }
+        
+        // Output to File
+      if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
+
+        if(!strcmp(output.c_str(),"txt"))
+          this->writeChainTxt(outputinfo_.filename);
+        else  if(!strcmp(output.c_str(),"bin"))
+          this->writeChainBin(outputinfo_.filename);
+        else
+          throw Tantrum((string) "Chain output type is not recognized");
+        lastwrite_ = t;
+      }
+    }
+  }
+
+  return;
+}
+
+void SS::runChain(int ncalls, Array1D<double>& chstart){
+  // Check mandatory information
+  if(!chaindimInit_){
+    throw Tantrum((string) "Chain dimensionality needs to be initialized");
+  }
+
+  // Check what is not initialized and use defaults instead
+  // \todo Specify defaults somewhere more transparently
+
+  // Set defaults proposal covariance
+  if(!propcovInit_){
+    Array1D<double> chsig(this->chainDim_,0.e0);
+    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    this->initChainPropCovDiag(chsig);
+  }
+
+  // Set defaults output format
+  if (!outputInit_){
+    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
+  }
+  
+  // Work variables for simplicity
+  string output=outputinfo_.type;
+
+  // Initial chain state
+  currState_.step=0;
+  currState_.state=chstart;
+  currState_.alfa=0.0;
+  currState_.post=this->evalLogPosterior(chstart);
+  this->updateMode();
+  fullChain_.PushBack(currState_);
+
+  // Number of accepted steps and number of all trials
+  int nacc=0;
+  int nall=0;
+
+  // No new mode found yet
+  newMode_=false;
+
+  for(int t = 1; t < nCalls, ++t){
+    currState_.step=t;
+    double sum_alpha=0.0;
+
+    // Create a new proposed sample
+    for(int is = 0; is  < nSubSteps_; ++is){
+      Array1D<double> m_cand;
+      this -> proposal(currState_.state, m_cand, is);
+
+      // Evaluate the posterior at the new sample point
+      double eval_cand = this->evalLogPosterior(m_cand);
+
+      // Evaluate the new|old and old|new proposals
+      double old_given_new = this->probOldNew(currState_.state, m_cand);
+      double new_given_old = this->probOldNew(m_cand,currState_.state);
+
+      // Accept or reject it
+      double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
+      sum_alpha += alpha;
+      if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
+        nacc++;
+        currState_.state = m_cand;
+        currState_.post = eval_cand;
+        if (this->fcnAcceptFlag_)
+          this->fcnAccept_(this->postInfo_);
+      } // If state not accepted, keep previous state as the current state
+      else{
+        if (this->fcnRejectFlag_)
+          this->fcnReject_(this->postInfo_);
+      }
+
+      ++nall; 
+    }
+
+    currState_.alfa = sum_alpha / nSubSteps_;
+
+    // Append the current state to the array of all past states
+    fullChain_.PushBack(currState_);
+
+    // Keep track of the mode (among the locations visited so far)
+    // \todo maybe only store tmode_(we save the full chain anyway)
+    if (currState_.post > modeState_.post){
+      this->updateMode();
+      newMode_=true;
+    }
+
+    accRatio_ = (double) nacc/nall;
+
+    if(WRITE_FLAG == 1){
+      // Output to Screen
+      if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
+
+        printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current MAP params: ");
+        for(int ic=0;ic<this->chainDim_;ic++)
+          printf("par(%d)=%f ",ic,modeState_.state(ic));
+        cout << endl;
+
+      }
+        
+        // Output to File
+      if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
+
+        if(!strcmp(output.c_str(),"txt"))
+          this->writeChainTxt(outputinfo_.filename);
+        else  if(!strcmp(output.c_str(),"bin"))
+          this->writeChainBin(outputinfo_.filename);
+        else
+          throw Tantrum((string) "Chain output type is not recognized");
+        lastwrite_ = t;
+      }
+    }
+  }
+
+  return;
+}
+
+void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
+  // Check mandatory information
+  if(!chaindimInit_){
+    throw Tantrum((string) "Chain dimensionality needs to be initialized");
+  }
+
+  // Check what is not initialized and use defaults instead
+  // \todo Specify defaults somewhere more transparently
+  if(!tmcmcNprocsInit_)
+    this->initTMCMCNprocs(this->default_tmcmc_nprocs_);
+
+  if(!tmcmcGammaInit_)
+    this->initTMCMCGamma(this->default_tmcmc_gamma_);
+
+  if(!tmcmcCvInit_)
+    this->initTMCMCCv(this->default_tmcmc_cv_);
+
+  if(!tmcmcMFactorInit_)
+    this->initTMCMCMFactor(this->default_tmcmc_MFactor_);
+
+  if(!tmcmcBasisInit_)
+    this->initTMCMCBasis(this->default_tmcmc_basis_);
+
+  if(!tmcmcCATStepsInit_)
+    this->initTMCMCCATSteps(this->default_tmcmc_CATSteps_);
+
+  // Set defaults proposal covariance
+  if(!propcovInit_){
+    Array1D<double> chsig(this->chainDim_,0.e0);
+    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    this->initChainPropCovDiag(chsig);
+  }
+
+  // Set defaults output format
+  if (!outputInit_){
+    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
+  }
+  
+  // Work variables for simplicity
+  string output=outputinfo_.type;
+
+  double logevid;
+
+  std::vector<double> samples;
+  std::vector<double> logpriors;
+  std::vector<double> logliks;
+  std::ofstream evidFile("Evidence.dat");
+
+  // Run TMCMC, get evidence
+  logevid = tmcmc(samples, logpriors, logliks,
+  methodinfo_.tmcmc_gamma, ncalls,
+  seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
+  methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
+  methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps, WRITE_FLAG);
+
+  // clean up
+  std::ifstream moveFile("tmcmc_moveIntermediateFiles.sh");
+  if (moveFile.is_open()) {
+    std::string moveStr = "./tmcmc_moveIntermediateFiles.sh TMCMCIntermediates";
+    system(moveStr.c_str());
+  }
+
+  // Convert samples to chain format
+  Array1D<double> sample(this->chainDim_);    
+  // std::cout << "hero1" << std::endl;
+
+  for (int i=0; i < ncalls; i++) {
+    currState_.step=i+1;
+    for (int j=0; j<this->chainDim_; j++ ){
+      // std::cout << i << " " << j << " " << samples[i*this->chainDim_+j] << std::endl;
+      sample(j) = samples[i*this->chainDim_+j];
+    } 
+    currState_.state=sample;
+    currState_.alfa=0.0;
+    currState_.post=logpriors[i]+logliks[i];
+    fullChain_.PushBack(currState_);
+  }
+
+  evidFile << std::setprecision(18) << logevid << std::endl;
+
+  if (WRITE_FLAG == 1){
+    // Output to file
+    if(!strcmp(output.c_str(),"txt"))
+      this->writeChainTxt(outputinfo_.filename);
+    else if(!strcmp(output.c_str(),"bin"))
+      this->writeChainBin(outputinfo_.filename);
+    else
+      throw Tantrum((string) "Chain output type is not recognized");
+  }
+
+  evidFile.close();
+}
+
+
+
