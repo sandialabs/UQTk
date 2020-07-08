@@ -121,9 +121,6 @@ public:
     void getChainPropCov(Array2D<double>& propcov);
     /// \brief Get the name of the chain file
     string getFilename();
-    /// \brief Get the value of the write flag;
-    /// \note Why is this a string?
-    string getWriteFlag();
     /// \brief Get the value of the write flag as an integer
     int getWriteFlag();
     /// \brief Get samples of the chain with burnin and thining
@@ -137,12 +134,8 @@ public:
     /// \brief Get the accept and reject functions given a pointer
     void getFcnAccept(void (*fcnAccept)(void *));
     void getFcnReject(void (*fcnReject)(void *));
-    /// \brief Get the proposal covariance matrix as a 2d-array
-    void getChainPropCov(Array2D<double>& propcov);
     /// \brief Get the output file type as a string
     string getOutputType();
-    /// \brief Get the output file name as a string
-    string getOutputName();
     /// \brief Get the frequency of output to file
     int getFileFreq();
     /// \brief Get the frequency of output to the screen

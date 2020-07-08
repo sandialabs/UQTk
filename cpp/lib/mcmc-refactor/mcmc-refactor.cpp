@@ -147,3 +147,144 @@ void MCMC::initChainPropCov(Array2D<double>& propcov){
   return;
 }
 
+void MCMC::initChainPropCovDiag(Array1D<double>& sig){
+  // Create a diagonal matrix and fill in the diagonal terms
+  methodinfo_.chcov.Resize(this->chainDim_,this->chainDim_,0.e0);
+  for(int i = 0; i < chainDim_; ++i){
+    methodinfo_.chcov(i,i)=sig(i)*sig(i);
+  }
+  
+  // Set the initialization flag to True
+  propcovInit_=true;
+
+  return;
+}
+
+void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen){
+  outputinfo_.type = outtype;
+  outputinfo_.filename = file;
+  outputinfo_.freq_chainfile = freq_file;
+  outputinfo_.freq_outscreen = freq_screen;
+  // Set the initialization flag to True
+  outputInit_ = true;
+
+  return;
+}
+
+void MCMC::namesPrepended(){
+  namesPrepend = true;
+
+  return;
+}
+
+void MCMC::setSeed(int seed){
+  seed_ = seed;
+  dsfmt_init_gen_rand(&RandomState,seed);
+  return;
+}
+
+void MCMC::setLower(double lower, int i){
+  Lower_(i) = lower;
+  lower_flag_(i) = 1;
+
+  return;
+}
+
+void MCMC::setUpper(double upper, int i){
+  Upper_(i) = lower;
+  upper_flag_(i) = 1;
+
+  return;
+}
+
+void MCMC::setDefaultDomain(){
+  Lower_.Resize(this->chainDim_,-DBL_MAX);
+  Upper_.Resize(this->chainDim_,DBL_MAX);
+  lower_flag_.Resize(this->chainDim_,0);
+  upper_flag_.Resize(this->chainDim_,0);
+  
+  return;
+}
+
+void MCMC::getChainPropCov(Array2D<double>& propcov){
+  // Get the proposal covariance matrix
+  propcov=methodinfo_.chcov;
+  
+  return;
+}
+
+string MCMC::getFilename(){
+  return outputinfo_.filename;
+}
+
+int MCMC::getWriteFlag(){
+  return WRITE_FLAG;
+}
+
+void MCMC::getSamples(int burnin, int every, Array2D<double>& samples){
+  int nCalls = fullChain_.Length();
+  samples.Resize(chainDim_,0); // initialize sample array
+  int j=0;
+  for (int i = burnin; i < nCalls; i+=every){
+    samples.insertCol(fullChain_(i).state,j);
+    j++;
+  }
+
+  return;
+}
+
+void MCMC::getSamples(Array2D<double>& samples){
+  getSamples(0,1,samples);
+}
+
+void MCMC::getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
+  gradlogPosterior = gradlogPosterior_;
+  return;
+}
+
+void MCMC::getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
+  metricTensor = metricTensor_;
+  return;
+}
+
+void MCMC::getFcnAccept(void (*fcnAccept)(void *)){
+  fcnAccept = fcnAccept_;
+  return;
+}
+
+void MCMC::getFcnAccept(void (*fcnReject)(void *)){
+  fcnReject = fcnReject_;
+  return;
+}
+
+string MCMC::getOutputType(){
+  return outputinfo_.outtype;
+}
+
+int MCMC::getFileFreq(){
+  return outputinfo_.freq_file;
+}
+
+int MCMC::getScreenFreq(){
+  return outputinfo_.freq_screen;
+}
+
+bool MCMC::getNamesPrepended(){
+  return namesPrepend;
+}
+
+int MCMC::getSeed(){
+  return seed_;
+}
+
+double MCMC::getLower(int i){
+  return Lower_(i)
+}
+
+double MCMC::getUpper(int i){
+  return Upper_(i);
+}
+
+void MCMC::printChainSetup(){
+  
+}
