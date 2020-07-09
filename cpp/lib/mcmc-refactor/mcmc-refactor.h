@@ -200,6 +200,8 @@ public:
       double post;
     };
     
+    dsfmt_t RandomState;
+    
     
 private:
     int WRITE_FLAG; // Write Flag
@@ -211,7 +213,6 @@ private:
         int freq_file;
         int freq_screen;
     } outputinfo_;
-    dsfmt_t RandomState; // (Was pubic before so we will need to see if it needs to be)
     int chainDim_; // Chain dimensions
     double (*logPosterior_)(Array1D<double>&, void *); // Pointer to log-posterior function
     void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *); //Pointer to gradient log-posterior function
@@ -270,17 +271,10 @@ private:
 
 //*****************************************
 
-/// \class Hamiltonian Sampling
-/// \brief Hamiltonian Markov Chain Monte Carlo class. Derived from the base class for MCMC
-///        Implemented the HMCMC algorithms
-class Hamilton:public MCMC{};
-
-//*****************************************
-
 /// \class MALA or Langevian Sampling
 /// \brief MALA Markov Chain Monte Carlo class. Derived from the base class for Hamiltonian
 ///        Implemented the HMCMC algorithms, however L = 1 for the MALA class of algorithms
-class MALA:public Hamilton{
+class MALA:public MCMC{
 public:
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
     

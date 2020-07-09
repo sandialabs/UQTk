@@ -25,9 +25,9 @@
      Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-// \file mcmc.cpp
-// \author K. Sargsyan, C. Safta, B. Debusschere, 2012 -
-// \brief Markov chain Monte Carlo class
+// \file mcmc-refactor.cpp
+// \author K. Sargsyan, C. Safta, B. Debusschere, 2012 - L. Boll, 2020
+// \brief Markov chain Monte Carlo class and its subsequent derived classes
 
 #include <math.h>
 #include <float.h>
@@ -140,7 +140,7 @@ void MCMC::setChainDim(int chdim){
 
 void MCMC::initChainPropCov(Array2D<double>& propcov){
   // Initialize the proposal covariance matrix
-  methodinfo_.chcov=propcov;
+  chcov=propcov;
   // Set the initialization flag to True
   propcovInit_=true;
 
@@ -149,11 +149,11 @@ void MCMC::initChainPropCov(Array2D<double>& propcov){
 
 void MCMC::initChainPropCovDiag(Array1D<double>& sig){
   // Create a diagonal matrix and fill in the diagonal terms
-  methodinfo_.chcov.Resize(this->chainDim_,this->chainDim_,0.e0);
+  chcov.Resize(this->chainDim_,this->chainDim_,0.e0);
   for(int i = 0; i < chainDim_; ++i){
-    methodinfo_.chcov(i,i)=sig(i)*sig(i);
+    chcov(i,i)=sig(i)*sig(i);
   }
-  
+
   // Set the initialization flag to True
   propcovInit_=true;
 
@@ -202,14 +202,14 @@ void MCMC::setDefaultDomain(){
   Upper_.Resize(this->chainDim_,DBL_MAX);
   lower_flag_.Resize(this->chainDim_,0);
   upper_flag_.Resize(this->chainDim_,0);
-  
+
   return;
 }
 
 void MCMC::getChainPropCov(Array2D<double>& propcov){
   // Get the proposal covariance matrix
-  propcov=methodinfo_.chcov;
-  
+  propcov = chcov;
+
   return;
 }
 
@@ -287,14 +287,14 @@ double MCMC::getUpper(int i){
 
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
-    cout << "Gamma            : " << this->methodinfo_.gamma << endl;
+    cout << "Gamma            : " << this->gamma << endl;
   else
     cout << "Gamma (default)  : " << this->default_gamma_ << endl;
   if (this->epscovInit_)
-    cout << "Eps_Cov          : " << this->methodinfo_.eps_cov << endl;
+    cout << "Eps_Cov          : " << this->eps_cov << endl;
   else
     cout << "Eps_Cov (default): " << this->default_eps_cov_ << endl;
-  
+
   return;
 }
 
@@ -412,7 +412,7 @@ void MCMC::runOptim(Array1D<double>& start){
       u(i)=this->Upper_(i);
     }
   }
-  
+
   void* info=this;
 
   if (gradflag_)
@@ -459,7 +459,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   if(!epscovInit_){
     this->initEpsCov(this->default_eps_cov_);
   }
-  
+
   // Work variables for simplicity
   string output=outputinfo_.type;
 
@@ -509,7 +509,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
           this->fcnReject_(this->postInfo_);
       }
 
-      ++nall; 
+      ++nall;
     }
 
     currState_.alfa = sum_alpha / nSubSteps_;
@@ -538,7 +538,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
         cout << endl;
 
       }
-        
+
         // Output to File
       if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
 
@@ -580,7 +580,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
   if(!epsMalaInit_){
     this->initEpsMALA(default_eps_mala_);
   }
-  
+
   // Work variables for simplicity
   string output=outputinfo_.type;
 
@@ -630,7 +630,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
           this->fcnReject_(this->postInfo_);
       }
 
-      ++nall; 
+      ++nall;
     }
 
     currState_.alfa = sum_alpha / nSubSteps_;
@@ -659,7 +659,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
         cout << endl;
 
       }
-        
+
         // Output to File
       if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
 
@@ -697,7 +697,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
   if (!outputInit_){
     this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
   }
-  
+
   // Work variables for simplicity
   string output=outputinfo_.type;
 
@@ -747,7 +747,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
           this->fcnReject_(this->postInfo_);
       }
 
-      ++nall; 
+      ++nall;
     }
 
     currState_.alfa = sum_alpha / nSubSteps_;
@@ -776,7 +776,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
         cout << endl;
 
       }
-        
+
         // Output to File
       if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
 
@@ -831,7 +831,7 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   if (!outputInit_){
     this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
   }
-  
+
   // Work variables for simplicity
   string output=outputinfo_.type;
 
@@ -844,10 +844,10 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   // Run TMCMC, get evidence
   logevid = tmcmc(samples, logpriors, logliks,
-  methodinfo_.tmcmc_gamma, ncalls,
-  seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
-  methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
-  methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps, WRITE_FLAG);
+  tmcmc_gamma, ncalls,
+  seed_, tmcmc_nprocs, this-> GetChainDim(),
+  tmcmc_cv, tmcmc_MFactor,
+  tmcmc_basis, tmcmc_CATSteps, WRITE_FLAG);
 
   // clean up
   std::ifstream moveFile("tmcmc_moveIntermediateFiles.sh");
@@ -857,7 +857,7 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Convert samples to chain format
-  Array1D<double> sample(this->chainDim_);    
+  Array1D<double> sample(this->chainDim_);
   // std::cout << "hero1" << std::endl;
 
   for (int i=0; i < ncalls; i++) {
@@ -865,7 +865,7 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
     for (int j=0; j<this->chainDim_; j++ ){
       // std::cout << i << " " << j << " " << samples[i*this->chainDim_+j] << std::endl;
       sample(j) = samples[i*this->chainDim_+j];
-    } 
+    }
     currState_.state=sample;
     currState_.alfa=0.0;
     currState_.post=logpriors[i]+logliks[i];
@@ -1023,4 +1023,56 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
 
   return;
 
+}
+
+void MALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
+  Array1D<double> grads;
+  gradlogPosterior_(m_t,grads,NULL);
+  cout << "grads= " << grads(0) << " " << grads(1) << endl;
+  m_cand = m_t;
+  for (int i=0; i < this -> GetChainDim(); i++) {
+    m_cand(i) += epsMALA_*epsMALA_*grads(i)/2.;
+    m_cand(i) += epsMALA_*dsfmt_genrand_nrv(&RandomState);
+  }
+
+  return;
+}
+
+void MMALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
+  int chol_info=0;
+  char lu='L';
+
+  Array1D<double> grads;
+  this->gradlogPosterior_(m_t,grads,NULL);
+  Array2D<double> mtensorinv;
+  this->metricTensor_(m_t,mtensorinv,NULL);
+  m_cand=m_t;
+
+  Array1D<double> mtggrads;
+  prodAlphaMatVec(mtensorinv, grads, 1.0, mtggrads) ;
+
+  Array2D<double> sqrt_mtensorinv;
+  sqrt_mtensorinv = mtensorinv;
+  FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), sqrt_mtensorinv.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+  // Catch the error in Cholesky factorization
+  if (chol_info != 0 )
+    printf("Error in Cholesky factorization, info=%d\n", chol_info);
+
+  for (int i=0; i < this -> GetChainDim(); i++) {
+    m_cand(i) += epsMALA_*epsMALA_*mtggrads(i)/2.;
+    for (int j=0; j < i+1; j++) {
+      m_cand(i) += epsMALA_*sqrt_mtensorinv(i,j)*dsfmt_genrand_nrv(&RandomState);
+    }
+  }
+
+  return;
+}
+
+void SS::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
+{
+  // Single-site proposal
+  m_cand=m_t;
+  m_cand(dim) += ( sqrt(chcov(dim,dim))*dsfmt_genrand_nrv(&RandomState) );
+
+  return;
 }
