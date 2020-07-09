@@ -1105,17 +1105,93 @@ double MMALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
 }
 
 double MCMC::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
+  double pi=4.0*atan(1.0);
 
+  double value=0.e0;
+
+  // \todo Put sanity checks on dimensions
+
+  for (int i=0;i<this->GetChainDim();i++){
+    value -= 0.5*log(2.*pi*sig2(i));
+    value -= (x(i)-mu(i))*(x(i)-mu(i))/(2.0*sig2(i));
+  }
+  return value;
 }
 
 void MCMC::updateMode(){
+  // Update the chain mode (MAP state)
+  modeState_.step=currState_.step;
+  modeState_.state=currState_.state;
+  modeState_.post=currState_.post;
+  modeState_.alfa=-1.0;
 
+  return;
 }
 
 void MCMC::writeChainTxt(string filename){
+  // Choose whether write or append
+  char* writemode="w";
+  if (lastwrite_>=0 || namePrepend_)
+    writemode="a";
 
+  // Open the text file
+  FILE* f_out;
+  if(!(f_out = fopen(filename.c_str(),writemode))){
+    printf("writeChain: could not open file '%s'\n",filename.c_str());
+    exit(1);
+  }
+
+  // Write to the text file
+  for(int i=this->lastwrite_+1;i<this->fullChain_.XSize();i++){
+    fprintf(f_out, "%d ", this->fullChain_(i).step);
+    for(int ic=0;ic<this->chainDim_;ic++)
+      fprintf(f_out, "%24.16lg ", this->fullChain_(i).state(ic));
+    fprintf(f_out, "%24.16lg %24.16lg \n", this->fullChain_(i).alfa, this->fullChain_(i).post);
+
+  }
+
+  // Close the text file
+  if(fclose(f_out)){
+    printf("writeChain: could not close file '%s'\n",filename.c_str());
+    exit(1);
+  }
+
+  // Report
+  printf("Written the states %d - %d to the text file %s\n", this->lastwrite_+1,  this->fullChain_.XSize()-1, filename.c_str());
+
+  return;
 }
 
 void MCMC::writeChainBin(string filename){
+  // Choose whether write or append
+  char* writemode="wb";
+  if (lastwrite_>=0)
+    writemode="ab";
 
+  // Open the binary file
+  FILE* f_out;
+  if(!(f_out = fopen(filename.c_str(),writemode))){
+    printf("writeChain: could not open file '%s'\n",filename.c_str());
+    exit(1);
+  }
+
+
+  // Write to the binary file
+  for(int i=this->lastwrite_+1;i<this->fullChain_.XSize();i++){
+    fwrite(&(this->fullChain_(i).step), sizeof(int), 1, f_out);
+    fwrite(fullChain_(i).state.GetArrayPointer(),this->chainDim_*sizeof(double),1, f_out);
+    fwrite(&(this->fullChain_(i).alfa), sizeof(double), 1, f_out);
+    fwrite(&(this->fullChain_(i).post), sizeof(double), 1, f_out);
+  }
+
+  // CLose the binary file
+  if(fclose(f_out)){
+    printf("writeChain: could not close file '%s'\n",filename.c_str());
+    exit(1);
+  }
+
+  // Report
+  printf("Written the states %d - %d to the binary file %s\n",this->lastwrite_+1, this->fullChain_.XSize()-1, filename.c_str());
+
+  return;
 }
