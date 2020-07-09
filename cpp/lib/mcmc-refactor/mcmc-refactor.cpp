@@ -67,7 +67,7 @@ MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   return;
 }
 
-MCMC::MCMC(LikelihoodBase& L){
+/*MCMC::MCMC(LikelihoodBase& L){
   FLAG = 1;
   L_ = &L;
 
@@ -83,7 +83,7 @@ MCMC::MCMC(LikelihoodBase& L){
   WRITE_FLAG = 1;
 
   return;
-}
+}*/
 
 MCMC::MCMC(){
   FLAG = 2;
@@ -909,5 +909,34 @@ double MCMC::getAcceptRatio(){
 
 int MCMC::GetChainDim() const{
   return chainDim_;
+}
+
+double MCMC::evalLogPosterior(Array1D<double>& m){
+  return logPosterior_(m,postInfo_);
+}
+
+void MCMC::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
+  // Evaluate given the log-posterior function defined by the user in the constructor
+  gradlogPosterior_(m,grads,postInfo_);
+
+  return;
+}
+
+bool MCMC::inDomain(Array1D<double>& m){
+  int nd = m.XSize();
+
+  for (int id=0;id<nd;id++){
+    if (!lower_flag_(id))
+      return true;
+    else if (m(id)<Lower_(id))
+      return false;
+
+    if (!upper_flag_(id))
+      return true;
+    else if (m(id)>Upper_(id))
+      return false;
+    }
+
+  return true;
 }
 
