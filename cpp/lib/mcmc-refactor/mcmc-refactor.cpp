@@ -149,7 +149,7 @@ void MCMC::initChainPropCov(Array2D<double>& propcov){
 
 void MCMC::initChainPropCovDiag(Array1D<double>& sig){
   // Create a diagonal matrix and fill in the diagonal terms
-  chcov.Resize(this->chainDim_,this->chainDim_,0.e0);
+  chcov.Resize(chainDim_,chainDim_,0.e0);
   for(int i = 0; i < chainDim_; ++i){
     chcov(i,i)=sig(i)*sig(i);
   }
@@ -198,10 +198,10 @@ void MCMC::setUpper(double upper, int i){
 }
 
 void MCMC::setDefaultDomain(){
-  Lower_.Resize(this->chainDim_,-DBL_MAX);
-  Upper_.Resize(this->chainDim_,DBL_MAX);
-  lower_flag_.Resize(this->chainDim_,0);
-  upper_flag_.Resize(this->chainDim_,0);
+  Lower_.Resize(chainDim_,-DBL_MAX);
+  Upper_.Resize(chainDim_,DBL_MAX);
+  lower_flag_.Resize(chainDim_,0);
+  upper_flag_.Resize(chainDim_,0);
 
   return;
 }
@@ -325,9 +325,9 @@ void MCMC::parseBinChain(string filename, Array1D<chainstate>& readchain){
     curchain.step=readstep;
     assert(readstep==i);
 
-    curchain.state.Resize(this->chainDim_);
+    curchain.state.Resize(chainDim_);
 
-    fread(curchain.state.GetArrayPointer(),this->chainDim_*sizeof(double),1,fb);
+    fread(curchain.state.GetArrayPointer(),chainDim_*sizeof(double),1,fb);
     fread(&tmp,sizeof(double),1,fb);
     curchain.alfa=tmp;
     fread(&tmp,sizeof(double),1,fb);
@@ -358,7 +358,7 @@ void MCMC::writeFullChainTxt(string filename, Array1D<chainstate> fullchain){
   // Write the full chain
   for(int i=0;i<fullchain.XSize();i++){
     fprintf(f_out, "%d ", fullchain(i).step);
-    for(int ic=0;ic<this->chainDim_;ic++)
+    for(int ic=0;ic<chainDim_;ic++)
       fprintf(f_out, "%24.16lg ", fullchain(i).state(ic));
     fprintf(f_out, "%24.16lg %24.16lg \n", fullchain(i).alfa,fullchain(i).post);
   }
@@ -440,8 +440,8 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   // Set defaults proposal covariance
   if(!propcovInit_){
-    Array1D<double> chsig(this->chainDim_,0.e0);
-    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    Array1D<double> chsig(this -> GetChainDim(),0.e0);
+    for(int i=0;i<this -> GetChainDim();i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
     this->initChainPropCovDiag(chsig);
   }
 
@@ -533,7 +533,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
         printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
         printf("================= Current MAP params: ");
-        for(int ic=0;ic<this->chainDim_;ic++)
+        for(int ic=0;ic<this -> GetChainDim();ic++)
           printf("par(%d)=%f ",ic,modeState_.state(ic));
         cout << endl;
 
@@ -567,8 +567,8 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
 
   // Set defaults proposal covariance
   if(!propcovInit_){
-    Array1D<double> chsig(this->chainDim_,0.e0);
-    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    Array1D<double> chsig(this -> GetChainDim(),0.e0);
+    for(int i=0;i<this -> GetChainDim();i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
     this->initChainPropCovDiag(chsig);
   }
 
@@ -654,7 +654,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
         printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
         printf("================= Current MAP params: ");
-        for(int ic=0;ic<this->chainDim_;ic++)
+        for(int ic=0;ic<this -> GetChainDim();ic++)
           printf("par(%d)=%f ",ic,modeState_.state(ic));
         cout << endl;
 
@@ -688,8 +688,8 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
 
   // Set defaults proposal covariance
   if(!propcovInit_){
-    Array1D<double> chsig(this->chainDim_,0.e0);
-    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    Array1D<double> chsig(this -> GetChainDim(),0.e0);
+    for(int i=0;i<this -> GetChainDim();i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
     this->initChainPropCovDiag(chsig);
   }
 
@@ -771,7 +771,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
         printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
         printf("================= Current MAP params: ");
-        for(int ic=0;ic<this->chainDim_;ic++)
+        for(int ic=0;ic<this -> GetChainDim();ic++)
           printf("par(%d)=%f ",ic,modeState_.state(ic));
         cout << endl;
 
@@ -822,8 +822,8 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   // Set defaults proposal covariance
   if(!propcovInit_){
-    Array1D<double> chsig(this->chainDim_,0.e0);
-    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
+    Array1D<double> chsig(this -> GetChainDim(),0.e0);
+    for(int i=0;i<this -> GetChainDim();i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
     this->initChainPropCovDiag(chsig);
   }
 
@@ -857,14 +857,14 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Convert samples to chain format
-  Array1D<double> sample(this->chainDim_);
+  Array1D<double> sample(this -> GetChainDim());
   // std::cout << "hero1" << std::endl;
 
   for (int i=0; i < ncalls; i++) {
     currState_.step=i+1;
-    for (int j=0; j<this->chainDim_; j++ ){
+    for (int j=0; j<this -> GetChainDim(); j++ ){
       // std::cout << i << " " << j << " " << samples[i*this->chainDim_+j] << std::endl;
-      sample(j) = samples[i*this->chainDim_+j];
+      sample(j) = samples[i*this -> GetChainDim()+j];
     }
     currState_.state=sample;
     currState_.alfa=0.0;
@@ -999,8 +999,8 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
     if (chol_info != 0 ) {
       printf("Error in Cholesky factorization, info=%d, printing the matrix below:\n", chol_info);
 
-      for(int i=0;i<chainDim_;i++){
-        for(int j=0;j<chainDim_;j++)
+      for(int i=0;i< this -> GetChainDim();i++){
+        for(int j=0;j< this -> GetChainDim();j++)
           printf("%lg ",propLCov_(i,j));
         printf("\n");
       }
@@ -1011,8 +1011,8 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
 
   // Candidate state is a multivariate normal sample away from the current state
   m_cand=m_t;
-  Array1D<double> xi(chainDim_,0.e0);
-  for (int i=0; i < chainDim_; i++) {
+  Array1D<double> xi(this -> GetChainDim(),0.e0);
+  for (int i=0; i < this -> GetChainDim(); i++) {
     xi(i)=dsfmt_genrand_nrv(&RandomState);
     double Lnrv=0.0;
     for (int j=0; j < i+1; j++) {
