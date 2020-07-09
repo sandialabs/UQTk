@@ -71,19 +71,19 @@ public:
 class MCMC{
 public:
     // Constructors:
-    
+
     /// \brief Constructor when given a pointer to a logPosterior function and a pointer to additional information (e.g. data)
     MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
     /// \brief Constructor when given a Likelihood Base class object
     //MCMC(LikelihoodBase& L);
     /// \brief Dummy Constructor, used for TMCMC
     MCMC();
-    
+
     // Destructor:
     ~MCMC(){};
-    
+
     // Set or initialization functions:
-    
+
     /// \brief Set the write flag function given an integer
     void setWriteFlag(int I);
     /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
@@ -114,9 +114,9 @@ public:
     /// \brief Set default unbounded domain
     void setDefaultDomain();
 
-    
+
     // Get functions:
-    
+
     /// \brief Returns proposal covariance matrix
     void getChainPropCov(Array2D<double>& propcov);
     /// \brief Get the name of the chain file
@@ -148,9 +148,11 @@ public:
     double getLower(int i);
     /// \brief Get the upper bounds based on an index i
     double getUpper(int i);
-    
+    /// \brief Get if the Chain Dimensions are initialized
+    bool getDimInit();
+
     // Chain Functions:
-    
+
     /// \brief Reset the chain state
     void resetChainState();
     /// \brief Reset to a new chain file
@@ -165,18 +167,18 @@ public:
     void appendMAP();
     /// \brief Get MAP parameters
     double getMode(Array1D<double>& MAPparams);
-    
+
     // Run functions:
-    
+
     /// \brief The optimization routine
     void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart);
     /// \brief Start an MCMC chain with trivial initial condition
     void runChain(int ncalls);
-    
+
     // Evaluation Functions:
-    
+
     /// \brief Check to see if a new mode was found during last call to runChain
     bool newModeFound();
     /// \brief Get the chain's acceptance ratio
@@ -191,7 +193,7 @@ public:
     void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
     /// \brief Check if a point is in the domain
     bool inDomain(Array1D<double>& m);
-    
+
     // Struct for the chain state
     struct chainstate{
       int step;
@@ -199,10 +201,10 @@ public:
       double alfa;
       double post;
     };
-    
+
     dsfmt_t RandomState;
-    
-    
+
+
 private:
     int WRITE_FLAG; // Write Flag
     int FLAG; // Flag
@@ -223,37 +225,37 @@ private:
     Array2D<double> chcov; // Chain proposal distributions (before the adaptivity starts)
     Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for MCMC
-    
+
     /// \brief Pure virtual proposal function that will exist in all instances of the derived classes
     virtual void proposal() = 0;
-    
+
     double probOldNew(Array1D<double>& a, Array1D<double>& b); // Evaluate old|new probabilities and new|old probabilities
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
-    
+
     chainstate currState_; // The current chain state
     chainstate modeState_; // The current MAP state
     Array1D<chainstate> fullChain_; // Array of chain states
-    
+
     void updateMode(); // Function to update the chain mode
-    
+
     void writeChainTxt(string filename); // Write the full chain as a text
     void writeChainBin(string filename); // Write the full chain as a binary file
-    int lastwrite_; // Indicates up to which state 
+    int lastwrite_; // Indicates up to which state
     bool namesPrepend = false;
-    
+
     bool newMode_ = false // Flag to indicate whether a new mode is found during the last call of runChain, initalized as false
-    
+
     double accRatio_ = -1.0; // Acceptance ratio of the chain, initialized as -1.0
-    
+
     // Flags to indicate whether the corresponding parameters are initialized or not
     bool chaindimInit_ = false;
     bool propcovInit_ = false;
     bool methodInit_ = false;
     bool outputInit_ false;
-    
+
     bool gradflag_ = false; // Flag to check whether gradient information is given or not
     bool tensflag_ = false; // Flag that indicates whether tensor information is given or not
-    
+
     bool fcnAcceptFlag_ = false; // Flag that indicates whether the accept function is given or not
     bool fcnRejectFlag_ = false; // Flag that indicates whether the reject function is given or not
 
@@ -277,21 +279,21 @@ private:
 class MALA:public MCMC{
 public:
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
-    
+
     /// \brief Initialize epsilon for MALA
     void initEpsMALA(double eps_mala);
-    
-    
+
+
     // Get functions:
     /// \brief Get epsilon for MALA
     double getEpsMALA():
-    
+
 private:
     double eps_mala; // Epsilon for MALA algorithm
-    
+
     // Flags to see if corresponding values are initalized or not
     bool epsMalaInit_ = false;
-    
+
     double default_eps_mala_ = 0.1; // Default epsilon value for mala
 };
 
@@ -322,16 +324,16 @@ private:
 class AMCMC:public MCMC{
 public:
     // Initialization and set functions for private variables that are necessary to the aMCMC algorithms
-    
+
     /// \brief Initialize adaptivity step parameters for aMCMC
     void initAdaptSteps(int adaptstart,int adaptstep, int adaptend);
     /// \brief Initialize the scaling factor gamma for aMCMC
     void initAMGamma(double gamma);
     /// \brief Initialize the covariance 'nugget' for aMCMC
     void initEpsCov(double eps_cov);
-    
+
     // Get functions for any variables
-    
+
     /// \brief Get function for the size=3 vector (t_start,t_step,t_end) that indicates when the adaptivity starts, how often the proposal covariance is updated and when the adaptivity ends, respectively
     void getAdaptSteps(Array1D<int> adaptstep_);
     /// \brief Get function for the coefficient behind the covariance scaling factor
@@ -340,13 +342,13 @@ public:
     double getEpsCov();
     /// \brief Get function for number of sub steps
     int getNSubSteps();
-    
+
     // Print functions:
-    
+
     /// \brief Function to print the chain information on the screen
     void printChainSetup();
 
-    
+
 private:
     double gamma; // The coefficient behind the covariance scaling factor
     double eps_cov; // The offset epsilon for Cholesky to be computationally feasible
@@ -354,12 +356,12 @@ private:
     Array2D<double> curcov; // Covariance of the chain values so far
     Array1D<double> curmean; // Mean of the chain values sampled so far
     Array1D<int> adaptstep; // a size=3 vector (t_start,t_step,t_end) that indicates when the adaptivity starts, how often the proposal covariance is updated and when the adaptivity ends, respectively
-    
+
     // Flags to indicate if corresponding values are initated or not
     bool adaptstepInit_ = false;
     bool gammaInit_ = false;
     bool epscovInit_ = false;
-    
+
     //Default values for Gamma and EPS_Cov
     double default_gamma_ = 0.01;
     double default_eps_cov_ = 1e-8;
@@ -371,9 +373,9 @@ private:
 ///        Implemented the algorithms for TMCMC
 class TMCMC:public MCMC{
 public:
-    
+
     // Initalization and set functions:
-    
+
     /// \brief Set the default values for TMCMC function (Probably don't need this)
     void initDefaults();
     /// \brief Initialize the number of processes for TMCMC
@@ -392,9 +394,9 @@ public:
     void initTMCMCBasis(bool tmcmc_basis);
     /// \brief Initialize the CATMIPs resampling parameter for TMCMC
     void initTMCMCCATSteps(int tmcmc_CATSteps);
-    
+
     // Get functions:
-    
+
     /// \brief Get the number of processes for TMCMC
     int getTMCMCNprocs();
     /// \brief Get the coefficient behind the covariance scaling
@@ -411,7 +413,7 @@ public:
     bool getTMCMCBasis();
     /// \brief Get the CATMIPs resampling parameter for TMCMC
     int getTMCMCCATSteps();
-    
+
 private:
     int TMCMCNprocs; // The number of processes to use for parallel likelihood evaluation
     double TMCMCGamma; // The coefficient behind the covariance scaling factor
@@ -420,7 +422,7 @@ private:
     bool TMCMCBasis; // Resample according to BASIS and CATMIPs
     int TMCMCCATSteps; // CATMIPs resampling parameter
     std::vector<std::vector<double>> tmcmc_rngs; // The ranges for all samples
-    
+
     // Initalization Flags
     bool tmcmcNprocsInit_ = false;
     bool tmcmcGammaInit_ = false;
@@ -429,7 +431,7 @@ private:
     bool tmcmcBasisInit_ = false;
     bool tmcmcCATStepsInit_ = false;
     bool tmcmcRngsInit_ = false;
-    
+
     // TMCMC Defaults
     int default_tmcmc_nprocs_ = 4;
     double default_tmcmc_gamma_ = -1.0;
@@ -439,4 +441,3 @@ private:
     int default_tmcmc_CATSteps_ = 1;
     std::vector<std::vector<double>> default_tmcmc_rngs_;
 };
-

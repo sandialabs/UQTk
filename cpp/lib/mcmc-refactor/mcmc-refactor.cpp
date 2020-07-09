@@ -285,6 +285,10 @@ double MCMC::getUpper(int i){
   return Upper_(i);
 }
 
+bool MCMC::getDimInit(){
+  return chaindimInit_;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -431,7 +435,7 @@ void MCMC::runOptim(Array1D<double>& start){
 
 void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
-  if(!chaindimInit_){
+  if(!(this -> getDimInit())){
     throw Tantrum((string) "Chain dimensionality needs to be initialized");
   }
 
@@ -558,7 +562,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
 void MALA::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
-  if(!chaindimInit_){
+  if(!(this -> getDimInit())){
     throw Tantrum((string) "Chain dimensionality needs to be initialized");
   }
 
@@ -679,7 +683,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
 
 void SS::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
-  if(!chaindimInit_){
+  if(!(this -> getDimInit())){
     throw Tantrum((string) "Chain dimensionality needs to be initialized");
   }
 
@@ -796,7 +800,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
 
 void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
-  if(!chaindimInit_){
+  if(!(this -> getDimInit())){
     throw Tantrum((string) "Chain dimensionality needs to be initialized");
   }
 
