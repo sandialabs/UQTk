@@ -940,3 +940,6 @@ bool MCMC::inDomain(Array1D<double>& m){
   return true;
 }
 
+void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
+  
+}
