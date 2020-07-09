@@ -1075,8 +1075,28 @@ void MMALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
 void SS::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
 {
   // Single-site proposal
-  m_cand=m_t;
+  m_cand = m_t;
   m_cand(dim) += ( sqrt(chcov(dim,dim))*dsfmt_genrand_nrv(&RandomState) );
 
   return;
+}
+
+double MCMC::probOldNew(Array1D<double>& a, Array1D<double>& b){
+  
+}
+
+double MCMC::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
+
+}
+
+void MCMC::updateMode(){
+
+}
+
+void MCMC::writeChainTxt(string filename){
+
+}
+
+void MCMC::writeChainBin(string filename){
+
 }
