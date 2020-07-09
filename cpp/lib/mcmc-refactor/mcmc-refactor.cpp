@@ -1252,3 +1252,69 @@ int AMCMC::getNSubSteps(){
 int SS::getNSubSteps(){
   return nSubSteps_;
 }
+
+void TMCMC::initTMCMCNprocs(int tmcmc_nprocs){
+  TMCMCNprocs = tmcmc_nprocs;
+  tmcmcNprocsInit_ = true;
+
+  return;
+}
+
+void TMCMC::initTMCMCGamma(double tmcmc_gamma){
+  TMCMCGamma = tmcmc_gamma;
+  tmcmcGammaInit_ = true;
+
+  return;
+}
+
+void TMCMC::initTMCMCCv(double tmcmc_cv){
+  TMCMCCv = tmcmc_cv;
+  tmcmcCvInit_ = true;
+
+  return;
+}
+
+void TMCMC::initTMCMCMFactor(int tmcmc_MFactor){
+  TMCMCMFactor = tmcmc_MFactor;
+  tmcmcMFactorInit_ = true;
+
+  return;
+}
+
+void TMCMC::initTMCMCBasis(bool tmcmc_basis){
+  TMCMCBasis = tmcmc_basis;
+  tmcmcBasisInit_ = true;
+
+  return;
+}
+
+void TMCMC::initTMCMCCATSteps(int tmcmc_CATSteps){
+  tmcmcCATStepsInit_ = true;
+  TMCMCCATSteps = tmcmc_CATSteps;
+
+  return;
+}
+
+int TMCMC::getTMCMCNprocs(){
+  return TMCMCNprocs;
+}
+
+double TMCMC::getTMCMCGamma(){
+  return TMCMCGamma;
+}
+
+double TMCMC::getTMCMCCv(){
+  return TMCMCCv;
+}
+
+int TMCMC::getTMCMCMFactor(){
+  return TMCMCMFactor;
+}
+
+bool TMCMC::getTMCMCBasis(){
+  return TMCMCBasis;
+}
+
+int TMCMC::getTMCMCCATSteps(){
+  return TMCMCCATSteps;
+}
