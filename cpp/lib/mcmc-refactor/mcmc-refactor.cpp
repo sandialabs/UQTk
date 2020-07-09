@@ -983,5 +983,44 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
     FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
   }
 
+  if ( ( t > adaptstep(0) ) && ( (t % adaptstep(1) ) ==  0 ) && t <= adaptstep(2) ){
+    for (int i = 0; i < this -> GetChainDim(); ++i){
+      for(int j = 0; j < this -> GetChainDim(); ++j){
+        propLCov_(i,j) = sigma*(curcov(i,j) + (i==j) * eps_cov ) ;
+      }
+    }
+
+    chcov = propLCov_;
+
+    // Cholsky factorization of the proposal covariance propLCov_, done in-place
+    FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+
+    // Catch the error in Cholesky factorization
+    if (chol_info != 0 ) {
+      printf("Error in Cholesky factorization, info=%d, printing the matrix below:\n", chol_info);
+
+      for(int i=0;i<chainDim_;i++){
+        for(int j=0;j<chainDim_;j++)
+          printf("%lg ",propLCov_(i,j));
+        printf("\n");
+      }
+
+      exit(1);
+    }
+  }
+
+  // Candidate state is a multivariate normal sample away from the current state
+  m_cand=m_t;
+  Array1D<double> xi(chainDim_,0.e0);
+  for (int i=0; i < chainDim_; i++) {
+    xi(i)=dsfmt_genrand_nrv(&RandomState);
+    double Lnrv=0.0;
+    for (int j=0; j < i+1; j++) {
+      Lnrv += propLCov_(i,j)*xi(j);
+    }
+    m_cand(i) += Lnrv;
+  }
+
+  return;
 
 }
