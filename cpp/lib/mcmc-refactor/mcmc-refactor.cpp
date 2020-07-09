@@ -941,5 +941,47 @@ bool MCMC::inDomain(Array1D<double>& m){
 }
 
 void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
-  
+  int chol_info=0;
+  char lu='L';
+
+  // xm[] is the mean of m_t[] over all previous states, X_0,...,X_{t-1}
+  // at this stage, index t, we know X_0,X_1,...,X_{t-1}
+  // and we're seeking to find X_t, the new state of the chain
+  // also evaluate covt, the covariance matrix
+
+  if(t == 1){
+    // at the first iteration, the mean is easy and the sample covariance is 0
+    curmean = m_t;
+    curcov.Resize(this -> GetChainDim(),this -> GetChainDim(),0.e0);
+  }
+  else if(t > 1 && t < adaptstep(2)){
+    for (int i = 0; i < this -> GetChainDim(); ++i) {
+      curmean(i)  = ( curmean(i)*(t-1.) + m_t(i) )/t;
+    }
+
+    for(int i = 0; i < this -> GetChainDim(); ++i){
+      for(int j = 0; j < i - 1; ++j){
+        curcov(i,j) = ( (t-2.)/(t-1.) ) * curcov(i,j) + ( t/((t-1.)*(t-1.)) ) * ( m_t(i) - curmean(i) )*( m_t(j) - curmean(j) );
+      }
+    }
+
+    for (int i = 0; i < this -> GetChainDim(); i++){
+      for(int j = i + 1; j < this -> GetChainDim(); ++j){
+        curcov(i,j) = curcov(j,i);
+      }
+    }
+  }
+
+  // Jump size
+  double sigma = gamma * 2.4 * 2.4 / (double) this -> GetChainDim();
+
+  if(t == 1){
+    propLCov_=chcov;
+
+    // Cholesky factorization of the proposal covariance propLCov_, done in-place
+    // Note, for diagonal covariances, this is an overkill
+    FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+  }
+
+
 }

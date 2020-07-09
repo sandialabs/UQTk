@@ -945,7 +945,7 @@ void MCMC::proposalAdaptive(Array1D<double>& m_t,Array1D<double>& m_cand,int t)
     FTN_NAME(dpotrf)(&lu,&chainDim_, propLCov_.GetArrayPointer(),&chainDim_,&chol_info);
 
   }
-
+  /// \todo This is where I left on the Adaptive Proposal
   if ( ( t > methodinfo_.adaptstep(0) ) && ( (t % methodinfo_.adaptstep(1) ) ==  0 ) && t <= methodinfo_.adaptstep(2) ) {
 
     for (int i=0; i < chainDim_; i++)
