@@ -1196,8 +1196,8 @@ void MCMC::writeChainBin(string filename){
   return;
 }
 
-void MALA::initEpsMALA(double eps_mala){
-  this -> eps_mala = eps_mala;
+void MALA::initEpsMALA(double eps_mala_){
+  eps_mala = eps_mala_;
   epsMalaInit_ = true;
 
   return;
@@ -1205,4 +1205,50 @@ void MALA::initEpsMALA(double eps_mala){
 
 double MALA::getEpsMALA(){
   return eps_mala;
+}
+
+void AMCMC::initAdaptSteps(int adaptstart,int adaptstep, int adaptend){
+  adaptstep(0) = adaptstart;
+  adaptstep(1) = adaptstep;
+  adaptstep(2) = adaptend;
+
+  adaptstepInit_ = true;
+
+  return;
+}
+
+void AMCMC::initAMGamma(double gamma_){
+  gamma = gamma_;
+  gammaInit_ = true;
+
+  return;
+}
+
+void AMCMC::initEpsCov(double eps_cov_){
+  eps_cov = eps_cov_;
+  epscovInit_ = true;
+
+  return;
+}
+
+void AMCMC::getAdaptSteps(Array1D<int> adaptstep_){
+  adaptstep_ = adaptstep;
+
+  return;
+}
+
+double AMCMC::getGamma(){
+  return gamma;
+}
+
+double AMCMC::getEpsCov(){
+  return eps_cov;
+}
+
+int AMCMC::getNSubSteps(){
+  return nSubSteps_;
+}
+
+int SS::getNSubSteps(){
+  return nSubSteps_;
 }

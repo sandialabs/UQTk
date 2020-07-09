@@ -281,7 +281,7 @@ public:
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
 
     /// \brief Initialize epsilon for MALA
-    void initEpsMALA(double eps_mala);
+    void initEpsMALA(double eps_mala_);
 
 
     // Get functions:
@@ -328,9 +328,9 @@ public:
     /// \brief Initialize adaptivity step parameters for aMCMC
     void initAdaptSteps(int adaptstart,int adaptstep, int adaptend);
     /// \brief Initialize the scaling factor gamma for aMCMC
-    void initAMGamma(double gamma);
+    void initAMGamma(double gamma_);
     /// \brief Initialize the covariance 'nugget' for aMCMC
-    void initEpsCov(double eps_cov);
+    void initEpsCov(double eps_cov_);
 
     // Get functions for any variables
 
