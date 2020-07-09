@@ -1081,8 +1081,27 @@ void SS::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
   return;
 }
 
-double MCMC::probOldNew(Array1D<double>& a, Array1D<double>& b){
-  
+double MALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
+  double logprob;
+  Array1D<double> gradb;
+
+  gradlogPosterior_(b,gradb,NULL);
+  double eps2=this->epsMALA_*this->epsMALA_;
+  Array1D<double> bmean(this->chainDim_,0.e0);
+  Array1D<double> diagcov(this->chainDim_,0.e0);
+
+  for (int i=0;i<this -> GetChainDim();i++){
+    bmean(i)=b(i)+eps2*gradb(i)/2.0;
+    diagcov(i)=eps2;
+  }
+
+  logprob=evallogMVN_diag(a,bmean,diagcov);
+
+  return logprob;
+}
+
+double MMALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
+  ///\todo In the original code there is a seperate branch for MMALA in the function probOldNew, but it is blank and has nothing in it. It would need to be defined in this setup.
 }
 
 double MCMC::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
