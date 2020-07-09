@@ -1195,3 +1195,14 @@ void MCMC::writeChainBin(string filename){
 
   return;
 }
+
+void MALA::initEpsMALA(double eps_mala){
+  this -> eps_mala = eps_mala;
+  epsMalaInit_ = true;
+
+  return;
+}
+
+double MALA::getEpsMALA(){
+  return eps_mala;
+}
