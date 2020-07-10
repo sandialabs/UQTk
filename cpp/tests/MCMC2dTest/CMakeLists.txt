@@ -17,7 +17,7 @@ SET(copy_EXE_FILES
 file(COPY ${copy_SCRIPT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${copy_DATA_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable (model.x model.cpp)
+add_executable (model1.x model.cpp)
 
 INSTALL(FILES ${copy_FILES} DESTINATION cpp/tests/MCMC2dTest/)
 
