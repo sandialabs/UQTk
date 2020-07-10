@@ -150,6 +150,8 @@ public:
     double getUpper(int i);
     /// \brief Get if the Chain Dimensions are initialized
     bool getDimInit();
+    /// \brief Get gradient flag
+    bool getGradientFlag();
 
     // Chain Functions:
 

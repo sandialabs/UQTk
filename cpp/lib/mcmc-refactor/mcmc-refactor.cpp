@@ -289,6 +289,10 @@ bool MCMC::getDimInit(){
   return chaindimInit_;
 }
 
+bool MCMC::getGradientFlag(){
+  return gradflag_;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -564,6 +568,11 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
   if(!(this -> getDimInit())){
     throw Tantrum((string) "Chain dimensionality needs to be initialized");
+  }
+
+  // Check mandatory information specific to mala
+  if(!(this -> getGradientFlag())){
+    throw Tantrum((string) "Gradient function needs to be initialized");
   }
 
   // Check what is not initialized and use defaults instead
@@ -1317,4 +1326,43 @@ bool TMCMC::getTMCMCBasis(){
 
 int TMCMC::getTMCMCCATSteps(){
   return TMCMCCATSteps;
+}
+
+double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
+  MCMC* thisClass = (MCMC*) classpointer;
+
+  if(chaindim != thisClass -> GetChainDim()){
+    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
+  }
+
+  Array1D<double> mm(chaindim,0.e0);
+
+  for(int i = 0; i < chaindim; ++i){
+    mm(i) = m[i];
+  }
+
+  return -thisClass -> evalLogPosterior(mm);
+}
+
+void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer){
+  MCMC* thisClass=(MCMC*) classpointer;
+
+  if(chaindim != thisClass->GetChainDim()){
+    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
+  }
+
+  Array1D<double> mm(chaindim,0.e0);
+
+  for(int i = 0; i < chaindim; ++i){
+    mm(i) = m[i];
+  }
+
+  // Call the posterior function and return its result
+  Array1D<double> grads_arr;
+  thisClass->evalGradLogPosterior(mm, grads_arr);
+
+  for(int i=0;i<chaindim;i++)
+    grads[i]=-grads_arr(i);
+
+  return;
 }
