@@ -81,9 +81,9 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain(L);
+	AMCMC mchain(L);
 	mchain.setChainDim(dim);
-	mchain.initMethod("am");
+	//mchain.initMethod("am");
 	mchain.initChainPropCovDiag(g);
 	mchain.setSeed(13);
 	// mchain.printChainSetup();
@@ -129,9 +129,8 @@ int main(int argc, char ** argv){
     *************************************************/
     Array1D<double> g1(dim,.1);
 
-    MCMC mchain1(L);
+    SS mchain1(L);
     mchain1.setChainDim(dim);
-    mchain1.initMethod("ss");
     mchain1.initChainPropCovDiag(g1);
     mchain1.setSeed(13);
     // mchain.printChainSetup();
@@ -184,9 +183,8 @@ int main(int argc, char ** argv){
     /*************************************************
     Initiate and Run TMCMC
     *************************************************/
-    MCMC mchain2;
+    TMCMC mchain2;
     mchain2.setChainDim(dim);
-    mchain2.initMethod("tmcmc");
     mchain2.setSeed(1);
     mchain2.setWriteFlag(1);
     mchain2.initTMCMCCv(0.5);
