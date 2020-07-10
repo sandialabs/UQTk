@@ -37,7 +37,7 @@
 #include "tools.h"
 #include "arrayio.h"
 #include "arraytools.h"
-#include "mcmc-refactor.h"
+#include "mcmc.h"
 #include "tmcmc.h"
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
@@ -1217,9 +1217,9 @@ double MALA::getEpsMALA(){
 }
 
 void AMCMC::initAdaptSteps(int adaptstart,int adaptstep, int adaptend){
-  adaptstep(0) = adaptstart;
-  adaptstep(1) = adaptstep;
-  adaptstep(2) = adaptend;
+  adaptstep.PushBack(adaptstart);
+  adaptstep.PushBack(adaptstep);
+  adaptstep.PushBack(adaptend);
 
   adaptstepInit_ = true;
 
