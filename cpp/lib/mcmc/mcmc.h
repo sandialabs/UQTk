@@ -226,10 +226,7 @@ private:
     void *postInfo_; // Void pointer to the posterior info (data)
     Array2D<double> chcov; // Chain proposal distributions (before the adaptivity starts)
     Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
-    int seed_; // Random seed for MCMC
-
-    /// \brief Pure virtual proposal function that will exist in all instances of the derived classes
-    virtual void proposal() = 0;
+    int seed_; // Random seed for mcmc
 
     virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
@@ -293,6 +290,9 @@ public:
 private:
     double eps_mala; // Epsilon for MALA algorithm
 
+    ///\brief Proposal Function
+    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
+
     // Flags to see if corresponding values are initalized or not
     bool epsMalaInit_ = false;
 
@@ -304,7 +304,12 @@ private:
 /// \class MMALA or Manifold variant of Langevian Sampling
 /// \brief MMALA Markov Chain Monte Carlo class. Derived from the base class for MALA
 ///        Implemented the MMALA algorithms
-class MMALA:public MALA{};
+class MMALA:public MALA{
+
+private:
+  // Proposal function
+  void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
+};
 
 //*****************************************
 
@@ -316,6 +321,9 @@ class SS:public MCMC{
     int getNSubSteps();
 private:
     int nSubSteps_ = this -> GetChainDim();
+
+    // Proposal Function
+    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
 };
 
 //*****************************************
@@ -369,6 +377,9 @@ private:
     //Default values for Gamma and EPS_Cov
     double default_gamma_ = 0.01;
     double default_eps_cov_ = 1e-8;
+
+    // Proposal Function
+    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t);
 };
 
 //*****************************************
