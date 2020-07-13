@@ -228,8 +228,8 @@ private:
     Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for mcmc
 
-    virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
-    double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
+    /*virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
+    double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN*/
 
     chainstate currState_; // The current chain state
     chainstate modeState_; // The current MAP state
@@ -242,7 +242,7 @@ private:
     int lastwrite_; // Indicates up to which state
     bool namesPrepend = false;
 
-    bool newMode_ = false // Flag to indicate whether a new mode is found during the last call of runChain, initalized as false
+    bool newMode_ = false; // Flag to indicate whether a new mode is found during the last call of runChain, initalized as false
 
     double accRatio_ = -1.0; // Acceptance ratio of the chain, initialized as -1.0
 
@@ -285,7 +285,7 @@ public:
 
     // Get functions:
     /// \brief Get epsilon for MALA
-    double getEpsMALA():
+    double getEpsMALA();
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
@@ -297,6 +297,10 @@ private:
     bool epsMalaInit_ = false;
 
     double default_eps_mala_ = 0.1; // Default epsilon value for mala
+
+    double probOldNew(Array1D<double>& a, Array1D<double>& b);
+
+    double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
 };
 
 //*****************************************
@@ -309,6 +313,8 @@ class MMALA:public MALA{
 private:
   // Proposal function
   void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
+
+  double probOldNew(Array1D<double>& a, Array1D<double>& b)
 };
 
 //*****************************************
@@ -323,7 +329,7 @@ private:
     int nSubSteps_ = this -> GetChainDim();
 
     // Proposal Function
-    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
+    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim);
 };
 
 //*****************************************

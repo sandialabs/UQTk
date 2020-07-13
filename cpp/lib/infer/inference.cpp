@@ -131,7 +131,7 @@ void infer_model(Array1D< Array2D<double> (*)(Array2D<double>&, Array2D<double>&
 		chstart(chdim-1)=datanoise_array(0);
 
     // Initialize chain
-    MCMC mchain(LogPosterior,(void *) mypost);
+    AMCMC mchain(LogPosterior,(void *) mypost);
     mchain.setSeed(seed);
     mchain.setChainDim(chdim);
 

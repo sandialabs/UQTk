@@ -191,7 +191,7 @@ void MCMC::setLower(double lower, int i){
 }
 
 void MCMC::setUpper(double upper, int i){
-  Upper_(i) = lower;
+  Upper_(i) = upper;
   upper_flag_(i) = 1;
 
   return;
@@ -278,7 +278,7 @@ int MCMC::getSeed(){
 }
 
 double MCMC::getLower(int i){
-  return Lower_(i)
+  return Lower_(i);
 }
 
 double MCMC::getUpper(int i){
@@ -1095,9 +1095,9 @@ double MALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
   Array1D<double> gradb;
 
   gradlogPosterior_(b,gradb,NULL);
-  double eps2=this->epsMALA_*this->epsMALA_;
-  Array1D<double> bmean(this->chainDim_,0.e0);
-  Array1D<double> diagcov(this->chainDim_,0.e0);
+  double eps2=eps_mala * eps_mala;
+  Array1D<double> bmean(this -> GetChainDim(),0.e0);
+  Array1D<double> diagcov(this -> GetChainDim(),0.e0);
 
   for (int i=0;i<this -> GetChainDim();i++){
     bmean(i)=b(i)+eps2*gradb(i)/2.0;
@@ -1110,10 +1110,11 @@ double MALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
 }
 
 double MMALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
+  return 0.0;
   ///\todo In the original code there is a seperate branch for MMALA in the function probOldNew, but it is blank and has nothing in it. It would need to be defined in this setup.
 }
 
-double MCMC::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
+double MALA::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
   double pi=4.0*atan(1.0);
 
   double value=0.e0;
@@ -1140,7 +1141,7 @@ void MCMC::updateMode(){
 void MCMC::writeChainTxt(string filename){
   // Choose whether write or append
   char* writemode="w";
-  if (lastwrite_>=0 || namePrepend_)
+  if (lastwrite_>=0 || namesPrepend)
     writemode="a";
 
   // Open the text file
@@ -1240,8 +1241,8 @@ void AMCMC::initEpsCov(double eps_cov_){
   return;
 }
 
-void AMCMC::getAdaptSteps(Array1D<int> adaptstep_){
-  adaptstep_ = adaptstep;
+void AMCMC::getAdaptSteps(Array1D<int> adaptstep){
+  this -> adaptstep_ = adaptstep;
 
   return;
 }
