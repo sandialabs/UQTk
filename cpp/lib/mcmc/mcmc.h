@@ -336,6 +336,9 @@ private:
   double probOldNew(Array1D<double>& a, Array1D<double>& b)
 
   void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
+
+  void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *);
+
 };
 
 //*****************************************
