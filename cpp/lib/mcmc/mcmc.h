@@ -87,7 +87,7 @@ public:
     /// \brief Set the write flag function given an integer
     void setWriteFlag(int I);
     /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
-    void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+    //void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
     /// \brief Set the metric tensor function given a pointer to a metric tensor function, a 2D array of doubles, and a pointer to additional information (e.g. data)
     void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
     /// \brief Set the function accept and reject functions given a pointer to the accept and reject functions
@@ -128,7 +128,7 @@ public:
     /// \brief Get all samples of the chain
     void getSamples(Array2D<double>& samples);
     /// \brief Get gradient function by passing in log posterior pointer
-    void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+    //void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
     /// \brief Get metric tensor function
     void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
     /// \brief Get the accept and reject functions given a pointer
@@ -192,7 +192,7 @@ public:
     /// \brief Function to evaluate the log-posterior
     double evalLogPosterior(Array1D<double>& m);
     /// \brief Function to evaluate the gradient of log-posterior
-    void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
+    // void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
     /// \brief Check if a point is in the domain
     bool inDomain(Array1D<double>& m);
 
@@ -219,7 +219,7 @@ private:
     } outputinfo_;
     int chainDim_; // Chain dimensions
     double (*logPosterior_)(Array1D<double>&, void *); // Pointer to log-posterior function
-    void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *); //Pointer to gradient log-posterior function
+    //void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *); //Pointer to gradient log-posterior function
     void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
     void (*fcnAccept_)(void *); // Pointer to accept function
     void (*fcnReject_)(void *); // Pointer to reject function
@@ -252,7 +252,7 @@ private:
     bool methodInit_ = false;
     bool outputInit_ false;
 
-    bool gradflag_ = false; // Flag to check whether gradient information is given or not
+
     bool tensflag_ = false; // Flag that indicates whether tensor information is given or not
 
     bool fcnAcceptFlag_ = false; // Flag that indicates whether the accept function is given or not
@@ -281,11 +281,19 @@ public:
 
     /// \brief Initialize epsilon for MALA
     void initEpsMALA(double eps_mala_);
+    /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
+    void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
 
 
     // Get functions:
     /// \brief Get epsilon for MALA
     double getEpsMALA();
+    /// \brief Get gradient function by passing in log posterior pointer
+    void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+
+    /// \brief Function to evaluate the gradient of log-posterior
+    void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
+
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
@@ -301,6 +309,10 @@ private:
     double probOldNew(Array1D<double>& a, Array1D<double>& b);
 
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
+
+    void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *);
+
+    bool gradflag_ = false; // Flag to check whether gradient information is given or not
 };
 
 //*****************************************

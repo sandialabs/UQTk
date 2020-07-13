@@ -106,7 +106,7 @@ void MCMC::setWriteFlag(int I){
   WRITE_FLAG = I;
 }
 
-void MCMC::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
+void MALA::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
   gradlogPosterior_ = gradlogPosterior;
   gradflag_ = true;
   return;
@@ -237,7 +237,7 @@ void MCMC::getSamples(Array2D<double>& samples){
   getSamples(0,1,samples);
 }
 
-void MCMC::getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
+void MALA::getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
   gradlogPosterior = gradlogPosterior_;
   return;
 }
@@ -928,7 +928,7 @@ double MCMC::evalLogPosterior(Array1D<double>& m){
   return logPosterior_(m,postInfo_);
 }
 
-void MCMC::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
+void MALA::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
   // Evaluate given the log-posterior function defined by the user in the constructor
   gradlogPosterior_(m,grads,postInfo_);
 
@@ -1094,8 +1094,9 @@ double MALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
   double logprob;
   Array1D<double> gradb;
 
+  ///\todo figure out this because the grad log posterior is a private variable in MCMC, might need to put it in the MALA class
   gradlogPosterior_(b,gradb,NULL);
-  double eps2=eps_mala * eps_mala;
+  double eps2 = eps_mala * eps_mala;
   Array1D<double> bmean(this -> GetChainDim(),0.e0);
   Array1D<double> diagcov(this -> GetChainDim(),0.e0);
 
