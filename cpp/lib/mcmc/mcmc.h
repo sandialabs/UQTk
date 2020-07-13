@@ -179,7 +179,7 @@ public:
     /// \brief The optimization routine
     void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
-    virtual void runChain(int ncalls, Array1D<double>& chstart);
+    virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
     void runChain(int ncalls);
 
@@ -298,6 +298,8 @@ public:
     /// \brief Function to evaluate the gradient of log-posterior
     void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
 
+    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
+
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
@@ -353,6 +355,8 @@ private:
 class SS:public MCMC{
     /// \brief Get function for number of sub steps
     int getNSubSteps();
+
+    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
 private:
     int nSubSteps_ = this -> GetChainDim();
 
@@ -393,6 +397,8 @@ public:
 
     /// \brief Function to print the chain information on the screen
     void printChainSetup();
+
+    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
 
 
 private:
@@ -464,6 +470,8 @@ public:
     bool getTMCMCBasis();
     /// \brief Get the CATMIPs resampling parameter for TMCMC
     int getTMCMCCATSteps();
+
+    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
 
 private:
     int TMCMCNprocs; // The number of processes to use for parallel likelihood evaluation
