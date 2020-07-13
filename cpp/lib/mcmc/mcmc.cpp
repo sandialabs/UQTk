@@ -967,7 +967,7 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
     curmean = m_t;
     curcov.Resize(this -> GetChainDim(),this -> GetChainDim(),0.e0);
   }
-  else if(t > 1 && t < adaptstep(2)){
+  else if(t > 1 && t < adaptstep_(2)){
     for (int i = 0; i < this -> GetChainDim(); ++i) {
       curmean(i)  = ( curmean(i)*(t-1.) + m_t(i) )/t;
     }
