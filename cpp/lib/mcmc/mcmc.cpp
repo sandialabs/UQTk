@@ -996,7 +996,7 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
     FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
   }
 
-  if ( ( t > adaptstep(0) ) && ( (t % adaptstep(1) ) ==  0 ) && t <= adaptstep(2) ){
+  if ( ( t > adaptstep_(0) ) && ( (t % adaptstep_(1) ) ==  0 ) && t <= adaptstep_(2) ){
     for (int i = 0; i < this -> GetChainDim(); ++i){
       for(int j = 0; j < this -> GetChainDim(); ++j){
         propLCov_(i,j) = sigma*(curcov(i,j) + (i==j) * eps_cov ) ;
@@ -1044,8 +1044,8 @@ void MALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
   cout << "grads= " << grads(0) << " " << grads(1) << endl;
   m_cand = m_t;
   for (int i=0; i < this -> GetChainDim(); i++) {
-    m_cand(i) += epsMALA_*epsMALA_*grads(i)/2.;
-    m_cand(i) += epsMALA_*dsfmt_genrand_nrv(&RandomState);
+    m_cand(i) += eps_mala * eps_mala *grads(i)/2.;
+    m_cand(i) += eps_mala * dsfmt_genrand_nrv(&RandomState);
   }
 
   return;
@@ -1072,9 +1072,9 @@ void MMALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
     printf("Error in Cholesky factorization, info=%d\n", chol_info);
 
   for (int i=0; i < this -> GetChainDim(); i++) {
-    m_cand(i) += epsMALA_*epsMALA_*mtggrads(i)/2.;
+    m_cand(i) += this -> getEpsMALA() * this -> getEpsMALA() * mtggrads(i)/2.;
     for (int j=0; j < i+1; j++) {
-      m_cand(i) += epsMALA_*sqrt_mtensorinv(i,j)*dsfmt_genrand_nrv(&RandomState);
+      m_cand(i) += this -> getEpsMALA() *sqrt_mtensorinv(i,j)*dsfmt_genrand_nrv(&RandomState);
     }
   }
 

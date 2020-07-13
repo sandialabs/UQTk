@@ -89,7 +89,7 @@ public:
     /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
     //void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
     /// \brief Set the metric tensor function given a pointer to a metric tensor function, a 2D array of doubles, and a pointer to additional information (e.g. data)
-    void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
+    //void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
     /// \brief Set the function accept and reject functions given a pointer to the accept and reject functions
     void setFcnAccept(void (*fcnAccept)(void *));
     void setFcnReject(void (*fcnReject)(void *));
@@ -130,7 +130,7 @@ public:
     /// \brief Get gradient function by passing in log posterior pointer
     //void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
     /// \brief Get metric tensor function
-    void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
+    //void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
     /// \brief Get the accept and reject functions given a pointer
     void getFcnAccept(void (*fcnAccept)(void *));
     void getFcnReject(void (*fcnReject)(void *));
@@ -220,7 +220,7 @@ private:
     int chainDim_; // Chain dimensions
     double (*logPosterior_)(Array1D<double>&, void *); // Pointer to log-posterior function
     //void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *); //Pointer to gradient log-posterior function
-    void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
+    //void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
     void (*fcnAccept_)(void *); // Pointer to accept function
     void (*fcnReject_)(void *); // Pointer to reject function
     void *postInfo_; // Void pointer to the posterior info (data)
@@ -321,12 +321,21 @@ private:
 /// \brief MMALA Markov Chain Monte Carlo class. Derived from the base class for MALA
 ///        Implemented the MMALA algorithms
 class MMALA:public MALA{
+public:
+  /// \brief Get metric tensor function
+  void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
+
+  /// \brief Set the metric tensor function given a pointer to a metric tensor function, a 2D array of doubles, and a pointer to additional information (e.g. data)
+  void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
+
 
 private:
   // Proposal function
   void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
 
   double probOldNew(Array1D<double>& a, Array1D<double>& b)
+
+  void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
 };
 
 //*****************************************
