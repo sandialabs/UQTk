@@ -210,6 +210,8 @@ public:
 
     dsfmt_t RandomState;
 
+    void writeChainTxt(string filename); // Write the full chain as a text
+    void writeChainBin(string filename); // Write the full chain as a binary file
 
 private:
     int WRITE_FLAG; // Write Flag
@@ -241,8 +243,6 @@ private:
 
     void updateMode(); // Function to update the chain mode
 
-    void writeChainTxt(string filename); // Write the full chain as a text
-    void writeChainBin(string filename); // Write the full chain as a binary file
     int lastwrite_; // Indicates up to which state
     bool namesPrepend = false;
 

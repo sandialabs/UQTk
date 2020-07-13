@@ -561,9 +561,11 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
 
         if(!strcmp(output.c_str(),"txt"))
-          this->writeChainTxt(outputinfo_.filename);
+          string name = this -> getFilename();
+          this->writeChainTxt(name);
         else  if(!strcmp(output.c_str(),"bin"))
-          this->writeChainBin(outputinfo_.filename);
+          string name = this -> getFilename();
+          this->writeChainBin(name);
         else
           throw Tantrum((string) "Chain output type is not recognized");
         lastwrite_ = t;
@@ -900,9 +902,11 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   if (WRITE_FLAG == 1){
     // Output to file
     if(!strcmp(output.c_str(),"txt"))
-      this->writeChainTxt(outputinfo_.filename);
+      string name = this -> getFilename();
+      this->writeChainTxt(name);
     else if(!strcmp(output.c_str(),"bin"))
-      this->writeChainBin(outputinfo_.filename);
+      string name = this -> getFilename();
+      this->writeChainBin(name);
     else
       throw Tantrum((string) "Chain output type is not recognized");
   }
