@@ -899,14 +899,16 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   evidFile << std::setprecision(18) << logevid << std::endl;
 
-  if (WRITE_FLAG == 1){
+  if (this -> getWriteFlag() == 1){
     // Output to file
-    if(!strcmp(output.c_str(),"txt"))
+    if(!strcmp(output.c_str(),"txt")){
       string name = this -> getFilename();
       this->writeChainTxt(name);
-    else if(!strcmp(output.c_str(),"bin"))
+    }
+    else if(!strcmp(output.c_str(),"bin")){
       string name = this -> getFilename();
       this->writeChainBin(name);
+    }
     else
       throw Tantrum((string) "Chain output type is not recognized");
   }
