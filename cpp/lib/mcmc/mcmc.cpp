@@ -1206,20 +1206,20 @@ void MCMC::writeChainBin(string filename){
 }
 
 void MALA::initEpsMALA(double eps_mala_){
-  eps_mala = eps_mala_;
+  this -> eps_mala = eps_mala_;
   epsMalaInit_ = true;
 
   return;
 }
 
 double MALA::getEpsMALA(){
-  return eps_mala;
+  return this -> eps_mala;
 }
 
 void AMCMC::initAdaptSteps(int adaptstart,int adaptstep, int adaptend){
-  adaptstep.PushBack(adaptstart);
-  adaptstep.PushBack(adaptstep);
-  adaptstep.PushBack(adaptend);
+  adaptstep_.PushBack(adaptstart);
+  adaptstep_.PushBack(adaptstep);
+  adaptstep_.PushBack(adaptend);
 
   adaptstepInit_ = true;
 
