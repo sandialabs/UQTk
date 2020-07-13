@@ -152,6 +152,8 @@ public:
     bool getDimInit();
     /// \brief Get gradient flag
     bool getGradientFlag();
+    /// \brief Get the propLCov function
+    //void getPropLCov(Array2D<double>& LCov);
 
     // Chain Functions:
 
@@ -225,7 +227,7 @@ private:
     void (*fcnReject_)(void *); // Pointer to reject function
     void *postInfo_; // Void pointer to the posterior info (data)
     Array2D<double> chcov; // Chain proposal distributions (before the adaptivity starts)
-    Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
+    //Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for mcmc
 
     /*virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
@@ -410,6 +412,8 @@ private:
 
     // Proposal Function
     void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t);
+
+    Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
 };
 
 //*****************************************

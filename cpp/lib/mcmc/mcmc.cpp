@@ -293,6 +293,11 @@ bool MCMC::getGradientFlag(){
   return gradflag_;
 }
 
+void MCMC::getPropLCov(Array2D<double>& LCov){
+  LCov = propLCov_;
+  return;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -1066,7 +1071,8 @@ void MMALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
 
   Array2D<double> sqrt_mtensorinv;
   sqrt_mtensorinv = mtensorinv;
-  FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), sqrt_mtensorinv.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+  int chdim = this -> GetChainDim();
+  FTN_NAME(dpotrf)(&lu,&chdim, sqrt_mtensorinv.GetArrayPointer(),&chdim,&chol_info);
   // Catch the error in Cholesky factorization
   if (chol_info != 0 )
     printf("Error in Cholesky factorization, info=%d\n", chol_info);
@@ -1085,6 +1091,11 @@ void SS::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
 {
   // Single-site proposal
   m_cand = m_t;
+
+  Array2D<double> chcov;
+
+  this -> getChainPropCov(chcov);
+
   m_cand(dim) += ( sqrt(chcov(dim,dim))*dsfmt_genrand_nrv(&RandomState) );
 
   return;
@@ -1347,7 +1358,7 @@ double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
 }
 
 void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer){
-  MCMC* thisClass=(MCMC*) classpointer;
+  MALA* thisClass=(MALA*) classpointer;
 
   if(chaindim != thisClass->GetChainDim()){
     throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
