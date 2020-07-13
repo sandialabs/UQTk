@@ -367,7 +367,7 @@ private:
     int nSubSteps_ = 1;
     Array2D<double> curcov; // Covariance of the chain values so far
     Array1D<double> curmean; // Mean of the chain values sampled so far
-    Array1D<int> adaptstep; // a size=3 vector (t_start,t_step,t_end) that indicates when the adaptivity starts, how often the proposal covariance is updated and when the adaptivity ends, respectively
+    Array1D<int> adaptstep_; // a size=3 vector (t_start,t_step,t_end) that indicates when the adaptivity starts, how often the proposal covariance is updated and when the adaptivity ends, respectively
 
     // Flags to indicate if corresponding values are initated or not
     bool adaptstepInit_ = false;

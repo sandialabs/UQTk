@@ -1217,9 +1217,9 @@ double MALA::getEpsMALA(){
 }
 
 void AMCMC::initAdaptSteps(int adaptstart,int adaptstep, int adaptend){
-  adaptstep_.PushBack(adaptstart);
-  adaptstep_.PushBack(adaptstep);
-  adaptstep_.PushBack(adaptend);
+  this -> adaptstep_.PushBack(adaptstart);
+  this -> adaptstep_.PushBack(adaptstep);
+  this -> adaptstep_.PushBack(adaptend);
 
   adaptstepInit_ = true;
 
