@@ -154,6 +154,8 @@ public:
     bool getGradientFlag();
     /// \brief Get the propLCov function
     //void getPropLCov(Array2D<double>& LCov);
+    /// \brief Get post info pointer
+    void getPostInfo(void *post);
 
     // Chain Functions:
 

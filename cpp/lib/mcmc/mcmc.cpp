@@ -298,6 +298,11 @@ void MCMC::getPropLCov(Array2D<double>& LCov){
   return;
 }
 
+void MCMC::getPostInfo(void *post){
+  post = postInfo_;
+  return;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -935,7 +940,9 @@ double MCMC::evalLogPosterior(Array1D<double>& m){
 
 void MALA::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
   // Evaluate given the log-posterior function defined by the user in the constructor
-  gradlogPosterior_(m,grads,postInfo_);
+  void *post;
+  this -> getPostInfo(post);
+  gradlogPosterior_(m,grads,post);
 
   return;
 }
@@ -994,11 +1001,13 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
   double sigma = gamma * 2.4 * 2.4 / (double) this -> GetChainDim();
 
   if(t == 1){
-    propLCov_=chcov;
+    //propLCov_=chcov;
+    this -> getChainPropCov(propLCov_);
 
     // Cholesky factorization of the proposal covariance propLCov_, done in-place
     // Note, for diagonal covariances, this is an overkill
-    FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+    int chdim = this -> GetChainDim();
+    FTN_NAME(dpotrf)(&lu,&chdim, propLCov_.GetArrayPointer(),&chdim,&chol_info);
   }
 
   if ( ( t > adaptstep_(0) ) && ( (t % adaptstep_(1) ) ==  0 ) && t <= adaptstep_(2) ){
@@ -1008,10 +1017,12 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
       }
     }
 
-    chcov = propLCov_;
+    //chcov = propLCov_;
+    this -> initChainPropCov(propLCov_);
 
     // Cholsky factorization of the proposal covariance propLCov_, done in-place
-    FTN_NAME(dpotrf)(&lu,&(this -> GetChainDim()), propLCov_.GetArrayPointer(),&(this -> GetChainDim()),&chol_info);
+    int chdim = this -> GetChainDim();
+    FTN_NAME(dpotrf)(&lu,&chdim, propLCov_.GetArrayPointer(),&chdim,&chol_info);
 
     // Catch the error in Cholesky factorization
     if (chol_info != 0 ) {
