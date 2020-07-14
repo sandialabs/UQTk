@@ -391,7 +391,7 @@ void MCMC::writeFullChainTxt(string filename, Array1D<chainstate> fullchain){
   char* writemode = "w";
 
   // Append if the names already prepended
-  if (namePrepend_)
+  if (namesPrepend)
     writemode = "a";
 
   FILE* f_out;

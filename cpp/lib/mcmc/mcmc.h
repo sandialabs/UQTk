@@ -70,6 +70,14 @@ public:
 ///        Implemented the basic and most general MCMC algorithms
 class MCMC{
 public:
+    // Struct for the chain state
+    struct chainstate{
+      int step;
+      Array1D<double> state;
+      double alfa;
+      double post;
+    };
+
     // Constructors:
 
     /// \brief Constructor when given a pointer to a logPosterior function and a pointer to additional information (e.g. data)
@@ -203,9 +211,9 @@ public:
     /// \brief Function to get the state of the current state
     void getCurrentStateState(Array1D<double>& state);
     /// \brief Function to get the post of the current state
-    double getCurrentStatePost()
+    double getCurrentStatePost();
     /// \brief Function to set the current state's state
-    void setCurrentStateState(Array1D<double>& newState]);
+    void setCurrentStateState(Array1D<double>& newState);
     /// \brief Function to set the current state's state
     void setCurrentStatePost(double newPost);
     /// \brief Function to set the current state's alfa
@@ -245,14 +253,6 @@ public:
     /// \brief Check if a point is in the domain
     bool inDomain(Array1D<double>& m);
 
-    // Struct for the chain state
-    struct chainstate{
-      int step;
-      Array1D<double> state;
-      double alfa;
-      double post;
-    };
-
     dsfmt_t RandomState;
 
     void writeChainTxt(string filename); // Write the full chain as a text
@@ -288,7 +288,7 @@ private:
     chainstate modeState_; // The current MAP state
     Array1D<chainstate> fullChain_; // Array of chain states
 
-    void updateMode(); // Function to update the chain mode
+    //void updateMode(); // Function to update the chain mode
 
     int lastwrite_; // Indicates up to which state
     bool namesPrepend = false;
@@ -325,6 +325,8 @@ private:
 ///        Implemented the HMCMC algorithms, however L = 1 for the MALA class of algorithms
 class MALA:public MCMC{
 public:
+    // Delegating constructor
+    MALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
 
     /// \brief Initialize epsilon for MALA
@@ -374,6 +376,8 @@ private:
 ///        Implemented the MMALA algorithms
 class MMALA:public MALA{
 public:
+  //Delegating constructor
+  //MMALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
   /// \brief Get metric tensor function
   void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
 
@@ -403,6 +407,9 @@ private:
 ///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
 class SS:public MCMC{
 public:
+    // Delegating Constructor
+    SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
 
     int getNSubSteps() override;
@@ -423,7 +430,7 @@ private:
 class AMCMC:public MCMC{
 public:
     ///\brief Delegating Constructor
-    AMCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo);
+    AMCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
     // Initialization and set functions for private variables that are necessary to the aMCMC algorithms
 
     /// \brief Initialize adaptivity step parameters for aMCMC
@@ -481,6 +488,9 @@ private:
 ///        Implemented the algorithms for TMCMC
 class TMCMC:public MCMC{
 public:
+
+    // Delegating constructor
+    TMCMC():MCMC(){};
 
     // Initalization and set functions:
 
