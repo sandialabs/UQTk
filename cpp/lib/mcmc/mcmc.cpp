@@ -51,7 +51,7 @@ MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
 
   // Setting entering the pointers to the Log Posterior function as well as the data function
   postInfo_ = postinfo;
-  logPosterior_ = logPosterior;
+  logPosterior_ = logposterior;
 
   // Initiate the random number generator seed
   // \todo This needs to be made more generic
@@ -112,7 +112,7 @@ void MALA::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double
   return;
 }
 
-void MCMC::setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
+void MMALA::setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
   metricTensor_ = metricTensor;
   tensflag_ = true;
   return;
@@ -242,7 +242,7 @@ void MALA::getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double
   return;
 }
 
-void MCMC::getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
+void MMALA::getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
   metricTensor = metricTensor_;
   return;
 }
@@ -291,11 +291,6 @@ bool MCMC::getDimInit(){
 
 bool MALA::getGradientFlag(){
   return gradflag_;
-}
-
-void MCMC::getPropLCov(Array2D<double>& LCov){
-  LCov = propLCov_;
-  return;
 }
 
 void MCMC::getPostInfo(void *post){
@@ -471,7 +466,45 @@ void MCMC::getModeStateState(Array1D<double>& state){
   return;
 }
 
-/// \todo This might not be a MALA exclusive function but no other method needs a gradient
+void MALA::runOptim(Array1D<double>& start){
+  int n=start.Length();
+  int m=5;
+  Array1D<int> nbd(n,0);
+  Array1D<double> l(n,0.e0);
+  Array1D<double> u(n,0.e0);
+
+  for (int i=0;i<n;i++){
+    if (this -> getLowerFlag(i) && !(this -> getUpperFlag(i))){
+      nbd(i)=1;
+      l(i)=this->getLower(i);
+    }
+    if (this -> getUpperFlag(i) && !(this -> getLowerFlag(i))){
+      nbd(i)=3;
+      u(i)=this->getUpper(i);
+    }
+    if (this -> getUpperFlag(i) && this -> getLowerFlag(i)){
+      nbd(i)=2;
+      l(i)=this->getLower(i);
+      u(i)=this->getUpper(i);
+    }
+  }
+
+  void* info=this;
+
+  if (gradflag_)
+    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,grad_neg_logposteriorproxy,info) ;
+  else
+    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
+
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(start);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(start));
+  this->updateMode();
+
+  return;
+}
+
 void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
@@ -497,10 +530,7 @@ void MCMC::runOptim(Array1D<double>& start){
 
   void* info=this;
 
-  if (gradflag_)
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,grad_neg_logposteriorproxy,info) ;
-  else
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
+  lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
 
   this -> setCurrentStateStep(0);
   this -> setCurrentStateState(start);
@@ -510,6 +540,7 @@ void MCMC::runOptim(Array1D<double>& start){
 
   return;
 }
+
 
 void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // Check mandatory information
@@ -1264,6 +1295,14 @@ bool MCMC::getFcnAcceptInit(){
 
 bool MCMC::getFcnRejectInit(){
   return fcnRejectFlag_;
+}
+
+int MCMC::getLowerFlag(int i){
+  return lower_flag_(i);
+}
+
+int MCMC::getUpperFlag(int i){
+  return upper_flag_(i);
 }
 
 void MCMC::writeChainTxt(string filename){

@@ -171,6 +171,9 @@ public:
     bool getFcnRejectInit();
     /// \brief Get function for number of sub steps
     virtual int getNSubSteps(){return 1;};
+    /// \brief Get function for the lower and upper Flag at index i
+    int getLowerFlag(int i);
+    int getUpperFlag(int i);
 
     // Chain Functions:
 
@@ -215,7 +218,7 @@ public:
     // Run functions:
 
     /// \brief The optimization routine
-    void runOptim(Array1D<double>& start);
+    virtual void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
@@ -298,10 +301,7 @@ private:
     bool chaindimInit_ = false;
     bool propcovInit_ = false;
     bool methodInit_ = false;
-    bool outputInit_ false;
-
-
-    bool tensflag_ = false; // Flag that indicates whether tensor information is given or not
+    bool outputInit_ = false;
 
     bool fcnAcceptFlag_ = false; // Flag that indicates whether the accept function is given or not
     bool fcnRejectFlag_ = false; // Flag that indicates whether the reject function is given or not
@@ -332,17 +332,19 @@ public:
     /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
     void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
 
-
     // Get functions:
     /// \brief Get epsilon for MALA
     double getEpsMALA();
     /// \brief Get gradient function by passing in log posterior pointer
     void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+    bool getGradientFlag();
 
     /// \brief Function to evaluate the gradient of log-posterior
     void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
+
+    virtual void runOptim(Array1D<double>& start) override;
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
@@ -389,6 +391,8 @@ private:
   void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
 
   void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *);
+
+  bool tensflag_ = false; // Flag that indicates whether tensor information is given or not
 
 };
 
