@@ -446,6 +446,11 @@ double MCMC::getModeStatePost(){
   return modeState_.post;
 }
 
+void MCMC::getModeStateState(Array1D<double>& state){
+  state = modeState_.state;
+  return;
+}
+
 void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
@@ -594,19 +599,22 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
     if(WRITE_FLAG == 1){
       // Output to Screen
-      if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
+      if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
         printf("================= Current MAP params: ");
-        for(int ic=0;ic<this -> GetChainDim();ic++)
-          printf("par(%d)=%f ",ic,modeState_.state(ic));
+        Array1D<double> state;
+        this -> getModeStateState(state);
+        for(int ic=0;ic<this -> GetChainDim();ic++){
+          printf("par(%d)=%f ",ic,state(ic));
+        }
         cout << endl;
 
       }
 
         // Output to File
-      if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
+      if( t % this -> getFileFreq() == 0 || t==ncalls){
 
         if(!strcmp(output.c_str(),"txt"))
           string name = this -> getFilename();

@@ -192,7 +192,9 @@ public:
     /// \brief Function to set the current state's alfa
     void setCurrentStateAlfa(double newAlfa);
     /// \brief Function to get the mode state post
-    double getModeStatePost()
+    double getModeStatePost();
+    /// \brief Function to get the mode state post
+    void getModeStateState(Array1D<double>& state);
 
     // Run functions:
 
