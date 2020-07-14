@@ -113,6 +113,10 @@ public:
     void setUpper(double upper, int i);
     /// \brief Set default unbounded domain
     void setDefaultDomain();
+    /// \brief Set last write
+    void setLastWrite(int i);
+    /// \brief Set the acceptance ratio
+    void setAcceptRatio(double d);
 
 
     // Get functions:
@@ -162,10 +166,6 @@ public:
     bool getOutputInit();
     /// \brief Get last write
     int getLastWrite();
-    /// \brief Set last write
-    void setLastWrite(int i);
-    /// \brief Set the acceptance ratio
-    void setAcceptRatio(double d);
     /// \brief Get if the accept and reject functions are initialized
     bool getFcnAcceptInit();
     bool getFcnRejectInit();
@@ -191,9 +191,8 @@ public:
     /// \brief Get the full chain size
     int getFullChainSize();
 
-    // Functions to make sure the code respects the interface for chainstates
-    /// \brief Function to set the current chain state by passing a chainstate
-    void setCurrentState(chainstate& currSt);
+    // Functions to make sure the code respects the interface for chainstates:
+
     /// \brief Function to add the current chain state to the full chain
     void addCurrentState();
     /// \brief Function to set the step of the current state
@@ -216,7 +215,7 @@ public:
     // Run functions:
 
     /// \brief The optimization routine
-    void runOptim(Array1D<double>& start);
+    //void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
@@ -279,8 +278,8 @@ private:
     //Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for mcmc
 
-    /*virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
-    double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN*/
+    virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities
+    //double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
 
     chainstate currState_; // The current chain state
     chainstate modeState_; // The current MAP state
@@ -345,6 +344,8 @@ public:
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
 
+    /// \brief The optimization routine
+    void runOptim(Array1D<double>& start);
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
@@ -358,7 +359,7 @@ private:
 
     double default_eps_mala_ = 0.1; // Default epsilon value for mala
 
-    double probOldNew(Array1D<double>& a, Array1D<double>& b);
+    double probOldNew(Array1D<double>& a, Array1D<double>& b) override;
 
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
 
@@ -386,7 +387,7 @@ private:
   // Proposal function
   void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
 
-  double probOldNew(Array1D<double>& a, Array1D<double>& b);
+  double probOldNew(Array1D<double>& a, Array1D<double>& b) override;
 
   void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
 
@@ -409,6 +410,8 @@ private:
 
     // Proposal Function
     void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim);
+
+    double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
 };
 
 //*****************************************
@@ -467,6 +470,8 @@ private:
     void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t);
 
     Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
+
+    double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
 };
 
 //*****************************************
@@ -545,4 +550,6 @@ private:
     int default_tmcmc_CATSteps_ = 1;
     ///\todo Write in the default TMCMC Rngs Vector
     std::vector<std::vector<double>> default_tmcmc_rngs_;
+
+    double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
 };

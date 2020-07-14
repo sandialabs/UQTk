@@ -444,15 +444,6 @@ int MCMC::getFullChainSize(){
   return this -> fullChain_.XSize();
 }
 
-void MCMC::setCurrentState(chainstate& currSt){
-  currState_.step = currSt.step;
-  currState_.state = currSt.state;
-  currState_.alfa = currSt.alfa;
-  currState_.post = currSt.post;
-
-  return;
-}
-
 void MCMC::addCurrentState(){
   fullChain_.PushBack(currState_);
 }
@@ -471,13 +462,6 @@ double MCMC::getCurrentStatePost(){
   return currState_.post;
 }
 
-void MCMC::updateCurrentState(Array1D<double>& newState,double newPost){
-  currState_.state = newState;
-  currState_.post = newPost;
-
-  return;
-}
-
 double MCMC::getModeStatePost(){
   return modeState_.post;
 }
@@ -487,7 +471,8 @@ void MCMC::getModeStateState(Array1D<double>& state){
   return;
 }
 
-void MCMC::runOptim(Array1D<double>& start){
+/// \todo This might not be a MALA exclusive function but no other method needs a gradient
+void MALA::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
   Array1D<int> nbd(n,0);
@@ -497,16 +482,16 @@ void MCMC::runOptim(Array1D<double>& start){
   for (int i=0;i<n;i++){
     if (lower_flag_(i) && !upper_flag_(i)){
       nbd(i)=1;
-      l(i)=this->Lower_(i);
+      l(i)=this->getLower(i);
     }
     if (upper_flag_(i) && !lower_flag_(i)){
       nbd(i)=3;
-      u(i)=this->Upper_(i);
+      u(i)=this->getUpper(i);
     }
     if (upper_flag_(i) && lower_flag_(i)){
       nbd(i)=2;
-      l(i)=this->Lower_(i);
-      u(i)=this->Upper_(i);
+      l(i)=this->getLower(i);
+      u(i)=this->getUpper(i);
     }
   }
 
@@ -517,10 +502,10 @@ void MCMC::runOptim(Array1D<double>& start){
   else
     lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
 
-  currState_.step=0;
-  currState_.state=start;
-  currState_.alfa=0.0;
-  currState_.post=this->evalLogPosterior(start);
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(start);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(start));
   this->updateMode();
 
   return;
@@ -561,12 +546,10 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   string output = this -> getOutputType();
 
   // Initial chain state
-  chainstate initState;
-  initState.step=0;
-  initState.state=chstart;
-  initState.alfa=0.0;
-  initState.post=this->evalLogPosterior(chstart);
-  this -> setCurrentState(initState);
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(chstart);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(chstart));
   this->updateMode();
   this -> addCurrentState();
   //fullChain_.PushBack(currState_);
@@ -578,7 +561,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // No new mode found yet
   this -> setNewMode(false);
 
-  for(int t = 1; t < nCalls, ++t){
+  for(int t = 1; t < ncalls; ++t){
     this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
@@ -638,7 +621,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),this -> getAcceptRatio());
         printf("================= Current MAP params: ");
         Array1D<double> state;
         this -> getModeStateState(state);
@@ -653,11 +636,9 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       if( t % this -> getFileFreq() == 0 || t==ncalls){
 
         if(!strcmp(output.c_str(),"txt"))
-          string name = this -> getFilename();
-          this->writeChainTxt(name);
+          this->writeChainTxt(this -> getFilename());
         else  if(!strcmp(output.c_str(),"bin"))
-          string name = this -> getFilename();
-          this->writeChainBin(name);
+          this->writeChainBin(this -> getFilename());
         else
           throw Tantrum((string) "Chain output type is not recognized");
         this -> setLastWrite(t);
@@ -703,11 +684,10 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
 
   // Initial chain state
   chainstate state;
-  state.step=0;
-  state.state=chstart;
-  state.alfa=0.0;
-  state.post=this->evalLogPosterior(chstart);
-  this -> setCurrentState(state);
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(chstart);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(chstart));
   this->updateMode();
   this -> addCurrentState();
 
@@ -718,7 +698,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
   // No new mode found yet
   this -> setNewMode(false);
 
-  for(int t = 1; t < nCalls, ++t){
+  for(int t = 1; t < ncalls; ++t){
     this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
@@ -742,8 +722,8 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
       sum_alpha += alpha;
       if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
         nacc++;
-        this -> getCurrentStateState(m_cand);
-        this -> getCurrentStatePost(eval_cand);
+        this -> setCurrentStateState(m_cand);
+        this -> setCurrentStatePost(eval_cand);
         if (this->getFcnAcceptInit())
           this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
@@ -827,12 +807,10 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
   string output = this -> getOutputType();
 
   // Initial chain state
-  chainstate state;
-  state.step=0;
-  state.state=chstart;
-  state.alfa=0.0;
-  state.post=this->evalLogPosterior(chstart);
-  this -> setCurrentState(state);
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(chstart);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(chstart));
   this->updateMode();
   this -> addCurrentState();
 
