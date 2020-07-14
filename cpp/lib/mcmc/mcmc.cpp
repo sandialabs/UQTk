@@ -141,7 +141,7 @@ void MCMC::setChainDim(int chdim){
 void MCMC::initChainPropCov(Array2D<double>& propcov){
   // Initialize the proposal covariance matrix
   chcov=propcov;
-  // Set the initialization flag to True
+  // Set the initialization flag to true
   propcovInit_=true;
 
   return;
@@ -154,7 +154,7 @@ void MCMC::initChainPropCovDiag(Array1D<double>& sig){
     chcov(i,i)=sig(i)*sig(i);
   }
 
-  // Set the initialization flag to True
+  // Set the initialization flag to true
   propcovInit_=true;
 
   return;
@@ -165,7 +165,7 @@ void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_scr
   outputinfo_.filename = file;
   outputinfo_.freq_chainfile = freq_file;
   outputinfo_.freq_outscreen = freq_screen;
-  // Set the initialization flag to True
+  // Set the initialization flag to true
   outputInit_ = true;
 
   return;
@@ -576,7 +576,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   int nall=0;
 
   // No new mode found yet
-  newMode_=false;
+  this -> setNewMode(false);
 
   for(int t = 1; t < nCalls, ++t){
     this -> setCurrentStateStep(t);
@@ -607,11 +607,11 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
         currState_.post = eval_cand;*/
         this -> setCurrentStateState(m_cand);
         this -> setCurrentStatePost(eval_cand);
-        if (this->fcnAcceptFlag_)
+        if (this->getFcnAcceptInit())
           this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
-        if (this->fcnRejectFlag_)
+        if (this->getFcnRejectInit())
           this -> runRejectFcn();
       }
 
@@ -628,7 +628,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
     // \todo maybe only store tmode_(we save the full chain anyway)
     if (this -> getCurrentStatePost() > this -> getModeStatePost()){
       this->updateMode();
-      newMode_=true;
+      this -> setNewMode(true);
     }
 
     this -> setAcceptRatio((double) nacc/nall);
@@ -716,7 +716,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
   int nall=0;
 
   // No new mode found yet
-  newMode_=false;
+  this -> setNewMode(false);
 
   for(int t = 1; t < nCalls, ++t){
     this -> setCurrentStateStep(t);
@@ -744,11 +744,11 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
         nacc++;
         this -> getCurrentStateState(m_cand);
         this -> getCurrentStatePost(eval_cand);
-        if (this->fcnAcceptFlag_)
+        if (this->getFcnAcceptInit())
           this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
-        if (this->fcnRejectFlag_)
+        if (this->getFcnRejectInit())
           this -> runRejectFcn();
       }
 
@@ -765,7 +765,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
     // \todo maybe only store tmode_(we save the full chain anyway)
     if (this -> getCurrentStatePost() > this -> getModeStatePost()){
       this->updateMode();
-      newMode_=true;
+      this -> setNewMode(true);
     }
 
     this -> setAcceptRatio((double) nacc/nall);
@@ -839,9 +839,9 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
   int nall=0;
 
   // No new mode found yet
-  newMode_=false;
+  this -> setNewMode(false);
 
-  for(int t = 1; t < nCalls, ++t){
+  for(int t = 1; t < nCalls; ++t){
     this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
@@ -867,11 +867,11 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
         nacc++;
         this -> setCurrentStateState(m_cand);
         this -> setCurrentStatePost(eval_cand);
-        if (this->fcnAcceptFlag_)
+        if (this->getFcnAcceptInit())
           this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
-        if (this->fcnRejectFlag_)
+        if (this->getFcnRejectInit())
           this -> runRejectFcn();
       }
 
@@ -888,7 +888,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
     // \todo maybe only store tmode_(we save the full chain anyway)
     if (this -> getCurrentStatePost() > this -> getModeStatePost()){
       this->updateMode();
-      newMode_=true;
+      this -> setNewMode(true);
     }
 
     this -> setAcceptRatio((double) nacc/nall);
@@ -1271,6 +1271,19 @@ void MCMC::updateMode(){
   modeState_.alfa=-1.0;
 
   return;
+}
+
+void MCMC::setNewMode(bool value){
+  newMode_ = value;
+  return;
+}
+
+bool MCMC::getFcnAcceptInit(){
+  return fcnAcceptFlag_;
+}
+
+bool MCMC::getFcnRejectInit(){
+  return fcnRejectFlag_;
 }
 
 void MCMC::writeChainTxt(string filename){

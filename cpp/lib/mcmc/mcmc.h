@@ -166,6 +166,9 @@ public:
     void setLastWrite(int i);
     /// \brief Set the acceptance ratio
     void setAcceptRatio(double d);
+    /// \brief Get if the accept and reject functions are initialized
+    bool getFcnAcceptInit();
+    bool getFcnRejectInit();
 
     // Chain Functions:
 
@@ -250,7 +253,8 @@ public:
 
     void writeChainTxt(string filename); // Write the full chain as a text
     void writeChainBin(string filename); // Write the full chain as a binary file
-
+    void updateMode(); // Function to update the chain mode
+    void setNewMode(bool value);
 
 private:
     int WRITE_FLAG; // Write Flag
