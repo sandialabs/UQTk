@@ -564,3 +564,5 @@ private:
 
     double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
 };
+
+#endif /* UQTKMCMC_H_SEEN */
