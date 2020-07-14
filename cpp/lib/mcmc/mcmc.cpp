@@ -320,6 +320,21 @@ void MCMC::setLastWrite(int i){
   return;
 }
 
+void MCMC::setAcceptRatio(double d){
+  accRatio_ = d;
+  return;
+}
+
+void MCMC::runAcceptFcn(){
+  this->fcnAccept_(this->postInfo_);
+  return;
+}
+
+void MCMC::runRejectFcn(){
+  this->fcnReject_(this->postInfo_);
+  return;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -593,11 +608,11 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
         this -> setCurrentStateState(m_cand);
         this -> setCurrentStatePost(eval_cand);
         if (this->fcnAcceptFlag_)
-          this->fcnAccept_(this->postInfo_);
+          this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
         if (this->fcnRejectFlag_)
-          this->fcnReject_(this->postInfo_);
+          this -> runRejectFcn();
       }
 
       ++nall;
@@ -616,7 +631,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       newMode_=true;
     }
 
-    accRatio_ = (double) nacc/nall;
+    this -> setAcceptRatio((double) nacc/nall);
 
     if(WRITE_FLAG == 1){
       // Output to Screen
@@ -730,11 +745,11 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
         this -> getCurrentStateState(m_cand);
         this -> getCurrentStatePost(eval_cand);
         if (this->fcnAcceptFlag_)
-          this->fcnAccept_(this->postInfo_);
+          this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
         if (this->fcnRejectFlag_)
-          this->fcnReject_(this->postInfo_);
+          this -> runRejectFcn();
       }
 
       ++nall;
@@ -753,7 +768,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
       newMode_=true;
     }
 
-    accRatio_ = (double) nacc/nall;
+    this -> setAcceptRatio((double) nacc/nall);
 
     if(WRITE_FLAG == 1){
       // Output to Screen
@@ -853,11 +868,11 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
         this -> setCurrentStateState(m_cand);
         this -> setCurrentStatePost(eval_cand);
         if (this->fcnAcceptFlag_)
-          this->fcnAccept_(this->postInfo_);
+          this -> runAcceptFcn();
       } // If state not accepted, keep previous state as the current state
       else{
         if (this->fcnRejectFlag_)
-          this->fcnReject_(this->postInfo_);
+          this -> runRejectFcn();
       }
 
       ++nall;
@@ -876,17 +891,19 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
       newMode_=true;
     }
 
-    accRatio_ = (double) nacc/nall;
+    this -> setAcceptRatio((double) nacc/nall);
 
-    if(WRITE_FLAG == 1){
+    if(this -> getWriteFlag() == 1){
       // Output to Screen
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),this -> getAcceptRatio());
         printf("================= Current MAP params: ");
+        Array1D<double> state;
+        this -> getModeStateState(state);
         for(int ic=0;ic<this -> GetChainDim();ic++)
-          printf("par(%d)=%f ",ic,modeState_.state(ic));
+          printf("par(%d)=%f ",ic,state(ic));
         cout << endl;
 
       }

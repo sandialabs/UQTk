@@ -163,7 +163,9 @@ public:
     /// \brief Get last write
     int getLastWrite();
     /// \brief Set last write
-    void setLastWrite();
+    void setLastWrite(int i);
+    /// \brief Set the acceptance ratio
+    void setAcceptRatio(double d);
 
     // Chain Functions:
 
@@ -214,6 +216,10 @@ public:
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
     void runChain(int ncalls);
+    /// \brief Function to run the accept function
+    void runAcceptFcn();
+    /// \brief Function to run the reject function
+    void runRejectFcn();
 
     // Evaluation Functions:
 
