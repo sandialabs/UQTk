@@ -215,7 +215,7 @@ public:
     // Run functions:
 
     /// \brief The optimization routine
-    //void runOptim(Array1D<double>& start);
+    void runOptim(Array1D<double>& start);
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
@@ -343,9 +343,6 @@ public:
     void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
-
-    /// \brief The optimization routine
-    void runOptim(Array1D<double>& start);
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
