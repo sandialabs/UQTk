@@ -311,6 +311,15 @@ bool MCMC::getOutputInit(){
   return outputInit_;
 }
 
+int MCMC::getLastWrite(){
+  return lastwrite_;
+}
+
+void MCMC::setLastWrite(int i){
+  lastwrite_ = i;
+  return;
+}
+
 void AMCMC::printChainSetup(){
   if (this->gammaInit_)
     cout << "Gamma            : " << this->gamma << endl;
@@ -414,6 +423,10 @@ void MCMC::appendMAP(){
 double MCMC::getMode(Array1D<double>& MAPparams){
   MAPparams = modeState_.state;
   return modeState_.post;
+}
+
+int MCMC::getFullChainSize(){
+  return this -> fullChain_.XSize();
 }
 
 void MCMC::setCurrentState(chainstate& currSt){
@@ -530,7 +543,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Work variables for simplicity
-  string output=outputinfo_.type;
+  string output = this -> getOutputType();
 
   // Initial chain state
   chainstate initState;
@@ -632,7 +645,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
           this->writeChainBin(name);
         else
           throw Tantrum((string) "Chain output type is not recognized");
-        lastwrite_ = t;
+        this -> setLastWrite(t);
       }
     }
   }
@@ -671,7 +684,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Work variables for simplicity
-  string output=outputinfo_.type;
+  string output = this -> getOutputType();
 
   // Initial chain state
   chainstate state;
@@ -747,7 +760,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
         printf("================= Current MAP params: ");
         for(int ic=0;ic<this -> GetChainDim();ic++)
           printf("par(%d)=%f ",ic,modeState_.state(ic));
@@ -764,7 +777,7 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
           this->writeChainBin(this -> getFilename());
         else
           throw Tantrum((string) "Chain output type is not recognized");
-        lastwrite_ = t;
+        this -> setLastWrite(t);
       }
     }
   }
@@ -794,7 +807,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Work variables for simplicity
-  string output=outputinfo_.type;
+  string output = this -> getOutputType();
 
   // Initial chain state
   chainstate state;
@@ -870,7 +883,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
         printf("================= Current MAP params: ");
         for(int ic=0;ic<this -> GetChainDim();ic++)
           printf("par(%d)=%f ",ic,modeState_.state(ic));
@@ -887,7 +900,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
           this->writeChainBin(this -> getFilename());
         else
           throw Tantrum((string) "Chain output type is not recognized");
-        lastwrite_ = t;
+        this -> setLastWrite(t);
       }
     }
   }
@@ -934,7 +947,7 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   }
 
   // Work variables for simplicity
-  string output=outputinfo_.type;
+  string output = this -> getOutputType();
 
   double logevid;
 
@@ -946,7 +959,7 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // Run TMCMC, get evidence
   logevid = tmcmc(samples, logpriors, logliks,
   tmcmc_gamma, ncalls,
-  seed_, tmcmc_nprocs, this-> GetChainDim(),
+  this -> getSeed(), tmcmc_nprocs, this-> GetChainDim(),
   tmcmc_cv, tmcmc_MFactor,
   tmcmc_basis, tmcmc_CATSteps, this -> getWriteFlag());
 
@@ -1246,7 +1259,7 @@ void MCMC::updateMode(){
 void MCMC::writeChainTxt(string filename){
   // Choose whether write or append
   char* writemode="w";
-  if (lastwrite_>=0 || namesPrepend)
+  if (this -> getLastWrite() >= 0 || namesPrepend)
     writemode="a";
 
   // Open the text file
@@ -1257,7 +1270,7 @@ void MCMC::writeChainTxt(string filename){
   }
 
   // Write to the text file
-  for(int i=this->lastwrite_+1;i<this->fullChain_.XSize();i++){
+  for(int i = this -> getLastWrite() + 1; i<this->fullChain_.XSize();i++){
     fprintf(f_out, "%d ", this->fullChain_(i).step);
     for(int ic=0;ic<this->chainDim_;ic++)
       fprintf(f_out, "%24.16lg ", this->fullChain_(i).state(ic));

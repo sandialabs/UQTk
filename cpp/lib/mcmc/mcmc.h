@@ -160,6 +160,10 @@ public:
     bool getPropCovInit();
     /// \brief Get if the output info has been initialized
     bool getOutputInit();
+    /// \brief Get last write
+    int getLastWrite();
+    /// \brief Set last write
+    void setLastWrite();
 
     // Chain Functions:
 
@@ -177,6 +181,8 @@ public:
     void appendMAP();
     /// \brief Get MAP parameters
     double getMode(Array1D<double>& MAPparams);
+    /// \brief Get the full chain size
+    int getFullChainSize();
 
     // Functions to make sure the code respects the interface for chainstates
     /// \brief Function to set the current chain state by passing a chainstate
