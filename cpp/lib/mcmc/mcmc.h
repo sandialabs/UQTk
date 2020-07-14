@@ -83,7 +83,7 @@ public:
     /// \brief Constructor when given a pointer to a logPosterior function and a pointer to additional information (e.g. data)
     MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
     /// \brief Constructor when given a Likelihood Base class object
-    //MCMC(LikelihoodBase& L);
+    MCMC(LikelihoodBase& L);
     /// \brief Dummy Constructor, used for TMCMC
     MCMC();
 

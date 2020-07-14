@@ -55,5 +55,5 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_C_COMPILER=/opt/local/bin/gcc/            \
       -DCMAKE_CXX_COMPILER=/opt/local/bin/g++/          \
       -DPYTHON_EXECUTABLE:FILEPATH=/opt/local/bin/python/ \
-      -DPyUQTk=ON \
+      -DPyUQTk=OFF \
       $UQTK_SRC_DIR

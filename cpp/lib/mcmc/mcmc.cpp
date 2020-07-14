@@ -67,7 +67,7 @@ MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   return;
 }
 
-/*MCMC::MCMC(LikelihoodBase& L){
+MCMC::MCMC(LikelihoodBase& L){
   FLAG = 1;
   L_ = &L;
 
@@ -83,7 +83,7 @@ MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   WRITE_FLAG = 1;
 
   return;
-}*/
+}
 
 MCMC::MCMC(){
   FLAG = 2;
