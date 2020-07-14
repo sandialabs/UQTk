@@ -169,6 +169,8 @@ public:
     /// \brief Get if the accept and reject functions are initialized
     bool getFcnAcceptInit();
     bool getFcnRejectInit();
+    /// \brief Get function for number of sub steps
+    virtual int getNSubSteps(){return 1;};
 
     // Chain Functions:
 
@@ -346,6 +348,7 @@ public:
 
 private:
     double eps_mala; // Epsilon for MALA algorithm
+    int nSubSteps_ = 1;
 
     ///\brief Proposal Function
     void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
@@ -379,10 +382,11 @@ public:
 
 
 private:
+  int nSubSteps_ = 1;
   // Proposal function
   void proposal(Array1D<double>& m_t,Array1D<double>& m_cand);
 
-  double probOldNew(Array1D<double>& a, Array1D<double>& b)
+  double probOldNew(Array1D<double>& a, Array1D<double>& b);
 
   void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
 
@@ -396,10 +400,10 @@ private:
 /// \brief Single-Site Markov Chain Monte Carlo class. Derived from the base class for MCMC
 ///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
 class SS:public MCMC{
-    /// \brief Get function for number of sub steps
-    int getNSubSteps();
-
+public:
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
+
+    int getNSubSteps() override;
 private:
     int nSubSteps_ = this -> GetChainDim();
 
@@ -433,8 +437,6 @@ public:
     double getGamma();
     /// \brief Get function for the offset epsilon for Cholesky to be computationally feasible
     double getEpsCov();
-    /// \brief Get function for number of sub steps
-    int getNSubSteps();
 
     // Print functions:
 

@@ -161,10 +161,10 @@ void MCMC::initChainPropCovDiag(Array1D<double>& sig){
 }
 
 void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen){
-  outputinfo_.type = outtype;
+  outputinfo_.outtype = outtype;
   outputinfo_.filename = file;
-  outputinfo_.freq_chainfile = freq_file;
-  outputinfo_.freq_outscreen = freq_screen;
+  outputinfo_.freq_file = freq_file;
+  outputinfo_.freq_screen = freq_screen;
   // Set the initialization flag to true
   outputInit_ = true;
 
@@ -252,7 +252,7 @@ void MCMC::getFcnAccept(void (*fcnAccept)(void *)){
   return;
 }
 
-void MCMC::getFcnAccept(void (*fcnReject)(void *)){
+void MCMC::getFcnReject(void (*fcnReject)(void *)){
   fcnReject = fcnReject_;
   return;
 }
@@ -289,7 +289,7 @@ bool MCMC::getDimInit(){
   return chaindimInit_;
 }
 
-bool MCMC::getGradientFlag(){
+bool MALA::getGradientFlag(){
   return gradflag_;
 }
 
@@ -633,7 +633,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
     this -> setAcceptRatio((double) nacc/nall);
 
-    if(WRITE_FLAG == 1){
+    if(this -> getWriteFlag() == 1){
       // Output to Screen
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
@@ -770,15 +770,17 @@ void MALA::runChain(int ncalls, Array1D<double>& chstart){
 
     this -> setAcceptRatio((double) nacc/nall);
 
-    if(WRITE_FLAG == 1){
+    if(this -> getWriteFlag() == 1){
       // Output to Screen
       if( t % this -> getScreenFreq() == 0 || t==ncalls){
 
         printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),accRatio_);
+        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),this -> getAcceptRatio());
         printf("================= Current MAP params: ");
+        Array1D<double> state;
+        this -> getModeStateState(state);
         for(int ic=0;ic<this -> GetChainDim();ic++)
-          printf("par(%d)=%f ",ic,modeState_.state(ic));
+          printf("par(%d)=%f ",ic,state(ic));
         cout << endl;
 
       }
@@ -841,7 +843,7 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
   // No new mode found yet
   this -> setNewMode(false);
 
-  for(int t = 1; t < nCalls; ++t){
+  for(int t = 1; t < ncalls; ++t){
     this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
@@ -975,10 +977,10 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
 
   // Run TMCMC, get evidence
   logevid = tmcmc(samples, logpriors, logliks,
-  tmcmc_gamma, ncalls,
-  this -> getSeed(), tmcmc_nprocs, this-> GetChainDim(),
-  tmcmc_cv, tmcmc_MFactor,
-  tmcmc_basis, tmcmc_CATSteps, this -> getWriteFlag());
+  TMCMCGamma, ncalls,
+  this -> getSeed(), TMCMCNprocs, this-> GetChainDim(),
+  TMCMCCv, TMCMCMFactor,
+  TMCMCBasis, TMCMCCATSteps, this -> getWriteFlag());
 
   // clean up
   std::ifstream moveFile("tmcmc_moveIntermediateFiles.sh");
@@ -1403,12 +1405,8 @@ double AMCMC::getEpsCov(){
   return eps_cov;
 }
 
-int AMCMC::getNSubSteps(){
-  return nSubSteps_;
-}
-
 int SS::getNSubSteps(){
-  return nSubSteps_;
+  return this -> nSubSteps_;
 }
 
 void TMCMC::initTMCMCNprocs(int tmcmc_nprocs){
