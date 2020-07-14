@@ -408,6 +408,44 @@ double MCMC::getMode(Array1D<double>& MAPparams){
   return modeState_.post;
 }
 
+void MCMC::setCurrentState(chainstate& currSt){
+  currState_.step = currSt.step;
+  currState_.state = currSt.state;
+  currState_.alfa = currSt.alfa;
+  currState_.post = currSt.post;
+
+  return;
+}
+
+void MCMC::addCurrentState(){
+  fullChain_.PushBack(currState_);
+}
+
+void MCMC::setCurrentStateStep(int i){
+  currState_.step = i;
+  return;
+}
+
+void MCMC::getCurrentStateState(Array1D<double>& state){
+  state = currState_.state;
+  return;
+}
+
+double MCMC::getCurrentStatePost(){
+  return currState_.post;
+}
+
+void MCMC::updateCurrentState(Array1D<double>& newState,double newPost){
+  currState_.state = newState;
+  currState_.post = newPost;
+
+  return;
+}
+
+double MCMC::getModeStatePost(){
+  return modeState_.post;
+}
+
 void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
@@ -482,12 +520,15 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   string output=outputinfo_.type;
 
   // Initial chain state
-  currState_.step=0;
-  currState_.state=chstart;
-  currState_.alfa=0.0;
-  currState_.post=this->evalLogPosterior(chstart);
+  chainstate initState;
+  initState.step=0;
+  initState.state=chstart;
+  initState.alfa=0.0;
+  initState.post=this->evalLogPosterior(chstart);
+  this -> setCurrentState(initState);
   this->updateMode();
-  fullChain_.PushBack(currState_);
+  this -> addCurrentState();
+  //fullChain_.PushBack(currState_);
 
   // Number of accepted steps and number of all trials
   int nacc=0;
@@ -497,28 +538,34 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   newMode_=false;
 
   for(int t = 1; t < nCalls, ++t){
-    currState_.step=t;
+    this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
     // Create a new proposed sample
     for(int is = 0; is  < nSubSteps_; ++is){
       Array1D<double> m_cand;
-      this -> proposal(currState_.state, m_cand, t);
+      Array1D<double> state;
+      this -> getCurrentStateState(state);
+      this -> proposal(state, m_cand, t);
 
       // Evaluate the posterior at the new sample point
       double eval_cand = this->evalLogPosterior(m_cand);
 
       // Evaluate the new|old and old|new proposals
-      double old_given_new = this->probOldNew(currState_.state, m_cand);
-      double new_given_old = this->probOldNew(m_cand,currState_.state);
+      /// \Note If there is an issue with the code check here first because if proposal changes the current state then the state object might change
+      double old_given_new = this->probOldNew(state, m_cand);
+      double new_given_old = this->probOldNew(m_cand,state);
 
       // Accept or reject it
-      double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
+      double post = this -> getCurrentStatePost();
+      double alpha = exp(eval_cand - post + old_given_new - new_given_old);
       sum_alpha += alpha;
       if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
         nacc++;
-        currState_.state = m_cand;
-        currState_.post = eval_cand;
+        /*currState_.state = m_cand;
+        currState_.post = eval_cand;*/
+        this -> setCurrentStateState(m_cand);
+        this -> setCurrentStatePost(eval_cand);
         if (this->fcnAcceptFlag_)
           this->fcnAccept_(this->postInfo_);
       } // If state not accepted, keep previous state as the current state
@@ -530,14 +577,15 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       ++nall;
     }
 
-    currState_.alfa = sum_alpha / nSubSteps_;
+    double alfa = sum_alpha / nSubSteps_;
+    this -> setCurrentStateAlfa(alfa);
 
     // Append the current state to the array of all past states
-    fullChain_.PushBack(currState_);
+    this -> addCurrentState();
 
     // Keep track of the mode (among the locations visited so far)
     // \todo maybe only store tmode_(we save the full chain anyway)
-    if (currState_.post > modeState_.post){
+    if (this -> getCurrentStatePost() > this -> getModeStatePost()){
       this->updateMode();
       newMode_=true;
     }

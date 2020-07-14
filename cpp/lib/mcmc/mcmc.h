@@ -174,6 +174,26 @@ public:
     /// \brief Get MAP parameters
     double getMode(Array1D<double>& MAPparams);
 
+    // Functions to make sure the code respects the interface for chainstates
+    /// \brief Function to set the current chain state by passing a chainstate
+    void setCurrentState(chainstate& currSt);
+    /// \brief Function to add the current chain state to the full chain
+    void addCurrentState();
+    /// \brief Function to set the step of the current state
+    void setCurrentStateStep(int i);
+    /// \brief Function to get the state of the current state
+    void getCurrentStateState(Array1D<double>& state);
+    /// \brief Function to get the post of the current state
+    double getCurrentStatePost()
+    /// \brief Function to set the current state's state
+    void setCurrentStateState(Array1D<double>& newState]);
+    /// \brief Function to set the current state's state
+    void setCurrentStatePost(double newPost);
+    /// \brief Function to set the current state's alfa
+    void setCurrentStateAlfa(double newAlfa);
+    /// \brief Function to get the mode state post
+    double getModeStatePost()
+
     // Run functions:
 
     /// \brief The optimization routine
@@ -212,6 +232,7 @@ public:
 
     void writeChainTxt(string filename); // Write the full chain as a text
     void writeChainBin(string filename); // Write the full chain as a binary file
+
 
 private:
     int WRITE_FLAG; // Write Flag
