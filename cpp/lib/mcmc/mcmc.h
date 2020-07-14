@@ -156,6 +156,10 @@ public:
     //void getPropLCov(Array2D<double>& LCov);
     /// \brief Get post info pointer
     void getPostInfo(void *post);
+    /// \brief Get if the Prop Cov has been initialized
+    bool getPropCovInit();
+    /// \brief Get if the output info has been initialized
+    bool getOutputInit();
 
     // Chain Functions:
 
