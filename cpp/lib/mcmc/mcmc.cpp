@@ -472,7 +472,7 @@ void MCMC::getModeStateState(Array1D<double>& state){
 }
 
 /// \todo This might not be a MALA exclusive function but no other method needs a gradient
-void MALA::runOptim(Array1D<double>& start){
+void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
   Array1D<int> nbd(n,0);
