@@ -1033,8 +1033,26 @@ void TMCMC::runChain(int ncalls, Array1D<double>& chstart){
   evidFile.close();
 }
 
-void MCMC::runChain(int ncalls){
-  Array1D<double> chstart(chainDim_,0.e0);
+void AMCMC::runChain(int ncalls){
+  Array1D<double> chstart(this -> getChainDim(),0.e0);
+
+  this->runChain(ncalls, chstart);
+}
+
+void TMCMC::runChain(int ncalls){
+  Array1D<double> chstart(this -> getChainDim(),0.e0);
+
+  this->runChain(ncalls, chstart);
+}
+
+void SS::runChain(int ncalls){
+  Array1D<double> chstart(this -> getChainDim(),0.e0);
+
+  this->runChain(ncalls, chstart);
+}
+
+void MALA::runChain(int ncalls){
+  Array1D<double> chstart(this -> getChainDim(),0.e0);
 
   this->runChain(ncalls, chstart);
 }

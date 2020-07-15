@@ -230,7 +230,7 @@ public:
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
-    void runChain(int ncalls);
+    virtual void runChain(int ncalls);
     /// \brief Function to run the accept function
     void runAcceptFcn();
     /// \brief Function to run the reject function
@@ -345,7 +345,7 @@ public:
     void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
-
+    virtual void runChain(int ncalls) override;
     virtual void runOptim(Array1D<double>& start) override;
 
 private:
@@ -411,7 +411,7 @@ public:
     SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
-
+    virtual void runChain(int ncalls) override;
     int getNSubSteps() override;
 private:
     int nSubSteps_ = this -> GetChainDim();
@@ -455,7 +455,7 @@ public:
     void printChainSetup();
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
-
+    virtual void runChain(int ncalls) override;
 
 private:
     double gamma; // The coefficient behind the covariance scaling factor
@@ -533,6 +533,7 @@ public:
     int getTMCMCCATSteps();
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
+    virtual void runChain(int ncalls) override;
 
 private:
     int TMCMCNprocs; // The number of processes to use for parallel likelihood evaluation
