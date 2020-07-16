@@ -327,6 +327,9 @@ class MALA:public MCMC{
 public:
     // Delegating constructor
     MALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+    MALA(LikelihoodBase& L):MCMC(L){};
+
+
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
 
     /// \brief Initialize epsilon for MALA
@@ -407,8 +410,9 @@ private:
 ///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
 class SS:public MCMC{
 public:
-    // Delegating Constructor
+    // Delegating Constructors
     SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+    SS(LikelihoodBase& L):MCMC(L){};
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
     virtual void runChain(int ncalls) override;
@@ -431,6 +435,9 @@ class AMCMC:public MCMC{
 public:
     ///\brief Delegating Constructor
     AMCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+    AMCMC(LikelihoodBase& L):MCMC(L){};
+
+
     // Initialization and set functions for private variables that are necessary to the aMCMC algorithms
 
     /// \brief Initialize adaptivity step parameters for aMCMC
