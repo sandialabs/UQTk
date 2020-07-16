@@ -230,7 +230,7 @@ public:
     /// \brief The actual function that generates MCMC
     virtual void runChain(int ncalls, Array1D<double>& chstart) = 0;
     /// \brief Start an MCMC chain with trivial initial condition
-    virtual void runChain(int ncalls);
+    virtual void runChain(int ncalls) = 0;
     /// \brief Function to run the accept function
     void runAcceptFcn();
     /// \brief Function to run the reject function
