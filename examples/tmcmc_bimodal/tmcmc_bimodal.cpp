@@ -53,9 +53,8 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain;
+	TMCMC mchain;
 	mchain.setChainDim(dim);
-	mchain.initMethod("tmcmc");
 	mchain.setSeed(1);
 	mchain.setWriteFlag(1); 
     mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
