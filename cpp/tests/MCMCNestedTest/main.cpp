@@ -39,30 +39,30 @@
 using namespace std;
 
 /*************************************************
-Define Likelihood functions
+Define LogPosterior functions
 *************************************************/
-class Likelihood: public LikelihoodBase{
+class LogPosterior: public LogPosteriorBase{
 public:
-	Likelihood(){};
-	~Likelihood(){};
+	LogPosterior(){};
+	~LogPosterior(){};
 	double eval(Array1D<double>&);
 };
-class Likelihood_in: public LikelihoodBase{
+class LogPosterior_in: public LogPosteriorBase{
 public:
-	Likelihood_in(){};
-	~Likelihood_in(){};
+	LogPosterior_in(){};
+	~LogPosterior_in(){};
 	double eval(Array1D<double>&);
 };
-class Likelihood2: public LikelihoodBase{
+class LogPosterior2: public LogPosteriorBase{
 public:
-	Likelihood2(){};
-	~Likelihood2(){};
+	LogPosterior2(){};
+	~LogPosterior2(){};
 	double eval(Array1D<double>&);
 };
 
 // Rosnebrock function
-double Likelihood::eval(Array1D<double>& x){
-	Likelihood_in L;
+double LogPosterior::eval(Array1D<double>& x){
+	LogPosterior_in L;
 	int dim = 2;
 	int nCalls = 100;
 	Array1D<double> g(dim,.1);
@@ -81,12 +81,12 @@ double Likelihood::eval(Array1D<double>& x){
   return lnpost;
 }
 // Rosnebrock function
-double Likelihood_in::eval(Array1D<double>& x){
+double LogPosterior_in::eval(Array1D<double>& x){
 	double lnpost = -.5*(x(0)*x(0)/.01 + x(1)*x(1)/.64);
   return lnpost;
 }
 // Rosnebrock function
-double Likelihood2::eval(Array1D<double>& x){
+double LogPosterior2::eval(Array1D<double>& x){
 	double lnpost = -(1-x(0))*(1-x(0)) - 100*(x(1) - x(0)*x(0))*(x(1) - x(0)*x(0));
   return lnpost;
 }
@@ -98,7 +98,7 @@ int main(int argc, char ** argv){
 
 	/*************************************************
 	Initial start for MCMC chain
-	and set Likelihood function
+	and set LogPosterior function
 	*************************************************/
 	int dim = 2;
 	int nCalls = 100;
@@ -107,7 +107,7 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run MCMC chain
 	*************************************************/
-	Likelihood L;
+	LogPosterior L;
 	Array1D<double> g(dim,.1);
 	AMCMC mchain(L);
 	mchain.setChainDim(dim);
@@ -123,7 +123,7 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run MCMC chain
 	*************************************************/
-	Likelihood2 L2;
+	LogPosterior2 L2;
 	Array1D<double> g2(dim,.1);
 	AMCMC mchain2(L2);
 	mchain2.setChainDim(dim);
