@@ -39,17 +39,17 @@
 using namespace std;
 
 /*************************************************
-Define Likelihood function
+Define LogPosterior function
 *************************************************/
-class LogPosterior: public LikelihoodBase{
+class LogPosterior: public LogPosteriorBase{
 public:
-	Likelihood(){};
-	~Likelihood(){};
+	LogPosterior(){};
+	~LogPosterior(){};
 	double eval(Array1D<double>&);
 };
 
 // Rosnebrock function
-double Likelihood::eval(Array1D<double>& x){
+double LogPosterior::eval(Array1D<double>& x){
 	 double lnpost = -(1-x(0))*(1-x(0)) - 100*(x(1) - x(0)*x(0))*(x(1) - x(0)*x(0));
 	// double lnpost = -.5*(x(0)*x(0)/.01 + x(1)*x(1)/.64);
 	// // 	'''
@@ -68,13 +68,13 @@ int main(int argc, char ** argv){
 
 	/*************************************************
 	Initial start for MCMC chain
-	and set Likelihood function
+	and set LogPosterior function
 	*************************************************/
 	int dim = 2;
 	int nCalls = 100;
 	Array1D<double> x(dim,0);
 
-	Likelihood L;
+	LogPosterior L;
 	cout << "L.eval(x) = " << L.eval(x) << endl;
 
 	/*************************************************
