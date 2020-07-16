@@ -453,12 +453,27 @@ void MCMC::getCurrentStateState(Array1D<double>& state){
   return;
 }
 
+void MCMC::setCurrentStateState(Array1D<double>& newState){
+  currState_.state = newState;
+  return;
+}
+
 double MCMC::getCurrentStatePost(){
   return currState_.post;
 }
 
+void MCMC::setCurrentStatePost(double newPost){
+  currState_.post = newPost;
+  return;
+}
+
 double MCMC::getModeStatePost(){
   return modeState_.post;
+}
+
+void MCMC::setCurrentStateAlfa(double newAlfa){
+  currState_.alfa = newAlfa;
+  return;
 }
 
 void MCMC::getModeStateState(Array1D<double>& state){
