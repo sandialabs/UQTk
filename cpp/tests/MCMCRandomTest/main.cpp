@@ -82,9 +82,8 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain(L);
+	AMCMC mchain(L);
 	mchain.setChainDim(dim);
-	mchain.initMethod("am");
 	mchain.initChainPropCovDiag(g);
 	mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
 	mchain.setWriteFlag(0);
@@ -97,9 +96,8 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run a second MCMC chain
 	*************************************************/
-	MCMC mchain2(L);
+	AMCMC mchain2(L);
 	mchain2.setChainDim(dim);
-	mchain2.initMethod("am");
 	mchain2.initChainPropCovDiag(g);
 	// mchain2.setSeed(130);
 	mchain2.setWriteFlag(0);
