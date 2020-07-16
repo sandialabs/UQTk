@@ -39,23 +39,23 @@
 using namespace std;
 
 /*************************************************
-Define Likelihood function
+Define LogPosterior function
 *************************************************/
-class Likelihood: public LikelihoodBase{
+class LogPosterior: public LogPosteriorBase{
 public:
-	Likelihood(){};
-	~Likelihood(){};
+	LogPosterior(){};
+	~LogPosterior(){};
 	double eval(Array1D<double>&);
 };
 
 // // Rosnebrock function
-// double Likelihood::eval(Array1D<double>& x){
+// double LogPosterior::eval(Array1D<double>& x){
 //   double lnpost = -(1-x(0))*(1-x(0)) - 100*(x(1) - x(0)*x(0))*(x(1) - x(0)*x(0));
 //   return lnpost;
 // }
 
 // Simple 2d Gaussian with zero mean and (.1,.8) variance
-double Likelihood::eval(Array1D<double>& x){
+double LogPosterior::eval(Array1D<double>& x){
 	double lnpost = -.5*(x(0)*x(0)/.01 + x(1)*x(1)/.64);
 	return lnpost;
 }
@@ -67,13 +67,13 @@ int main(int argc, char ** argv){
 
 /*************************************************
 	Initial start for MCMC chain
-	and set Likelihood function
+	and set LogPosterior function
 	*************************************************/
 	int dim = 2;
 	int nCalls = 500000;
 	Array1D<double> x(dim,0);
 
-	Likelihood L;
+	LogPosterior L;
 	// cout << "L.eval(x) = " << L.eval(x) << endl;
 
 	/*************************************************
@@ -123,7 +123,7 @@ int main(int argc, char ** argv){
 	// check variance
 	assert(fabs((sqrt(var_x1) - .1)) < .01);
 	assert(fabs((sqrt(var_x2) - .8)) < .01);
-    
+
     /*************************************************
     Initiate and Run MCMC-SS chain
     *************************************************/
@@ -169,11 +169,11 @@ int main(int argc, char ** argv){
     // check variance
     assert(fabs((sqrt(var_x3) - .1)) < .01);
     assert(fabs((sqrt(var_x4) - .8)) < .01);
-    
+
     /*************************************************
      TMCMC 2d Test
      ***********************************************/
-    
+
 	/*************************************************
     Dimensionality and number of samples requested
     *************************************************/
