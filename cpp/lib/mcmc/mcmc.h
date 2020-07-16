@@ -42,12 +42,12 @@
 
 using namespace std; // needed for python string conversion
 
-class LikelihoodBase{
+class LogPosteriorBase{
 public:
   virtual double eval(Array1D<double>&){
       return 3.14;
   };
-  virtual ~LikelihoodBase(){};
+  virtual ~LogPosteriorBase(){};
 };
 
 class base{

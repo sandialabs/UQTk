@@ -41,7 +41,7 @@ using namespace std;
 /*************************************************
 Define Likelihood function
 *************************************************/
-class Likelihood: public LikelihoodBase{
+class LogPosterior: public LikelihoodBase{
 public:
 	Likelihood(){};
 	~Likelihood(){};
