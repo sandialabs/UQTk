@@ -82,8 +82,8 @@ public:
 
     /// \brief Constructor when given a pointer to a logPosterior function and a pointer to additional information (e.g. data)
     MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo);
-    /// \brief Constructor when given a Likelihood Base class object
-    MCMC(LikelihoodBase& L);
+    /// \brief Constructor when given a LogPosterior Base class object
+    MCMC(LogPosteriorBase& L);
     /// \brief Dummy Constructor, used for TMCMC
     MCMC();
 
@@ -263,7 +263,7 @@ public:
 private:
     int WRITE_FLAG; // Write Flag
     int FLAG; // Flag
-    LikelihoodBase* L_; // Pointer to the Likelihood base passed in through contstructor
+    LogPosteriorBase* L_; // Pointer to the LogPosterior base passed in through contstructor
     struct outputInfo{
         string outtype;
         string filename;
@@ -327,7 +327,7 @@ class MALA:public MCMC{
 public:
     // Delegating constructor
     MALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
-    MALA(LikelihoodBase& L):MCMC(L){};
+    MALA(LogPosteriorBase& L):MCMC(L){};
 
 
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
@@ -412,7 +412,7 @@ class SS:public MCMC{
 public:
     // Delegating Constructors
     SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
-    SS(LikelihoodBase& L):MCMC(L){};
+    SS(LogPosteriorBase& L):MCMC(L){};
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
     virtual void runChain(int ncalls) override;
@@ -435,7 +435,7 @@ class AMCMC:public MCMC{
 public:
     ///\brief Delegating Constructor
     AMCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
-    AMCMC(LikelihoodBase& L):MCMC(L){};
+    AMCMC(LogPosteriorBase& L):MCMC(L){};
 
 
     // Initialization and set functions for private variables that are necessary to the aMCMC algorithms
