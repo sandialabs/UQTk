@@ -61,7 +61,7 @@ add_definitions(-w)
 
 add_subdirectory (dep     )
 add_subdirectory (cpp     )
-#[[add_subdirectory (examples)]]
+add_subdirectory (examples)
 add_subdirectory (PyUQTk  )
 add_subdirectory (doc  )
 

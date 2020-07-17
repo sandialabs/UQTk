@@ -203,7 +203,7 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
 
 
 
-void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>& chstart, int* nsteps, Array1D<int>& chainParamInd, Array1D<string>& priortype, Array1D<double>& priorparam1, Array1D<double>& priorparam2)
+void readXMLChainInput(RefPtr<XMLElement> xmlTree,AMCMC* pmchain, Array1D<double>& chstart, int* nsteps, Array1D<int>& chainParamInd, Array1D<string>& priortype, Array1D<double>& priorparam1, Array1D<double>& priorparam2)
 {
 
   // Select the tree element with the input parameters for this run
@@ -279,7 +279,7 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
   int freq_chainfile=pt3->attributes()->get_int("freq",1000);
 
   pmchain->setChainDim(chdim);
-  pmchain->initMethod(method);
+  //pmchain->initMethod(method);
 
   // \todo Need to set checks since the next three lines only useful for method=am
   pmchain->initAdaptSteps(adaptstart,adaptstep,adaptend);

@@ -59,7 +59,8 @@ int main(int argc, char *argv[])
   // Array to hold the starting values of the chain
   Array1D<double> chstart;
   // Define the MCMC object
-  MCMC mchain(LogPosterior,(void*) pinfo);
+    ///\note It appears based on the .xml file that the MCMC passed in is of the AMCMC variety
+  AMCMC mchain(LogPosterior,(void*) pinfo);
   // Read the xml file for MCMC-specific information
   readXMLChainInput(xmlTree,&mchain, chstart, &nsteps,pinfo->chainParamInd,pinfo->priortype,pinfo->priorparam1,pinfo->priorparam2);
 
