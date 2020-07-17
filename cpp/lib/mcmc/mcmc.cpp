@@ -579,6 +579,7 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
     this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
   }
 
+  // Set the default parameters for aMCMC
   if(!adaptstepInit_){
     this->initAdaptSteps((int) ncalls/10,10,ncalls);
   }
@@ -608,12 +609,12 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
   // No new mode found yet
   this -> setNewMode(false);
 
-  for(int t = 1; t < ncalls; ++t){
+  for(int t = 1; t <= ncalls; ++t){
     this -> setCurrentStateStep(t);
     double sum_alpha=0.0;
 
     // Create a new proposed sample
-    for(int is = 0; is  < nSubSteps_; ++is){
+    for(int is = 0; is < nSubSteps_; ++is){
       Array1D<double> m_cand;
       Array1D<double> state;
       this -> getCurrentStateState(state);
@@ -623,9 +624,10 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       double eval_cand = this->evalLogPosterior(m_cand);
 
       // Evaluate the new|old and old|new proposals
-      /// \Note If there is an issue with the code check here first because if proposal changes the current state then the state object might change
-      double old_given_new = this->probOldNew(state, m_cand);
-      double new_given_old = this->probOldNew(m_cand,state);
+      Array1D<double> state1;
+      this -> getCurrentStateState(state1);
+      double old_given_new = this->probOldNew(state1, m_cand);
+      double new_given_old = this->probOldNew(m_cand,state1);
 
       // Accept or reject it
       double post = this -> getCurrentStatePost();
@@ -633,8 +635,6 @@ void AMCMC::runChain(int ncalls, Array1D<double>& chstart){
       sum_alpha += alpha;
       if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
         nacc++;
-        /*currState_.state = m_cand;
-        currState_.post = eval_cand;*/
         this -> setCurrentStateState(m_cand);
         this -> setCurrentStatePost(eval_cand);
         if (this->getFcnAcceptInit())
@@ -1147,7 +1147,7 @@ void AMCMC::proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int t){
     }
 
     for(int i = 0; i < this -> GetChainDim(); ++i){
-      for(int j = 0; j < i - 1; ++j){
+      for(int j = 0; j < i + 1; ++j){
         curcov(i,j) = ( (t-2.)/(t-1.) ) * curcov(i,j) + ( t/((t-1.)*(t-1.)) ) * ( m_t(i) - curmean(i) )*( m_t(j) - curmean(j) );
       }
     }
