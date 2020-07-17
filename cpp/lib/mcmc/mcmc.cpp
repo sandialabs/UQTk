@@ -135,6 +135,7 @@ void MCMC::setFcnReject(void (*fcnReject)(void *))
 void MCMC::setChainDim(int chdim){
   chainDim_ = chdim;
   chaindimInit_ = true;
+  this -> setDefaultDomain();
   return;
 }
 
