@@ -1091,7 +1091,12 @@ int MCMC::GetChainDim() const{
 }
 
 double MCMC::evalLogPosterior(Array1D<double>& m){
-  return logPosterior_(m,postInfo_);
+  if (FLAG == 0){
+    return logPosterior_(m,postInfo_);
+  }
+  if (FLAG == 1){
+     return L_->eval(m);
+  }
 }
 
 void MALA::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
