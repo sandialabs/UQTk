@@ -37,9 +37,9 @@ do
   rm -rf tmcmc_process_${k}
   mkdir tmcmc_process_${k}
   cd tmcmc_process_${k}
-  cp ../model.x .
+  cp ../model1.x .
   cp ../mcmcstates_${k}.dat mcmcstates_local.dat
-  ./model.x -p &
+  ./model1.x -p &
   cd ..
 done
 

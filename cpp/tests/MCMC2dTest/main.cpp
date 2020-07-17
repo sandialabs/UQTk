@@ -91,7 +91,7 @@ int main(int argc, char ** argv){
 	mchain.setWriteFlag(0);
 	mchain.runChain(nCalls,x);
 
-	// Get chain states
+    // Get chain states
 	Array1D<MCMC::chainstate> chainstates;
 	mchain.getFullChain(chainstates);
 
