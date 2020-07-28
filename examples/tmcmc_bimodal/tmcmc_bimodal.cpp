@@ -30,12 +30,13 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "mcmc.h"
+#include "tmcmcClass.h"
 #include "quad.h"
 #include "dsfmt_add.h"
 #include "arrayio.h"
 #include "arraytools.h"
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Begin main code
@@ -45,7 +46,7 @@ int main(int argc, char ** argv){
 /*************************************************
 	Dimensionality and number of samples requested
 	*************************************************/
-	int dim = 3; 
+	int dim = 3;
 	int nCalls = 5000;
 
 	/*************************************************
@@ -56,7 +57,7 @@ int main(int argc, char ** argv){
 	TMCMC mchain;
 	mchain.setChainDim(dim);
 	mchain.setSeed(1);
-	mchain.setWriteFlag(1); 
+	mchain.setWriteFlag(1);
     mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
     mchain.initTMCMCNprocs(4);
     mchain.initTMCMCCv(0.1);

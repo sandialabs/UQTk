@@ -30,6 +30,7 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "mcmc.h"
+#include "tmcmcClass.h"
 #include "quad.h"
 #include "dsfmt_add.h"
 #include "arrayio.h"
