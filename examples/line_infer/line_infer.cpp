@@ -29,6 +29,7 @@
 #include <math.h>
 #include "tools.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "arrayio.h"
 #include "XMLUtils.h"
 #include "ss.h"
