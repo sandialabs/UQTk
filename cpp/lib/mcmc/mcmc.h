@@ -405,29 +405,6 @@ private:
 
 //*****************************************
 
-/// \class Single-Site MCMC
-/// \brief Single-Site Markov Chain Monte Carlo class. Derived from the base class for MCMC
-///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
-class SS:public MCMC{
-public:
-    // Delegating Constructors
-    SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
-    SS(LogPosteriorBase& L):MCMC(L){};
-
-    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
-    virtual void runChain(int ncalls) override;
-    int getNSubSteps() override;
-private:
-    int nSubSteps_ = this -> GetChainDim();
-
-    // Proposal Function
-    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim);
-
-    double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
-};
-
-//*****************************************
-
 /// \class Adaptive MCMC
 /// \brief Adaptive Markov Chain Monte Carlo class. Derived from the base class for MCMC
 ///        Implemented the algorithms for aMCMC
