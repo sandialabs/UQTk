@@ -62,6 +62,7 @@ include_directories(../../lib/include)
 include_directories(../../lib/quad   )
 include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
+include_directories(../../lib/ss  )
 include_directories(../../lib/tmcmcClass  )
 
 include_directories(../../../dep/dsfmt)

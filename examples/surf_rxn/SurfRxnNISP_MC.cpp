@@ -33,7 +33,7 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "PCSet.h"
-
+#include "ss.h"
 #include "model.h"
 #include "XMLreader.h"
 #include "Utils.h"
@@ -70,14 +70,14 @@ int main(int argc, char* argv[])
   else
     nSam=atoi(argv[1]);
 
-    
+
   // Model parameters
   Array1D<double> modelparams;
   // Model parameter names
   Array1D<string> modelparamnames;
   // Auxiliary parameters: final time and time step of integration
   Array1D<double> modelauxparams;
-  
+
   // Read the xml tree
   RefPtr<XMLElement> xmlTree=readXMLTree("surf_rxn.in.xml");
   // Read the model-specific input
@@ -102,10 +102,10 @@ int main(int argc, char* argv[])
 
   // Stochastic dimensionality
   int dim=uncParamInd.XSize();
- 
+
   // Instantiate a PC object for NISP computations with no quadrature
-  PCSet myPCSet("NISPnoq",order,dim,pcType,0.0,1.0); 
- 
+  PCSet myPCSet("NISPnoq",order,dim,pcType,0.0,1.0);
+
   // The number of PC terms
   const int nPCTerms = myPCSet.GetNumberPCTerms();
   cout << "The number of PC terms in an expansion is " << nPCTerms << endl;
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
   // Print the multiindices on screen
   myPCSet.PrintMultiIndex();
 
-  // Generate Monte-Carlo samples 
+  // Generate Monte-Carlo samples
   Array2D<double> samPts(nSam,dim,0.e0);
   myPCSet.DrawSampleVar(samPts);
 
@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
   // Number of steps
   int nStep=(int) tf / dTym;
 
- 
+
 
 
   // Initial conditions of zero coverage (based on Makeev:2002)
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
   for(int iq=0;iq<nSam;iq++){
 
     // Replace the model parameters corresponding to the sample points
-      PCSet inpPC("NISPnoq",order,dim,pcType,0.0,1.0); 
+      PCSet inpPC("NISPnoq",order,dim,pcType,0.0,1.0);
       Array1D<double> sampt(dim,0.e0);
       getRow(samPts,iq,sampt);
       for(int idim=0;idim<dim;idim++){
@@ -157,25 +157,25 @@ int main(int argc, char* argv[])
       allmodelparams(iq,idim)=modelparams(idim);
   }
 
-  
+
     // Time and time step
     int step=0;
     double tym=t0;
 
-   
+
  // Open files to write out
   FILE *f_dump,*modes_dump;
   // ... the mean and stdev
-  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
 
   // ... the full set of modes, filename hardwired
   string modes_dumpfile = "solution_NISP_MC_modes.dat";
-  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
 
 
@@ -185,11 +185,11 @@ int main(int argc, char* argv[])
   cout << "Stepping forward in time" << endl;
 
   while(tym < tf) {
-      
+
     if (step % 1000 == 0)
       cout << (double) step*100.0/nStep << " % completed" << endl;
 
-  
+
     for(int iq=0;iq<nSam;iq++){
 
       Array1D<double> outValues(3,0.e0);
@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
       outValues(2)=ww(iq);
       Array1D<double> cur_modelparams;
       getRow(allmodelparams, iq, cur_modelparams);
-      
+
       // Forward run, see model.h
       forwardFunctionDt(cur_modelparams.GetArrayPointer(),dTym,outValues.GetArrayPointer());
 
@@ -206,21 +206,21 @@ int main(int argc, char* argv[])
       uu(iq) = outValues(0);
       vv(iq) = outValues(1);
       ww(iq) = outValues(2);
-      
+
     }
-    
-  
+
+
     // Non-intrusive spectral projection via Monte-Carlo integration
     myPCSet.GalerkProjectionMC(samPts,uu,u);
     myPCSet.GalerkProjectionMC(samPts,vv,v);
     myPCSet.GalerkProjectionMC(samPts,ww,w);
-    
+
 
     // Get standard deviations
     double uStDv = myPCSet.StDv(u);
     double vStDv = myPCSet.StDv(v);
     double wStDv = myPCSet.StDv(w);
-    
+
     if(step % outPrint->fdumpInt == 0){
       // write time, u, v, w (all modes) to file
       WriteModesToFilePtr(step*dTym, u.GetArrayPointer(), v.GetArrayPointer(), w.GetArrayPointer(), nPCTerms, modes_dump);
@@ -242,22 +242,21 @@ int main(int argc, char* argv[])
 
 
 
- 
+
 
   // Close output file
-  if(fclose(f_dump)){ 
-    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(f_dump)){
+    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
 
 
   // Close output file
-  if(fclose(modes_dump)){ 
-    printf("Could not close file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(modes_dump)){
+    printf("Could not close file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
-  
+
 
   return 0;
 }
-

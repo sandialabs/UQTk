@@ -31,6 +31,7 @@
 #include "PCSet.h"
 #include "tools.h"
 #include "mcmc.h"
+#include "ss.h"
 #include "arrayio.h"
 #include "arraytools.h"
 
@@ -68,7 +69,7 @@ int main()
   Array1D<string> modelparamnames;
   // Auxiliary parameters: final time and time step of integration
   Array1D<double> modelauxparams;
-  
+
   // Read the xml tree
   RefPtr<XMLElement> xmlTree=readXMLTree("surf_rxn.in.xml");
   // Read the model-specific input
@@ -86,11 +87,10 @@ int main()
 
   // Initial conditions of zero coverage (based on Makeev:2002)
   double outValues[]={0.e0,0.e0,0.e0};
-  
+
   // Forward ODE function, see model.h
   forwardFunction(modelparams.GetArrayPointer(), t0, tf, dTym, outValues,outprint);
 
 
   return 0;
 }
-
