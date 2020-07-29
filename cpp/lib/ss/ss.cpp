@@ -25,7 +25,7 @@
      Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-// \file mcmc.cpp
+// \file ss.cpp
 // \author K. Sargsyan, C. Safta, B. Debusschere, 2012
 // \brief Single Site Markov Chain Monte Carlo class
 
