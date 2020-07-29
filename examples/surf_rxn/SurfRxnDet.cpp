@@ -34,7 +34,7 @@
 #include "ss.h"
 #include "arrayio.h"
 #include "arraytools.h"
-
+#include "amcmc.h"
 #include "model.h"
 #include "XMLreader.h"
 

@@ -37,7 +37,7 @@
 #include "model.h"
 #include "XMLreader.h"
 #include "Utils.h"
-
+#include "amcmc.h"
 
 
 /// \brief Example that solves deterministic 3-equation model for heterogeneous surface

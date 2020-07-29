@@ -37,6 +37,7 @@
 #include "model.h"
 #include "XMLreader.h"
 #include "Utils.h"
+#include "amcmc.h"
 
 
 
