@@ -14,6 +14,7 @@ include_directories (../tools  )
 include_directories (../quad   )
 include_directories (../pce    )
 include_directories (../mcmc   )
+include_directories (../amcmc   )
 
 include_directories (../../../dep/slatec)
 target_link_libraries(uqtkinfer  lapack)

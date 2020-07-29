@@ -42,6 +42,7 @@
 #include "inference.h"
 
 #include "mcmc.h"
+#include "amcmc.h"
 #include "tools.h"
 #include "arrayio.h"
 #include "arraytools.h"
@@ -323,4 +324,3 @@ double LogPosterior(Array1D<double>& m, void* mypost_void)
 
 	return logpost;
 }
-
