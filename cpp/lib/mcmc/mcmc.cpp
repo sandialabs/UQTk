@@ -43,7 +43,6 @@
 #include "lbfgs_routines.h"
 
 double neg_logposteriorproxy(int chaindim, double* m, void* classpointer);
-void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer);
 
 MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   // Set Flag
@@ -104,18 +103,6 @@ MCMC::MCMC(){
 
 void MCMC::setWriteFlag(int I){
   WRITE_FLAG = I;
-}
-
-void MALA::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
-  gradlogPosterior_ = gradlogPosterior;
-  gradflag_ = true;
-  return;
-}
-
-void MMALA::setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
-  metricTensor_ = metricTensor;
-  tensflag_ = true;
-  return;
 }
 
 void MCMC::setFcnAccept(void (*fcnAccept)(void *))
@@ -238,16 +225,6 @@ void MCMC::getSamples(Array2D<double>& samples){
   getSamples(0,1,samples);
 }
 
-void MALA::getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
-  gradlogPosterior = gradlogPosterior_;
-  return;
-}
-
-void MMALA::getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *)){
-  metricTensor = metricTensor_;
-  return;
-}
-
 void MCMC::getFcnAccept(void (*fcnAccept)(void *)){
   fcnAccept = fcnAccept_;
   return;
@@ -288,10 +265,6 @@ double MCMC::getUpper(int i){
 
 bool MCMC::getDimInit(){
   return chaindimInit_;
-}
-
-bool MALA::getGradientFlag(){
-  return gradflag_;
 }
 
 void MCMC::getPostInfo(void *post){
@@ -469,45 +442,6 @@ void MCMC::getModeStateState(Array1D<double>& state){
   return;
 }
 
-void MALA::runOptim(Array1D<double>& start){
-  int n=start.Length();
-  int m=5;
-  Array1D<int> nbd(n,0);
-  Array1D<double> l(n,0.e0);
-  Array1D<double> u(n,0.e0);
-
-  for (int i=0;i<n;i++){
-    if (this -> getLowerFlag(i) && !(this -> getUpperFlag(i))){
-      nbd(i)=1;
-      l(i)=this->getLower(i);
-    }
-    if (this -> getUpperFlag(i) && !(this -> getLowerFlag(i))){
-      nbd(i)=3;
-      u(i)=this->getUpper(i);
-    }
-    if (this -> getUpperFlag(i) && this -> getLowerFlag(i)){
-      nbd(i)=2;
-      l(i)=this->getLower(i);
-      u(i)=this->getUpper(i);
-    }
-  }
-
-  void* info=this;
-
-  if (gradflag_)
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,grad_neg_logposteriorproxy,info) ;
-  else
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
-
-  this -> setCurrentStateStep(0);
-  this -> setCurrentStateState(start);
-  this -> setCurrentStateAlfa(0.0);
-  this -> setCurrentStatePost(this->evalLogPosterior(start));
-  this->updateMode();
-
-  return;
-}
-
 void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
@@ -544,145 +478,6 @@ void MCMC::runOptim(Array1D<double>& start){
   return;
 }
 
-void MALA::runChain(int ncalls, Array1D<double>& chstart){
-  // Check mandatory information
-  if(!(this -> getDimInit())){
-    throw Tantrum((string) "Chain dimensionality needs to be initialized");
-  }
-
-  // Check mandatory information specific to mala
-  if(!(this -> getGradientFlag())){
-    throw Tantrum((string) "Gradient function needs to be initialized");
-  }
-
-  // Check what is not initialized and use defaults instead
-  // \todo Specify defaults somewhere more transparently
-
-  // Set defaults proposal covariance
-  if(!(this -> getPropCovInit())){
-    Array1D<double> chsig(this -> GetChainDim(),0.e0);
-    for(int i=0;i<this -> GetChainDim();i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
-    this->initChainPropCovDiag(chsig);
-  }
-
-  // Set defaults output format
-  if (!(this -> getOutputInit())){
-    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
-  }
-
-  if(!epsMalaInit_){
-    this->initEpsMALA(default_eps_mala_);
-  }
-
-  // Work variables for simplicity
-  string output = this -> getOutputType();
-
-  // Initial chain state
-  chainstate state;
-  this -> setCurrentStateStep(0);
-  this -> setCurrentStateState(chstart);
-  this -> setCurrentStateAlfa(0.0);
-  this -> setCurrentStatePost(this->evalLogPosterior(chstart));
-  this->updateMode();
-  this -> addCurrentState();
-
-  // Number of accepted steps and number of all trials
-  int nacc=0;
-  int nall=0;
-
-  // No new mode found yet
-  this -> setNewMode(false);
-
-  for(int t = 1; t < ncalls; ++t){
-    this -> setCurrentStateStep(t);
-    double sum_alpha=0.0;
-
-    // Create a new proposed sample
-    for(int is = 0; is  < nSubSteps_; ++is){
-      Array1D<double> m_cand;
-      Array1D<double> state;
-      this -> getCurrentStateState(state);
-      this -> proposal(state, m_cand);
-
-      // Evaluate the posterior at the new sample point
-      double eval_cand = this->evalLogPosterior(m_cand);
-
-      // Evaluate the new|old and old|new proposals
-      /// \todo See the previous note in proposal for AM
-      double old_given_new = this->probOldNew(state, m_cand);
-      double new_given_old = this->probOldNew(m_cand,state);
-
-      // Accept or reject it
-      double alpha = exp(eval_cand - this -> getCurrentStatePost() + old_given_new - new_given_old);
-      sum_alpha += alpha;
-      if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
-        nacc++;
-        this -> setCurrentStateState(m_cand);
-        this -> setCurrentStatePost(eval_cand);
-        if (this->getFcnAcceptInit())
-          this -> runAcceptFcn();
-      } // If state not accepted, keep previous state as the current state
-      else{
-        if (this->getFcnRejectInit())
-          this -> runRejectFcn();
-      }
-
-      ++nall;
-    }
-
-    double alfa = sum_alpha / nSubSteps_;
-    this -> setCurrentStateAlfa(alfa);
-
-    // Append the current state to the array of all past states
-    this -> addCurrentState();
-
-    // Keep track of the mode (among the locations visited so far)
-    // \todo maybe only store tmode_(we save the full chain anyway)
-    if (this -> getCurrentStatePost() > this -> getModeStatePost()){
-      this->updateMode();
-      this -> setNewMode(true);
-    }
-
-    this -> setAcceptRatio((double) nacc/nall);
-
-    if(this -> getWriteFlag() == 1){
-      // Output to Screen
-      if( t % this -> getScreenFreq() == 0 || t==ncalls){
-
-        printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-        printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",this -> getCurrentStatePost(),this -> getModeStatePost(),this -> getAcceptRatio());
-        printf("================= Current MAP params: ");
-        Array1D<double> state;
-        this -> getModeStateState(state);
-        for(int ic=0;ic<this -> GetChainDim();ic++)
-          printf("par(%d)=%f ",ic,state(ic));
-        cout << endl;
-
-      }
-
-        // Output to File
-      if( t % this -> getFileFreq() == 0 || t==ncalls){
-
-        if(!strcmp(output.c_str(),"txt"))
-          this->writeChainTxt(this -> getFilename());
-        else  if(!strcmp(output.c_str(),"bin"))
-          this->writeChainBin(this -> getFilename());
-        else
-          throw Tantrum((string) "Chain output type is not recognized");
-        this -> setLastWrite(t);
-      }
-    }
-  }
-
-  return;
-}
-
-void MALA::runChain(int ncalls){
-  Array1D<double> chstart(this -> GetChainDim(),0.e0);
-
-  this->runChain(ncalls, chstart);
-}
-
 bool MCMC::newModeFound(){
   return newMode_;
 }
@@ -710,15 +505,6 @@ double MCMC::evalLogPosterior(Array1D<double>& m){
   }
 }
 
-void MALA::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads){
-  // Evaluate given the log-posterior function defined by the user in the constructor
-  void *post;
-  this -> getPostInfo(post);
-  gradlogPosterior_(m,grads,post);
-
-  return;
-}
-
 bool MCMC::inDomain(Array1D<double>& m){
   int nd = m.XSize();
 
@@ -735,89 +521,6 @@ bool MCMC::inDomain(Array1D<double>& m){
     }
 
   return true;
-}
-
-void MALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
-  Array1D<double> grads;
-  gradlogPosterior_(m_t,grads,NULL);
-  cout << "grads= " << grads(0) << " " << grads(1) << endl;
-  m_cand = m_t;
-  for (int i=0; i < this -> GetChainDim(); i++) {
-    m_cand(i) += eps_mala * eps_mala *grads(i)/2.;
-    m_cand(i) += eps_mala * dsfmt_genrand_nrv(&RandomState);
-  }
-
-  return;
-}
-
-void MMALA::proposal(Array1D<double>& m_t,Array1D<double>& m_cand){
-  int chol_info=0;
-  char lu='L';
-
-  Array1D<double> grads;
-  this->gradlogPosterior_(m_t,grads,NULL);
-  Array2D<double> mtensorinv;
-  this->metricTensor_(m_t,mtensorinv,NULL);
-  m_cand=m_t;
-
-  Array1D<double> mtggrads;
-  prodAlphaMatVec(mtensorinv, grads, 1.0, mtggrads) ;
-
-  Array2D<double> sqrt_mtensorinv;
-  sqrt_mtensorinv = mtensorinv;
-  int chdim = this -> GetChainDim();
-  FTN_NAME(dpotrf)(&lu,&chdim, sqrt_mtensorinv.GetArrayPointer(),&chdim,&chol_info);
-  // Catch the error in Cholesky factorization
-  if (chol_info != 0 )
-    printf("Error in Cholesky factorization, info=%d\n", chol_info);
-
-  for (int i=0; i < this -> GetChainDim(); i++) {
-    m_cand(i) += this -> getEpsMALA() * this -> getEpsMALA() * mtggrads(i)/2.;
-    for (int j=0; j < i+1; j++) {
-      m_cand(i) += this -> getEpsMALA() *sqrt_mtensorinv(i,j)*dsfmt_genrand_nrv(&RandomState);
-    }
-  }
-
-  return;
-}
-
-double MALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
-  double logprob;
-  Array1D<double> gradb;
-
-  ///\todo figure out this because the grad log posterior is a private variable in MCMC, might need to put it in the MALA class
-  gradlogPosterior_(b,gradb,NULL);
-  double eps2 = eps_mala * eps_mala;
-  Array1D<double> bmean(this -> GetChainDim(),0.e0);
-  Array1D<double> diagcov(this -> GetChainDim(),0.e0);
-
-  for (int i=0;i<this -> GetChainDim();i++){
-    bmean(i)=b(i)+eps2*gradb(i)/2.0;
-    diagcov(i)=eps2;
-  }
-
-  logprob=evallogMVN_diag(a,bmean,diagcov);
-
-  return logprob;
-}
-
-double MMALA::probOldNew(Array1D<double>& a, Array1D<double>& b){
-  return 0.0;
-  ///\todo In the original code there is a seperate branch for MMALA in the function probOldNew, but it is blank and has nothing in it. It would need to be defined in this setup.
-}
-
-double MALA::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2){
-  double pi=4.0*atan(1.0);
-
-  double value=0.e0;
-
-  // \todo Put sanity checks on dimensions
-
-  for (int i=0;i<this->GetChainDim();i++){
-    value -= 0.5*log(2.*pi*sig2(i));
-    value -= (x(i)-mu(i))*(x(i)-mu(i))/(2.0*sig2(i));
-  }
-  return value;
 }
 
 void MCMC::updateMode(){
@@ -919,17 +622,6 @@ void MCMC::writeChainBin(string filename){
   return;
 }
 
-void MALA::initEpsMALA(double eps_mala_){
-  this -> eps_mala = eps_mala_;
-  epsMalaInit_ = true;
-
-  return;
-}
-
-double MALA::getEpsMALA(){
-  return this -> eps_mala;
-}
-
 double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
   MCMC* thisClass = (MCMC*) classpointer;
 
@@ -944,27 +636,4 @@ double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
   }
 
   return -thisClass -> evalLogPosterior(mm);
-}
-
-void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer){
-  MALA* thisClass=(MALA*) classpointer;
-
-  if(chaindim != thisClass->GetChainDim()){
-    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
-  }
-
-  Array1D<double> mm(chaindim,0.e0);
-
-  for(int i = 0; i < chaindim; ++i){
-    mm(i) = m[i];
-  }
-
-  // Call the posterior function and return its result
-  Array1D<double> grads_arr;
-  thisClass->evalGradLogPosterior(mm, grads_arr);
-
-  for(int i=0;i<chaindim;i++)
-    grads[i]=-grads_arr(i);
-
-  return;
 }
