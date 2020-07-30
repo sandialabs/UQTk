@@ -34,6 +34,8 @@
 
 
 #include "dsfmt_add.h"
+#include "arrayio.h"
+#include "arraytools.h"
 
 #include <iostream>
 #include <string.h>
