@@ -87,7 +87,7 @@ private:
 
     double default_eps_mala_ = 0.1; // Default epsilon value for mala
 
-    double probOldNew(Array1D<double>& a, Array1D<double>& b) override;
+    virtual double probOldNew(Array1D<double>& a, Array1D<double>& b) override;
 
     double evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2); // Evaluate MVN
 
