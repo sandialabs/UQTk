@@ -42,6 +42,7 @@
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
 
+double neg_logposteriorproxy(int chaindim, double* m, void* classpointer);
 void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer);
 
 void MALA::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *)){
@@ -325,4 +326,20 @@ void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* cl
     grads[i]=-grads_arr(i);
 
   return;
+}
+
+double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
+  MCMC* thisClass = (MCMC*) classpointer;
+
+  if(chaindim != thisClass -> GetChainDim()){
+    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
+  }
+
+  Array1D<double> mm(chaindim,0.e0);
+
+  for(int i = 0; i < chaindim; ++i){
+    mm(i) = m[i];
+  }
+
+  return -thisClass -> evalLogPosterior(mm);
 }
