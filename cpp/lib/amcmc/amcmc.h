@@ -52,8 +52,7 @@ public:
     ///\brief Delegating Constructor
     AMCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
     AMCMC(LogPosteriorBase& L):MCMC(L){};
-
-
+    
     // Initialization and set functions for private variables that are necessary to the aMCMC algorithms
 
     /// \brief Initialize adaptivity step parameters for aMCMC
