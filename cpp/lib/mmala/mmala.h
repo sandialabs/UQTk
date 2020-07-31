@@ -29,8 +29,8 @@
 /// \author K. Sargsyan, C. Safta, B. Debusschere, 2012 -
 /// \brief Header file for the Markov chain Monte Carlo class
 
-#ifndef UQTKMALA_H_SEEN
-#define UQTKMALA_H_SEEN
+#ifndef UQTKMMALA_H_SEEN
+#define UQTKMMALA_H_SEEN
 
 #include "dsfmt_add.h"
 #include "mcmc.h"
@@ -50,8 +50,9 @@
 ///        Implemented the MMALA algorithms
 class MMALA:public MALA{
 public:
-  //Delegating constructor
-  //MMALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+  //Delegating constructors
+  MMALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MALA(logposterior,postinfo){};
+  MMALA(LogPosteriorBase& L):MALA(L){};
   /// \brief Get metric tensor function
   void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
 

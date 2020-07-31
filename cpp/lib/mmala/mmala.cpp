@@ -33,8 +33,8 @@
 #include <float.h>
 #include "error_handlers.h"
 #include "deplapack.h"
-#include "mmala.h"
 #include "mala.h"
+#include "mmala.h"
 #include "tools.h"
 #include "arrayio.h"
 #include "arraytools.h"
