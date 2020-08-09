@@ -32,7 +32,6 @@
 #ifndef UQTKMCMC_H_SEEN
 #define UQTKMCMC_H_SEEN
 
-
 #include "dsfmt_add.h"
 #include "arrayio.h"
 #include "arraytools.h"
@@ -96,11 +95,7 @@ public:
 
     /// \brief Set the write flag function given an integer
     void setWriteFlag(int I);
-    /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
-    //void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
-    /// \brief Set the metric tensor function given a pointer to a metric tensor function, a 2D array of doubles, and a pointer to additional information (e.g. data)
-    //void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
-    /// \brief Set the function accept and reject functions given a pointer to the accept and reject functions
+    /// \brief Set the accept and reject functions
     void setFcnAccept(void (*fcnAccept)(void *));
     void setFcnReject(void (*fcnReject)(void *));
     /// \brief Set the dimensions of the chain given an integer
@@ -141,10 +136,6 @@ public:
     void getSamples(int burnin, int every,Array2D<double>& samples);
     /// \brief Get all samples of the chain
     void getSamples(Array2D<double>& samples);
-    /// \brief Get gradient function by passing in log posterior pointer
-    //void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
-    /// \brief Get metric tensor function
-    //void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
     /// \brief Get the accept and reject functions given a pointer
     void getFcnAccept(void (*fcnAccept)(void *));
     void getFcnReject(void (*fcnReject)(void *));
@@ -166,8 +157,6 @@ public:
     bool getDimInit();
     /// \brief Get gradient flag
     bool getGradientFlag();
-    /// \brief Get the propLCov function
-    //void getPropLCov(Array2D<double>& LCov);
     /// \brief Get post info pointer
     void getPostInfo(void *post);
     /// \brief Get if the Prop Cov has been initialized
@@ -184,6 +173,12 @@ public:
     /// \brief Get function for the lower and upper Flag at index i
     int getLowerFlag(int i);
     int getUpperFlag(int i);
+    /// \brief Get the chain's acceptance ratio
+    void getAcceptRatio(double * accrat);
+    /// \brief Get the chain's acceptance ratio as a double
+    double getAcceptRatio();
+    /// \brief Get the MCMC chain dimensionality
+    int GetChainDim() const;
 
     // Chain Functions:
 
@@ -242,12 +237,6 @@ public:
 
     /// \brief Check to see if a new mode was found during last call to runChain
     bool newModeFound();
-    /// \brief Get the chain's acceptance ratio
-    void getAcceptRatio(double * accrat);
-    /// \brief Get the chain's acceptance ratio as a double
-    double getAcceptRatio();
-    /// \brief Get the MCMC chain dimensionality
-    int GetChainDim() const;
     /// \brief Function to evaluate the log-posterior
     double evalLogPosterior(Array1D<double>& m);
     /// \brief Function to evaluate the gradient of log-posterior

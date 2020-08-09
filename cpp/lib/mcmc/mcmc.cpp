@@ -44,11 +44,11 @@
 
 double neg_logposteriorproxy(int chaindim, double* m, void* classpointer);
 
+///\note Constructor using the pointer to the logPosterior and to the posterior information
 MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   // Set Flag
   FLAG = 0;
 
-  // Setting entering the pointers to the Log Posterior function as well as the data function
   postInfo_ = postinfo;
   logPosterior_ = logposterior;
 
@@ -66,6 +66,7 @@ MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
   return;
 }
 
+///\note Constructor using a LogPosteriorBase class object
 MCMC::MCMC(LogPosteriorBase& L){
   FLAG = 1;
   L_ = &L;
@@ -84,6 +85,7 @@ MCMC::MCMC(LogPosteriorBase& L){
   return;
 }
 
+///\note Dummy Constructor for TMCMC
 MCMC::MCMC(){
   FLAG = 2;
 
@@ -101,10 +103,12 @@ MCMC::MCMC(){
   return;
 }
 
+///\note Function that sets the Write Flag of the MCMC object
 void MCMC::setWriteFlag(int I){
   WRITE_FLAG = I;
 }
 
+///\note Function that sets the accept function for the MCMC object
 void MCMC::setFcnAccept(void (*fcnAccept)(void *))
 {
   fcnAccept_ = fcnAccept;
@@ -112,6 +116,7 @@ void MCMC::setFcnAccept(void (*fcnAccept)(void *))
   return;
 }
 
+///\note Function that sets the reject function for the MCMC object
 void MCMC::setFcnReject(void (*fcnReject)(void *))
 {
   fcnReject_ = fcnReject;
@@ -119,6 +124,7 @@ void MCMC::setFcnReject(void (*fcnReject)(void *))
   return;
 }
 
+///\note Function that sets the number of dimensions for the MCMC object
 void MCMC::setChainDim(int chdim){
   chainDim_ = chdim;
   chaindimInit_ = true;
@@ -126,6 +132,7 @@ void MCMC::setChainDim(int chdim){
   return;
 }
 
+///\note Function that initialize the proposal covariance matrix given as a 2d-array
 void MCMC::initChainPropCov(Array2D<double>& propcov){
   // Initialize the proposal covariance matrix
   chcov=propcov;
@@ -135,6 +142,7 @@ void MCMC::initChainPropCov(Array2D<double>& propcov){
   return;
 }
 
+///\note Function that initialize the proposal covariance matrix given as a 1d-array
 void MCMC::initChainPropCovDiag(Array1D<double>& sig){
   // Create a diagonal matrix and fill in the diagonal terms
   chcov.Resize(chainDim_,chainDim_,0.e0);
@@ -148,6 +156,7 @@ void MCMC::initChainPropCovDiag(Array1D<double>& sig){
   return;
 }
 
+///\note Function that sets the output information for the MCMC object
 void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen){
   outputinfo_.outtype = outtype;
   outputinfo_.filename = file;
@@ -159,18 +168,21 @@ void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_scr
   return;
 }
 
+///\note Function that sets whether the parameter names will be prepended in the output file
 void MCMC::namesPrepended(){
   namesPrepend = true;
 
   return;
 }
 
+///\note Function that sets the seed for random generation
 void MCMC::setSeed(int seed){
   seed_ = seed;
   dsfmt_init_gen_rand(&RandomState,seed);
   return;
 }
 
+///\note Sets the lower limit at index i
 void MCMC::setLower(double lower, int i){
   Lower_(i) = lower;
   lower_flag_(i) = 1;
@@ -178,6 +190,7 @@ void MCMC::setLower(double lower, int i){
   return;
 }
 
+///\note Sets the upper limit at index i
 void MCMC::setUpper(double upper, int i){
   Upper_(i) = upper;
   upper_flag_(i) = 1;
@@ -185,6 +198,7 @@ void MCMC::setUpper(double upper, int i){
   return;
 }
 
+///\note Sets the default domain for the MCMC object
 void MCMC::setDefaultDomain(){
   Lower_.Resize(chainDim_,-DBL_MAX);
   Upper_.Resize(chainDim_,DBL_MAX);
@@ -194,8 +208,8 @@ void MCMC::setDefaultDomain(){
   return;
 }
 
+///\note Get the proposal covariance matrix given a 2d-array
 void MCMC::getChainPropCov(Array2D<double>& propcov){
-  // Get the proposal covariance matrix
   propcov = chcov;
 
   return;
