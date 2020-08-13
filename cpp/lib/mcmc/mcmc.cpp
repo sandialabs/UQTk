@@ -281,6 +281,7 @@ bool MCMC::getDimInit(){
   return chaindimInit_;
 }
 
+///\todo Fix this so that it doesn't cause issues if someone called it improperly
 void MCMC::getPostInfo(void *post){
   post = postInfo_;
   return;
@@ -305,6 +306,11 @@ void MCMC::setLastWrite(int i){
 
 void MCMC::setAcceptRatio(double d){
   accRatio_ = d;
+  return;
+}
+
+void MCMC::setPostInfo(void *postinfo){
+  postInfo_ = postinfo;
   return;
 }
 

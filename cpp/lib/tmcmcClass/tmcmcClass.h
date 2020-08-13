@@ -54,7 +54,7 @@ public:
 
     // Initalization and set functions:
 
-    /// \brief Set the default values for TMCMC function (Probably don't need this)
+    /// \brief Set the default values for TMCMC function
     void initDefaults();
     /// \brief Initialize the number of processes for TMCMC
     void initTMCMCNprocs(int tmcmc_nprocs);

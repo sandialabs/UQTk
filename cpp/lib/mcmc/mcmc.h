@@ -118,11 +118,8 @@ public:
     void setUpper(double upper, int i);
     /// \brief Set default unbounded domain
     void setDefaultDomain();
-    /// \brief Set last write
-    void setLastWrite(int i);
-    /// \brief Set the acceptance ratio
-    void setAcceptRatio(double d);
-
+    /// \brief Set the Posterior Info pointer
+    void setPostInfo(void *postinfo);
 
     // Get functions:
 
@@ -156,7 +153,7 @@ public:
     /// \brief Get if the Chain Dimensions are initialized
     bool getDimInit();
     /// \brief Get gradient flag
-    bool getGradientFlag();
+    //bool getGradientFlag();
     /// \brief Get post info pointer
     void getPostInfo(void *post);
     /// \brief Get if the Prop Cov has been initialized
@@ -201,8 +198,7 @@ public:
 
     // Functions to make sure the code respects the interface for chainstates:
 
-    /// \brief Function to add the current chain state to the full chain
-    void addCurrentState();
+
     /// \brief Function to set the step of the current state
     void setCurrentStateStep(int i);
     /// \brief Function to get the state of the current state
@@ -233,23 +229,36 @@ public:
     /// \brief Function to run the reject function
     void runRejectFcn();
 
-    // Evaluation Functions:
+
 
     /// \brief Check to see if a new mode was found during last call to runChain
     bool newModeFound();
     /// \brief Function to evaluate the log-posterior
     double evalLogPosterior(Array1D<double>& m);
-    /// \brief Function to evaluate the gradient of log-posterior
-    // void evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads);
     /// \brief Check if a point is in the domain
     bool inDomain(Array1D<double>& m);
+    /// \brief Write the full chain as a text
+    void writeChainTxt(string filename);
+    /// \brief Write the full chain as a binary file
+    void writeChainBin(string filename);
+
+    /// \brief Function to set a new mode value
+    void setNewMode(bool value);
+
+
+
+protected:
+    /// \brief Set the acceptance ratio
+    void setAcceptRatio(double d);
+    /// \brief Function to add the current chain state to the full chain
+    void addCurrentState();
+    /// \brief Function to update the Chain mode
+    void updateMode();
+    /// \brief Set last write
+    void setLastWrite(int i);
 
     dsfmt_t RandomState;
 
-    void writeChainTxt(string filename); // Write the full chain as a text
-    void writeChainBin(string filename); // Write the full chain as a binary file
-    void updateMode(); // Function to update the chain mode
-    void setNewMode(bool value);
 
 private:
     int WRITE_FLAG; // Write Flag
@@ -262,14 +271,11 @@ private:
         int freq_screen;
     } outputinfo_;
     int chainDim_; // Chain dimensions
-    double (*logPosterior_)(Array1D<double>&, void *); // Pointer to log-posterior function
-    //void (*gradlogPosterior_)(Array1D<double>&, Array1D<double>&, void *); //Pointer to gradient log-posterior function
-    //void (*metricTensor_)(Array1D<double>&, Array2D<double>&, void *); // Pointer to metric tensorr function
-    void (*fcnAccept_)(void *); // Pointer to accept function
-    void (*fcnReject_)(void *); // Pointer to reject function
-    void *postInfo_; // Void pointer to the posterior info (data)
+    double (*logPosterior_)(Array1D<double>&, void *) = NULL; // Pointer to log-posterior function
+    void (*fcnAccept_)(void *) = NULL; // Pointer to accept function
+    void (*fcnReject_)(void *) = NULL; // Pointer to reject function
+    void *postInfo_ = NULL; // Void pointer to the posterior info (data)
     Array2D<double> chcov; // Chain proposal distributions (before the adaptivity starts)
-    //Array2D<double> propLCov_; // The Cholesky factor(square-root) of proposal covariance
     int seed_; // Random seed for mcmc
 
     virtual double probOldNew(Array1D<double>& a, Array1D<double>& b){return 0.0;}; // Evaluate old|new probabilities and new|old probabilities

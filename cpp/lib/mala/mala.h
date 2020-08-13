@@ -44,21 +44,19 @@
 
 //*****************************************
 
-/// \class MALA or Langevian Sampling
-/// \brief MALA Markov Chain Monte Carlo class. Derived from the base class for Hamiltonian
-///        Implemented the HMCMC algorithms, however L = 1 for the MALA class of algorithms
+/// \class MALA or Langevin Sampling
+/// \brief MALA Markov Chain Monte Carlo class. Derived from the MCMC base class
 class MALA:public MCMC{
 public:
     // Delegating constructor
     MALA(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
     MALA(LogPosteriorBase& L):MCMC(L){};
 
-
     // Initialization and set functions for private variables that are necessary to the MALA algorithms
 
     /// \brief Initialize epsilon for MALA
     void initEpsMALA(double eps_mala_);
-    /// \brief Set the gradient function given a pointer to a logPosterior function, a 1D array of doubles, and a pointer to additional information (e.g. data)
+    /// \brief Set the gradient function given a pointer to a gradient of a logPosterior function
     void setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
 
     // Get functions:
