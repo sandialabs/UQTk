@@ -112,9 +112,9 @@ public:
     void namesPrepended();
     /// \brief Set random generation seed
     void setSeed(int seed);
-    /// \brief Set lower bounds
+    /// \brief Set lower bound at the index of i
     void setLower(double lower, int i);
-    /// \brief Set upper bounds
+    /// \brief Set upper bound at the index of i
     void setUpper(double upper, int i);
     /// \brief Set default unbounded domain
     void setDefaultDomain();
