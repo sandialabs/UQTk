@@ -88,9 +88,6 @@ public:
     /// \brief Dummy Constructor, used for TMCMC
     MCMC();
 
-    // Destructor:
-    ~MCMC(){};
-
     // Set or initialization functions:
 
     /// \brief Set the write flag function given an integer
@@ -152,8 +149,6 @@ public:
     double getUpper(int i);
     /// \brief Get if the Chain Dimensions are initialized
     bool getDimInit();
-    /// \brief Get gradient flag
-    //bool getGradientFlag();
     /// \brief Get post info pointer
     void getPostInfo(void *post);
     /// \brief Get if the Prop Cov has been initialized
@@ -198,7 +193,6 @@ public:
 
     // Functions to make sure the code respects the interface for chainstates:
 
-
     /// \brief Function to set the step of the current state
     void setCurrentStateStep(int i);
     /// \brief Function to get the state of the current state
@@ -207,13 +201,13 @@ public:
     double getCurrentStatePost();
     /// \brief Function to set the current state's state
     void setCurrentStateState(Array1D<double>& newState);
-    /// \brief Function to set the current state's state
+    /// \brief Function to set the current state's post
     void setCurrentStatePost(double newPost);
     /// \brief Function to set the current state's alfa
     void setCurrentStateAlfa(double newAlfa);
-    /// \brief Function to get the mode state post
+    /// \brief Function to get the mode state's post
     double getModeStatePost();
-    /// \brief Function to get the mode state post
+    /// \brief Function to get the mode state's state
     void getModeStateState(Array1D<double>& state);
 
     // Run functions:

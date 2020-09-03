@@ -64,6 +64,7 @@ public:
     double getEpsMALA();
     /// \brief Get gradient function by passing in log posterior pointer
     void getGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *));
+    /// \brief Gets if the gradient function is set as a bool 
     bool getGradientFlag();
 
     /// \brief Function to evaluate the gradient of log-posterior

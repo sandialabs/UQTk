@@ -56,7 +56,7 @@ public:
   /// \brief Get metric tensor function
   void getMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
 
-  /// \brief Set the metric tensor function given a pointer to a metric tensor function, a 2D array of doubles, and a pointer to additional information (e.g. data)
+  /// \brief Set the metric tensor function given a pointer to a metric tensor function
   void setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *));
 
 

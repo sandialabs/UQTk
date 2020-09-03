@@ -83,7 +83,7 @@ public:
     /// \brief Get the maximum allowed coefficient of variation for
     ///        the weights in TMCMC
     double getTMCMCCv();
-    /// \brief Initialize the multiplicative factor for chain length to
+    /// \brief Get the multiplicative factor for chain length to
     ///        encourage mixing in TMCMC
     int getTMCMCMFactor();
     /// \brief Get the choice to resample according to BASIS and
