@@ -51,7 +51,7 @@ include_directories(../../cpp/lib/include)
 include_directories(../../cpp/lib/quad   )
 include_directories(../../cpp/lib/tools  )
 include_directories(../../cpp/lib/mcmc  )
-include_directories(../../cpp/lib/tmcmcClass  )
+include_directories(../../cpp/lib/tmcmc  )
 
 include_directories(../../dep/dsfmt)
 include_directories(../../dep/slatec)

@@ -64,7 +64,7 @@ include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
 include_directories(../../lib/amcmc  )
 include_directories(../../lib/ss  )
-include_directories(../../lib/tmcmcClass  )
+include_directories(../../lib/tmcmc  )
 
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
