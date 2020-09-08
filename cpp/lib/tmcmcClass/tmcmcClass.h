@@ -41,6 +41,17 @@
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <math.h>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <numeric>
+#include <functional>
+#include <string>
 
 //*****************************************
 /// \class Transitional MCMC
@@ -125,5 +136,15 @@ private:
 
     double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
 };
+
+typedef std::vector<double>  RealVector;
+typedef std::vector<int>     IntVector;
+typedef std::vector<bool>    BoolVector;
+typedef std::vector<char>    CharVector;
+
+double tmcmc (RealVector &spls, RealVector &lprior, RealVector &llik,
+           double gm, int nspl, int iseed,
+           int nProcs, int ndim, double cv, int MFactor,
+           bool basis, int CATSteps, int write_flag) ;
 
 #endif
