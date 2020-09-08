@@ -41,7 +41,6 @@
 #include "tmcmc.h"
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
-#include "tmcmcClass.h"
 
 #define BETA_MAX 0.3
 
