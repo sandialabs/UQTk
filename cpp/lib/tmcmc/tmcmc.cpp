@@ -379,7 +379,7 @@ double tmcmc(RealVector &spls, RealVector &lprior, RealVector &llik,
     }
 
     beta += dBeta;
-    evid += log(wmean);
+    evid += log(wsum) + dBeta * max_llik - log(w.size());
     if (write_flag == 1){
       std::cout<<"Iteration "<<iter<<" Beta= "<<beta;
       std::cout<<" wMean= "<< wmean << " Evid=   " << evid<<std::endl<<std::flush;
