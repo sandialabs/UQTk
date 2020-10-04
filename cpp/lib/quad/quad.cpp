@@ -279,6 +279,35 @@ void Quad::MultiplyManyRules(int nrules, QuadRule *rules, QuadRule *rule_prod)
   return;
 }
 
+void Quad::MultiplyManyRules_(int nrules, QuadRule *rules, QuadRule *rule_prod)
+{
+
+  // Working rules
+  QuadRule rule_1d;
+  QuadRule rule_cur;
+  QuadRule rule_prod_h;
+
+  for(int i=0;i<nrules;i++){
+
+      rule_1d=rules[i];
+
+      // Recursively multiply all the rules
+      if(i==0)
+        rule_prod_h=rule_1d;
+      else
+        this->MultiplyTwoRules(&rule_1d,&rule_cur,&rule_prod_h);
+
+      rule_cur=rule_prod_h;
+
+  }
+
+
+  rule_prod->qdpts=rule_prod_h.qdpts;
+  rule_prod->wghts=rule_prod_h.wghts;
+
+  return;
+}
+
 // Subtract two rules
 void Quad::SubtractTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum)
 {
@@ -763,6 +792,58 @@ void Quad::SetRule()
   else if (this->fs_type_=="sparse"){
     this->SetLevel(-1);
 
+    npts_all.Resize(maxlevel_+1, 2);
+    npts_1_all.Resize(maxlevel_+1, 2);
+
+
+
+    for(int il=0;il<=maxlevel_;il++){
+        if (il==0)
+          npts_all(il,0)=1;
+        else
+          npts_all(il,0)= (int) pow(2,il)+1;
+
+        npts_all(il,1)= (int) pow(2,il+1)-1;
+
+        if (il<=1)
+          npts_1_all(il,0)=il;
+        else
+          npts_1_all(il,0)= (int) pow(2,il-1)+1;
+
+        npts_1_all(il,1)= (int) pow(2,il)-1;
+    }
+
+
+    Array1D<double> qq;
+    qr_all.Resize(maxlevel_+1, this->ndim_);
+
+    for(int il=0;il<=maxlevel_;il++){
+      for(int id=0;id<this->ndim_;id++){
+        QuadRule r_temp;
+        this->create1DRule(this->grid_types_(id),qq,r_temp.wghts,npts_all(il, this->growth_rules_(id)),aa_(id),bb_(id));
+        array1Dto2D(qq,r_temp.qdpts);
+
+        qr_all(il,id)=r_temp;
+      }
+    }
+
+    qr_1_all.Resize(maxlevel_+1, this->ndim_);
+
+    for(int il=0;il<=maxlevel_;il++){
+      for(int id=0;id<this->ndim_;id++){
+        if (npts_1_all(il, this->growth_rules_(id))>0){
+        QuadRule r_temp;
+        this->create1DRule(this->grid_types_(id),qq,r_temp.wghts,npts_1_all(il, this->growth_rules_(id)),aa_(id),bb_(id));
+        array1Dto2D(qq,r_temp.qdpts);
+
+        qr_1_all(il,id)=r_temp;
+        }
+      }
+    }
+
+
+
+
     // Incremental buildup of levels
     for(int il=0;il<=maxlevel_;il++){
       if (quadverbose_ > 0)
@@ -795,6 +876,7 @@ void Quad::nextLevel()
   Array2D<int> multiIndexLevel_npts(nMultiIndicesLevel,ndim_,0);
 
   for(int j=0;j<nMultiIndicesLevel;j++){
+cout << "KUKU " << j << " " << nMultiIndicesLevel << endl;
 
     if (quadverbose_==2) cout << j << " / " << nMultiIndicesLevel << endl;
 
@@ -809,35 +891,20 @@ void Quad::nextLevel()
     for(int id=0;id<ndim_;id++){
 
       // multiIndexLevel(j,id)=multiIndex(j+levelCounter_start,id);
-      int npts,npts_1;
+      int npts=npts_all(multiIndexLevel(j,id), this->growth_rules_(id));
+      int npts_1=npts_1_all(multiIndexLevel(j,id), this->growth_rules_(id));
 
-      if (this->growth_rules_(id)==0){ //2^l+1
-        if ( multiIndexLevel(j,id)==0){
-          npts = 1;
-          npts_1=0;
-        }
-        else if ( multiIndexLevel(j,id)==1){
-          npts=3;
-          npts_1=1;
-        }
-        else  {
-          npts=(int) pow(2,multiIndexLevel(j,id))+1;
-          npts_1=(int) pow(2,multiIndexLevel(j,id)-1)+1;
-        }
-      }
-      else if (this->growth_rules_(id)==1){ //2^(l+1)-1
-        npts   = (int) pow(2,multiIndexLevel(j,id)+1)-1;
-        npts_1 = (int) pow(2,multiIndexLevel(j,id)  )-1;
-      }
 
+
+      //cout << npts << " " << npts_1 << endl;
       Array1D<double> qdpts_1d;
       Array1D<int> indices_1d;
 
-      this->create1DRule(this->grid_types_(id),qdpts_1d,rules[id].wghts,npts,aa_(id),bb_(id));
-      array1Dto2D(qdpts_1d,rules[id].qdpts);
+      rules[id]=qr_all(multiIndexLevel(j,id), id);
+      // this->create1DRule(this->grid_types_(id),qdpts_1d,rules[id].wghts,npts,aa_(id),bb_(id));
+      // array1Dto2D(qdpts_1d,rules[id].qdpts);
       if(npts_1>0){
-        this->create1DRule(this->grid_types_(id),qdpts_1d,rules_1[id].wghts,npts_1,aa_(id),bb_(id));
-        array1Dto2D(qdpts_1d,rules_1[id].qdpts);
+        rules_1[id]=qr_1_all(multiIndexLevel(j,id), id);
         this->SubtractTwoRules(&rules[id],&rules_1[id], &srules[id]);
       }
       else

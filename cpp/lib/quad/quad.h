@@ -190,10 +190,15 @@ public:
   int maxlevel_;
   Array1D<int> param_;
 
+  /// \brief Working arrays
+  Array2D<int> npts_all, npts_1_all;
+  Array2D<QuadRule> qr_all, qr_1_all;
+
   /// \brief Multiply two rules (full tensor product)
   void MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod);
   /// \brief Multiply many rules (full tensor product)
   void MultiplyManyRules(int nrules, QuadRule *rules, QuadRule *rule_prod);
+  void MultiplyManyRules_(int nrules, QuadRule *rules, QuadRule *rule_prod);
   /// \brief Add two rules
   void AddTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum);
   /// \brief Subtract two rules
