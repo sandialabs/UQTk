@@ -93,6 +93,7 @@ def main(argv):
     parser.add_argument("-i", "--pred",     dest="pred_mode",    type=str,   default='ms',    help="Prediction mode (whether to compute mean only, mean+stdev, or mean+stdev+cov)", choices=['m','ms','msc'])
     parser.add_argument("-e", "--tol",      dest="tolerance",    type=float, default=1.e-3,   help="Tolerance (currently for method=bcs only)")
     parser.add_argument("-z", "--cleanup",  dest="cleanup", default=False, action="store_true" , help="Flag to cleanup after (be careful: removes *log and *dat files)")
+    parser.add_argument("-y", "--normalize",  dest="normalize", default=False, action="store_true" , help="Normalize the model outputs before constructing surrogates")
     args = parser.parse_args()
 
     ## Flags for input checks
@@ -320,9 +321,21 @@ def main(argv):
         if (args.num_val>0):
             yval=np.loadtxt(output_val).reshape(args.num_val,-1)
 
+
+
     # Read the number of output observables or the number of values of deisgn parameters (e.g. location, time etc..)
     nout_all=ytrain.shape[1]
     print("Number of output observables of the model : %d" % nout_all)
+
+    # Normalize ytrain and yval if asked
+    if args.normalize:
+        yscale = np.max(np.abs(ytrain), axis=0)
+    else:
+        yscale = np.ones(nout_all)
+
+    ytrain /= yscale
+    if (args.num_val > 0):
+        yval /= yscale
 
     print("#####################################################################")
     print("######################## Construct PC surrogates  ###################")
@@ -460,8 +473,13 @@ def main(argv):
             sys.exit()
 
 
-
-
+        # Scale
+        pccf *= yscale[j]
+        ccov *= yscale[j]**2
+        ytrain[:, j] *= yscale[j]
+        erb *= yscale[j]
+        if (args.num_val>0):
+            yval[:, j] *= yscale[j]
 
         # Append the results
         pccf_all.append(pccf)
@@ -483,6 +501,8 @@ def main(argv):
         errcheck_pc[:,i]=erb[:npt]
 
 
+
+
         if (args.num_val>0):
 
             print("Evaluating surrogate at %d validation points" % args.num_val)
@@ -495,6 +515,8 @@ def main(argv):
             print("Surrogate relative error at validation points : %.12g" % err_val[i])
             #np.savetxt('yval_pc.'+str(i+1)+'.dat',yval_pc)
             errcheck_val_pc[:,i]=erb[npt:]
+
+
 
         ################################
 

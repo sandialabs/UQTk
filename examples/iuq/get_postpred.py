@@ -66,9 +66,12 @@ outputs = np.zeros((ninput, nout))
 # For each output, read corresponding multiindex and
 # PC coefficients and evaluate the PC
 for j in range(nout):
-    mindex = np.loadtxt('mindexp.' + str(j) + '_pred.dat',
+    mindex = np.loadtxt('mindexp.dat',
                         dtype=int).reshape(-1, dim)
-    pcf = np.loadtxt('pccfp.' + str(j) + '_pred.dat').reshape(-1, 1)
+    #np.loadtxt('mindexp.' + str(j) + '_pred.dat',
+     #                   dtype=int).reshape(-1, dim)
+    pcf = np.loadtxt('pccf_all.dat')[:,j]
+    #pcf = np.loadtxt('pccfp.' + str(j) + '_pred.dat').reshape(-1, 1)
     outputs[:, j] = func(pinput, 'PCmi', [mindex, pcf, pctype])
 
 # Save the output in the requested file
