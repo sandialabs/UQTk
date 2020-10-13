@@ -1,0 +1,26 @@
+# - Config file for the MUQ package
+# It defines the following variables
+#  MUQ_INCLUDE_DIRS - include directories for MUQ
+#  MUQ_LIBRARIES    - MUQ libraries to link against
+#  MUQ_LINK_LIBRARIES - libraries MUQ links against
+#  MUQ_INCLUDE_DIRS   - Include directories that MUQ uses
+#  MUQ_COMPILE_DEFINITIONS -Definitions used during compilation (i.e. variables added with add_definitions)
+
+set(MUQ_INCLUDE_DIRS @CMAKE_INSTALL_PREFIX@/include @MUQ_EXTERNAL_INCLUDES@)
+
+set(MUQ_LIBRARY_DIR @CMAKE_INSTALL_PREFIX@/lib)
+set(MUQ_EXTERNAL_LIBRARY_DIR @CMAKE_INSTALL_PREFIX@/muq_external/lib)
+
+# These are IMPORTED targets created by MUQDepends.cmake
+set(MUQ_LIBRARIES @MUQ_EXPORT_LIBRARIES@)
+set(MUQ_LINK_LIBRARIES @MUQ_LINK_LIBS@)
+set(MUQ_LINK_LIBRARIES_STATIC @MUQ_LINK_LIBS_STATIC@)
+set(MUQ_PYTHON_LIBRARIES @MUQ_PYTHON_LIBRARIES@)
+
+# These are the compiler flags used to compile MUQ
+set(MUQ_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
+set(MUQ_C_FLAGS "@CMAKE_C_FLAGS@")
+set(MUQ_CXX_COMPILER "@CMAKE_CXX_COMPILER@")
+set(MUQ_C_COMPILER "@CMAKE_C_COMPILER@")
+
+set(MUQ_COMPILE_DEFINITIONS "@MUQ_COMPILE_DEFINITIONS@")

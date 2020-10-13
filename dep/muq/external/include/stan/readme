@@ -1,0 +1,4 @@
+This is essentially STAN 1.3.0, except that we have modified:
+
+*the next_impl(...) of mcmc/nuts.hpp and mcmc/adaptive_hmc.hpp to re-evaluate the likelihood of the current point when beginning a new trajectory
+*mcmc/util.hpp contains some functions that need to be inlined.

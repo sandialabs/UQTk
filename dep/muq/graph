@@ -1,0 +1,14 @@
+digraph {
+nodesep=1.2;
+splines=false;
+"box0_node0"
+"box1_node0"
+"box1_node1" -> "box1_node0"
+"box2_tail0"
+"box2_node0" -> "box2_tail0"
+"box2_node1" -> "box2_node0"
+"box3_tail0"
+"box3_tail1" -> "box3_tail0"
+"box3_node0" -> "box3_tail1"
+"box3_node1" -> "box3_node0"
+}

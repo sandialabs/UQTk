@@ -1,0 +1,3 @@
+The enclosed nn_index.h is a replacement file for FLANN 1.8.4. It goes in flann/src/cpp/flann/algorithms.
+
+It fixes an indexing bug that should be fixed in the future releases.

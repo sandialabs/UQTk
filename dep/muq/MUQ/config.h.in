@@ -1,0 +1,19 @@
+#ifndef MUQ_HAS_GTEST
+#define MUQ_HAS_GTEST @MUQ_HAS_GTEST@
+#endif
+
+#ifndef MUQ_HAS_SUNDIALS
+#define MUQ_HAS_SUNDIALS @MUQ_HAS_SUNDIALS@
+#endif
+
+#ifndef MUQ_HAS_MPI
+#define MUQ_HAS_MPI @MUQ_HAS_MPI@
+#endif
+
+#ifndef MUQ_HAS_PARCER
+#define MUQ_HAS_PARCER @MUQ_HAS_PARCER@
+#endif
+
+#ifndef MUQ_ANYCAST_COMPILES
+#define MUQ_ANYCAST_COMPILES @MUQ_ANYCAST_COMPILES@
+#endif

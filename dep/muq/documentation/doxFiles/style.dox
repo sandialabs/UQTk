@@ -1,0 +1,83 @@
+/**
+ * \page muqstyle MUQ Development Style
+ *
+ * \section uncrustify Uncrustify code formatting
+ * MUQ uses uncrustify to ensure that all the files look good and are similar. It will also insert the license header
+ * into any .h or .cpp that does not lead with a comment.
+ *
+ * Install uncrustify from source, it's easy. http://uncrustify.sourceforge.net/ Get 0.60.
+ *
+ * This style is checked on all altered files with a git hook. Create a link from repo/muq-pre-commit to
+ *.git/hooks/pre-commit, which should be executable. On commit, commits will fail if all files do not pass the style
+ * check. If they fail, it will show  you the diff and then provide a patch. The "git patch" command output can be
+ * executed, the changes added, and then try the commit again. It also might yell at you about trailing whitespace.
+ * Unfortunately, you can't fix these things transparently during the commit hook.
+ *
+ * If you're on kdevelop, you can get the Edit->"Reformat source" to work under Settings->Configure Kdevelop->Source
+ * formatter.
+ * Create a custom script, and set it to "uncrustify -l CPP -q". This will read from ~/.uncrustify.cfg, so create a sym
+ * link from that to your repo, or add -c [uncrustify.cfg in your repo].
+ *
+ * Uncrustify oddness notes:
+ * - It doesn't seem to like the new c++ {} to call a constructor - it took out the ; in one example.
+ * - If you have a one line macro without a ;, it might move the following lines up. This is syntactically okay, as the
+ * macro usually has the semicolon, but it looks bad. Add a ; and it'll be fine.
+ * - If it reflows a comment for you, you seem to need to run it twice. It doesn't add spaces to the wrapped lines the
+ * first go around.
+ * - Reflowing only works for lines that are too long, it grab stuff from the next line,to fix up the whole paragraph,
+ * but you can always merge the lines and force it to reflow.
+ *
+ *  I propose that when we're ready, I'll apply the formatter to everything at once. This will produce a horrible commit
+ * that will touch tons of things. Then, if we decide to tweak the config, we'll apply it as we go, except that on named
+ * releases we might make sure it's universally applied.
+ *
+ *  \section styleconventions C++ style and naming conventions
+ *  I often like the google c++ style guide for such things. They have smart people who thought hard about this stuff,
+ * although they are much more conservative on some things, which I'm sure stems from the size of their projects and
+ * staff. For example, they don't use much boost or c++11, and forbid "using namespace". I think we can loosen those. I
+ * also don't like underscores as much as they do. My thoughts, as a starting point - sorry this list got long:
+ * - Forward declares: avoid including files from .h if you can get away with a single forward declare. A Foo_fwd.h can
+ *   be nice if it's a complicated header that creates a bunch of classes, but I wouldn't bother if Foo.h only has class
+ *   Foo. This creates shorter dependency chains. (I'm trying to work on this, most of the code doesn't do this).
+ *   Otherwise, don't worry too much.
+ * - Namespaces: modules get namespaces inside muq. Lower case names.
+ * - Using: I put using commands in cpps whenever the namespace is used more than a few times. I leave function
+ * inputs
+ * fully qualified because I'm always copy/pasting between the cpp and the h. Google hates "using namespace", but you
+ * can make aliases and using inside functions or classes - I think they're worried about leaking namespaces.
+ *      -I hate underscores. Prefixing class members with underscores is, to my mind, only annoying to type.
+ * - Camel case.
+ * - Function names. Lead with Upper. AFunction. DoSomething. If it's an accessor for x, getX or setX, or maybe
+ * set_x,
+ * get_x. Don't be more creative.
+ * - Members. Lead with lower case. numInputs.
+ * - Boilerplate: let uncrustify put the license in. From google: "If you make significant changes to a file with an
+ * author line, consider
+ * deleting the author line." Thus, it uses MIT as the copyright line.
+ * - Comments: // for one line, / * * /only for big blocks. *Doxygen comments : I use /// for one liners or briefs,
+ * followed by /*. I don't really care whether this is consistent throughout.
+ * - Mostly one public class per file, of the same name.If it's a helper class, go ahead and add it alongside the
+ * namesake class. An exception is ModPieceTemplates.h
+ * - General naming: Google "Give as descriptive a name as possible, within reason. Do not worry about saving horizontal
+ * space as it is far more important to make your code immediately understandable by a new reader. Do not use
+ * abbreviations that are ambiguous or unfamiliar to readers outside your project, and do not abbreviate by deleting
+ * letters within a word."
+ * - input ordering: Google "When defining a function, parameter order is: inputs, then outputs."
+ * - Globals: avoid if possible, but we use them to make the registration magic happen
+ * - non-member functions can be good because they have minimal access to your classes
+ * - Copy constructors: I typically don't write copy constructors, but I don't ever copy any of our objects,
+ * essentially.
+ * Everything is handled with shared_ptr
+ * - Shared_ptr is your friend. No naked new unless you really need it, probably because of an external interface. In
+ * theory, unique_ptr is better, but there's no make_unique in c++ 11 (an odd oversight), and we do share a lot of
+ * things.
+ * - Include order : google :"Use standard order for readability and to avoid hidden dependencies: C library, C++
+ * library, other libraries' .h, your project's .h."
+ * - Const is your friend.Early and often, and always in function inputs whenever possible.I'm less sure that I always
+ * declare functions const that can be.
+ * - For boolean returning functions, I often like Is or Has prefixes for the function names.
+ *
+ * \section documentation Documentation
+ *
+ * Use doxygen! \\addgroup and \\ingroup are your friends.
+ */

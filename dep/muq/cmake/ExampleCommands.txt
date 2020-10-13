@@ -1,0 +1,5 @@
+cmake -DCMAKE_CXX_COMPILER=/usr/local/bin/mpic++ -DCMAKE_C_COMPILER=/usr/local/bin/mpicc -DCMAKE_INSTALL_PREFIX=~/Desktop/MUQ_INSTALL/ -DTrilinos_DIR=~/Documents/Repositories/Trilinos/trilinos-11.4.1-Source/pde_build/lib/ -DSUNDIALS_ROOT=~/Documents/Software/sundials-2.5.0/ ../
+
+cmake .. -DCMAKE_INSTALL_PREFIX=~/Software/install/muq-private/ -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpic++ -DMUQ_USE_GTEST=ON -DMUQ_USE_PYTHON=ON -DMUQ_USE_MPI=ON -DMUQ_PARCER_DIR=/usr/local
+
+use the flag: -DPYBIND11_PYTHON_VERSION=3.6 to use MUQ with Fenics in Python

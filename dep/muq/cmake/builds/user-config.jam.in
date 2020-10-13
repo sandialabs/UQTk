@@ -1,0 +1,1 @@
+using @BOOST_TOOLSET_NAME@ : muq : @CMAKE_CXX_COMPILER@ ;
