@@ -45,7 +45,7 @@ done
 # Adjust the UQTK_SRC_DIR to point to where the UQTk source directory is. Feel free
 # to update the desired installation directory as you prefer.
 UQTK_SRC_DIR=/Users/lukeboll/Desktop/UQTk-SNL
-UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
+UQTK_INSTALL_DIR=/Users/lukeboll/Desktop/UQTk-SNL-install
 
 echo "This script assumes the UQTk source code is in $UQTK_SRC_DIR"
 echo "and that UQTk will be installed in $UQTK_INSTALL_DIR"
