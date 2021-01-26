@@ -38,8 +38,6 @@
 #include "XMLreader.h"
 #include "Utils.h"
 
-
-
 /// \brief Example that solves deterministic 3-equation model for heterogeneous surface
 /// reaction involving a monomer, dimer, and inert species adsorbing
 /// onto a surface out of gas phase. This model mimics some aspects
@@ -69,7 +67,7 @@ int main()
   Array1D<string> modelparamnames;
   // Auxiliary parameters: final time and time step of integration
   Array1D<double> modelauxparams;
-  
+
   // Read the xml tree
   RefPtr<XMLElement> xmlTree=readXMLTree("surf_rxn.in.xml");
   // Read the model-specific input
@@ -94,10 +92,10 @@ int main()
 
   // Stochastic dimensionality
   int dim=uncParamInd.XSize();
- 
+
   // Instantiate a PC object for NISP computations
-  PCSet myPCSet("NISP",order,dim,pcType,0.0,1.0); 
- 
+  PCSet myPCSet("NISP",order,dim,pcType,0.0,1.0);
+
   // The number of PC terms
   const int nPCTerms = myPCSet.GetNumberPCTerms();
   cout << "The number of PC terms in an expansion is " << nPCTerms << endl;
@@ -119,7 +117,7 @@ int main()
   // Number of steps
   int nStep=(int) tf / dTym;
 
- 
+
 
 
   // Initial conditions of zero coverage (based on Makeev:2002)
@@ -132,7 +130,7 @@ int main()
   for(int iq=0;iq<nQdpts;iq++){
 
     // Replace the model parameters corresponding to the quadrature points
-      PCSet inpPC("NISPnoq",order,dim,pcType,0.0,1.0); 
+      PCSet inpPC("NISPnoq",order,dim,pcType,0.0,1.0);
       Array1D<double> qdpt(dim,0.e0);
       getRow(qdpts,iq,qdpt);
       for(int idim=0;idim<dim;idim++){
@@ -150,25 +148,25 @@ int main()
       allmodelparams(iq,idim)=modelparams(idim);
   }
 
-  
+
     // Time and time step
     int step=0;
     double tym=t0;
 
-   
+
  // Open files to write out
   FILE *f_dump,*modes_dump;
   // ... the mean and stdev
-  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
 
   // ... the full set of modes, filename hardwired
   string modes_dumpfile = "solution_NISP_modes.dat";
-  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
 
 
@@ -177,8 +175,8 @@ int main()
   cout << "Stepping forward in time" << endl;
 
   while(tym < tf) {
-      
-   
+
+
 
     for(int iq=0;iq<nQdpts;iq++){
 
@@ -186,7 +184,7 @@ int main()
       outValues(0)=uu(iq);
       outValues(1)=vv(iq);
       outValues(2)=ww(iq);
-      
+
       Array1D<double> cur_modelparams;
       getRow(allmodelparams, iq, cur_modelparams);
 
@@ -197,22 +195,22 @@ int main()
       uu(iq) = outValues(0);
       vv(iq) = outValues(1);
       ww(iq) = outValues(2);
-      
+
     }
-   
-    
+
+
 
     // Non-intrusive spectral projection
     myPCSet.GalerkProjection(uu,u);
     myPCSet.GalerkProjection(vv,v);
     myPCSet.GalerkProjection(ww,w);
-    
+
 
     // Get standard deviations
     double uStDv = myPCSet.StDv(u);
     double vStDv = myPCSet.StDv(v);
     double wStDv = myPCSet.StDv(w);
-    
+
     if(step % outPrint->fdumpInt == 0){
       // write time, u, v, w (all modes) to file
       WriteModesToFilePtr(step*dTym, u.GetArrayPointer(), v.GetArrayPointer(), w.GetArrayPointer(), nPCTerms, modes_dump);
@@ -230,29 +228,28 @@ int main()
       step+=1;
 
 
-    
-  
+
+
     }
 
 
 
 
- 
+
 
   // Close output file
-  if(fclose(f_dump)){ 
-    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(f_dump)){
+    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
 
 
   // Close output file
-  if(fclose(modes_dump)){ 
-    printf("Could not close file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(modes_dump)){
+    printf("Could not close file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
-  
+
 
   return 0;
 }
-
