@@ -49,12 +49,12 @@ rc('ytick',labelsize=20)
 
 # define uqtkbin
 if os.environ.get("UQTK_INS") is None:
-    print "Error: Need to set path to UQTk install direactory as environment variable UQTK_INS -> Abort"
+    print("Error: Need to set path to UQTk install direactory as environment variable UQTK_INS -> Abort")
     quit()
 
 else:
     if ( not os.path.isdir(os.environ["UQTK_INS"]) ):
-        print "\"",os.environ["UQTK_INS"],"\" is not a valid path -> Abort"
+        print("\"",os.environ["UQTK_INS"],"\" is not a valid path -> Abort")
         quit()
 
 uqtkbin=os.environ["UQTK_INS"]+"/bin"

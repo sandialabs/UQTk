@@ -59,7 +59,7 @@ def funcBB(inpfile,outfile,**kwargs):
         shutil.copyfile(xmltpl,xmlin)
         for idim in range(1,ndim+1):
             for line in fileinput.input("surf_rxn.in.xml", inplace = 1):
-                print line.replace('PAR_'+str(idim), str(indata[ip,idim-1])),
+                print(line.replace('PAR_'+str(idim), str(indata[ip,idim-1])), end=' ')
 
         #print "Running the ODE solver for parameter %d/%d"%(ip+1,nruns),
         os.system("./SurfRxnDet.x >> logSurfRxn.dat")
@@ -96,7 +96,7 @@ def plotKdeBin(splfile,figout,**kwargs):
     for i,c in enumerate(spver):
         if c==".": spv.append(i)
     spver=int(spver[spv[0]+1:spv[1]])
-    print "scipy version: ",spver
+    print("scipy version: ",spver)
     if spver > 10:
         kernlin.set_bandwidth(bw_method=kernlin.factor/2.0)
         pdflin2=kernlin(xlin);
@@ -137,14 +137,14 @@ def modelMC(mu,stdfrac,nspl,outfile,**kwargs):
 
         if ((ip+1)%(nspl/100) == 0):
             perc=(ip+1)/(nspl/100)
-            print "\rSampling model: %d percent done"%(perc),
+            print("\rSampling model: %d percent done"%(perc), end=' ')
             sys.stdout.flush()
             npy.savetxt(outfile, ave, fmt="%.18e", delimiter=" ", newline="\n")
         
         # Create the xml files
         shutil.copyfile(xmltpl,xmlin)
         for line in fileinput.input("surf_rxn.in.xml", inplace = 1):
-            print line.replace('PAR_1', str(spls[ip])),
+            print(line.replace('PAR_1', str(spls[ip])), end=' ')
 
         #print "Running the ODE solver for parameter %d/%d"%(ip+1,nruns),
         os.system("./SurfRxnDet.x >> logSurfRxn.dat")

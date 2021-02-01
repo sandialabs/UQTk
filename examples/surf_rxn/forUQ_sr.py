@@ -40,12 +40,11 @@ import fileinput
 import file_utils
 
 def usage():
-    print """
-    forUQ_sr.py <pctype> <pcord> <method1> [<method2>] [<method3>]
-    
+    print("""forUQ_sr.py <pctype> <pcord> <method1> [<method2>] [<method3>]
+
     where: pctype: Type of PC: LU, HG, ...
            pcord : order of PCEs used for output variables
-           method? : methods to pursue: ISP, NISP, and/or NISP_MC"""
+           method? : methods to pursue: ISP, NISP, and/or NISP_MC""")
 
 
 # Input settings
@@ -55,7 +54,7 @@ if len(sys.argv) < 4:
     exit(1)
 
 pctype  = str(sys.argv[1])   # PC type
-pcord   = int(sys.argv[2])   # PC order of the chain samples 
+pcord   = int(sys.argv[2])   # PC order of the chain samples
 methods = sys.argv[3:]
 
 nsam = 100                   # Number of samples for NISP_MC
@@ -82,13 +81,13 @@ for im in range(nmeth):
     cmd = 'mv solution.dat solution_'+methods[im]+'.dat'
     print "Running",cmd
     os.system(cmd)
-  
+
 
 # Postprocessing plots
     cmd = './plSurfRxnMstd.py '+methods[im]
     print "Running",cmd
     os.system(cmd)
- 
+
 cmd = './plPDF_method.py u ave '+pctype+' '+str(pcord)+' '+methods_str
 print "Running",cmd
 os.system(cmd)
