@@ -91,14 +91,14 @@ else:
     if ( not os.path.isdir(os.environ["UQTK_INS"]) ):
         print("\"",os.environ["UQTK_INS"],"\" is not a valid path -> Abort")
         quit()
-    
+
 print("-----------------------------------------------------------------------------------------------------")
 print("   ___                   _         ")
 print("  |_ _|_ __  _ __  _   _| |_   _   ")
 print("   | || '_ \| '_ \| | | | __| (_)  ")
 print("   | || | | | |_) | |_| | |_   _   ")
 print("  |___|_| |_| .__/ \__,_|\__| (_)  ")
-print("            |_|                    ")           
+print("            |_|                    ")
 print("-----------------------------------------------------------------------------------------------------")
 
 #--------------------------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ print("No. of grids for KDE evaluations:.........",npdf)
 nomdim=nom[:dim]
 stdmat=npy.diag(stdfac*nomdim)
 npy.savetxt("pcfile", nomdim, fmt="%.12e", delimiter=" ", newline="\n")
-f_handle = file("pcfile", "a")
+f_handle = open("pcfile", "a+")
 npy.savetxt(f_handle, stdmat, fmt="%.12e", delimiter=" ", newline="\n")
 f_handle.close()
 print("Mean of model parameters:")
@@ -301,4 +301,3 @@ print("Relative L2 error between model output and PCE surrogate:",compute_err("L
 os.system("rm -rf indices.dat n.dat nex.dat norms.dat pccf.dat")
 os.system("rm -rf qdpts* wghts* xdata* ydata* mindex.dat")
 os.system("rm -rf pcfile slu.dat")
-
