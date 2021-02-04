@@ -38,7 +38,6 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "mcmc.h"
-#include "tmcmc.h"
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
 
