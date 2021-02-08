@@ -1,5 +1,0 @@
-/** 
-* \page parameters Ptree-based Parameters
-* Click on values below to expand parameter tree and see details.  The "key" value of the details can be used with the ptree::put() or ptree::get() functions to access the value in a boost::property_tree::ptree instance.
-* \htmlinclude ExtractedParameters.html
-*/
