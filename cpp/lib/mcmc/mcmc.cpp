@@ -26,8 +26,8 @@
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 // \file mcmc.cpp
-// \author K. Sargsyan, C. Safta, B. Debusschere, 2012 -
-// \brief Markov chain Monte Carlo class
+// \author K. Sargsyan, C. Safta, B. Debusschere, 2012
+// \brief Markov chain Monte Carlo class and its subsequent derived classes
 
 #include <math.h>
 #include <float.h>
@@ -38,834 +38,510 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "mcmc.h"
-#include "tmcmc.h"
 #include "gen_defs.h"
 #include "lbfgs_routines.h"
 
-
 double neg_logposteriorproxy(int chaindim, double* m, void* classpointer);
-void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer);
 
-//******************NEW ROUTINES*************************//
-void MCMC::setSeed(int seed){
-  dsfmt_init_gen_rand(&RandomState,seed);
-}
-void MCMC::setWriteFlag(int I){
-  WRITE_FLAG = I;
-}
-
-void MCMC::resetChainState(){
-  fullChain_.Clear();
-}
-//******************NEW ROUTINES*************************//
-
-MCMC::MCMC(double (*logPosterior)(Array1D<double>&, void *), void *postinfo)
-{
-
-  //*****************************************
+///\note Constructor using the pointer to the logPosterior and to the posterior information
+MCMC::MCMC(double (*logposterior)(Array1D<double>&, void *), void *postinfo){
+  // Set Flag
   FLAG = 0;
-  //*****************************************
 
-  postInfo_=postinfo;
-  logPosterior_=logPosterior;
-
-  // / Set the initialization flags to false
-  gradflag_=false;
-  tensflag_=false;
-  fcnAcceptFlag_=false;
-  fcnRejectFlag_=false;
-
-  chaindimInit_=false;
-  propcovInit_=false;
-  methodInit_=false;
-  outputInit_=false;
-  adaptstepInit_=false;
-  gammaInit_=false;
-  epscovInit_=false;
-  epsMalaInit_=false;
-
-  tmcmcNprocsInit_=false;
-  tmcmcGammaInit_=false;
-  tmcmcCvInit_=false;
-  tmcmcMFactorInit_=false;
-  tmcmcBasisInit_=false;
-  tmcmcCATStepsInit_=false;
-  tmcmcRngsInit_=false;
+  postInfo_ = postinfo;
+  logPosterior_ = logposterior;
 
   // Initiate the random number generator seed
   // \todo This needs to be made more generic
-  seed_=13;
+  seed_ = 13;
+  dsfmt_init_gen_rand(&RandomState,seed_);
+
+  // Set the location of the last chain state written (-1 means nothing is written to files yet)
+  lastwrite_ = -1;
+
+  // Set Write Flag
+  WRITE_FLAG = 1;
+
+  return;
+}
+
+///\note Constructor using a LogPosteriorBase class object
+MCMC::MCMC(LogPosteriorBase& L){
+  FLAG = 1;
+  L_ = &L;
+
+  // Initiate the random number generator seed
+  // \todo This needs to be made more generic
+  seed_ = 13;
   dsfmt_init_gen_rand(&RandomState,seed_);
 
   // Set the location of the last chain state written (-1 means nothing is written to files yet)
   lastwrite_=-1;
 
-  // By default the names are not prepended
-  namePrepend_=false;
-
-  // Set defaults
-  this->initDefaults();
-
-  // Set TMCMC defaults
-  this->initTMCMCDefaults();
-
+  // Set Write Flag
   WRITE_FLAG = 1;
 
   return;
 }
 
-//*****************************************
-MCMC::MCMC(LikelihoodBase& L)
-{
-  FLAG = 1;
-  L_ = &L;
-
-  // / Set the initialization flags to false
-  gradflag_=false;
-  tensflag_=false;
-  fcnAcceptFlag_=false;
-  fcnRejectFlag_=false;
-
-  chaindimInit_=false;
-  propcovInit_=false;
-  methodInit_=false;
-  outputInit_=false;
-  adaptstepInit_=false;
-  gammaInit_=false;
-  epscovInit_=false;
-  epsMalaInit_=false;
-
-  tmcmcNprocsInit_=false;
-  tmcmcGammaInit_=false;
-  tmcmcCvInit_=false;
-  tmcmcMFactorInit_=false;
-  tmcmcBasisInit_=false;
-  tmcmcCATStepsInit_=false;
-  tmcmcRngsInit_=false;
-
-  // Set the location of the last chain state written (-1 means nothing is written to files yet)
-  lastwrite_=-1;
-
-  // Initiate the random number generator seed
-  // \todo This needs to be made more generic
-  seed_=13;
-  dsfmt_init_gen_rand(&RandomState,seed_); // you can override with setseed
-
-  // By default the names are not prepended
-  namePrepend_=false;
-
-  // Set defaults
-  this->initDefaults();
-
-  // Set TMCMC defaults
-  this->initTMCMCDefaults();
-
-  WRITE_FLAG = 1;
-
-
-  return;
-}
-
-//*****************************************
-// Used for TMCMC, in which likelihood and
-// priors are evaluated using separate drivers
-MCMC::MCMC()
-{
+///\note Dummy Constructor for TMCMC
+MCMC::MCMC(){
   FLAG = 2;
 
-  // / Set the initialization flags to false
-  gradflag_=false;
-  tensflag_=false;
-  fcnAcceptFlag_=false;
-  fcnRejectFlag_=false;
-
-  chaindimInit_=false;
-  propcovInit_=false;
-  methodInit_=false;
-  outputInit_=false;
-  adaptstepInit_=false;
-  gammaInit_=false;
-  epscovInit_=false;
-  epsMalaInit_=false;
-
-  tmcmcNprocsInit_=false;
-  tmcmcGammaInit_=false;
-  tmcmcCvInit_=false;
-  tmcmcMFactorInit_=false;
-  tmcmcBasisInit_=false;
-  tmcmcCATStepsInit_=false;
-  tmcmcRngsInit_=false;
+  // Initiate the random number generator seed
+  // \todo This needs to be made more generic
+  seed_ = 13;
+  dsfmt_init_gen_rand(&RandomState,seed_);
 
   // Set the location of the last chain state written (-1 means nothing is written to files yet)
   lastwrite_=-1;
 
-  // Initiate the random number generator seed
-  // \todo This needs to be made more generic
-  seed_=13;
-  dsfmt_init_gen_rand(&RandomState,seed_); // you can override with setseed
-
-  // By default the names are not prepended
-  namePrepend_=false;
-
-  // Set defaults
-  this->initDefaults();
-
-  // Set TMCMC defaults
-  this->initTMCMCDefaults();
-
+  // Set Write Flag
   WRITE_FLAG = 1;
 
   return;
 }
 
-// create samples where each column is a sample
-void MCMC::getSamples(int burnin, int every,Array2D<double>& samples)
-{
-    int nCalls = fullChain_.Length();
-    samples.Resize(chainDim_,0); // initialize sample array
-    int j=0;
-    for (int i = burnin; i < nCalls; i+=every){
-        samples.insertCol(fullChain_(i).state,j);
-        j++;
-    }
+///\note Function that sets the Write Flag of the MCMC object
+void MCMC::setWriteFlag(int I){
+  WRITE_FLAG = I;
 }
 
-// create samples where each column is a sample
-void MCMC::getSamples(Array2D<double>& samples)
-{
-    getSamples(0,1,samples);
-}
-//*****************************************
-
-
-void MCMC::setGradient(void (*gradlogPosterior)(Array1D<double>&, Array1D<double>&, void *))
-{
-  gradlogPosterior_ = gradlogPosterior;
-  gradflag_ = true;
-  return;
-}
-
-void MCMC::setMetricTensor(void (*metricTensor)(Array1D<double>&, Array2D<double>&, void *))
-{
-  metricTensor_ = metricTensor;
-  tensflag_ = true;
-  return;
-}
-
-
+///\note Function that sets the accept function for the MCMC object
 void MCMC::setFcnAccept(void (*fcnAccept)(void *))
 {
-  this->fcnAccept_=fcnAccept;
-  this->fcnAcceptFlag_=true;
+  fcnAccept_ = fcnAccept;
+  fcnAcceptFlag_ = true;
   return;
 }
 
+///\note Function that sets the reject function for the MCMC object
 void MCMC::setFcnReject(void (*fcnReject)(void *))
 {
-  this->fcnReject_=fcnReject;
-  this->fcnRejectFlag_=true;
+  fcnReject_ = fcnReject;
+  fcnRejectFlag_ = true;
   return;
 }
 
-void MCMC::initDefaults()
-{
-  this->default_method_="am";
-  this->default_gamma_=0.01;
-  this->default_eps_cov_=1e-8;
-
-  this->default_eps_mala_=0.1;
-
-  this->newMode_=false;
-  this->accRatio_ = -1.0;
-
+///\note Function that sets the number of dimensions for the MCMC object
+void MCMC::setChainDim(int chdim){
+  chainDim_ = chdim;
+  chaindimInit_ = true;
+  this -> setDefaultDomain();
   return;
 }
 
-void MCMC::initTMCMCDefaults()
-{
-  this->default_tmcmc_nprocs_ = 4;
-  this->default_tmcmc_gamma_ = -1.0;
-  this->default_tmcmc_cv_ = 0.1;
-  this->default_tmcmc_MFactor_ = 1;
-  this->default_tmcmc_basis_ = true;
-  this->default_tmcmc_CATSteps_ = 1;
-
-  return;
-}
-
-// void MCMC::initTMCMCRngsDefaults()
-// {
-//   this->default_tmcmc_rngs_ = std::vector<std::vector<double>> (this->chainDim_);
-//   for(int i=0;i<this->chainDim_;i++){
-//     this->default_tmcmc_rngs_[i] = {-1.0, 1.0};
-//   }
-
-//   return;
-// }
-
-void MCMC::printChainSetup()
-{
-  if (this->methodInit_)
-    cout << "Method           : " << this->methodinfo_.type << endl;
-  else
-    cout << "Method (default) : " << this->default_method_ << endl;
-  if (this->gammaInit_)
-    cout << "Gamma            : " << this->methodinfo_.gamma << endl;
-  else
-    cout << "Gamma (default)  : " << this->default_gamma_ << endl;
-  if (this->epscovInit_)
-    cout << "Eps_Cov          : " << this->methodinfo_.eps_cov << endl;
-  else
-    cout << "Eps_Cov (default): " << this->default_eps_cov_ << endl;
-  return;
-}
-
-
-
-double MCMC::evalLogPosterior(Array1D<double>& m){
-  // Evaluate given the log-posterior function defined by the user in the constructor
-  //*****************************************
-  if (FLAG == 0){
-    return logPosterior_(m,postInfo_);
-  }
-  if (FLAG == 1){
-     return L_->eval(m);
-  }
-
-  //*****************************************
-}
-
-void MCMC::evalGradLogPosterior(Array1D<double>& m, Array1D<double>& grads)
-{
-  // Evaluate given the log-posterior function defined by the user in the constructor
-  gradlogPosterior_(m,grads,postInfo_);
-
-  return;
-
-}
-
-void MCMC::initMethod(string method)
-{
-  // Set the method type
-  methodinfo_.type=method;
-  // Set the initialization flag to True
-  methodInit_=true;
-  return;
-}
-
-void MCMC::initAdaptSteps(int adaptstart,int adaptstep, int adaptend)
-{
-  // Initialize the vector containing the adaptivity information: when to start, how often and when to stop.
-  methodinfo_.adaptstep.Resize(3);
-  methodinfo_.adaptstep(0)=adaptstart;
-  methodinfo_.adaptstep(1)=adaptstep;
-  methodinfo_.adaptstep(2)=adaptend;
-
-  // Set the initialization flag to True
-  adaptstepInit_=true;
-
-  return;
-}
-
-void MCMC::initAMGamma(double gamma)
-{
-  // Initialize the scale factor gamma
-  methodinfo_.gamma=gamma;
-  // Set the initialization flag to True
-  gammaInit_=true;
-
-  return;
-}
-
-void MCMC::initEpsCov(double eps_cov)
-{
-  // Initialize the covariance 'nugget'
-  methodinfo_.eps_cov=eps_cov;
-  // Set the initialization flag to True
-  epscovInit_=true;
-
-  return;
-}
-
-void MCMC::initEpsMALA(double eps_mala)
-{
-  // Initialize the epsilon parameter for MALA algorithm
-  epsMALA_=eps_mala;
-  // Set the initialization flag to True
-  epsMalaInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCNprocs(int tmcmc_nprocs)
-{
-  // Initialize the number of processes for TMCMC
-  methodinfo_.tmcmc_nprocs=tmcmc_nprocs;
-  // Set the initialization flag to True
-  tmcmcNprocsInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCGamma(double tmcmc_gamma)
-{
-  // Initialize the the coefficient behind the covariance scaling
-  // factor for TMCMC
-  methodinfo_.tmcmc_gamma=tmcmc_gamma;
-  // Set the initialization flag to True
-  tmcmcGammaInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCCv(double tmcmc_cv)
-{
-  // Initialize the maximum allowed coefficient of variation for
-  // the weights in TMCMC
-  methodinfo_.tmcmc_cv=tmcmc_cv;
-  // Set the initialization flag to True
-  tmcmcCvInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCMFactor(int tmcmc_MFactor)
-{
-  // Initialize the multiplicative factor for chain length to
-  // encourage mixing in TMCMC
-  methodinfo_.tmcmc_MFactor=tmcmc_MFactor;
-  // Set the initialization flag to True
-  tmcmcMFactorInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCBasis(bool tmcmc_basis)
-{
-  // Initialize the choice to resample according to BASIS and
-  // CATMIPs in TMCMC
-  methodinfo_.tmcmc_basis=tmcmc_basis;
-  // Set the initialization flag to True
-  tmcmcBasisInit_=true;
-
-  return;
-}
-
-void MCMC::initTMCMCCATSteps(int tmcmc_CATSteps)
-{
-  // Initialize the CATMIPs resampling parameter for TMCMC
-  methodinfo_.tmcmc_CATSteps=tmcmc_CATSteps;
-  // Set the initialization flag to True
-  tmcmcCATStepsInit_=true;
-
-  return;
-}
-
-// void MCMC::initTMCMCRngs(std::vector<std::vector<double>>& tmcmc_rngs)
-// {
-//   // Initialize the ranges for all samples
-//   methodinfo_.tmcmc_rngs.assign(tmcmc_rngs.begin(), tmcmc_rngs.end());
-
-//   // Set the initialization flag to True
-//   tmcmcRngsInit_=true;
-//   return;
-// }
-
-void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen)
-{
-  outputinfo_.type=outtype;
-  outputinfo_.filename=file;
-  outputinfo_.freq_chainfile=freq_file;
-  outputinfo_.freq_outscreen=freq_screen;
-  // Set the initialization flag to True
-  outputInit_=true;
-  return;
-}
-
-void MCMC::initChainPropCov(Array2D<double>& propcov)
-{
+///\note Function that initialize the proposal covariance matrix given as a 2d-array
+void MCMC::initChainPropCov(Array2D<double>& propcov){
   // Initialize the proposal covariance matrix
-  methodinfo_.chcov=propcov;
-  // Set the initialization flag to True
+  chcov=propcov;
+  // Set the initialization flag to true
   propcovInit_=true;
+
   return;
 }
 
-void MCMC::initChainPropCovDiag(Array1D<double>& sig)
-{
-
+///\note Function that initialize the proposal covariance matrix given as a 1d-array
+void MCMC::initChainPropCovDiag(Array1D<double>& sig){
   // Create a diagonal matrix and fill in the diagonal terms
-  methodinfo_.chcov.Resize(this->chainDim_,this->chainDim_,0.e0);
-  for(int i=0;i<this->chainDim_;i++) methodinfo_.chcov(i,i)=sig(i)*sig(i);
-  // Set the initialization flag to True
+  chcov.Resize(chainDim_,chainDim_,0.e0);
+  for(int i = 0; i < chainDim_; ++i){
+    chcov(i,i)=sig(i)*sig(i);
+  }
+
+  // Set the initialization flag to true
   propcovInit_=true;
+
+  return;
+}
+
+///\note Function that sets the output information for the MCMC object
+void MCMC::setOutputInfo(string outtype, string file,int freq_file, int freq_screen){
+  outputinfo_.outtype = outtype;
+  outputinfo_.filename = file;
+  outputinfo_.freq_file = freq_file;
+  outputinfo_.freq_screen = freq_screen;
+  // Set the initialization flag to true
+  outputInit_ = true;
+
   return;
 }
 
-void MCMC::getChainPropCov(Array2D<double>& propcov)
-{
-  // Get the proposal covariance matrix
-  propcov=methodinfo_.chcov;
+///\note Function that sets whether the parameter names will be prepended in the output file
+void MCMC::namesPrepended(){
+  namesPrepend = true;
+
+  return;
+}
+
+///\note Function that sets the seed for random generation
+void MCMC::setSeed(int seed){
+  seed_ = seed;
+  dsfmt_init_gen_rand(&RandomState,seed);
   return;
 }
 
-double neg_logposteriorproxy(int chaindim, double* m, void* classpointer)
-{
-
-  MCMC* thisClass=(MCMC*) classpointer;
-
-  int aa=thisClass->GetChainDim();
-
-// Double check chain dimensionality
-  if(chaindim != thisClass->GetChainDim()){
-
-    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension") +
-                  " does not match the dimension of the MChain class instance");
-}
-
-  Array1D<double> mm(chaindim,0.e0);
-
-  for(int i=0;i<chaindim;i++)
-    mm(i)=m[i];
-
-
-
-
-// Call the posterior function and return its result
-  return -thisClass->evalLogPosterior(mm);
-
-
-
-
-}
-
-void grad_neg_logposteriorproxy(int chaindim, double* m, double* grads, void* classpointer)
-{
-
-  MCMC* thisClass=(MCMC*) classpointer;
-
-  int aa=thisClass->GetChainDim();
-
-// Double check chain dimensionality
-  if(chaindim != thisClass->GetChainDim()){
-
-    throw Tantrum(std::string("grad_neg_logposteriorproxy: The passed in MCMC chain dimension") +
-                  " does not match the dimension of the MChain class instance");
-}
-
-  Array1D<double> mm(chaindim,0.e0);
-
-  for(int i=0;i<chaindim;i++)
-    mm(i)=m[i];
-
-
-
-
-// Call the posterior function and return its result
-  Array1D<double> grads_arr;
-  thisClass->evalGradLogPosterior(mm, grads_arr);
-
-
-  for(int i=0;i<chaindim;i++)
-    grads[i]=-grads_arr(i);
-
+///\note Sets the lower limit at index i
+void MCMC::setLower(double lower, int i){
+  Lower_(i) = lower;
+  lower_flag_(i) = 1;
 
   return;
-
-
 }
 
-void MCMC::runOptim(Array1D<double>& start)
-{
+///\note Sets the upper limit at index i
+void MCMC::setUpper(double upper, int i){
+  Upper_(i) = upper;
+  upper_flag_(i) = 1;
+
+  return;
+}
+
+///\note Sets the default domain for the MCMC object
+void MCMC::setDefaultDomain(){
+  Lower_.Resize(chainDim_,-DBL_MAX);
+  Upper_.Resize(chainDim_,DBL_MAX);
+  lower_flag_.Resize(chainDim_,0);
+  upper_flag_.Resize(chainDim_,0);
+
+  return;
+}
+
+///\note Get the proposal covariance matrix given a 2d-array
+void MCMC::getChainPropCov(Array2D<double>& propcov){
+  propcov = chcov;
+
+  return;
+}
+
+string MCMC::getFilename(){
+  return outputinfo_.filename;
+}
+
+int MCMC::getWriteFlag(){
+  return WRITE_FLAG;
+}
+
+void MCMC::getSamples(int burnin, int every, Array2D<double>& samples){
+  int nCalls = fullChain_.Length();
+  samples.Resize(chainDim_,0); // initialize sample array
+  int j=0;
+  for (int i = burnin; i < nCalls; i+=every){
+    samples.insertCol(fullChain_(i).state,j);
+    j++;
+  }
+
+  return;
+}
+
+void MCMC::getSamples(Array2D<double>& samples){
+  getSamples(0,1,samples);
+}
+
+void MCMC::getFcnAccept(void (*fcnAccept)(void *)){
+  fcnAccept = fcnAccept_;
+  return;
+}
+
+void MCMC::getFcnReject(void (*fcnReject)(void *)){
+  fcnReject = fcnReject_;
+  return;
+}
+
+string MCMC::getOutputType(){
+  return outputinfo_.outtype;
+}
+
+int MCMC::getFileFreq(){
+  return outputinfo_.freq_file;
+}
+
+int MCMC::getScreenFreq(){
+  return outputinfo_.freq_screen;
+}
+
+bool MCMC::getNamesPrepended(){
+  return namesPrepend;
+}
+
+int MCMC::getSeed(){
+  return seed_;
+}
+
+double MCMC::getLower(int i){
+  return Lower_(i);
+}
+
+double MCMC::getUpper(int i){
+  return Upper_(i);
+}
+
+bool MCMC::getDimInit(){
+  return chaindimInit_;
+}
+
+void MCMC::getPostInfo(void *post){
+  post = postInfo_;
+  return;
+}
+
+bool MCMC::getPropCovInit(){
+  return propcovInit_;
+}
+
+bool MCMC::getOutputInit(){
+  return outputInit_;
+}
+
+int MCMC::getLastWrite(){
+  return lastwrite_;
+}
+
+void MCMC::setLastWrite(int i){
+  lastwrite_ = i;
+  return;
+}
+
+void MCMC::setAcceptRatio(double d){
+  accRatio_ = d;
+  return;
+}
+
+void MCMC::setPostInfo(void *postinfo){
+  postInfo_ = postinfo;
+  return;
+}
+
+void MCMC::runAcceptFcn(){
+  this->fcnAccept_(this->postInfo_);
+  return;
+}
+
+void MCMC::runRejectFcn(){
+  this->fcnReject_(this->postInfo_);
+  return;
+}
+
+void MCMC::resetChainState(){
+  fullChain_.Clear();
+
+  return;
+}
+
+void MCMC::resetChainFilename(string filename){
+  this -> resetChainState();
+  lastwrite_ = -1;
+  outputinfo_.filename = filename;
+
+  return;
+}
+
+void MCMC::parseBinChain(string filename, Array1D<chainstate>& readchain){
+  double tmp;
+  int readstep,i=0;
+
+  FILE *fb = fopen(filename.c_str(),"rb");
+
+  chainstate curchain;
+  // Read the binary file and write to an array of chain states
+  while( fread(&readstep,sizeof(int),1,fb) ) {
+
+    curchain.step=readstep;
+    assert(readstep==i);
+
+    curchain.state.Resize(chainDim_);
+
+    fread(curchain.state.GetArrayPointer(),chainDim_*sizeof(double),1,fb);
+    fread(&tmp,sizeof(double),1,fb);
+    curchain.alfa=tmp;
+    fread(&tmp,sizeof(double),1,fb);
+    curchain.post=tmp;
+    readchain.PushBack(curchain);
+    i++;
+  }
+
+  fclose(fb);
+
+  return;
+}
+
+void MCMC::writeFullChainTxt(string filename, Array1D<chainstate> fullchain){
+  // Open the text file in a write mode
+  char* writemode = "w";
+
+  // Append if the names already prepended
+  if (namesPrepend)
+    writemode = "a";
+
+  FILE* f_out;
+  if(!(f_out = fopen(filename.c_str(),writemode))){
+    printf("writeChain: could not open file '%s'\n",filename.c_str());
+    exit(1);
+  }
+
+  // Write the full chain
+  for(int i=0;i<fullchain.XSize();i++){
+    fprintf(f_out, "%d ", fullchain(i).step);
+    for(int ic=0;ic<chainDim_;ic++)
+      fprintf(f_out, "%24.16lg ", fullchain(i).state(ic));
+    fprintf(f_out, "%24.16lg %24.16lg \n", fullchain(i).alfa,fullchain(i).post);
+  }
+
+  // Closte the file
+ if(fclose(f_out)){
+   printf("writeChain: could not close file '%s'\n",filename.c_str());
+   exit(1);
+ }
+
+ // Report
+ printf("Written the full chain out to text file %s\n",filename.c_str());
+
+ return;
+}
+
+void MCMC::getFullChain(Array1D<chainstate>& readchain){
+  readchain = fullChain_;
+  return;
+}
+
+void MCMC::appendMAP(){
+  fullChain_.PushBack(modeState_);
+  return;
+}
+
+double MCMC::getMode(Array1D<double>& MAPparams){
+  MAPparams = modeState_.state;
+  return modeState_.post;
+}
+
+int MCMC::getFullChainSize(){
+  return this -> fullChain_.XSize();
+}
+
+void MCMC::addCurrentState(){
+  fullChain_.PushBack(currState_);
+}
+
+void MCMC::setCurrentStateStep(int i){
+  currState_.step = i;
+  return;
+}
+
+void MCMC::getCurrentStateState(Array1D<double>& state){
+  state = currState_.state;
+  return;
+}
+
+void MCMC::setCurrentStateState(Array1D<double>& newState){
+  currState_.state = newState;
+  return;
+}
+
+double MCMC::getCurrentStatePost(){
+  return currState_.post;
+}
+
+void MCMC::setCurrentStatePost(double newPost){
+  currState_.post = newPost;
+  return;
+}
+
+double MCMC::getModeStatePost(){
+  return modeState_.post;
+}
+
+void MCMC::setCurrentStateAlfa(double newAlfa){
+  currState_.alfa = newAlfa;
+  return;
+}
+
+void MCMC::getModeStateState(Array1D<double>& state){
+  state = modeState_.state;
+  return;
+}
+
+void MCMC::runOptim(Array1D<double>& start){
   int n=start.Length();
   int m=5;
   Array1D<int> nbd(n,0);
   Array1D<double> l(n,0.e0);
   Array1D<double> u(n,0.e0);
 
-    for (int i=0;i<n;i++){
+  for (int i=0;i<n;i++){
     if (lower_flag_(i) && !upper_flag_(i)){
-        nbd(i)=1;
-        l(i)=this->Lower_(i);
+      nbd(i)=1;
+      l(i)=this->getLower(i);
     }
     if (upper_flag_(i) && !lower_flag_(i)){
-        nbd(i)=3;
-        u(i)=this->Upper_(i);
+      nbd(i)=3;
+      u(i)=this->getUpper(i);
     }
     if (upper_flag_(i) && lower_flag_(i)){
-        nbd(i)=2;
-        l(i)=this->Lower_(i);
-        u(i)=this->Upper_(i);
+      nbd(i)=2;
+      l(i)=this->getLower(i);
+      u(i)=this->getUpper(i);
     }
-    }
-    void* info=this;
+  }
 
+  void* info=this;
 
-  if (gradflag_)
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,grad_neg_logposteriorproxy,info) ;
-  else
-    lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
+  lbfgsDR(n,m,start.GetArrayPointer(),nbd.GetArrayPointer(),l.GetArrayPointer(),u.GetArrayPointer(),neg_logposteriorproxy,NULL,info) ;
 
-  currState_.step=0;
-  currState_.state=start;
-  currState_.alfa=0.0;
-  currState_.post=this->evalLogPosterior(start);
+  this -> setCurrentStateStep(0);
+  this -> setCurrentStateState(start);
+  this -> setCurrentStateAlfa(0.0);
+  this -> setCurrentStatePost(this->evalLogPosterior(start));
   this->updateMode();
 
   return;
 }
 
-void MCMC::runChain(int ncalls)
-{
-  Array1D<double> chstart(this->chainDim_,0.e0);
-
-  this->runChain(ncalls, chstart);
+bool MCMC::newModeFound(){
+  return newMode_;
 }
 
-void MCMC::runChain(int ncalls, Array1D<double>& chstart)
-{
-  // Check the mandatory initialization
-  if(!chaindimInit_)
-    throw Tantrum((string) "Chain dimensionality needs to be initialized");
-
-  // Check what is not initialized and use defaults instead
-  // \todo Specify defaults somewhere more transparently
-
-  // Set defaults proposal covariance
-  if(!propcovInit_){
-    Array1D<double> chsig(this->chainDim_,0.e0);
-    for(int i=0;i<this->chainDim_;i++) chsig(i)=MAX(fabs(0.1*chstart(i)),0.001);
-    this->initChainPropCovDiag(chsig);
-  }
-
-  // Set defaults output format
-  if (!outputInit_)
-    this->setOutputInfo("txt","chain.dat", max(1,(int) ncalls/100), max(1,(int) ncalls/20));
-
-
-  // Set the default method
-  if (!methodInit_)
-    methodinfo_.type=default_method_;
-
-  // Set the default parameters for aMCMC
-  if(!strcmp(this->methodinfo_.type.c_str(),"am")){
-
-    if(!adaptstepInit_)
-      this->initAdaptSteps((int) ncalls/10,10,ncalls);
-
-    if(!gammaInit_)
-      this->initAMGamma(this->default_gamma_);
-
-    if(!epscovInit_)
-      this->initEpsCov(this->default_eps_cov_);
-  }
-  else if(!strcmp(this->methodinfo_.type.c_str(),"mala")){
-    if(!epsMalaInit_)
-      this->initEpsMALA(this->default_eps_mala_);
-  }
-  else if(!strcmp(this->methodinfo_.type.c_str(),"tmcmc")){
-    if(!tmcmcNprocsInit_)
-      this->initTMCMCNprocs(this->default_tmcmc_nprocs_);
-
-    if(!tmcmcGammaInit_)
-      this->initTMCMCGamma(this->default_tmcmc_gamma_);
-
-    if(!tmcmcCvInit_)
-      this->initTMCMCCv(this->default_tmcmc_cv_);
-
-    if(!tmcmcMFactorInit_)
-      this->initTMCMCMFactor(this->default_tmcmc_MFactor_);
-
-    if(!tmcmcBasisInit_)
-      this->initTMCMCBasis(this->default_tmcmc_basis_);
-
-    if(!tmcmcCATStepsInit_)
-      this->initTMCMCCATSteps(this->default_tmcmc_CATSteps_);
-  }
-
-  // For simplicity, work variables
-  string method=methodinfo_.type;
-  string output=outputinfo_.type;
-
-  // For TMCMC, call appropriate subroutines
-  if(!strcmp(this->methodinfo_.type.c_str(),"tmcmc")){
-    double logevid;
-
-    std::vector<double> samples;
-    std::vector<double> logpriors;
-    std::vector<double> logliks;
-    std::ofstream evidFile("Evidence.dat");
-
-    // Run TMCMC, get evidence
-    logevid = tmcmc(samples, logpriors, logliks,
-    methodinfo_.tmcmc_gamma, ncalls,
-    seed_, methodinfo_.tmcmc_nprocs, this->chainDim_,
-    methodinfo_.tmcmc_cv, methodinfo_.tmcmc_MFactor,
-    methodinfo_.tmcmc_basis, methodinfo_.tmcmc_CATSteps, WRITE_FLAG);
-
-    // clean up
-    std::ifstream moveFile("tmcmc_moveIntermediateFiles.sh");
-    if (moveFile.is_open()) {
-      std::string moveStr = "./tmcmc_moveIntermediateFiles.sh TMCMCIntermediates";
-      system(moveStr.c_str());
-    }
-
-    // Convert samples to chain format
-    Array1D<double> sample(this->chainDim_);    
-    // std::cout << "hero1" << std::endl;
-
-    for (int i=0; i < ncalls; i++) {
-
-      currState_.step=i+1;
-      for (int j=0; j<this->chainDim_; j++ ){
-        // std::cout << i << " " << j << " " << samples[i*this->chainDim_+j] << std::endl;
-        sample(j) = samples[i*this->chainDim_+j];
-      } 
-      currState_.state=sample;
-      currState_.alfa=0.0;
-      currState_.post=logpriors[i]+logliks[i];
-      fullChain_.PushBack(currState_);
-    }
-
-    evidFile << std::setprecision(18) << logevid << std::endl;
-
-    if (WRITE_FLAG == 1){
-      // Output to file
-      if(!strcmp(output.c_str(),"txt"))
-        this->writeChainTxt(outputinfo_.filename);
-      else  if(!strcmp(output.c_str(),"bin"))
-        this->writeChainBin(outputinfo_.filename);
-      else
-        throw Tantrum((string) "Chain output type is not recognized");
-    }
-
-    evidFile.close();
-  }
-  // For any method other than TMCMC
-  else{
-    // Set the number of substeps per one chain step
-    if(!strcmp(method.c_str(),"ss"))
-      nSubSteps_=chainDim_;
-    else //if(!strcmp(method.c_str(),"am")) or if(!strcmp(method.c_str(),"mala"))
-      nSubSteps_=1;
-
-
-    // Initial chain state
-    currState_.step=0;
-    currState_.state=chstart;
-    currState_.alfa=0.0;
-    currState_.post=this->evalLogPosterior(chstart);
-    this->updateMode();
-    fullChain_.PushBack(currState_);
-
-    // Number of accepted steps and number of all trials
-    int nacc=0;
-    int nall=0;
-
-    // No new mode found yet
-    newMode_=false;
-
-    // Main loop
-    for (int t=1; t <= ncalls; t++) {
-      currState_.step=t;
-      double sum_alpha=0.0;
-
-      // Create a new proposed sample
-      // If the method is 'ss'(Single-Site), one actually searches all dimensions before recording the new state, i.e.
-      // one chain step has d substeps, where d is the chain dimensionality.
-      // For 'am'(Adaptive), d is set to 1.
-      for (int is=0; is<nSubSteps_; is++){
-        Array1D<double> m_cand;
-        if(!strcmp(method.c_str(),"ss"))
-          this->proposalSingleSite(currState_.state, m_cand, is);
-        else if(!strcmp(method.c_str(),"am"))
-          this->proposalAdaptive(currState_.state, m_cand, t);
-        else if(!strcmp(method.c_str(),"mala"))
-          this->proposalMALA(currState_.state, m_cand);
-        else if(!strcmp(method.c_str(),"mmala"))
-          this->proposalMMALA(currState_.state, m_cand);
-        else
-          throw Tantrum((string) "Chain running method is not recognized");
-
-        // Evaluate the posterior at the new sample point
-        double eval_cand = this->evalLogPosterior(m_cand);
-
-        // Evaluate the new|old and old|new proposals
-        double old_given_new = this->probOldNew(currState_.state, m_cand);
-        double new_given_old = this->probOldNew(m_cand,currState_.state);
-
-
-
-        // Accept or reject it
-        double alpha = exp(eval_cand - currState_.post + old_given_new - new_given_old);
-          // cout << t << " " << eval_cand << " " << currState_.post << " " << old_given_new << " " << new_given_old << " " << alpha << endl;
-         // cout << "alpha = " << alpha << endl;
-        sum_alpha+=alpha;
-        if (this->inDomain(m_cand) && (alpha>=1 || alpha > dsfmt_genrand_urv(&RandomState))) { // Accept and update the state
-            nacc++;
-            currState_.state = m_cand;
-            currState_.post = eval_cand;
-            if (this->fcnAcceptFlag_)
-              this->fcnAccept_(this->postInfo_);
-        } // If state not accepted, keep previous state as the current state
-        else{
-          if (this->fcnRejectFlag_)
-            this->fcnReject_(this->postInfo_);
-        }
-
-        nall++;
-      }
-      currState_.alfa=sum_alpha/nSubSteps_;
-
-      // Append the current state to the array of all past states
-      fullChain_.PushBack(currState_);
-
-      // Keep track of the mode (among the locations visited so far)
-      // \todo maybe only store tmode_(we save the full chain anyway)
-      if (currState_.post > modeState_.post){
-        this->updateMode();
-        newMode_=true;
-      }
-
-      accRatio_ = (double) nacc/nall;
-
-
-
-      if (WRITE_FLAG == 1){
-
-        // Output to the screen
-        if( t % outputinfo_.freq_outscreen == 0 || t==ncalls){
-
-          printf("%lg %% completed; Chain step %d\n", 100.*t/ncalls,t);
-          printf("================= Current logpost:%f, Max logpost:%f, Accept rate:%f\n",currState_.post,modeState_.post,accRatio_);
-          printf("================= Current MAP params: ");
-          for(int ic=0;ic<this->chainDim_;ic++)
-            printf("par(%d)=%f ",ic,modeState_.state(ic));
-          cout << endl;
-
-        }
-
-        // Output to file
-        if( t % outputinfo_.freq_chainfile == 0 || t==ncalls){
-
-          if(!strcmp(output.c_str(),"txt"))
-            this->writeChainTxt(outputinfo_.filename);
-          else  if(!strcmp(output.c_str(),"bin"))
-            this->writeChainBin(outputinfo_.filename);
-          else
-            throw Tantrum((string) "Chain output type is not recognized");
-          lastwrite_ = t;
-        }
-      }
-
-    }  // End of main loop
-  }
+void MCMC::getAcceptRatio(double * accrat){
+  *accrat = accRatio_;
 
   return;
 }
 
-void MCMC::updateMode()
-{
+double MCMC::getAcceptRatio(){
+  return accRatio_;
+}
+
+int MCMC::GetChainDim() const{
+  return chainDim_;
+}
+
+double MCMC::evalLogPosterior(Array1D<double>& m){
+  if (FLAG == 0){
+    return logPosterior_(m,postInfo_);
+  }
+  if (FLAG == 1){
+     return L_->eval(m);
+  }
+}
+
+bool MCMC::inDomain(Array1D<double>& m){
+  int nd = m.XSize();
+
+  for (int id=0;id<nd;id++){
+    if (!lower_flag_(id))
+      return true;
+    else if (m(id)<Lower_(id))
+      return false;
+
+    if (!upper_flag_(id))
+      return true;
+    else if (m(id)>Upper_(id))
+      return false;
+    }
+
+  return true;
+}
+
+void MCMC::updateMode(){
   // Update the chain mode (MAP state)
   modeState_.step=currState_.step;
   modeState_.state=currState_.state;
@@ -875,184 +551,31 @@ void MCMC::updateMode()
   return;
 }
 
-bool MCMC::newModeFound()
-{
-  // Check to see if a new mode was found during last call to runChain
-  return newMode_;
-}
-
-void MCMC::getAcceptRatio(double * accrat)
-{
-  // Returns the acceptance ratio
-  *accrat = accRatio_;
+void MCMC::setNewMode(bool value){
+  newMode_ = value;
   return;
 }
 
-void MCMC::proposalSingleSite(Array1D<double>& m_t,Array1D<double>& m_cand,int dim)
-{
-  // Single-site proposal
-  m_cand=m_t;
-  m_cand(dim) += ( sqrt(methodinfo_.chcov(dim,dim))*dsfmt_genrand_nrv(&RandomState) );
-
-  return;
+bool MCMC::getFcnAcceptInit(){
+  return fcnAcceptFlag_;
 }
 
-
-void MCMC::proposalAdaptive(Array1D<double>& m_t,Array1D<double>& m_cand,int t)
-{
-  int chol_info=0;
-  char lu='L';
-
-  // xm[] is the mean of m_t[] over all previous states, X_0,...,X_{t-1}
-  // at this stage, index t, we know X_0,X_1,...,X_{t-1}
-  // and we're seeking to find X_t, the new state of the chain
-  // also evaluate covt, the covariance matrix
-
-  if (t == 1) {
- // at the first iteration, the mean is easy and the sample covariance is 0
-     methodinfo_.curmean=m_t;
-     methodinfo_.curcov.Resize(this->chainDim_,this->chainDim_,0.e0);
-  } else if( t > 1 && t < methodinfo_.adaptstep(2) ){
-// after the first iteration, start keeping track of the sample mean
-     for (int i=0; i < chainDim_; i++) {
-          methodinfo_.curmean(i)  = ( methodinfo_.curmean(i)*(t-1.) + m_t(i) )/t;
-     }
-
-
-
-     for (int i=0; i < this->chainDim_; i++)
-       for (int j=0; j < i+1; j++)
-   methodinfo_.curcov(i,j) = ( (t-2.)/(t-1.) )*methodinfo_.curcov(i,j) +
-     ( t/((t-1.)*(t-1.)) ) * ( m_t(i) - methodinfo_.curmean(i) )*( m_t(j) - methodinfo_.curmean(j) );
-
-     //transpose
-     for (int i=0; i < chainDim_; i++)
-       for (int j=i+1; j < chainDim_ ; j++)
-   methodinfo_.curcov(i,j) = methodinfo_.curcov(j,i) ;
-
-  }
-
-
-
-  // Jump size
-  double sigma = methodinfo_.gamma * 2.4 * 2.4 / (double)this->chainDim_;
-
-  if(t ==1) {
-    propLCov_=methodinfo_.chcov;
-
-    // Cholesky factorization of the proposal covariance propLCov_, done in-place
-    // Note, for diagonal covariances, this is an overkill
-    FTN_NAME(dpotrf)(&lu,&chainDim_, propLCov_.GetArrayPointer(),&chainDim_,&chol_info);
-
-  }
-
-  if ( ( t > methodinfo_.adaptstep(0) ) && ( (t % methodinfo_.adaptstep(1) ) ==  0 ) && t <= methodinfo_.adaptstep(2) ) {
-
-    for (int i=0; i < chainDim_; i++)
-      for (int j=0; j < chainDim_; j++)
-  propLCov_(i,j) = sigma*( methodinfo_.curcov(i,j) + (i==j)*methodinfo_.eps_cov ) ;
-
-    methodinfo_.chcov=propLCov_;
-
-
-    // Cholsky factorization of the proposal covariance propLCov_, done in-place
-    FTN_NAME(dpotrf)(&lu,&chainDim_, propLCov_.GetArrayPointer(),&chainDim_,&chol_info);
-
-    // Catch the error in Cholesky factorization
-    if (chol_info != 0 ) {
-      printf("Error in Cholesky factorization, info=%d, printing the matrix below:\n", chol_info);
-
-      for(int i=0;i<chainDim_;i++){
-        for(int j=0;j<chainDim_;j++)
-          printf("%lg ",propLCov_(i,j));
-        printf("\n");
-      }
-
-      exit(1);
-    }
-  }
-
-
-  // Candidate state is a multivariate normal sample away from the current state
-    m_cand=m_t;
-    Array1D<double> xi(chainDim_,0.e0);
-  for (int i=0; i < chainDim_; i++) {
-      xi(i)=dsfmt_genrand_nrv(&RandomState);
-    double Lnrv=0.0;
-    for (int j=0; j < i+1; j++) {
-      Lnrv += propLCov_(i,j)*xi(j);
-    }
-    m_cand(i) += Lnrv;
-  }
-
-
-
-  return;
-
+bool MCMC::getFcnRejectInit(){
+  return fcnRejectFlag_;
 }
 
-void MCMC::proposalMALA(Array1D<double>& m_t,Array1D<double>& m_cand)
-{
-  Array1D<double> grads;
-  gradlogPosterior_(m_t,grads,NULL);
-  cout << "grads= " << grads(0) << " " << grads(1) << endl;
-  m_cand=m_t;
-  for (int i=0; i < chainDim_; i++) {
-    m_cand(i) += epsMALA_*epsMALA_*grads(i)/2.;
-    m_cand(i) += epsMALA_*dsfmt_genrand_nrv(&RandomState);
-  }
-
-
-  return;
+int MCMC::getLowerFlag(int i){
+  return lower_flag_(i);
 }
 
-
-void MCMC::proposalMMALA(Array1D<double>& m_t,Array1D<double>& m_cand)
-{
-
- int chol_info=0;
-  char lu='L';
-
-  Array1D<double> grads;
-  this->gradlogPosterior_(m_t,grads,NULL);
-  Array2D<double> mtensorinv;
-  this->metricTensor_(m_t,mtensorinv,NULL);
-  m_cand=m_t;
-
-  Array1D<double> mtggrads;
-  prodAlphaMatVec(mtensorinv, grads, 1.0, mtggrads) ;
-
-  Array2D<double> sqrt_mtensorinv;
-  sqrt_mtensorinv=mtensorinv;
-  FTN_NAME(dpotrf)(&lu,&chainDim_, sqrt_mtensorinv.GetArrayPointer(),&chainDim_,&chol_info);
-  // Catch the error in Cholesky factorization
-  if (chol_info != 0 )
-      printf("Error in Cholesky factorization, info=%d\n", chol_info);
-
-
-  for (int i=0; i < chainDim_; i++) {
-    m_cand(i) += epsMALA_*epsMALA_*mtggrads(i)/2.;
-    for (int j=0; j < i+1; j++) {
-      m_cand(i) += epsMALA_*sqrt_mtensorinv(i,j)*dsfmt_genrand_nrv(&RandomState);
-    }
-  }
-
-
-  return;
+int MCMC::getUpperFlag(int i){
+  return upper_flag_(i);
 }
 
-void MCMC::appendMAP()
-{
-  this->fullChain_.PushBack(modeState_);
-  return;
-}
-
-void MCMC::writeChainTxt(string filename)
-{
-
+void MCMC::writeChainTxt(string filename){
   // Choose whether write or append
   char* writemode="w";
-  if (lastwrite_>=0 || namePrepend_)
+  if (this -> getLastWrite() >= 0 || namesPrepend)
     writemode="a";
 
   // Open the text file
@@ -1063,7 +586,7 @@ void MCMC::writeChainTxt(string filename)
   }
 
   // Write to the text file
-  for(int i=this->lastwrite_+1;i<this->fullChain_.XSize();i++){
+  for(int i = this -> getLastWrite() + 1; i<this->fullChain_.XSize();i++){
     fprintf(f_out, "%d ", this->fullChain_(i).step);
     for(int ic=0;ic<this->chainDim_;ic++)
       fprintf(f_out, "%24.16lg ", this->fullChain_(i).state(ic));
@@ -1080,52 +603,10 @@ void MCMC::writeChainTxt(string filename)
   // Report
   printf("Written the states %d - %d to the text file %s\n", this->lastwrite_+1,  this->fullChain_.XSize()-1, filename.c_str());
 
-  return ;
-
+  return;
 }
 
-void MCMC::writeFullChainTxt(string filename, Array1D<chainstate> fullchain)
-{
-
-  // Open the text file in a write mode
-  char* writemode="w";
-
-  // Append if the names already prepended
-  if (namePrepend_)
-    writemode="a";
-
-  FILE* f_out;
-  if(!(f_out = fopen(filename.c_str(),writemode))){
-    printf("writeChain: could not open file '%s'\n",filename.c_str());
-    exit(1);
-  }
-
-  // Write the full chain
-  for(int i=0;i<fullchain.XSize();i++){
-    fprintf(f_out, "%d ", fullchain(i).step);
-    for(int ic=0;ic<this->chainDim_;ic++)
-      fprintf(f_out, "%24.16lg ", fullchain(i).state(ic));
-    fprintf(f_out, "%24.16lg %24.16lg \n", fullchain(i).alfa,fullchain(i).post);
-
-  }
-
-  // Closte the file
- if(fclose(f_out)){
-   printf("writeChain: could not close file '%s'\n",filename.c_str());
-   exit(1);
- }
-
- // Report
- printf("Written the full chain out to text file %s\n",filename.c_str());
-
- return ;
-
-}
-
-
-void MCMC::writeChainBin(string filename)
-{
-
+void MCMC::writeChainBin(string filename){
   // Choose whether write or append
   char* writemode="wb";
   if (lastwrite_>=0)
@@ -1156,147 +637,21 @@ void MCMC::writeChainBin(string filename)
   // Report
   printf("Written the states %d - %d to the binary file %s\n",this->lastwrite_+1, this->fullChain_.XSize()-1, filename.c_str());
 
-  return ;
-
-}
-
-void MCMC::parseBinChain(string filename, Array1D<chainstate>& readchain)
-{
-  double tmp;
-  int readstep,i=0;
-
-  FILE *fb = fopen(filename.c_str(),"rb");
-
-  chainstate curchain;
-  // Read the binary file and write to an array of chain states
-  while( fread(&readstep,sizeof(int),1,fb) ) {
-
-    curchain.step=readstep;
-    assert(readstep==i);
-
-    curchain.state.Resize(this->chainDim_);
-
-    fread(curchain.state.GetArrayPointer(),this->chainDim_*sizeof(double),1,fb);
-    fread(&tmp,sizeof(double),1,fb);
-    curchain.alfa=tmp;
-    fread(&tmp,sizeof(double),1,fb);
-    curchain.post=tmp;
-    readchain.PushBack(curchain);
-    i++;
-}
-
-  fclose(fb);
-
   return;
 }
 
+double neg_logposteriorproxy(int chaindim, double* m, void* classpointer){
+  MCMC* thisClass = (MCMC*) classpointer;
 
-double MCMC::getMode(Array1D<double>& MAPparams)
-{
-
-
-  //for(int ic=0;ic<this->chainDim_;ic++)
-    MAPparams=modeState_.state;
-
-  return modeState_.post;
-}
-
-
-double MCMC::probOldNew(Array1D<double>& a, Array1D<double>& b)
-{
- string method=methodinfo_.type;
-
-  double logprob;
-  Array1D<double> gradb;
-
-  if(!strcmp(method.c_str(),"mala")){
-    gradlogPosterior_(b,gradb,NULL);
-    double eps2=this->epsMALA_*this->epsMALA_;
-    Array1D<double> bmean(this->chainDim_,0.e0);
-    Array1D<double> diagcov(this->chainDim_,0.e0);
-
-    for (int i=0;i<chainDim_;i++){
-      bmean(i)=b(i)+eps2*gradb(i)/2.0;
-      diagcov(i)=eps2;
-    }
-
-    logprob=evallogMVN_diag(a,bmean,diagcov);
+  if(chaindim != thisClass -> GetChainDim()){
+    throw Tantrum(std::string("neg_logposteriorproxy: The passed in MCMC chain dimension does not match the  dimension of the MChain class instance"));
   }
-  else if(!strcmp(method.c_str(),"mmala")) {
-    //logprob=
+
+  Array1D<double> mm(chaindim,0.e0);
+
+  for(int i = 0; i < chaindim; ++i){
+    mm(i) = m[i];
   }
- else
-   return 0.0;
 
-  return logprob;
-}
-
-double MCMC::evallogMVN_diag(Array1D<double>& x,Array1D<double>& mu,Array1D<double>& sig2)
-{
-  double pi=4.0*atan(1.0);
-
-  double value=0.e0;
-
-  // \todo Put sanity checks on dimensions
-
-  for (int i=0;i<this->chainDim_;i++){
-    value -= 0.5*log(2.*pi*sig2(i));
-    value -= (x(i)-mu(i))*(x(i)-mu(i))/(2.0*sig2(i));
-  }
-  return value;
-}
-
-
-bool MCMC::inDomain(Array1D<double>& m)
-{
-    int nd = m.XSize();
-
-    for (int id=0;id<nd;id++){
-        if (!lower_flag_(id))
-            return true;
-        else if (m(id)<Lower_(id))
-            return false;
-
-        if (!upper_flag_(id))
-            return true;
-        else if (m(id)>Upper_(id))
-            return false;
-    }
-
-    return true;
-}
-
-void MCMC::setLower(double lower, int i)
-{
-        this->Lower_(i)=lower;
-        lower_flag_(i)=1;
-
-    return;
-}
-
-void MCMC::setUpper(double upper, int i)
-{
-    this->Upper_(i)=upper;
-    upper_flag_(i)=1;
-    return;
-}
-
-
-void MCMC::setChainDim(int chdim)
-{
-    this->chainDim_=chdim; chaindimInit_=true;
-    this->setDefaultDomain();
-
-    return;
-}
-
-void MCMC::setDefaultDomain()
-{
-    this->Lower_.Resize(this->chainDim_,-DBL_MAX);
-    this->Upper_.Resize(this->chainDim_,DBL_MAX);
-    this->lower_flag_.Resize(this->chainDim_,0);
-    this->upper_flag_.Resize(this->chainDim_,0);
-
-
-    return;
+  return -thisClass -> evalLogPosterior(mm);
 }

@@ -257,11 +257,10 @@ void DFI::dataInference(){
                 errorOptChainPropCovMatrix(i,i) = pow(optimalErrorParams(i)*0.1,2.0);
         }
 
-        MCMC errorOptimizationChain(dataInferenceLogPosterior, &dataPostInfo);
+        AMCMC errorOptimizationChain(dataInferenceLogPosterior, &dataPostInfo);
         errorOptimizationChain.setChainDim(optimalErrorParams.XSize());
         errorOptimizationChain.setWriteFlag(1);
         errorOptimizationChain.setSeed(seed);
-        errorOptimizationChain.initMethod("am");
         errorOptimizationChain.initAdaptSteps(errorOptChainNumSamples/2,100,errorOptChainNumSamples+1);  //( start,frequency,stop)
         errorOptimizationChain.initChainPropCov(errorOptChainPropCovMatrix);
         errorOptimizationChain.setOutputInfo("txt","optimalErrorParameter.chain",1,errorOptChainNumSamples);
@@ -316,11 +315,10 @@ void DFI::dataInference(){
         while (dataChainAcceptanceRatio< targetDataChainAcceptanceRatio){
                 dataBurninCount++;
                 cout<<"Starting data burn-in chain "<<dataBurninCount<<endl;
-                MCMC dataChain(dataInferenceLogPosterior,(void*) &dataPostInfo);
+                AMCMC dataChain(dataInferenceLogPosterior,(void*) &dataPostInfo);
                 dataChain.setChainDim(dataPostInfo.dataDim);
                 dataChain.setWriteFlag(1);
                 dataChain.setSeed(seed);
-                dataChain.initMethod("am");
                 dataChain.initAdaptSteps(dataChainNumSamples_burnin+1,1,dataChainNumSamples_burnin+1);
                 dataChain.initChainPropCov(dataChainPropCovMatrix);
                 dataChain.setOutputInfo("txt","dataBurnin.chain",1,dataChainNumSamples_burnin);
@@ -372,11 +370,10 @@ void DFI::dataInference(){
         //
 
 	dataPostInfo.dataChainBurnedIn=true;
-        MCMC dataChain(dataInferenceLogPosterior,(void*) &dataPostInfo);
+        AMCMC dataChain(dataInferenceLogPosterior,(void*) &dataPostInfo);
         dataChain.setChainDim(dataPostInfo.dataDim);
         dataChain.setWriteFlag(1);
         dataChain.setSeed(seed);
-        dataChain.initMethod("am");
         dataChain.initAdaptSteps(dataChainNumSamples+1,1,dataChainNumSamples+1);
         dataChain.initChainPropCov(dataChainPropCovMatrix);
         //output to file and screen
@@ -1305,10 +1302,9 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
         while (parameterPosteriorRelativeChange > 0.01){
                 burnInChainCount++;
 		cout<<"	Parameter burn-in chainlet: "<<burnInChainCount<<endl;
-                MCMC parameterChain(parameterInferenceLogPosterior,(void*) &paramPostInfo);
+                AMCMC parameterChain(parameterInferenceLogPosterior,(void*) &paramPostInfo);
                 parameterChain.setChainDim(parameterDimension);
                 parameterChain.setSeed(dataPostInfo->seed);
-                parameterChain.initMethod("am");
                 parameterChain.initAdaptSteps(dataPostInfo->parameterBurnInNumSamples/2,500,dataPostInfo->parameterBurnInNumSamples+1);  //( start,frequency,stop)
                 parameterChain.initChainPropCov(parameterChainPropCovMatrix);
                 parameterChain.setWriteFlag(dataPostInfo->paramWriteFlag);
@@ -1338,10 +1334,9 @@ void parameterInference(dataPosteriorInformation *dataPostInfo, Array1D<double> 
 
 
         //================MAIN PARAMETER CHAIN ================================
-        MCMC parameterChain(parameterInferenceLogPosterior,(void*) &paramPostInfo);
+        AMCMC parameterChain(parameterInferenceLogPosterior,(void*) &paramPostInfo);
         parameterChain.setChainDim(parameterDimension);
         parameterChain.setSeed(dataPostInfo->seed);
-        parameterChain.initMethod("am");
         parameterChain.initAdaptSteps(dataPostInfo->parameterChainNumSamples/2,500,dataPostInfo->parameterChainNumSamples+1);  //( start,frequency,stop)
         parameterChain.initChainPropCov(parameterChainPropCovMatrix);
         parameterChain.setWriteFlag(dataPostInfo->paramWriteFlag);

@@ -25,43 +25,44 @@
      Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-#include <iostream>
-#include "math.h"
-#include "Array1D.h"
-#include "Array2D.h"
-#include "mcmc.h"
-#include "tmcmc.h"
-#include "quad.h"
+/// \file mcmc.h
+/// \author K. Sargsyan, C. Safta, B. Debusschere, 2012 -
+/// \brief Header file for the Single Site Markov Chain Monte Carlo class
+
+#ifndef UQTKSS_H_SEEN
+#define UQTKSS_H_SEEN
+
 #include "dsfmt_add.h"
+#include "mcmc.h"
 #include "arrayio.h"
 #include "arraytools.h"
 
-using namespace std;
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+#include <sstream>
 
-/*************************************************
-Begin main code
-*************************************************/
-int main(int argc, char ** argv){
+//*****************************************
 
-/*************************************************
-	Dimensionality and number of samples requested
-	*************************************************/
-	int dim = 3;
-	int nCalls = 5000;
+/// \class Single-Site MCMC
+/// \brief Single-Site Markov Chain Monte Carlo class. Derived from the base class for MCMC
+///        Implemented the algorithms for single-site (Metropolis-within-Gibbs)
+class SS:public MCMC{
+public:
+    // Delegating Constructors
+    SS(double (*logposterior)(Array1D<double>&, void *), void *postinfo):MCMC(logposterior,postinfo){};
+    SS(LogPosteriorBase& L):MCMC(L){};
 
-	/*************************************************
-	Initiate and Run TMCMC
-	*************************************************/
-	Array1D<double> g(dim,.1);
+    virtual void runChain(int ncalls, Array1D<double>& chstart) override;
+    virtual void runChain(int ncalls) override;
+    int getNSubSteps() override;
+private:
+    int nSubSteps_ = this -> GetChainDim();
 
-	TMCMC mchain;
-	mchain.setChainDim(dim);
-	mchain.setSeed(1);
-	mchain.setWriteFlag(1);
-    mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
-    mchain.initTMCMCNprocs(4);
-    mchain.initTMCMCCv(0.1);
-	mchain.runChain(nCalls);
+    // Proposal Function
+    void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim);
 
-	return 0;
-}
+    double probOldNew(Array1D<double>& a, Array1D<double>& b) override {return 0.0;};
+};
+
+#endif

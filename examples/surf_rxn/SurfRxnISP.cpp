@@ -33,10 +33,11 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "PCSet.h"
-
+#include "ss.h"
 #include "model.h"
 #include "XMLreader.h"
 #include "Utils.h"
+#include "amcmc.h"
 
 
 
@@ -69,7 +70,7 @@ int main()
   Array1D<string> modelparamnames;
   // Auxiliary parameters: final time and time step of integration
   Array1D<double> modelauxparams;
-  
+
   // Read the xml tree
   RefPtr<XMLElement> xmlTree=readXMLTree("surf_rxn.in.xml");
   // Read the model-specific input
@@ -94,10 +95,10 @@ int main()
 
  // Stochastic dimensionality
  int dim=uncParamInd.XSize();
- 
+
  // Instantiate a PC object for ISP computations
- PCSet myPCSet("ISP",order,dim,pcType,0.0,1.0); 
- 
+ PCSet myPCSet("ISP",order,dim,pcType,0.0,1.0);
+
  // The number of PC terms
  const int nPCTerms = myPCSet.GetNumberPCTerms();
  cout << "The number of PC terms in an expansion is " << nPCTerms << endl;
@@ -113,7 +114,7 @@ int main()
  double dTym = modelauxparams(1);
  // Number of steps
  int nStep=(int) tf / dTym;
- 
+
   // Initial conditions of zero coverage (based on Makeev:2002)
   Array1D<double> u(nPCTerms,0.e0);
   Array1D<double> v(nPCTerms,0.e0);
@@ -138,9 +139,9 @@ int main()
   // Array of arrays to hold the input parameter PC representations in the output PC
   // Each element is an array of coefficients for the corresponding input parameter, whether deterministic or uncertain
   // The size of the array is the total number input parameters
-  
+
   Array1D< Array1D<double> > modelparamPCs(fulldim);
-  
+
 
   printf("\nInput parameter PC coefficients are given below\n");
   for (int i=0; i<fulldim; i++){
@@ -170,21 +171,21 @@ int main()
 
   // File to write the mean and stdev, name read from xml
   FILE *f_dump,*modes_dump;
-  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(!(f_dump = fopen(outPrint->dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
-  
+
   // File to dump the PC modes, name hardwired
   string modes_dumpfile = "solution_ISP_modes.dat";
-  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){ 
-    printf("Could not open file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(!(modes_dump = fopen(modes_dumpfile.c_str(),"w"))){
+    printf("Could not open file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
 
   // write time, u, v, w (all modes) to file
   WriteModesToFilePtr(tym, u.GetArrayPointer(), v.GetArrayPointer(), w.GetArrayPointer(), nPCTerms, modes_dump);
-    
+
   // Write out initial step
   // Get standard deviations
   double uStDv = myPCSet.StDv(u);
@@ -193,10 +194,10 @@ int main()
 
   // write u, v, w (mean and standard deviation) to file
   WriteMeanStdDevToFilePtr(tym, u(0), v(0), w(0), uStDv, vStDv, wStDv, f_dump);
-    
+
   // write u, v, w (mean and standard deviation) to screen
   WriteMeanStdDevToStdOut(step, tym, u(0), v(0), w(0), uStDv, vStDv, wStDv);
-    
+
   // Forward run
   while(tym < tf) {
     // Integrate with 2nd order Runge Kutta
@@ -205,7 +206,7 @@ int main()
     myPCSet.Copy(u_o,u);
     myPCSet.Copy(v_o,v);
     myPCSet.Copy(w_o,w);
-    
+
     // Compute right hand sides
     GetRHS(myPCSet,modelparamPCs(0).GetArrayPointer(),modelparamPCs(1).GetArrayPointer(),modelparamPCs(2).GetArrayPointer(),modelparamPCs(3).GetArrayPointer(),modelparamPCs(4).GetArrayPointer(),modelparamPCs(5).GetArrayPointer(),u.GetArrayPointer(),v.GetArrayPointer(),w.GetArrayPointer(),z.GetArrayPointer(),dudt.GetArrayPointer(),dvdt.GetArrayPointer(),dwdt.GetArrayPointer());
 
@@ -217,26 +218,26 @@ int main()
     myPCSet.Add(u_o,tmp_u,u); // u = u_o + 0.5*dTym*dudt
     myPCSet.Add(v_o,tmp_v,v); // v = v_o + 0.5*dTym*dvdt
     myPCSet.Add(w_o,tmp_w,w); // w = w_o + 0.5*dTym*dwdt
-    
+
     // Compute z = 1 - u - v - w
     z=one;
     myPCSet.SubtractInPlace(z,u);
     myPCSet.SubtractInPlace(z,v);
     myPCSet.SubtractInPlace(z,w);
-    
+
     // Compute right hand sides
     GetRHS(myPCSet,modelparamPCs(0).GetArrayPointer(),modelparamPCs(1).GetArrayPointer(),modelparamPCs(2).GetArrayPointer(),modelparamPCs(3).GetArrayPointer(),modelparamPCs(4).GetArrayPointer(),modelparamPCs(5).GetArrayPointer(),u.GetArrayPointer(),v.GetArrayPointer(),w.GetArrayPointer(),z.GetArrayPointer(),dudt.GetArrayPointer(),dvdt.GetArrayPointer(),dwdt.GetArrayPointer());
-    
+
     // Advance u, v, w to next time step
     myPCSet.Multiply(dudt,dTym,tmp_u); // dTym*dudt
     myPCSet.Multiply(dvdt,dTym,tmp_v); // dTym*dvdt
     myPCSet.Multiply(dwdt,dTym,tmp_w); // dTym*dwdt
-    
-    
+
+
     myPCSet.Add(u_o,tmp_u,u); // u = u_o + dTym*dudt
     myPCSet.Add(v_o,tmp_v,v); // v = v_o + dTym*dvdt
     myPCSet.Add(w_o,tmp_w,w); // w = w_o + dTym*dwdt
-    
+
     // Compute z = 1 - u - v - w
     z=one;
     myPCSet.SubtractInPlace(z,u);
@@ -247,7 +248,7 @@ int main()
     // Advance time and step counter
     tym += dTym;
     step+=1;
-   
+
 
     // write time, u, v, w (all modes) to file
     if(step % outPrint->fdumpInt == 0){
@@ -258,7 +259,7 @@ int main()
     uStDv = myPCSet.StDv(u);
     vStDv = myPCSet.StDv(v);
     wStDv = myPCSet.StDv(w);
-    
+
     // write u, v, w (mean and standard deviation) to file
     if(step % outPrint->fdumpInt == 0){
       WriteMeanStdDevToFilePtr(tym, u(0), v(0), w(0), uStDv, vStDv, wStDv, f_dump);
@@ -267,23 +268,21 @@ int main()
     if(step % outPrint->dumpInt == 0){
       WriteMeanStdDevToStdOut(step, tym, u(0), v(0), w(0), uStDv, vStDv, wStDv);
     }
-    
+
   }
-  
+
   // Close output file
-  if(fclose(f_dump)){ 
-    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(f_dump)){
+    printf("Could not close file '%s'\n",outPrint->dumpfile.c_str());
+    exit(1);
   }
 
 
   // Close output file
-  if(fclose(modes_dump)){ 
-    printf("Could not close file '%s'\n",modes_dumpfile.c_str()); 
-    exit(1); 
+  if(fclose(modes_dump)){
+    printf("Could not close file '%s'\n",modes_dumpfile.c_str());
+    exit(1);
   }
-  
+
   return 0;
 }
-
-
