@@ -56,7 +56,7 @@ from itertools import combinations
 
 from pylab import *
 
-sys.path.append(os.environ['UQTK_SRC'])
+sys.path.append(os.environ['UQTK_INS'])
 import PyUQTk.utils.colors as ut
 
 uqtkbin = os.environ['UQTK_INS'] + "/bin/"
