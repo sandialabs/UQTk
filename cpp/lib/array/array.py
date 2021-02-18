@@ -6,7 +6,7 @@ PYB11includes = ["arrayio.h","arraytools.h","stdlib.h","stdio.h","math.h","asser
 PYB11namespaces = ["std"]
 
 @PYB11template("T")
-def read_datafile(data="Array2D<%(T)s&>",filename="const char *"):
+def read_datafile(data="Array2D<%(T)s>&",filename="const char *"):
     "Read a datafile from filename in a matrix form and store it in a 2D array"
     return "void"
 
@@ -14,7 +14,7 @@ read_datafile_int = PYB11TemplateFunction(read_datafile, ("int"),pyname="read_da
 read_datafile_double = PYB11TemplateFunction(read_datafile, ("double"),pyname="read_datafile")
 
 @PYB11template("T")
-def read_datafileVS(data="Array2D<%(T)s&>",filename="const char *"):
+def read_datafileVS(data="Array2D<%(T)s>&",filename="const char *"):
     "Read a datafile from filename in a vector form and store it in an array data of typename T"
     return "void"
 
@@ -22,7 +22,7 @@ read_datafileVS_int = PYB11TemplateFunction(read_datafileVS, ("int"),pyname="rea
 read_datafileVS_double = PYB11TemplateFunction(read_datafileVS, ("double"),pyname="read_datafileVS")
 
 @PYB11template("T")
-def read_datafileVS1(data="Array1D<%(T)s&>",filename="const char *"):
+def read_datafileVS1(data="Array1D<%(T)s>&",filename="const char *"):
     "Read a datafile from filename in a vector form and store it in an array data of typename T"
     return "void"
 
@@ -30,7 +30,7 @@ read_datafileVS1_int = PYB11TemplateFunction(read_datafileVS1, ("int"),pyname="r
 read_datafileVS1_double = PYB11TemplateFunction(read_datafileVS1, ("double"),pyname="read_datafileVS")
 
 @PYB11template("T")
-def read_datafileVS2(data="std::vector<%(T)s&>",filename="const char *"):
+def read_datafileVS2(data="std::vector<%(T)s>&",filename="const char *"):
     "Read a datafile from filename in a vector form and store it in an array data of typename T"
     return "void"
 
@@ -38,20 +38,36 @@ read_datafileVS2_int = PYB11TemplateFunction(read_datafileVS2, ("int"),pyname="r
 read_datafileVS2_double = PYB11TemplateFunction(read_datafileVS2, ("double"),pyname="read_datafileVS")
 
 @PYB11template("T")
-def read_datafile_1d(data="Array2D<%(T)s&>",filename="const char *"):
+def read_datafile_1d(data="Array2D<%(T)s>&",filename="const char *"):
     "Read a datafile from filename in a vector form and store it in a 1d array data of typename T"
     return "void"
 
 read_datafile1d_int = PYB11TemplateFunction(read_datafile_1d, ("int"),pyname="read_datafile_1d")
 read_datafile1d_double = PYB11TemplateFunction(read_datafile_1d, ("double"),pyname="read_datafile_1d")
 
-def write_datafile_size():
+@PYB11template("T")
+def write_datafile_size(data="Array2D<%(T)s>&",filename="const char *"):
     "Write the contents of a 2d array data of typename T to file filename in a matrix form"
     return "void"
 
-def write_datafile():
+write_datafile_size_int = PYB11TemplateFunction(write_datafile_size, ("int"),pyname="write_datafile_size")
+write_datafile_size_double = PYB11TemplateFunction(write_datafile_size, ("double"),pyname="write_datafile_size")
+
+@PYB11template("T")
+def write_datafile(data="Array2D<%(T)s>&",filename="const char *",action ="const char *"):
     "Write the contents of an array data of typename T to file filename in a matrix form"
     return "void"
+
+write_datafile_int = PYB11TemplateFunction(write_datafile, ("int"),pyname="write_datafile")
+write_datafile_double = PYB11TemplateFunction(write_datafile, ("double"),pyname="write_datafile")
+
+@PYB11template("T")
+def write_datafile1(data="const std::vector<%(T)s>&",nrows="const int &",ncols ="const int &",storage ="const char *",filename ="const char *",action ="const char *"):
+    "Write the contents of an array data of typename T to file filename in a matrix form"
+    return "void"
+
+write_datafile_int1 = PYB11TemplateFunction(write_datafile1, ("int"),pyname="write_datafile")
+write_datafile_double1 = PYB11TemplateFunction(write_datafile1, ("double"),pyname="write_datafile")
 
 def write_datafile_1d():
     "Write the contents of a 1d array data of typename T to file filename in a vector form"
