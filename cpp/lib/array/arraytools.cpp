@@ -1128,8 +1128,6 @@ Array2D<double> MatTMat(Array2D<double>& A)
   return B;
 }
 
-
-
 // Deletes a row from a matrix
 template <typename T>
 void delRow(Array2D<T>& A, int irow)
