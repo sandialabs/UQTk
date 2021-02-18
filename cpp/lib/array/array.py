@@ -22,6 +22,22 @@ read_datafileVS_int = PYB11TemplateFunction(read_datafileVS, ("int"),pyname="rea
 read_datafileVS_double = PYB11TemplateFunction(read_datafileVS, ("double"),pyname="read_datafileVS")
 
 @PYB11template("T")
+def read_datafileVS1(data="Array1D<%(T)s&>",filename="const char *"):
+    "Read a datafile from filename in a vector form and store it in an array data of typename T"
+    return "void"
+
+read_datafileVS1_int = PYB11TemplateFunction(read_datafileVS1, ("int"),pyname="read_datafileVS")
+read_datafileVS1_double = PYB11TemplateFunction(read_datafileVS1, ("double"),pyname="read_datafileVS")
+
+@PYB11template("T")
+def read_datafileVS2(data="std::vector<%(T)s&>",filename="const char *"):
+    "Read a datafile from filename in a vector form and store it in an array data of typename T"
+    return "void"
+
+read_datafileVS2_int = PYB11TemplateFunction(read_datafileVS2, ("int"),pyname="read_datafileVS")
+read_datafileVS2_double = PYB11TemplateFunction(read_datafileVS2, ("double"),pyname="read_datafileVS")
+
+@PYB11template("T")
 def read_datafile_1d(data="Array2D<%(T)s&>",filename="const char *"):
     "Read a datafile from filename in a vector form and store it in a 1d array data of typename T"
     return "void"
