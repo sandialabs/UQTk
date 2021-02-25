@@ -82,20 +82,24 @@ def array1Dto2D(arr_1d="Array1D<%(T)s>&",arr="Array2D<%(T)s>&"):
     "Store a given 1d array in a 2d array with a single second dimension"
     return "void"
 
-write_datafile_1d_int = PYB11TemplateFunction(array1Dto2D, ("int"),pyname="array1Dto2D")
-write_datafile_1d_double = PYB11TemplateFunction(array1Dto2D, ("double"),pyname="array1Dto2D")
+array1Dto2D_int = PYB11TemplateFunction(array1Dto2D, ("int"),pyname="array1Dto2D")
+array1Dto2D_double = PYB11TemplateFunction(array1Dto2D, ("double"),pyname="array1Dto2D")
 
 @PYB11template("T")
 def array2Dto1D(arr_2d="Array2D<%(T)s>&",arr="Array1D<%(T)s>&"):
     "Store a given 2d array in a 1d array with a single second dimension"
     return "void"
 
-write_datafile_1d_int = PYB11TemplateFunction(array2Dto1D, ("int"),pyname="array2Dto1D")
-write_datafile_1d_double = PYB11TemplateFunction(array2Dto1D, ("double"),pyname="array2Dto1D")
+array2Dto1D_int = PYB11TemplateFunction(array2Dto1D, ("int"),pyname="array2Dto1D")
+array2Dto1D_double = PYB11TemplateFunction(array2Dto1D, ("double"),pyname="array2Dto1D")
 
-def paste():
+@PYB11template("T")
+def paste(arr1="Array1D<%(T)s>&",arr2="Array1D<%(T)s>&",arr="Array2D<%(T)s>&"):
     "Paste two arrays of same size into a single array with second dimension equal to two"
     return "void"
+
+paste_double = PYB11TemplateFunction(paste, ("double","double","double"),pyname="paste")
+paste_int = PYB11TemplateFunction(paste, ("int","int","int"),pyname="paste")
 
 def generate_multigrid():
     "Generates multigrid as a cartesian product of each column of grid"
