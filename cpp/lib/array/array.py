@@ -77,13 +77,21 @@ def write_datafile_1d(data="const Array2D<%(T)s>&",filename="const char *"):
 write_datafile_1d_int = PYB11TemplateFunction(write_datafile_1d, ("int"),pyname="write_datafile_1d")
 write_datafile_1d_double = PYB11TemplateFunction(write_datafile_1d, ("double"),pyname="write_datafile_1d")
 
-def array1Dto2D():
+@PYB11template("T")
+def array1Dto2D(arr_1d="Array1D<%(T)s>&",arr="Array2D<%(T)s>&"):
     "Store a given 1d array in a 2d array with a single second dimension"
     return "void"
 
-def array2Dto1D():
+write_datafile_1d_int = PYB11TemplateFunction(array1Dto2D, ("int"),pyname="array1Dto2D")
+write_datafile_1d_double = PYB11TemplateFunction(array1Dto2D, ("double"),pyname="array1Dto2D")
+
+@PYB11template("T")
+def array2Dto1D(arr_2d="Array2D<%(T)s>&",arr="Array1D<%(T)s>&"):
     "Store a given 2d array in a 1d array with a single second dimension"
     return "void"
+
+write_datafile_1d_int = PYB11TemplateFunction(array2Dto1D, ("int"),pyname="array2Dto1D")
+write_datafile_1d_double = PYB11TemplateFunction(array2Dto1D, ("double"),pyname="array2Dto1D")
 
 def paste():
     "Paste two arrays of same size into a single array with second dimension equal to two"
