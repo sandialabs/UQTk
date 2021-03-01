@@ -101,9 +101,18 @@ def paste(arr1="Array1D<%(T)s>&",arr2="Array1D<%(T)s>&",arr="Array2D<%(T)s>&"):
 paste_double = PYB11TemplateFunction(paste, ("double","double","double"),pyname="paste")
 paste_int = PYB11TemplateFunction(paste, ("int","int","int"),pyname="paste")
 
-def generate_multigrid():
+@PYB11pycppname("paste")
+def paste1(x = "Array2D<double>&",y="Array2D<double>&",xy = "Array2D<double>&")
+    "Paste two 2D arrays next to each other (horizontal stack)"
+    return "void"
+
+@PYB11template("T")
+def generate_multigrid(multigrid="Array2D<%(T)s>&",grid="Array2D<%(T)s>&"):
     "Generates multigrid as a cartesian product of each column of grid"
     return "void"
+
+generate_multigrid_double = PYB11TemplateFunction(generate_multigrid,("double","double"),pyname="generate_multigrid")
+generate_multigrid_int = PYB11TemplateFunction(generate_multigrid,("int","int"),pyname="generate_multigrid")
 
 def merge(x = "Array2D<double>",y = "Array2D<double>",xy = "Array2D<double>"):
     "Merges 2D double arrays"
@@ -128,9 +137,13 @@ def append1(x = "Array1D<int>",y = "Array1D<int>"):
     "Append one array to another (int format)"
     return "void"
 
-def transpose():
+@PYB11template("T")
+def transpose(x = "Array2D<%(T)s>&",xt = "Array2D<%(T)s>&"):
     "Transpose a 2d double or int array x and return the result in xt"
     return "void"
+
+transpose_double = PYB11TemplateFunction(transpose,("double","double"),pyname = "transpose")
+transpose_int = PYB11TemplateFunction(transpose,("int","int"),pyname = "transpose")
 
 def flatten():
     "Flatten a 2d array into a 1d array"
@@ -157,37 +170,87 @@ def access():
     "Access element of an array"
     return "void"
 
-def getRow():
+@PYB11template("T")
+def getRow(arr2d="Array2D<%(T)s>&",k="int",arr1d="Array1D<%(T)s>&"):
     "Retrieves row 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'"
     return "void"
 
-def getCol():
-    "Retrieves column 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'"
+getRow_int = PYB11TemplateFunction(getRow,("int","int"),pyname="getRow")
+getRow_double = PYB11TemplateFunction(getRow,("double","double"),pyname="getRow")
+
+@PYB11template("T")
+def getCol(arr2d="Array2D<%(T)s>&",k="int",arr1d="Array1D<%(T)s>&"):
+    "Retrieves row 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'"
     return "void"
 
-def addVal():
+getCol_int = PYB11TemplateFunction(getCol,("int","int"),pyname="getCol")
+getCol_double = PYB11TemplateFunction(getCol,("double","double"),pyname="getCol")
+
+@PYB11template("T")
+def addVal(n="int",arr1d="%(T)s *",val ="%(T)s"):
     "Adds 'val' to all elements of 1D array arr1d (double or int)"
     return "void"
 
-def subVector():
+addVal_int = PYB11TemplateFunction(addVal,("int","int"),pyname="addVal")
+addVal_double = PYB11TemplateFunction(addVal,("double","double"),pyname="addVal")
+
+@PYB11template("T")
+@PYB11pycppname("addVal")
+def addVal1(arr1d="Array1D<%(T)s>&",val ="%(T)s"):
+    "Adds 'val' to all elements of 1D array arr1d (double or int)"
+    return "void"
+
+addVal_int_1 = PYB11TemplateFunction(addVal1,("int","int"),pyname="addVal")
+addVal_double_1 = PYB11TemplateFunction(addVal1,("double","double"),pyname="addVal")
+
+@PYB11template("T")
+@PYB11pycppname("addVal")
+def addVal2(arr2d="Array2D<%(T)s>&",val ="%(T)s"):
+    "Adds 'val' to all elements of 2D array arr1d (double or int)"
+    return "void"
+
+addVal_int_2 = PYB11TemplateFunction(addVal2,("int","int"),pyname="addVal")
+addVal_double_2 = PYB11TemplateFunction(addVal2,("double","double"),pyname="addVal")
+
+@PYB11template("T")
+def subVector(vector="Array1D<%(T)s>&",ind="Array1D<int>&",submatrix="Array2D<%(T)s>&"):
     "Extracts from 'vector', elements corresponding to indices 'ind' and returns them in 'subvector' (double or int)"
     return "void"
 
-def subMatrix_row():
+subVector_int = PYB11TemplateFunction(subVector,("int","int"),pyname="subVector")
+subVector_double = PYB11TemplateFunction(subVector,("double","double"),pyname="subVector")
+
+@PYB11template("T")
+def subMatrix_row(matrix="Array2D<%(T)s>&",ind="Array1D<int>&",submatrix="Array2D<%(T)s>&"):
     "Extracts from 'matrix' rows corresponding to indices 'ind' and returns them in 'submatrix' (double or int)"
     return "void"
 
-def subMatrix_col():
+subMatrix_row_int = PYB11TemplateFunction(subMatrix_row,("int","int"),pyname="subMatrix_row")
+subMatrix_row_double = PYB11TemplateFunction(subMatrix_row,("double","double"),pyname="subMatrix_row")
+
+@PYB11template("T")
+def subMatrix_col(matrix="Array2D<%(T)s>&",ind="Array1D<int>&",submatrix="Array2D<%(T)s>&"):
     "Extracts from 'matrix' columns corresponding to indices 'ind' and returns them in 'submatrix' (double or int)"
     return "void"
 
-def matPvec():
+subMatrix_col_int = PYB11TemplateFunction(subMatrix_col,("int","int"),pyname="subMatrix_col")
+subMatrix_col_double = PYB11TemplateFunction(subMatrix_col,("double","double"),pyname="subMatrix_col")
+
+@PYB11template("T")
+def matPvec(matrix="Array2D<%(T)s>&",rc="const Array1D<%(T)s>&",alpha = "%(T)s",RC="char *"):
     "Adds scaled row or column to all rows / columns of a matrix (double or int)"
     return "void"
 
-def maxVal():
+matPvec_int = PYB11TemplateFunction(matPvec,("int","int","int"),pyname="matPVec")
+matPvec_double = PYB11TemplateFunction(matPvec,("double","double","double"),pyname="matPVec")
+
+@PYB11template("T")
+def maxVal(vector="const Array1D<%(T)s> &",indx="int*"):
     "Returns maximum value in 'vector' and its location in *indx (double or int)"
-    return "void"
+    return "T"
+
+maxVal_int =PYB11TemplateFunction(maxVal,("int"),pyname="maxVal")
+maxVal_double =PYB11TemplateFunction(maxVal,("double"),pyname="maxVal")
 
 def setDiff():
     "Returns in C elements of A that are not in B; C is sorted in ascending order"
@@ -242,9 +305,13 @@ def intersect1(A = "Array1D<int>", B = "Array1D<int>",C = "Array1D<int>"):
     "Finds common entries in 1D arrays 'A' and 'B' and returns them in 'C', sorted in ascending order."
     return "void"
 
-def find():
+@PYB11template("T")
+def find(theta="Array1D<%(T)s>&",lmbda="%(T)s",type="string",indx="Array1D<int>&"):
     "Return list of indices corresponding to elements of 1D array theta that are: larger ( type='gt' ), larger or equal ( type='ge' ), smaller ( type='lt' ), smaller or equal ( type='le' ) than lmbda"
     return "void"
+
+find_int = PYB11TemplateFunction(find,("int","int"),pyname="find")
+find_double = PYB11TemplateFunction(find,("double","double"),pyname="find")
 
 def prodAlphaMatVec():
     "Implements y = a A x"
@@ -274,18 +341,30 @@ def MatTMat():
     "Returns A^T A"
     return "Array2D<double>"
 
-def delRow():
+@PYB11template("T")
+def delRow(A="Array2D<%(T)s>&",icol="int"):
     "Deletes a row from a matrix"
     return "void"
 
-def delCol(A = "Array2D<T>",icol = "int"):
+delRow_int = PYB11TemplateFunction(delRow,("int"),pyname=delRow)
+delRow_double = PYB11TemplateFunction(delRow,("double"),pyname=delRow)
+
+@PYB11template("T")
+def delCol(A = "Array2D<%(T)s>",icol = "int"):
     "Deletes a column from a matrix"
     return "void"
 
+delCol_int = PYB11TemplateFunction(delCol,("int"),pyname="delCol")
+delCol_double = PYB11TemplateFunction(delCol,("double"),pyname="delCol")
+
 @PYB11pycppname("delCol")
-def delCol1(A = "Array1D<T>",icol = "int"):
+@PYB11template("T")
+def delCol1(A = "Array1D<%(T)>",icol = "int"):
     "Deletes an element from a matrix"
     return "void"
+
+delCol1_int = PYB11TemplateFunction(delCol1,("int"),pyname="delCol")
+delCol1_double = PYB11TemplateFunction(delCol1,("double"),pyname="delCol")
 
 def paddMatRow():
     "Padds 2D array 'A' with the row 'x'"
