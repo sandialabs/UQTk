@@ -82,6 +82,14 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("element",&Array2D::operator())
         .def("insertRow",static_cast<void (Array2D::*)(Array1D<int>&,int)>(&Array2D::insertRow))
         .def("insertRow",static_cast<void (Array2D::*)(Array2D<int>&,int)>(&Array2D::insertRow))
-
+        .def("eraseRow",&Array2D::eraseRow)
+        .def("insertCol",static_cast<void (Array2D::*)(Array1D<int>&,int)>(&Array2D::insertCol))
+        .def("insertCol",static_cast<void (Array2D::*)(Array2D<int>&,int)>(&Array2D::insertCol))
+        .def("eraseCol",&Array2D::eraseCol)
+        .def("DumpBinary",static_cast<void (Array2D::*)(FILE*)>(&Array2D::DumpBinary)))
+        .def("DumpBinary",static_cast<void (Array2D::*)(char*)>(&Array2D::DumpBinary)))
+        .def("ReadBinary",static_cast<void (Array2D::*)(FILE*)>(&Array2D::ReadBinary)))
+        .def("ReadBinary",static_cast<void (Array2D::*)(char*)>(&Array2D::ReadBinary)))
+        .def("pyElement",&Array1D::operator[])
 
 }
