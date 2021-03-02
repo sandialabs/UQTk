@@ -91,5 +91,15 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("ReadBinary",static_cast<void (Array2D::*)(FILE*)>(&Array2D::ReadBinary)))
         .def("ReadBinary",static_cast<void (Array2D::*)(char*)>(&Array2D::ReadBinary)))
         .def("pyElement",&Array1D::operator[])
+        .def("getRow",&Array1D::getRow)
+        .def("ReadBinary4py",&Array2D::ReadBinary4py)
+        .def("DumpBinary4py",&Array2D::DumpBinary4py)
+        .def("setArray",&Array2D::setArray)
+        .def("flatten",&Array2D::flatten)
+        .def("type",&Array2D::type)
+        .def("setnpintArray",&Array2D::setnpintArray)
+        .def("getnpintArray",&Array2D::getnpintArray)
+        .def("setnpdblArray",&Array2D::setnpdblArray)
+        .def("getnpdblArray",&Array2D::getnpdblArray)
 
 }
