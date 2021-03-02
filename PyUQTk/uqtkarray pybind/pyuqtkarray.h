@@ -34,7 +34,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       .def("flatten",&Array1D::flatten)
       .def("type",&Array1D::type)
 
-      py::class_<Array1D<double>>(m, "Array1D<int>")
+      py::class_<Array1D<double>>(m, "Array1D<double>")
         .def(py::init<>())
         .def(py::init<const int&>())
         .def(py::init<const int&,const int&>())
@@ -66,5 +66,22 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("flatten",&Array1D::flatten)
         .def("type",&Array1D::type)
 
-      
+      py::class_<Array2D<int>>(m,"Array2D")
+        .def(py::init<>())
+        .def(py::init<const int&,const int&>())
+        .def(py::init<const int&,const int&>,const int&())
+        .def(py::init<const Array2D &>())
+        .def("Clear",&Array2D::Clear)
+        .def("XSize",&Array2D::XSize)
+        .def("YSize",&Array2D::YSize)
+        .def("Resize",static_cast<void (Array2D::*)(const int&,const int&)>(&Array2D::Resize))
+        .def("Resize",static_cast<void (Array2D::*)(const int&,const int&,const int&)>(&Array2D::Resize))
+        .def("SetValue",&Array2D::SetValue)
+        .def("GetArrayPointer",&Array2D::GetArrayPointer)
+        .def("GetConstArrayPointer",&Array2D::GetConstArrayPointer)
+        .def("element",&Array2D::operator())
+        .def("insertRow",static_cast<void (Array2D::*)(Array1D<int>&,int)>(&Array2D::insertRow))
+        .def("insertRow",static_cast<void (Array2D::*)(Array2D<int>&,int)>(&Array2D::insertRow))
+
+
 }
