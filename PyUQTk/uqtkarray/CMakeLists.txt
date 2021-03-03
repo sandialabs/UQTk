@@ -17,8 +17,6 @@ pybind11_add_module(uqtkarray pyuqtkarray.h)
 # link python and 3rd party libraries, e.g., gfortran and blas
 # Link fortran libraries
 
-
-
-INSTALL(TARGETS _uqtkarray DESTINATION PyUQTk/)
+INSTALL(TARGETS uqtkarray DESTINATION PyUQTk/)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/uqtkarray/uqtkarray.py
 	      DESTINATION PyUQTk)
