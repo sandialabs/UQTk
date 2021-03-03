@@ -137,4 +137,12 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D::getnpintArray)
         .def("setnpdblArray",&Array2D::setnpdblArray)
         .def("getnpdblArray",&Array2D::getnpdblArray)
+
+      m.def("read_datafile",&read_datafile)
+      m.def("read_datafileVS",&read_datafileVS)
+      m.def("read_datafile_1d",&read_datafile_1d)
+      m.def("write_datafile_size",&write_datafile_size)
+      m.def("write_datafile",&write_datafile)
+      m.def("write_datafile_1d",&write_datafile_1d)
+
 }
