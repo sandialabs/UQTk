@@ -21,7 +21,7 @@ if ("${PyUQTk}" STREQUAL "ON")
   include(numpy.cmake)
 
   find_package(pybind11 REQUIRED)
-  pybind11_add_module(pyuqtkarray pyuqtkarray/pyuqtkarray.cpp)
+  pybind11_add_module(pyuqtkarray pyuqtkarray/pyuqtkarray.cpp SHARED ../lib/arrayArray1D.h ../lib/array/Array2D.h ../lib/array/arrayio.cpp ../lib/array/arraytools.cpp)
   add_subdirectory (quad)
   add_subdirectory (tools)
   add_subdirectory (kle)
