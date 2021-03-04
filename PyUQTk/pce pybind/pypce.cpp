@@ -1,7 +1,7 @@
 #include <pybind/pybind11.h>
 
-#include "../../cpp/lib/quad/quad.h"
+#include "../../cpp/lib/pce/quad.h"
 
-using PCEBasis = Quad::Quad;
+using PCBasis = PCBasis::PCBasis;
 
 namespace py = pybind11;
