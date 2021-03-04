@@ -44,8 +44,8 @@ PYBIND11_MODULE(uqtkarray, m) {
       .def("getnpintArray",&Array1D::getnpintArray)
       .def("flatten",&Array1D::flatten)
       .def("type",&Array1D::type)
-      .def_property_readonly("xsize_",&Array1D::xsize_)
-      .def_property_readonly("data_",&Array1D::data_)
+      .def_property("xsize_",&Array1D::xsize_)
+      .def_property("data_",&Array1D::data_)
       ;
 
       py::class_<Array1D<double>>(m, "Array1D<double>")
@@ -79,8 +79,8 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpdblArray",&Array1D::getnpintArray)
         .def("flatten",&Array1D::flatten)
         .def("type",&Array1D::type)
-        .def_property_readonly("xsize_",&Array1D::xsize_)
-        .def_property_readonly("data_",&Array1D::data_)
+        .def_property("xsize_",&Array1D::xsize_)
+        .def_property("data_",&Array1D::data_)
         ;
 
       py::class_<Array2D<int>>(m,"Array2D")
@@ -118,11 +118,11 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D::getnpintArray)
         .def("setnpdblArray",&Array2D::setnpdblArray)
         .def("getnpdblArray",&Array2D::getnpdblArray)
-        .def_property_readonly("xsize_",&Array2D::xsize_)
-        .def_property_readonly("ysize_",&Array2D::xsize_)
-        .def_property_readonly("data_",&Array2D::data_)
-        .def_property_readonly("arraycopy",&Array2D::arraycopy)
-        .def_property_readonly("rowvec",&Array2D::rowvec)
+        .def_property("xsize_",&Array2D::xsize_)
+        .def_property("ysize_",&Array2D::xsize_)
+        .def_property("data_",&Array2D::data_)
+        .def_property("arraycopy",&Array2D::arraycopy)
+        .def_property("rowvec",&Array2D::rowvec)
         ;
 
       py::class_<Array2D<double>>(m,"Array2D")
@@ -160,11 +160,11 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D::getnpintArray)
         .def("setnpdblArray",&Array2D::setnpdblArray)
         .def("getnpdblArray",&Array2D::getnpdblArray)
-        .def_property_readonly("xsize_",&Array2D::xsize_)
-        .def_property_readonly("ysize_",&Array2D::xsize_)
-        .def_property_readonly("data_",&Array2D::data_)
-        .def_property_readonly("arraycopy",&Array2D::arraycopy)
-        .def_property_readonly("rowvec",&Array2D::rowvec)
+        .def_property("xsize_",&Array2D::xsize_)
+        .def_property("ysize_",&Array2D::xsize_)
+        .def_property("data_",&Array2D::data_)
+        .def_property("arraycopy",&Array2D::arraycopy)
+        .def_property("rowvec",&Array2D::rowvec)
         ;
 
       m.def("read_datafile",&read_datafile)
