@@ -1,5 +1,4 @@
 #include <pybind11/pybind11.h>
-#include <>
 
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
