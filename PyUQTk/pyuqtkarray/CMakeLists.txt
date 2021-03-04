@@ -14,6 +14,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/include/) # utilit
 # link python and 3rd party libraries, e.g., gfortran and blas
 # Link fortran libraries
 
-INSTALL(TARGETS uqtkarray DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/uqtkarray/uqtkarray.py
+INSTALL(TARGETS pyuqtkarray DESTINATION PyUQTk/)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pyuqtkarray/pyuqtkarray.py
 	      DESTINATION PyUQTk)
