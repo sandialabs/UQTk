@@ -5,6 +5,11 @@
 #include "arrayio.h"
 #include "arraytools.h"
 
+using Array1D<int> = Array1D::Array1D<int>
+using Array1D<double> = Array1D::Array1D<double>
+using Array2D<int> = Array2D::Array2D<int>
+using Array2D<double> = Array2D::Array2D<double>
+
 namespace py=pybind11;
 
 PYBIND11_MODULE(uqtkarray, m) {
