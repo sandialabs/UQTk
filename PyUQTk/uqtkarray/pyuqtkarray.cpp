@@ -1,5 +1,12 @@
 #include <pybind11/pybind11.h>
 
+#include "Array1D.h"
+#include "Array2D.h"
+#include "arrayio.h"
+#include "arraytools.h"
+
+namespace py=pybind11;
+
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
@@ -32,6 +39,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       .def("getnpintArray",&Array1D::getnpintArray)
       .def("flatten",&Array1D::flatten)
       .def("type",&Array1D::type)
+      ;
 
       py::class_<Array1D<double>>(m, "Array1D<double>")
         .def(py::init<>())
@@ -64,6 +72,7 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpdblArray",&Array1D::getnpintArray)
         .def("flatten",&Array1D::flatten)
         .def("type",&Array1D::type)
+        ;
 
       py::class_<Array2D<int>>(m,"Array2D")
         .def(py::init<>())
@@ -100,6 +109,7 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D::getnpintArray)
         .def("setnpdblArray",&Array2D::setnpdblArray)
         .def("getnpdblArray",&Array2D::getnpdblArray)
+        ;
 
       py::class_<Array2D<double>>(m,"Array2D")
         .def(py::init<>())
@@ -136,6 +146,7 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D::getnpintArray)
         .def("setnpdblArray",&Array2D::setnpdblArray)
         .def("getnpdblArray",&Array2D::getnpdblArray)
+        ;
 
       m.def("read_datafile",&read_datafile)
       m.def("read_datafileVS",&read_datafileVS)
