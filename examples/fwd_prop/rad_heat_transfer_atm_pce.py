@@ -49,7 +49,7 @@ except ImportError:
 	print("Scipy stats module could not be found")
 
 try:
-    import PyUQTk.uqtkarray as uqtkarray
+    import PyUQTk.pyuqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:

@@ -5,10 +5,10 @@
 #include "../../cpp/lib/array/arrayio.h"
 #include "../../cpp/lib/array/arraytool.h"
 
-using Array1D<int> = Array1D::Array1D<int>
-using Array1D<double> = Array1D::Array1D<double>
-using Array2D<int> = Array2D::Array2D<int>
-using Array2D<double> = Array2D::Array2D<double>
+using Array1D<int> = Array1D::Array1D<int>;
+using Array1D<double> = Array1D::Array1D<double>;
+using Array2D<int> = Array2D::Array2D<int>;
+using Array2D<double> = Array2D::Array2D<double>;
 
 namespace py=pybind11;
 
