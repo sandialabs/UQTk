@@ -2,3 +2,7 @@
 	path = dep/sundials
 	url = https://github.com/LLNL/sundials.git
 
+[submodule "pybind"]
+	path = dep/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
