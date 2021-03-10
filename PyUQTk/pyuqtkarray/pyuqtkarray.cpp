@@ -81,7 +81,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       py::class_<Array2D<int>>(m,"Array2D")
         .def(py::init<>())
         .def(py::init<const int&,const int&>())
-        .def(py::init<const int&,const int&>,const int&())
+        .def(py::init<const int&,const int&,const int&>())
         .def(py::init<const Array2D<int> &>())
         .def("Clear",&Array2D<int>::Clear)
         .def("XSize",&Array2D<int>::XSize)
