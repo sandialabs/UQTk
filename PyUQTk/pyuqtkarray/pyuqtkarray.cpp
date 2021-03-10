@@ -1,9 +1,9 @@
 #include <pybind11/pybind11.h>
 
-#include "../../cpp/lib/array/Array1D.h"
-#include "../../cpp/lib/array/Array2D.h"
-#include "../../cpp/lib/array/arrayio.h"
-#include "../../cpp/lib/array/arraytool.h"
+#include "Array1D.h"
+#include "Array2D.h"
+#include "arrayio.h"
+#include "arraytool.h"
 
 using Array1D<int> = Array1D::Array1D<int>;
 using Array1D<double> = Array1D::Array1D<double>;
