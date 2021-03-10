@@ -1,4 +1,4 @@
-#include <pybind/pybind11.h>
+#include <pybind11/pybind11.h>
 
 #include "../../cpp/lib/quad/quad.h"
 
