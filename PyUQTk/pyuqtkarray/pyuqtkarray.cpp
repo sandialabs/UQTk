@@ -3,7 +3,7 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "arrayio.h"
-#include "arraytool.h"
+#include "arraytools.h"
 
 using Array1D<int> = Array1D::Array1D<int>;
 using Array1D<double> = Array1D::Array1D<double>;
