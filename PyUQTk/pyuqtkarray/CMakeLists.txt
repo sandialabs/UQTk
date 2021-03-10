@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/include/) # utilit
 # Using Pybind to build the python module
 
 find_package(pybind11 REQUIRED)
-pybind11_add_module(pyuqtkarray pyuqtkarray/pyuqtkarray.cpp)
+pybind11_add_module(pyuqtkarray pyuqtkarray.cpp)
 TARGET_LINK_LIBRARIES(pyuqtkarray PUBLIC uqtkarray)
 
 INSTALL(TARGETS pyuqtkarray DESTINATION PyUQTk/)
