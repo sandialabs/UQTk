@@ -3,6 +3,7 @@
 find_package(pybind11 REQUIRED)
 include_directories(../../cpp/lib/pce) #pce directory
 include_directories(../../cpp/lib/array) #array directory
+include_directories(../../dep/dsfmt) #dsfmt directory
 include_directories(../../cpp/lib/include) # include directory
 pybind11_add_module(_pce pypce.cpp)
 
