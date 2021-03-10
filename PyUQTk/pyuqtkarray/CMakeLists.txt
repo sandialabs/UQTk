@@ -1,5 +1,3 @@
-#FIND_PACKAGE(pybind11 REQUIRED)
-
 FIND_PACKAGE(PythonLibs)
 INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
@@ -11,8 +9,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/lib/include/) # utilit
 
 # INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../numpy/) # numpy headers
 
-# link python and 3rd party libraries, e.g., gfortran and blas
-# Link fortran libraries
+# Using Pybind to build the python module
+
+find_package(pybind11 REQUIRED)
+pybind11_add_module(pyuqtkarray pyuqtkarray/pyuqtkarray.cpp)
+TARGET_LINK_LIBRARIES(pyuqtkarray PUBLIC uqtkarray)
 
 INSTALL(TARGETS pyuqtkarray DESTINATION PyUQTk/)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pyuqtkarray/pyuqtkarray.py
