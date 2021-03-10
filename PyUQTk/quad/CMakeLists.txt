@@ -2,6 +2,7 @@
 
 find_package(pybind11 REQUIRED)
 include_directories(../../cpp/lib/quad) #quad directory
+include_directories(../../cpp/lib/array) #array directory
 include_directories(../../cpp/lib/include) # include directory
 pybind11_add_module(_quad pyquad.cpp)
 
