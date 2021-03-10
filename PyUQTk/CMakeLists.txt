@@ -22,6 +22,7 @@ if ("${PyUQTk}" STREQUAL "ON")
 
   find_package(pybind11 REQUIRED)
   pybind11_add_module(pyuqtkarray pyuqtkarray/pyuqtkarray.cpp)
+  TARGET_LINK_LIBRARIES(pyuqtkarray PUBLIC uqtkarray)
   add_subdirectory (quad)
   add_subdirectory (tools)
   add_subdirectory (kle)
