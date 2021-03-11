@@ -8,6 +8,9 @@
 
 namespace py=pybind11;
 
+template <typename... Args>
+using py_overload_cast = py::detail::overload_cast_impl<Args...>;
+
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
@@ -166,12 +169,12 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("write_datafile_1d",&write_datafile_1d<int>);
       m.def("write_datafile_1d",&write_datafile_1d<double>);
 
-      m.def("read_datafileVS",py::overload_cast<Array2D<int> &, const char *>(&read_datafileVS));
-      m.def("read_datafileVS",py::overload_cast<Array2D<double> &, const char *>(&read_datafileVS));
-      m.def("read_datafileVS",py::overload_cast<std::vector<int> &, int &, int &, const char *>(&read_datafileVS));
-      m.def("read_datafileVS",py::overload_cast<std::vector<double> &, int &, int &, const char *>(&read_datafileVS));
-      m.def("read_datafileVS",py::overload_cast<Array1D<int> &, const char *>(&read_datafileVS));
-      m.def("read_datafileVS",py::overload_cast<Array1D<double> &, const char *>(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<Array2D<int> &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<Array2D<double> &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<std::vector<int> &, int &, int &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<std::vector<double> &, int &, int &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<Array1D<int> &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",py_overload_cast<Array1D<double> &, const char *>()(&read_datafileVS));
 
       m.def("write_datafile",&write_datafile);
 
