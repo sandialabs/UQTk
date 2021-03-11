@@ -70,7 +70,7 @@ def funcBB(inpfile,outfile,**kwargs):
 
         # Load solution and get average of the second half of the time series 
         cursol=npy.loadtxt("solution.dat")
-        tail=cursol.shape[0]/2
+        tail=cursol.shape[0]//2
         ave.append(npy.average(cursol[-tail:,spid]))
 
         #print "Average: ", npy.array(ave)
