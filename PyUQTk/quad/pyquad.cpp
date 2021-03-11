@@ -14,8 +14,8 @@ PYBIND11_MODULE(quad, m) {
       .def("SetBeta",&Quad::SetBeta)
       .def("SetDomain",static_cast<void (Quad::*)(Array1D<double>&,Array1D<double>&)>(&Quad::SetDomain))
       .def("SetDomain",static_cast<void (Quad::*)(Array1D<double>&)>(&Quad::SetDomain))
-      .def("GetDomain",static_cast<void (Quad::*)(Array1D<double>&,Array1D<double>&)>(&Quad::GetDomain))
-      .def("GetDomain",static_cast<void (Quad::*)(Array1D<double>&)>(&Quad::GetDomain))
+      .def("GetDomain",static_cast<void (Quad::*)(Array1D<double>&,Array1D<double>&) const>(&Quad::GetDomain))
+      .def("GetDomain",static_cast<void (Quad::*)(Array1D<double>&) const>(&Quad::GetDomain))
       .def("SetRule",static_cast<void (Quad::*)(Array2D<double>&,Array1D<double>&)>(&Quad::SetRule))
       .def("SetRule",static_cast<void (Quad::*)(Array2D<double>&,Array1D<double>&,Array2D<int>&)>(&Quad::SetRule))
       .def("SetRule",static_cast<void (Quad::*)()>(&Quad::SetRule))
@@ -25,5 +25,5 @@ PYBIND11_MODULE(quad, m) {
       .def("nextLevel",&Quad::nextLevel)
       .def("GetNQ",&Quad::GetNQ)
       .def("SetVerbosity",&Quad::SetVerbosity)
-
+      ;
 }
