@@ -73,8 +73,8 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("ReadBinary4py",&Array1D<double>::ReadBinary4py)
         .def("DumpBinary4py",&Array1D<double>::DumpBinary4py)
         .def("setArray",&Array1D<double>::setArray)
-        .def("setnpdblArray",&Array1D<double>::setnpintArray)
-        .def("getnpdblArray",&Array1D<double>::getnpintArray)
+        .def("setnpdblArray",&Array1D<double>::setnpdblArray)
+        .def("getnpdblArray",&Array1D<double>::getnpdblArray)
         .def("flatten",&Array1D<double>::flatten)
         .def("type",&Array1D<double>::type)
         ;
