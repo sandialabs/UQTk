@@ -42,8 +42,6 @@ PYBIND11_MODULE(uqtkarray, m) {
       .def("getnpintArray",&Array1D<int>::getnpintArray)
       .def("flatten",&Array1D<int>::flatten)
       .def("type",&Array1D<int>::type)
-      .def_property("xsize_",&Array1D<int>::xsize_)
-      .def_property("data_",&Array1D<int>::data_)
       ;
 
       py::class_<Array1D<double>>(m, "Array1D<double>")
@@ -79,8 +77,6 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpdblArray",&Array1D<double>::getnpintArray)
         .def("flatten",&Array1D<double>::flatten)
         .def("type",&Array1D<double>::type)
-        .def_property("xsize_",&Array1D<double>::xsize_)
-        .def_property("data_",&Array1D<double>::data_)
         ;
 
       py::class_<Array2D<int>>(m,"Array2D")
@@ -120,11 +116,6 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D<int>::getnpintArray)
         .def("setnpdblArray",&Array2D<int>::setnpdblArray)
         .def("getnpdblArray",&Array2D<int>::getnpdblArray)
-        .def_property("xsize_",&Array2D<int>::xsize_)
-        .def_property("ysize_",&Array2D<int>::ysize_)
-        .def_property("data_",&Array2D<int>::data_)
-        .def_property("arraycopy",&Array2D<int>::arraycopy)
-        .def_property("rowvec",&Array2D<int>::rowvec)
         ;
 
       py::class_<Array2D<double>>(m,"Array2D")
@@ -164,11 +155,6 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpintArray",&Array2D<double>::getnpintArray)
         .def("setnpdblArray",&Array2D<double>::setnpdblArray)
         .def("getnpdblArray",&Array2D<double>::getnpdblArray)
-        .def_property("xsize_",&Array2D<double>::xsize_)
-        .def_property("ysize_",&Array2D<double>::ysize_)
-        .def_property("data_",&Array2D<double>::data_)
-        .def_property("arraycopy",&Array2D<double>::arraycopy)
-        .def_property("rowvec",&Array2D<double>::rowvec)
         ;
 
       m.def("read_datafile",&read_datafile)
