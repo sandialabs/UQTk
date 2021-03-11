@@ -157,12 +157,18 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("getnpdblArray",&Array2D<double>::getnpdblArray)
         ;
 
-      m.def("read_datafile",&read_datafile)
-      m.def("read_datafileVS",&read_datafileVS)
-      m.def("read_datafile_1d",&read_datafile_1d)
-      m.def("write_datafile_size",&write_datafile_size)
-      m.def("write_datafile",&write_datafile)
-      m.def("write_datafile_1d",&write_datafile_1d)
+      m.def("read_datafile",&read_datafile<int>);
+      m.def("read_datafile",&read_datafile<double>);
+      m.def("read_datafile_1d",&read_datafile_1d<int>);
+      m.def("read_datafile_1d",&read_datafile_1d<double>);
+      m.def("write_datafile_size",&write_datafile_size<int>);
+      m.def("write_datafile_size",&write_datafile_size<double>);
+      m.def("write_datafile_1d",&write_datafile_1d<int>);
+      m.def("write_datafile_1d",&write_datafile_1d<double>);
+
+      m.def("read_datafileVS",&read_datafileVS<int>);
+      m.def("read_datafileVS",&read_datafileVS<double>);
+      m.def("write_datafile",&write_datafile);
 
       m.def("array1Dto2D",&array1Dto2D)
       m.def("array2Dto1D",&array2Dto1D)
