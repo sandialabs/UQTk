@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
 
 #include "Array1D.h"
 #include "Array2D.h"
@@ -23,7 +24,9 @@ PYBIND11_MODULE(uqtkarray, m) {
       .def("PushBack",&Array1D<int>::PushBack)
       .def("GetArrayPointer",&Array1D<int>::GetArrayPointer)
       .def("GetConstArrayPointer",&Array1D<int>::GetConstArrayPointer)
-      .def("element",&Array1D<int>::operator())
+      .def("__element__", [](Array1D<int> a, int b) {
+        return a(b);
+      }, py::is_operator())
       .def("insert",static_cast<void (Array1D<int>::*)(Array1D<int>&,int)>(&Array1D<int>::insert))
       .def("insert",static_cast<void (Array1D<int>::*)(const int&,int)>(&Array1D<int>::insert))
       .def("erase",&Array1D<int>::erase)
@@ -58,7 +61,9 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("PushBack",&Array1D<double>::PushBack)
         .def("GetArrayPointer",&Array1D<double>::GetArrayPointer)
         .def("GetConstArrayPointer",&Array1D<double>::GetConstArrayPointer)
-        .def("element",&Array1D<double>::operator())
+        .def("__element__", [](Array1D<double> a, int b) {
+          return a(b);
+        }, py::is_operator())
         .def("insert",static_cast<void (Array1D<double>::*)(Array1D<double>&,int)>(&Array1D<double>::insert))
         .def("insert",static_cast<void (Array1D<double>::*)(const double&,int)>(&Array1D<double>::insert))
         .def("erase",&Array1D<double>::erase)
@@ -91,7 +96,9 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("SetValue",&Array2D<int>::SetValue)
         .def("GetArrayPointer",&Array2D<int>::GetArrayPointer)
         .def("GetConstArrayPointer",&Array2D<int>::GetConstArrayPointer)
-        .def("element",&Array2D<int>::operator())
+        .def("__element__", [](Array2D<int> a, int b,int c) {
+          return a(b,c);
+        }, py::is_operator())
         .def("insertRow",static_cast<void (Array2D<int>::*)(Array1D<int>&,int)>(&Array2D<int>::insertRow))
         .def("insertRow",static_cast<void (Array2D<int>::*)(Array2D<int>&,int)>(&Array2D<int>::insertRow))
         .def("eraseRow",&Array2D<int>::eraseRow)
@@ -133,7 +140,9 @@ PYBIND11_MODULE(uqtkarray, m) {
         .def("SetValue",&Array2D<double>::SetValue)
         .def("GetArrayPointer",&Array2D<double>::GetArrayPointer)
         .def("GetConstArrayPointer",&Array2D<double>::GetConstArrayPointer)
-        .def("element",&Array2D<double>::operator())
+        .def("__element__", [](Array2D<double> a, int b,int c) {
+          return a(b,c);
+        }, py::is_operator())
         .def("insertRow",static_cast<void (Array2D<double>::*)(Array1D<double>&,int)>(&Array2D<double>::insertRow))
         .def("insertRow",static_cast<void (Array2D<double>::*)(Array2D<double>&,int)>(&Array2D<double>::insertRow))
         .def("eraseRow",&Array2D<double>::eraseRow)
