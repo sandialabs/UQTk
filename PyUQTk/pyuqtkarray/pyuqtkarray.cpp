@@ -570,10 +570,15 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("write_datafile",&rowdy<int>);
       m.def("write_datafile",&rowdy<double>);
 
-      m.def("array1Dto2D",&array1Dto2D)
-      m.def("array2Dto1D",&array2Dto1D)
-      m.def("paste",&paste)
-      m.def("generate_multigrid",&generate_multigrid)
+      m.def("array1Dto2D",&array1Dto2D<int,int>)
+      m.def("array1Dto2D",&array1Dto2D<double,double>)
+      m.def("array2Dto1D",&array2Dto1D<int,int>)
+      m.def("array2Dto1D",&array2Dto1D<double,double>)
+      m.def("paste",&paste<int,int,int>)
+      m.def("paste",&paste<double,double,double>)
+      m.def("paste",py_overload_cast<Array2D<double>&, Array2D<double>&,Array2D<double>&>()(&paste))
+      m.def("generate_multigrid",&generate_multigrid<int,int>)
+      m.def("generate_multigrid",&generate_multigrid<double,double>)
       m.def("merge",&merge)
       m.def("append",&append)
       m.def("transpose",&transpose)
