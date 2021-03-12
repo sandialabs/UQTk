@@ -11,8 +11,7 @@ namespace py=pybind11;
 template <typename... Args>
 using py_overload_cast = py::detail::overload_cast_impl<Args...>;
 
-// Read a datafile from filename in a vector form and store it in a 2d
-// array data of typename T
+// Dummy function for read_datafileVS(Array2D<T> &data, const char *filename)
 template <typename T>
 void foo(Array2D<T> &data, const char *filename)
 {
@@ -100,8 +99,7 @@ void foo(Array2D<T> &data, const char *filename)
 template void foo(Array2D<double> &data, const char *filename);
 template void foo(Array2D<int>    &data, const char *filename);
 
-// Read a datafile from filename in a vector form and store it in a 2d
-// array data of typename T
+// Dummy function for read_datafileVS(std::vector<T> &data, int &nrows, int &ncols, const char *filename)
 template <typename T>
 void fun(std::vector<T> &data, int &nrows, int &ncols, const char *filename)
 {
@@ -188,8 +186,7 @@ void fun(std::vector<T> &data, int &nrows, int &ncols, const char *filename)
 template void fun(std::vector<double> &data, int &nrows, int &ncols, const char *filename);
 template void fun(std::vector<int>    &data, int &nrows, int &ncols, const char *filename);
 
-// Read a datafile from filename in a vector form and store it in a 1d
-// array data of typename T
+// Dummy function for read_datafileVS(Array1D<T> &data, const char *filename)
 template <typename T>
 void dummy(Array1D<T> &data, const char *filename)
 {
@@ -227,7 +224,7 @@ void dummy(Array1D<T> &data, const char *filename)
 template void dummy(Array1D<double> &data, const char *filename);
 template void dummy(Array1D<int>    &data, const char *filename);
 
-// Write the contents of a 2d array data of typename T to file filename in a matrix form
+// Dummy function for write_datafile(const Array2D<T> &data, const char *filename)
 template <typename T>
 void rush(const Array2D<T> &data, const char *filename)
 {
@@ -275,7 +272,7 @@ void rush(const Array2D<T> &data, const char *filename)
 template void rush(const Array2D<double> &data, const char *filename);
 template void rush(const Array2D<int>    &data, const char *filename);
 
-// Write the contents of a 2d array data of typename T to file filename in a matrix form
+// Dummy function for write_datafile(const Array2D<T> &data, const char *filename, const char *action)
 template <typename T>
 void stylebender(const Array2D<T> &data, const char *filename, const char *action)
 {
@@ -328,7 +325,7 @@ void stylebender(const Array2D<T> &data, const char *filename, const char *actio
 template void stylebender(const Array2D<double> &data, const char *filename, const char *action);
 template void stylebender(const Array2D<int>    &data, const char *filename, const char *action);
 
-// Write the contents of a vector array with data of typename T to file filename in a matrix form
+// Dummy function for write_datafile(const std::vector<T> &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action)
 template <typename T>
 void rowdy(const std::vector<T> &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action)
 {
