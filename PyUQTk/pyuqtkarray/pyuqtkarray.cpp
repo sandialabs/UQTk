@@ -11,6 +11,222 @@ namespace py=pybind11;
 template <typename... Args>
 using py_overload_cast = py::detail::overload_cast_impl<Args...>;
 
+// Read a datafile from filename in a vector form and store it in a 2d
+// array data of typename T
+template <typename T>
+void foo(Array2D<T> &data, const char *filename)
+{
+
+  ifstream in(filename);
+
+  if(!in){
+    printf("read_datafileVS() : the requested file %s does not exist\n",filename) ;
+    exit(1) ;
+  }
+
+  string theLine="";
+
+  // figure out number of lines and columns
+  int nx, ny, ix = 0 ;
+  while(in.good()){
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp    ;
+    while( s >> tmp ) iy++ ;
+
+    if ( ( ix > 0 ) && ( iy != ny ) )
+    {
+      printf("read_datafileVS() : Error at line %d !!!\n",ix+1) ;
+      printf("                    no. of columns should be %d instead of %d\n",ny,iy) ;
+      exit(1) ;
+    }
+
+    ny = iy ;
+
+    ix++ ;
+
+  }
+
+  nx = ix ;
+
+#ifdef VERBOSE
+  printf("File \"%s\" contains %d rows and %d columns \n",filename,nx,ny) ;
+#endif
+  // Resize, goto beginning, and read again
+
+  if ( ( (int) data.XSize() != nx ) || ( (int) data.YSize() != ny ) )
+    data.Resize(nx,ny) ;
+
+  //in.close() ;
+  //in.open(filename);
+  in.clear() ;
+  in.seekg(0, ios::beg ) ;
+  ix = 0 ;
+  while( in.good() ){
+
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp ;
+    while( s >> tmp ) {
+      data(ix,iy)=tmp;
+      iy++;
+    }
+    if ( iy != ny ) {
+      printf("read_datafileVS() : Error in file \"%s\" \n",filename);
+      printf("                    -> at line %d while reading %s; number of columns should be %d\n",
+              ix+1, filename, ny);
+      exit(1) ;
+    }
+    ix++;
+  }
+  if ( ix != nx ) {
+    printf("read_datafileVS() : Error while reading \"%s\" -> number of rows should be %d\n", filename,nx) ;
+    exit(1) ;
+  }
+
+  return ;
+
+}
+template void foo(Array2D<double> &data, const char *filename);
+template void foo(Array2D<int>    &data, const char *filename);
+
+// Read a datafile from filename in a vector form and store it in a 2d
+// array data of typename T
+template <typename T>
+void fun(std::vector<T> &data, int &nrows, int &ncols, const char *filename)
+{
+
+  ifstream in(filename);
+
+  if(!in){
+    printf("read_datafileVS() : the requested file %s does not exist\n",filename) ;
+    exit(1) ;
+  }
+
+  string theLine="";
+
+  // figure out number of lines and columns
+  int ix = 0 ;
+  while(in.good()){
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp    ;
+    while( s >> tmp ) iy++ ;
+
+    if ( ( ix > 0 ) && ( iy != ncols ) )
+    {
+      printf("read_datafileVS() : Error at line %d !!!\n",ix+1) ;
+      printf("                    no. of columns should be %d instead of %d\n",ncols,iy) ;
+      exit(1) ;
+    }
+
+    ncols = iy ;
+
+    ix++ ;
+
+  }
+
+  nrows = ix ;
+
+#ifdef VERBOSE
+  printf("File \"%s\" contains %d rows and %d columns \n",filename,nrows,ncols) ;
+#endif
+  // Resize, goto beginning, and read again
+
+  data.resize(nrows*ncols,0.0);
+
+  //in.close() ;
+  //in.open(filename);
+  in.clear() ;
+  in.seekg(0, ios::beg ) ;
+  ix = 0 ;
+  while( in.good() ){
+
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp ;
+    while( s >> tmp ) {
+      data[iy*nrows+ix]=tmp;
+      iy++;
+    }
+    if ( iy != ncols ) {
+      printf("read_datafileVS() : Error in file \"%s\" \n",filename);
+      printf("                    -> at line %d while reading %s; number of columns should be %d\n",
+              ix+1, filename, ncols);
+      exit(1) ;
+    }
+    ix++;
+  }
+  if ( ix != nrows ) {
+    printf("read_datafileVS() : Error while reading \"%s\" -> number of rows should be %d\n", filename,nrows) ;
+    exit(1) ;
+  }
+
+  return ;
+
+}
+template void fun(std::vector<double> &data, int &nrows, int &ncols, const char *filename);
+template void fun(std::vector<int>    &data, int &nrows, int &ncols, const char *filename);
+
+// Read a datafile from filename in a vector form and store it in a 1d
+// array data of typename T
+template <typename T>
+void dummy(Array1D<T> &data, const char *filename)
+{
+
+  data.Clear();
+  ifstream in(filename);
+
+  if(!in){
+    printf("read_datafileVS() : the requested file %s does not exist\n",filename) ;
+    exit(1) ;
+  }
+
+  string theLine="";
+  int ix=0;
+
+  while(in.good()){
+    getline(in,theLine);
+
+    if (theLine=="") break;
+
+    istringstream s(theLine);
+    T tmp;
+    s >> tmp;
+    data.PushBack(tmp);
+    if (s>>tmp) {
+      printf("Error at line %d while reading %s; number of columns should be 1\n", ix+1, filename);
+      exit(1);
+    }
+    ix++;
+  }
+
+  return ;
+
+}
+template void dummy(Array1D<double> &data, const char *filename);
+template void dummy(Array1D<int>    &data, const char *filename);
+
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
@@ -169,12 +385,12 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("write_datafile_1d",&write_datafile_1d<int>);
       m.def("write_datafile_1d",&write_datafile_1d<double>);
 
-      m.def("read_datafileVS",py_overload_cast<Array2D<int> &, const char *>()(&read_datafileVS));
-      m.def("read_datafileVS",py_overload_cast<Array2D<double> &, const char *>()(&read_datafileVS));
-      m.def("read_datafileVS",py_overload_cast<std::vector<int> &, int &, int &, const char *>()(&read_datafileVS));
-      m.def("read_datafileVS",py_overload_cast<std::vector<double> &, int &, int &, const char *>()(&read_datafileVS));
-      m.def("read_datafileVS",py_overload_cast<Array1D<int> &, const char *>()(&read_datafileVS));
-      m.def("read_datafileVS",py_overload_cast<Array1D<double> &, const char *>()(&read_datafileVS));
+      m.def("read_datafileVS",&foo<int>);
+      m.def("read_datafileVS",&foo<double>);
+      m.def("read_datafileVS",&fun<double>);
+      m.def("read_datafileVS",&fun<int>);
+      m.def("read_datafileVS",&dummy<int>);
+      m.def("read_datafileVS",&dummy<double>);
 
       m.def("write_datafile",&write_datafile);
 
