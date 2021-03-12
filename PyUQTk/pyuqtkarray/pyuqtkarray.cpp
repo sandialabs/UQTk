@@ -227,6 +227,182 @@ void dummy(Array1D<T> &data, const char *filename)
 template void dummy(Array1D<double> &data, const char *filename);
 template void dummy(Array1D<int>    &data, const char *filename);
 
+// Write the contents of a 2d array data of typename T to file filename in a matrix form
+template <typename T>
+void rush(const Array2D<T> &data, const char *filename)
+{
+
+  int nx=data.XSize();
+  int ny=data.YSize();
+
+  FILE* f_out;
+  if(!(f_out = fopen(filename,"w"))){
+    printf("write_datafile: could not open file '%s'\n",filename);
+    exit(1);
+  }
+
+  if ( typeid(T) == typeid(int) )
+    for(int ix = 0 ; ix < nx ; ix++){
+      for(int iy = 0 ; iy < ny ; iy++){
+        fprintf(f_out, "%d ", data(ix,iy));
+      }
+      fprintf(f_out, "\n");
+    }
+  else if ( typeid(T) == typeid(double) )
+    for(int ix = 0 ; ix < nx ; ix++){
+      for(int iy = 0 ; iy < ny ; iy++){
+        fprintf(f_out, "%24.16lg ", data(ix,iy));
+      }
+      fprintf(f_out, "\n");
+    }
+  else {
+    printf("write_datafile: template not implemented\n");
+    exit(1);
+  }
+
+  if(fclose(f_out)){
+    printf("write_datafile: could not close file '%s'\n",filename);
+    exit(1);
+  }
+
+#ifdef VERBOSE
+  printf("Data written to '%s' in a matrix form [%d X %d]\n", filename,nx,ny);
+#endif
+
+ return ;
+
+}
+template void rush(const Array2D<double> &data, const char *filename);
+template void rush(const Array2D<int>    &data, const char *filename);
+
+// Write the contents of a 2d array data of typename T to file filename in a matrix form
+template <typename T>
+void stylebender(const Array2D<T> &data, const char *filename, const char *action)
+{
+
+  int nx=data.XSize();
+  int ny=data.YSize();
+
+  if ( ( string(action) != string("w") ) && ( string(action) != string("a") ) ) {
+   printf("write_datafile: unknown file action '%s'\n",action);
+   exit(1);
+  }
+
+  FILE* f_out;
+  if(!(f_out = fopen(filename,action))){
+    printf("write_datafile: could not open file '%s'\n",filename);
+    exit(1);
+  }
+
+  if ( typeid(T) == typeid(int) )
+    for(int ix = 0 ; ix < nx ; ix++){
+      for(int iy = 0 ; iy < ny ; iy++){
+        fprintf(f_out, "%d ", data(ix,iy));
+      }
+      fprintf(f_out, "\n");
+    }
+  else if ( typeid(T) == typeid(double) )
+    for(int ix = 0 ; ix < nx ; ix++){
+      for(int iy = 0 ; iy < ny ; iy++){
+        fprintf(f_out, "%24.16lg ", data(ix,iy));
+      }
+      fprintf(f_out, "\n");
+    }
+  else {
+    printf("write_datafile: template not implemented\n");
+    exit(1);
+  }
+
+  if(fclose(f_out)){
+    printf("write_datafile: could not close file '%s'\n",filename);
+    exit(1);
+  }
+
+#ifdef VERBOSE
+  printf("Data written to '%s' in a matrix form [%d X %d]\n", filename,nx,ny);
+#endif
+
+  return ;
+
+}
+template void stylebender(const Array2D<double> &data, const char *filename, const char *action);
+template void stylebender(const Array2D<int>    &data, const char *filename, const char *action);
+
+// Write the contents of a vector array with data of typename T to file filename in a matrix form
+template <typename T>
+void rowdy(const std::vector<T> &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action)
+{
+
+  if ( ( string(storage) != string("C") ) && ( string(storage) != string("R") ) ) {
+   printf("write_datafile: unknown storage type '%s'\n",action);
+   exit(1);
+  }
+
+  if ( ( string(action) != string("w") ) && ( string(action) != string("a") ) ) {
+   printf("write_datafile: unknown file action '%s'\n",action);
+   exit(1);
+  }
+
+  FILE *f_out;
+  if(!(f_out = fopen(filename,action))){
+    printf("write_datafile: could not open file '%s'\n",filename);
+    exit(1);
+  }
+
+  if ( typeid(T) == typeid(int) ) {
+    if ( string(storage) == string("C") ) {
+      for(int ix = 0 ; ix < nrows ; ix++) {
+        for(int iy = 0 ; iy < ncols ; iy++) {
+          fprintf(f_out, "%d ", data[iy*nrows+ix]);
+        }
+        fprintf(f_out, "\n");
+      }
+    } else {
+      for(int ix = 0 ; ix < nrows ; ix++) {
+        for(int iy = 0 ; iy < ncols ; iy++) {
+          fprintf(f_out, "%d ", data[ix*ncols+iy]);
+        }
+        fprintf(f_out, "\n");
+      }
+    }
+  } // end of typeid int
+  else if ( typeid(T) == typeid(double) ) {
+    if ( string(storage) == string("C") ) {
+      for(int ix = 0 ; ix < nrows ; ix++) {
+        for(int iy = 0 ; iy < ncols ; iy++) {
+          fprintf(f_out, "%24.16lg ", data[iy*nrows+ix]);
+        }
+        fprintf(f_out, "\n");
+      }
+    } else {
+      for(int ix = 0 ; ix < nrows ; ix++) {
+        for(int iy = 0 ; iy < ncols ; iy++) {
+          fprintf(f_out, "%24.16lg ", data[ix*ncols+iy]);
+        }
+        fprintf(f_out, "\n");
+      }
+    }
+  } // end of typeid double
+  else {
+    printf("write_datafile: template not implemented\n");
+    exit(1);
+  }
+
+  if(fclose(f_out)){
+    printf("write_datafile: could not close file '%s'\n",filename);
+    exit(1);
+  }
+
+#ifdef VERBOSE
+  printf("Data written to '%s' in a matrix form [%d X %d]\n", filename,nrows,ncols);
+#endif
+
+  return ;
+
+}
+template void rowdy(const std::vector<double> &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action);
+template void rowdy(const std::vector<int>    &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action);
+
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
@@ -384,15 +560,18 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("write_datafile_size",&write_datafile_size<double>);
       m.def("write_datafile_1d",&write_datafile_1d<int>);
       m.def("write_datafile_1d",&write_datafile_1d<double>);
-
       m.def("read_datafileVS",&foo<int>);
       m.def("read_datafileVS",&foo<double>);
       m.def("read_datafileVS",&fun<double>);
       m.def("read_datafileVS",&fun<int>);
       m.def("read_datafileVS",&dummy<int>);
       m.def("read_datafileVS",&dummy<double>);
-
-      m.def("write_datafile",&write_datafile);
+      m.def("write_datafile",&rush<int>);
+      m.def("write_datafile",&rush<double>);
+      m.def("write_datafile",&stylebender<int>);
+      m.def("write_datafile",&stylebender<double>);
+      m.def("write_datafile",&rowdy<int>);
+      m.def("write_datafile",&rowdy<double>);
 
       m.def("array1Dto2D",&array1Dto2D)
       m.def("array2Dto1D",&array2Dto1D)
