@@ -387,6 +387,11 @@ double access(int nx, int ny,Array1D<double>& arr_1, int i, int j)
   return arr_1(j+i*ny);
 }
 
+double accessPythonHelper(int nx, int ny,Array1D<double>& arr_1, int i, int j)
+{
+  return access(nx,ny,arr_1,i,j);
+}
+
 // Retrieves row 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'
 template <typename T>
 void getRow(Array2D<T> &arr2d, int k, Array1D<T> &arr1d)

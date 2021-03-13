@@ -581,7 +581,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("flatten",&flatten);
       m.def("fold_1dto2d_rowfirst",&fold_1dto2d_rowfirst);
       m.def("fold_1dto2d_colfirst",&fold_1dto2d_colfirst);
-      m.def("access",&access);
+      m.def("access",&accessPythonHelper);
       m.def("getRow",&getRow<double>);
       m.def("getRow",&getRow<int>);
       m.def("getCol",&getCol<int>);
