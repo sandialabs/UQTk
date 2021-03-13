@@ -681,13 +681,18 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("scaleinplace",static_cast<void (*)(Array1D<int>&,int)>(&scaleinplace));
       m.def("scaleinplace",static_cast<void (*)(Array2D<double>&, double)>(&scaleinplace));
       m.def("scaleinplace",static_cast<void (*)(Array2D<int>&,int)>(&scaleinplace));
-
-      m.def("dotdivide",&dotdivide)
-      m.def("dotmult",&dotmult)
-      m.def("dot",&dot)
-      m.def("printarray",printarray)
-
-
+      m.def("dotdivide",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&dotdivide));
+      m.def("dotdivide",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&dotdivide));
+      m.def("dotmult",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&dotmult));
+      m.def("dotmult",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&dotmult));
+      m.def("dot",static_cast<double (*)(Array1D<double>&,Array1D<double>&)>(&dot));
+      m.def("dot",static_cast<Array1D<double> (*)(Array2D<double>&, Array1D<double>&)>(&dot));
+      m.def("dot",static_cast<Array1D<double> (*)(Array1D<double>&, Array2D<double>&)>(&dot));
+      m.def("dot",static_cast<Array2D<double> (*)(Array2D<double>&, Array2D<double>&)>(&dot));
+      m.def("printarray",static_cast<void (*)(Array1D<double>&)>(&printarray));
+      m.def("printarray",static_cast<void (*)(Array1D<int>&)>(&printarray));
+      m.def("printarray",static_cast<void (*)(Array2D<double>&)>(&printarray));
+      m.def("printarray",static_cast<void (*)(Array2D<int>&)>(&printarray));
 
 
 
