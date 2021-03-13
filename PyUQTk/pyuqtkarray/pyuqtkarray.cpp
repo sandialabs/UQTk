@@ -5,6 +5,17 @@
 #include "Array2D.h"
 #include "arrayio.h"
 #include "arraytools.h"
+#include "ftndefs.h"
+#include "gen_defs.h"
+#include "depblas.h"
+#include "deplapack.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include "math.h"
+#include "assert.h"
+#include <sstream>
+#include <fstream>
+#include <iomanip>
 
 namespace py=pybind11;
 
@@ -400,6 +411,46 @@ void rowdy(const std::vector<T> &data, const int &nrows, const int &ncols, const
 template void rowdy(const std::vector<double> &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action);
 template void rowdy(const std::vector<int>    &data, const int &nrows, const int &ncols, const char *storage, const char *filename, const char *action);
 
+// Dummy methods for the dot function to work correctly
+Array1D<double> method(Array2D<double>& A, Array1D<double>& x){
+  int n=A.XSize();
+  int m=A.YSize();
+
+  // Size check
+  CHECKEQ(m, (int) x.XSize());
+
+
+  Array1D<double> y(n,0e0);
+
+  char trans='n';
+  double beta=0.e0;
+  int xinc=1;
+  int yinc=1;
+  double alpha = 1;
+  FTN_NAME(dgemv)(&trans, &n, &m, &alpha, A.GetArrayPointer(), &n, x.GetArrayPointer(), &xinc,  &beta, y.GetArrayPointer(), &yinc );
+
+  return y;
+}
+Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
+  int n=A.XSize();
+  int m=A.YSize();
+
+  // Size check
+  CHECKEQ(n, (int) x.XSize());
+
+
+  Array1D<double> y(n,0e0);
+
+  char trans='n';
+  double beta=0.e0;
+  int xinc=1;
+  int yinc=1;
+  double alpha = 1;
+  FTN_NAME(dgemv)(&trans, &n, &m, &alpha, A.GetArrayPointer(), &n, x.GetArrayPointer(), &xinc,  &beta, y.GetArrayPointer(), &yinc );
+
+  return y;
+}
+
 PYBIND11_MODULE(uqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
@@ -686,8 +737,8 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("dotmult",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&dotmult));
       m.def("dotmult",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&dotmult));
       m.def("dot",static_cast<double (*)(Array1D<double>&,Array1D<double>&)>(&dot));
-      m.def("dot",static_cast<Array1D<double> (*)(Array2D<double>&, Array1D<double>&)>(&dot));
-      m.def("dot",static_cast<Array1D<double> (*)(Array1D<double>&, Array2D<double>&)>(&dot));
+      m.def("dot",&method);
+      m.def("dot",&swag);
       m.def("dot",static_cast<Array2D<double> (*)(Array2D<double>&, Array2D<double>&)>(&dot));
       m.def("printarray",static_cast<void (*)(Array1D<double>&)>(&printarray));
       m.def("printarray",static_cast<void (*)(Array1D<int>&)>(&printarray));
