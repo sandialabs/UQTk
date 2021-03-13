@@ -570,61 +570,81 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("write_datafile",&rowdy<int>);
       m.def("write_datafile",&rowdy<double>);
 
-      m.def("array1Dto2D",&array1Dto2D<int,int>)
-      m.def("array1Dto2D",&array1Dto2D<double,double>)
-      m.def("array2Dto1D",&array2Dto1D<int,int>)
-      m.def("array2Dto1D",&array2Dto1D<double,double>)
+      m.def("array1Dto2D",&array1Dto2D<int>);
+      m.def("array1Dto2D",&array1Dto2D<double>);
+      m.def("array2Dto1D",&array2Dto1D<int>);
+      m.def("array2Dto1D",&array2Dto1D<double>);
+      m.def("generate_multigrid",&generate_multigrid<int>);
+      m.def("generate_multigrid",&generate_multigrid<double>);
+      m.def("transpose",&transpose<double>);
+      m.def("transpose",&transpose<int>);
+      m.def("flatten",&flatten);
+      m.def("fold_1dto2d_rowfirst",&fold_1dto2d_rowfirst);
+      m.def("fold_1dto2d_colfirst",&fold_1dto2d_colfirst);
+      m.def("access",&access);
+      m.def("getRow",&getRow<double>);
+      m.def("getRow",&getRow<int>);
+      m.def("getCol",&getCol<int>);
+      m.def("getCol",&getCol<double>);
+      m.def("subVector",&subVector<double>);
+      m.def("subMatrix_row",&subMatrix_row<int>);
+      m.def("subMatrix_row",&subMatrix_row<double>);
+      m.def("subMatrix_col",&subMatrix_col<double>);
+      m.def("subMatrix_col",&subMatrix_col<int>);
+      m.def("matPvec",&matPvec<double>);
+      m.def("matPvec",&matPvec<int>);
+      m.def("maxVal",&maxVal<double>);
+      m.def("maxVal",&maxVal<int>);
+      m.def("setdiff",&setdiff);
+      m.def("setdiff_s",&setdiff_s);
+      m.def("shell_sort_col",&shell_sort_col);
+      m.def("shell_sort_all",&shell_sort_all);
+      m.def("find",&find<double>);
+      m.def("find",&find<int>);
+      m.def("prodAlphaMatVec",&prodAlphaMatVec);
+      m.def("prodAlphaMatTVec",&prodAlphaMatTVec);
+      m.def("prodAlphaMatMat",&prodAlphaMatMat);
+      m.def("prodAlphaMatTMat",&prodAlphaMatTMat);
+      m.def("addVecAlphaVecPow",&addVecAlphaVecPow);
+      m.def("prod_vecTmatvec",&prod_vecTmatvec);
+      m.def("MatTMat",&MatTMat);
+      m.def("delRow",&delRow<double>);
+      m.def("delRow",&delRow<int>);
+      m.def("paddMatColScal",&paddMatColScal);
+      m.def("vecIsInArray",&vecIsInArray);
+      m.def("select_kth",&select_kth);
+      m.def("logdeterm",&logdeterm);
+      m.def("trace",&trace);
+      m.def("evalLogMVN",&evalLogMVN);
+      m.def("diag",&diag);
+      m.def("mtxdel",&mtxdel);
+      m.def("norm",&norm);
+      m.def("dotT",&dotT);
+      m.def("INV",&INV);
+      m.def("AinvH",&AinvH);
+      m.def("Ainvb",&Ainvb);
+      m.def("LSTSQ",&LSTSQ);
+      m.def("QR",&QR);
+      m.def("SVD",&SVD);
+      m.def("dist_sq",&dist_sq);
+      m.def("Trans",&Trans);
+
       m.def("paste",&paste<int,int,int>)
       m.def("paste",&paste<double,double,double>)
       m.def("paste",py_overload_cast<Array2D<double>&, Array2D<double>&,Array2D<double>&>()(&paste))
-      m.def("generate_multigrid",&generate_multigrid<int,int>)
-      m.def("generate_multigrid",&generate_multigrid<double,double>)
       m.def("merge",&merge)
       m.def("append",&append)
-      m.def("transpose",&transpose)
-      m.def("flatten",&flatten)
-      m.def("fold_1dto2d_rowfirst",&fold_1dto2d_rowfirst)
-      m.def("fold_1dto2d_colfirst",&fold_1dto2d_colfirst)
       m.def("swap",&swap)
-      m.def("access",&access)
-      m.def("getRow",&getRow)
-      m.def("getCol",&getCol)
       m.def("addVal",&addVal)
-      m.def("subVector",&subVector)
-      m.def("subMatrix_row",&subMatrix_row)
-      m.def("subMatrix_col",&subMatrix_col)
-      m.def("matPvec",&matPvec)
-      m.def("maxVal",&maxVal)
-      m.def("setdiff",&setdiff)
-      m.def("setdiff_s",&setdiff_s)
       m.def("shell_sort",&shell_sort)
-      m.def("shell_sort_col",&shell_sort_col)
-      m.def("shell_sort_all",&shell_sort_all)
       m.def("quicksort3",&quicksort3)
       m.def("intersect",&intersect)
-      m.def("find",&find)
-      m.def("prodAlphaMatVec",&prodAlphaMatVec)
-      m.def("prodAlphaMatTVec",&prodAlphaMatTVec)
-      m.def("prodAlphaMatMat",&prodAlphaMatMat)
-      m.def("prodAlphaMatTMat",&prodAlphaMatTMat)
-      m.def("addVecAlphaVecPow",&addVecAlphaVecPow)
-      m.def("prod_vecTmatvec",&prod_vecTmatvec)
-      m.def("MatTMat",&MatTMat)
-      m.def("delRow",&delRow)
       m.def("delCol",&delCol)
       m.def("paddMatRow",&paddMatRow)
       m.def("paddMatCol",&paddMatCol)
-      m.def("paddMatRow",&paddMatColScal)
       m.def("is_equal",&is_equal)
       m.def("is_less",&is_less)
-      m.def("vecIsInArray",&vecIsInArray)
-      m.def("select_kth",&select_kth)
-      m.def("logdeterm",&logdeterm)
-      m.def("trace",&trace)
-      m.def("evalLogMVN",&evalLogMVN)
-      m.def("diag",&diag)
       m.def("copy",&copy)
-      m.def("mtxdel",&mtxdel)
       m.def("add",&add)
       m.def("addinplace",&addinplace)
       m.def("subtract",&subtract)
@@ -633,17 +653,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("scaleinplace",&scaleinplace)
       m.def("dotdivide",&dotdivide)
       m.def("dotmult",&dotmult)
-      m.def("norm",&norm)
-      m.def("dist_sq",&dist_sq)
-      m.def("Trans",&Trans)
       m.def("dot",&dot)
-      m.def("dotT",&dotT)
-      m.def("INV",&INV)
-      m.def("AinvH",&AinvH)
-      m.def("Ainvb",&Ainvb)
-      m.def("LSTSQ",&LSTSQ)
-      m.def("QR",&QR)
-      m.def("SVD",&SVD)
       m.def("printarray",printarray)
 
 
