@@ -628,10 +628,10 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("SVD",&SVD);
       m.def("dist_sq",&dist_sq);
       m.def("Trans",&Trans);
+      m.def("paste",static_cast<void (*)(Array1D<double> &, Array1D<double> &, Array2D<double> &)>(&paste));
+      m.def("paste",static_cast<void (*)(Array1D<int> &, Array1D<int> &, Array2D<int> &)>(&paste));
+      m.def("paste",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&paste));
 
-      m.def("paste",&paste<int,int,int>)
-      m.def("paste",&paste<double,double,double>)
-      m.def("paste",py_overload_cast<Array2D<double>&, Array2D<double>&,Array2D<double>&>()(&paste))
       m.def("merge",&merge)
       m.def("append",&append)
       m.def("swap",&swap)
