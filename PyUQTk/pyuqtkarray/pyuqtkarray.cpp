@@ -451,7 +451,7 @@ Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
   return y;
 }
 
-PYBIND11_MODULE(uqtkarray, m) {
+PYBIND11_MODULE(pyuqtkarray, m) {
     py::class_<Array1D<int>>(m, "Array1D<int>")
       .def(py::init<>())
       .def(py::init<const int&>())
