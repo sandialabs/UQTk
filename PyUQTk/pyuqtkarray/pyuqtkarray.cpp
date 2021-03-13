@@ -661,16 +661,25 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("paddMatRow",static_cast<void (*)(Array2D<int>&, Array1D<int>&)>(&paddMatRow));
       m.def("paddMatCol",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&paddMatCol));
       m.def("paddMatCol",static_cast<void (*)(Array2D<int>&, Array1D<int>&)>(&paddMatCol));
-
-      m.def("is_equal",&is_equal)
-      m.def("is_less",&is_less)
-      m.def("copy",&copy)
-      m.def("add",&add)
-      m.def("addinplace",&addinplace)
-      m.def("subtract",&subtract)
-      m.def("subtractinplace",&subtractinplace)
-      m.def("scale",&scale)
-      m.def("scaleinplace",&scaleinplace)
+      m.def("is_equal",static_cast<bool (*)(Array1D<int>&,Array1D<int>&)>(&is_equal));
+      m.def("is_equal",static_cast<bool (*)(Array1D<double>&,Array1D<double>&)>(&is_equal));
+      m.def("is_less",static_cast<bool (*)(Array1D<double>&,Array1D<double>&)>(&is_less));
+      m.def("is_less",static_cast<bool (*)(Array1D<int>&,Array1D<int>&)>(&is_less));
+      m.def("copy",static_cast<Array1D<double> (*)(Array1D<double>&)>(&copy));
+      m.def("copy",static_cast<Array2D<double> (*)(Array2D<double>&)>(&copy));
+      m.def("add",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&add));
+      m.def("add",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&add));
+      m.def("addinplace",static_cast<void (*)(Array2D<double>&,Array2D<double>&)>(&addinplace));
+      m.def("addinplace",static_cast<void (*)(Array1D<double>&,Array1D<double>&)>(&addinplace));
+      m.def("subtract",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&subtract));
+      m.def("subtract",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&subtract));
+      m.def("subtractinplace",static_cast<void (*)(Array2D<double>&,Array2D<double>&)>(&subtractinplace));
+      m.def("subtractinplace",static_cast<void (*)(Array1D<double>&,Array1D<double>&)>(&subtractinplace));
+      m.def("scale",static_cast<Array1D<double> (*)(Array1D<double>&,Array1D<double>&)>(&scale));
+      m.def("scale",static_cast<Array2D<double> (*)(Array2D<double>&,Array2D<double>&)>(&scale));
+      m.def("scaleinplace",static_cast<void (*)(Array2D<double>&,Array2D<double>&)>(&scaleinplace));
+      m.def("scaleinplace",static_cast<void (*)(Array1D<double>&,Array1D<double>&)>(&scaleinplace));
+      
       m.def("dotdivide",&dotdivide)
       m.def("dotmult",&dotmult)
       m.def("dot",&dot)
