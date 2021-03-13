@@ -586,6 +586,7 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("getRow",&getRow<int>);
       m.def("getCol",&getCol<int>);
       m.def("getCol",&getCol<double>);
+      m.def("subVector",&subVector<int>);
       m.def("subVector",&subVector<double>);
       m.def("subMatrix_row",&subMatrix_row<int>);
       m.def("subMatrix_row",&subMatrix_row<double>);
@@ -631,13 +632,28 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("paste",static_cast<void (*)(Array1D<double> &, Array1D<double> &, Array2D<double> &)>(&paste));
       m.def("paste",static_cast<void (*)(Array1D<int> &, Array1D<int> &, Array2D<int> &)>(&paste));
       m.def("paste",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&paste));
+      m.def("merge",static_cast<void (*)(Array1D<double>&, Array1D<double>&, Array1D<double>&)>(&merge));
+      m.def("merge",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&merge));
+      m.def("merge",static_cast<void (*)(Array1D<int>&, Array1D<int>&, Array1D<int>&)>(&merge));
+      m.def("append",static_cast<void (*)(Array1D<double>&, Array1D<double>&)>(&append));
+      m.def("append",static_cast<void (*)(Array1D<int>&, Array1D<int>&)>(&append));
+      m.def("swap",static_cast<void (*)(Array1D<double>&,int,int)>(&swap));
+      m.def("swap",static_cast<void (*)(Array2D<double>&,int,int)>(&swap));
+      m.def("addVal",static_cast<void (*)(int, double *, double)>(&addVal));
+      m.def("addVal",static_cast<void (*)(int, int *, int)>(&addVal));
+      m.def("addVal",static_cast<void (*)(Array1D<double> &, double )>(&addVal));
+      m.def("addVal",static_cast<void (*)(Array1D<int> &, int)>(&addVal));
+      m.def("addVal",static_cast<void (*)(Array2D<double> &, double )>(&addVal));
+      m.def("addVal",static_cast<void (*)(Array2D<int> &, int)>(&addVal));
+      m.def("shell_sort",static_cast<void (*)(int *, int)>(&shell_sort));
+      m.def("shell_sort",static_cast<void (*)(Array1D<int>&)>(&shell_sort));
+      m.def("shell_sort",static_cast<void (*)(Array1D<double>&)>(&shell_sort));
+      m.def("quicksort3",static_cast<void (*)(Array1D<double>&,int,int)>(&quicksort3));
+      m.def("quicksort3",static_cast<void (*)(Array2D<double>&,int,int,int)>(&quicksort3));
+      m.def("quicksort3",static_cast<void (*)(Array2D<double>&,int,int)>(&quicksort3));
 
-      m.def("merge",&merge)
-      m.def("append",&append)
-      m.def("swap",&swap)
-      m.def("addVal",&addVal)
-      m.def("shell_sort",&shell_sort)
-      m.def("quicksort3",&quicksort3)
+
+
       m.def("intersect",&intersect)
       m.def("delCol",&delCol)
       m.def("paddMatRow",&paddMatRow)
