@@ -651,13 +651,17 @@ PYBIND11_MODULE(uqtkarray, m) {
       m.def("quicksort3",static_cast<void (*)(Array1D<double>&,int,int)>(&quicksort3));
       m.def("quicksort3",static_cast<void (*)(Array2D<double>&,int,int,int)>(&quicksort3));
       m.def("quicksort3",static_cast<void (*)(Array2D<double>&,int,int)>(&quicksort3));
+      m.def("intersect",static_cast<void (*)(Array1D<int> &, Array1D<int> &, Array1D<int> &,Array1D<int> &,Array1D<int> &)>(&intersect));
+      m.def("intersect",static_cast<void (*)(Array1D<int> &, Array1D<int> &, Array1D<int> &)>(&intersect));
+      m.def("delCol",static_cast<void (*)(Array2D<double>&,int)>(&delCol));
+      m.def("delCol",static_cast<void (*)(Array2D<int>&,int)>(&delCol));
+      m.def("delCol",static_cast<void (*)(Array1D<double>&,int)>(&delCol));
+      m.def("delCol",static_cast<void (*)(Array1D<int>&,int)>(&delCol));
+      m.def("paddMatRow",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&paddMatRow));
+      m.def("paddMatRow",static_cast<void (*)(Array2D<int>&, Array1D<int>&)>(&paddMatRow));
+      m.def("paddMatCol",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&paddMatCol));
+      m.def("paddMatCol",static_cast<void (*)(Array2D<int>&, Array1D<int>&)>(&paddMatCol));
 
-
-
-      m.def("intersect",&intersect)
-      m.def("delCol",&delCol)
-      m.def("paddMatRow",&paddMatRow)
-      m.def("paddMatCol",&paddMatCol)
       m.def("is_equal",&is_equal)
       m.def("is_less",&is_less)
       m.def("copy",&copy)
