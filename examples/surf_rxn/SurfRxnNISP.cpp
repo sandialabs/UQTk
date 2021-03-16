@@ -33,10 +33,11 @@
 #include "arrayio.h"
 #include "arraytools.h"
 #include "PCSet.h"
-
+#include "ss.h"
 #include "model.h"
 #include "XMLreader.h"
 #include "Utils.h"
+#include "amcmc.h"
 
 /// \brief Example that solves deterministic 3-equation model for heterogeneous surface
 /// reaction involving a monomer, dimer, and inert species adsorbing

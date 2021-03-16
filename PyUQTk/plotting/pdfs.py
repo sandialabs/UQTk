@@ -29,7 +29,7 @@
 import os
 import sys
 
-sys.path.append(os.environ['UQTK_SRC'] + '/PyUQTk')
+sys.path.append(os.environ['UQTK_INS'] + '/PyUQTk')
 from PyUQTk.utils import pdf_kde
 
 try:

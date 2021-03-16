@@ -15,7 +15,7 @@ add_subdirectory (CorrTest         )
 add_subdirectory (QuadLUTest       )
 
 # # MCMC class tests
-add_subdirectory (TMCMC2dTest       )
+#[[add_subdirectory (TMCMC2dTest       )]]
 add_subdirectory (MCMC2dTest       )
 add_subdirectory (MCMCRandomTest   )
 add_subdirectory (MCMCNestedTest   )

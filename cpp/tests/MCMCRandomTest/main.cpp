@@ -30,6 +30,7 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "quad.h"
 #include "dsfmt_add.h"
 #include "arrayio.h"
@@ -39,17 +40,17 @@
 using namespace std;
 
 /*************************************************
-Define Likelihood function
+Define LogPosterior function
 *************************************************/
-class Likelihood: public LikelihoodBase{
+class LogPosterior: public LogPosteriorBase{
 public:
-	Likelihood(){};
-	~Likelihood(){};
+	LogPosterior(){};
+	~LogPosterior(){};
 	double eval(Array1D<double>&);
 };
 
 // Rosnebrock function
-double Likelihood::eval(Array1D<double>& x){
+double LogPosterior::eval(Array1D<double>& x){
 	 double lnpost = -(1-x(0))*(1-x(0)) - 100*(x(1) - x(0)*x(0))*(x(1) - x(0)*x(0));
 	// double lnpost = -.5*(x(0)*x(0)/.01 + x(1)*x(1)/.64);
 	// // 	'''
@@ -68,13 +69,13 @@ int main(int argc, char ** argv){
 
 	/*************************************************
 	Initial start for MCMC chain
-	and set Likelihood function
+	and set LogPosterior function
 	*************************************************/
 	int dim = 2;
 	int nCalls = 100;
 	Array1D<double> x(dim,0);
 
-	Likelihood L;
+	LogPosterior L;
 	cout << "L.eval(x) = " << L.eval(x) << endl;
 
 	/*************************************************
@@ -82,9 +83,8 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain(L);
+	AMCMC mchain(L);
 	mchain.setChainDim(dim);
-	mchain.initMethod("am");
 	mchain.initChainPropCovDiag(g);
 	mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
 	mchain.setWriteFlag(0);
@@ -97,9 +97,8 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run a second MCMC chain
 	*************************************************/
-	MCMC mchain2(L);
+	AMCMC mchain2(L);
 	mchain2.setChainDim(dim);
-	mchain2.initMethod("am");
 	mchain2.initChainPropCovDiag(g);
 	// mchain2.setSeed(130);
 	mchain2.setWriteFlag(0);

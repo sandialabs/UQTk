@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SurfRxnDemo>
+    
+    <!-- Data and noise type for inference-->
+    <Data file="INPUTDATAFILE" noise="const_stdev">
+        
+        <noise_types>
+            <const_stn stdparam="0.1"/> <!-- Constant stdev/mean ratio -->
+            <const_stdev stdparam="NOISE"/> <!-- Constant stdev -->
+        </noise_types>
+        
+    </Data>
+    
+    <!-- MCMC specific information -->
+    <MCMC name="line_inference" method="am" chainparam="default" output="txt">
+        
+        <method_types>
+            <am  nsteps="200000" gamma="0.01" eps_cov="1e-8" adstart="5000" adstep="10" adstop="10000000" />
+            <ss  nsteps="10000"/>
+        </method_types>
+        
+        <!-- Specifies chain start and (initial) proposal sigmas -->
+        <chainparam_types>
+            <default/>  <!-- default takes values from model block -->
+            <file chstart="chain_st.dat" chsig="chain_sg.dat" /> <!-- read from files -->
+        </chainparam_types>
+        
+        <!-- Specifies the output types and options -->
+        <output_types>
+            <txt file="CHAINFILE" freq="1000" screen="1000"/> <!-- Text file -->
+            <bin file="chain.bin" freq="1000" screen="10000"/> <!-- Binary file -->
+        </output_types>
+        
+    </MCMC>
+    
+    <!-- PC specific information for uncertainty propagation -->
+    <PC type="PCTYPE" order="PCORDER" inpc="file">
+      <inpc_types>
+        <default/> <!-- default takes values from model block -->
+       	<file name="PCcoeff.dat"/>
+      </inpc_types>
+    </PC>
+    
+    <!-- Model parameters -->
+    <ModelParameters>
+        
+        <!-- all parameters with their nominal value.
+         
+         value: nominal value for deterministic run
+              : initial chain position for inference
+              : nominal or 0th order term for isp/nisp
+         
+         type: det: deterministic, no further specification needed
+         
+         type: infer: sought by inference code
+           sigma: proposal sigma
+           prior: prior type
+           pr1,pr2: prior parameters
+         
+         type: uncertain: sought by isp/nisp codes
+           cf_X: PC coefficients, X>0
+         -->
+        <a value="PAR_1"   type="infer" sigma="0.005" prior="uniform" pr1="-100" pr2="100"/>
+        <b value="PAR_2" type="infer" sigma="0.005" prior="uniform" pr1="-100" pr2="100"/>
+ 
+        
+    </ModelParameters>
+    
+   
+    
+</SurfRxnDemo>

@@ -42,6 +42,7 @@
 #include "inference.h"
 
 #include "mcmc.h"
+#include "amcmc.h"
 #include "tools.h"
 #include "arrayio.h"
 #include "arraytools.h"
@@ -131,7 +132,7 @@ void infer_model(Array1D< Array2D<double> (*)(Array2D<double>&, Array2D<double>&
 		chstart(chdim-1)=datanoise_array(0);
 
     // Initialize chain
-    MCMC mchain(LogPosterior,(void *) mypost);
+    AMCMC mchain(LogPosterior,(void *) mypost);
     mchain.setSeed(seed);
     mchain.setChainDim(chdim);
 
@@ -323,4 +324,3 @@ double LogPosterior(Array1D<double>& m, void* mypost_void)
 
 	return logpost;
 }
-

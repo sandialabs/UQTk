@@ -29,9 +29,10 @@
 #include <math.h>
 #include "tools.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "arrayio.h"
 #include "XMLUtils.h"
-
+#include "ss.h"
 #include "model.h"
 #include "posterior.h"
 #include "XMLreader.h"
@@ -59,16 +60,17 @@ int main(int argc, char *argv[])
   // Array to hold the starting values of the chain
   Array1D<double> chstart;
   // Define the MCMC object
-  MCMC mchain(LogPosterior,(void*) pinfo);
+    ///\note It appears based on the .xml file that the MCMC passed in is of the AMCMC variety
+  AMCMC mchain(LogPosterior,(void*) pinfo);
   // Read the xml file for MCMC-specific information
   readXMLChainInput(xmlTree,&mchain, chstart, &nsteps,pinfo->chainParamInd,pinfo->priortype,pinfo->priorparam1,pinfo->priorparam2);
 
   // Prepend the parameter names to the output file
-  FILE* f_out;  
+  FILE* f_out;
   string filename=mchain.getFilename();
   int chdim=chstart.XSize();
-  
-  f_out = fopen(filename.c_str(),"w"); 
+
+  f_out = fopen(filename.c_str(),"w");
 
   fprintf(f_out, "%s ","Step");
   for(int i=0;i<chdim;i++)
@@ -80,8 +82,6 @@ int main(int argc, char *argv[])
   mchain.namesPrepended();
   // Run the chain
   mchain.runChain(nsteps, chstart);
-   
+
   return 0;
 }
-
-
