@@ -75,6 +75,13 @@ PYBIND11_MODULE(_pce, m) {
         .def("SetLogCompMethod",&PCSet::SetLogCompMethod)
         .def("GetGMRESDivTolerance",static_cast<double (PCSet::*)() const>(&PCSet::GetGMRESDivTolerance))
         .def("GetGMRESDivTolerance",static_cast<void (PCSet::*)(const double&)>(&PCSet::GetGMRESDivTolerance))
-        
+        .def("InitMeanStDv",static_cast<void (PCSet::*)(const double&, const double&, double*) const>(&PCSet::InitMeanStDv))
+        .def("InitMeanStDv",static_cast<void (PCSet::*)(const double&, const double&, Array1D<double>&) const>(&PCSet::InitMeanStDv))
+        .def("Copy",static_cast<void (PCSet::*)(double*, const double*) const>(&PCSet::Copy))
+        .def("Copy",static_cast<void (PCSet::*)(Array1D<double>&, const Array1D<double>&) const>(&PCSet::Copy))
+        .def("Add",static_cast<const double*, const double*, double*>(&PCSet::Add))
+        .def("Add",static_cast<const Array1D<double>&, const Array1D<double>&, Array1D<double>&>(&PCSet::Add))
+        .def("AddInPlace",static_cast<const Array1D<double>&, const Array1D<double>&, Array1D<double>&>(&PCSet::AddInPlace))
+
         ;
 }
