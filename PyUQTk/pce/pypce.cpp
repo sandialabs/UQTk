@@ -117,7 +117,13 @@ PYBIND11_MODULE(_pce, m) {
         .def("Derivative",static_cast<void (PCSet::*)(const double*, double*) const>(&PCSet::Derivative))
         .def("Derivative",static_cast<void (PCSet::*)(const Array1D<double>&, Array1D<double>&) const>(&PCSet::Derivative))
         .def("GetNumTripleProd",&PCSet::GetNumTripleProd)
-        
+        .def("GetTripleProd",static_cast<void (PCSet::*)(int *, int *, int *, double *) const>(&PCSet::GetTripleProd))
+        .def("GetTripleProd",static_cast<void (PCSet::*)(Array1D<int>&, Array1D<int>&, Array1D<int>&, Array1D<double>&) const>(&PCSet::GetTripleProd))
+        .def("GetNumQuadProd",&PCSet::GetNumQuadProd)
+        .def("GetQuadProd",static_cast<void (PCSet::*)(int *, int *, int *, int *, double *) const>(&PCSet::GetQuadProd))
+        .def("GetQuadProd",static_cast<void (PCSet::*)(Array1D<int> &, Array1D<int> &, Array1D<int> &, Array1D<int> &,Array1D<double> &) const>(&PCSet::GetQuadProd))
+        .def("SeedBasisRandNumGen",&PCSet::SeedBasisRandNumGen)
+        .def("DrawSampleSet",static_cast<void (PCSet::*)(const Array1D<double>&, Array1D<double>&) const>(&PCSet::DrawSampleSet))
 
         ;
 }
