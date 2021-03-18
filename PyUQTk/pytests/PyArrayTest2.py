@@ -29,7 +29,7 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path to include PyUQTk
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 
 try:
 	import numpy as np
@@ -37,9 +37,9 @@ except ImportError:
 	print("Need numpy to test PyUQTk")
 
 try:
-	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
+	import pyuqtkarray
+	from pyuqtkarray import numpy2uqtk
+	from pyuqtkarray import uqtk2numpy
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")

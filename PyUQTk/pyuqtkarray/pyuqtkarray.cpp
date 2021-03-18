@@ -452,7 +452,7 @@ Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
 }
 
 PYBIND11_MODULE(pyuqtkarray, m) {
-    py::class_<Array1D<int>>(m, "Array1D<int>",py::module_local())
+    py::class_<Array1D<int>>(m, "intArray1D")
       .def(py::init<>())
       .def(py::init<const int&>())
       .def(py::init<const int&,const int&>())
@@ -487,7 +487,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       .def("type",&Array1D<int>::type)
       ;
 
-      py::class_<Array1D<double>>(m, "Array1D<double>",py::module_local())
+      py::class_<Array1D<double>>(m,"dblArray1D")
         .def(py::init<>())
         .def(py::init<const int&>())
         .def(py::init<const int&,const int&>())
@@ -522,7 +522,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         .def("type",&Array1D<double>::type)
         ;
 
-      py::class_<Array2D<int>>(m,"Array2D<int>",py::module_local())
+      py::class_<Array2D<int>>(m,"intArray2D")
         .def(py::init<>())
         .def(py::init<const int&,const int&>())
         .def(py::init<const int&,const int&,const int&>())
@@ -561,7 +561,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         .def("getnpdblArray",&Array2D<int>::getnpdblArray)
         ;
 
-      py::class_<Array2D<double>>(m,"Array2D<double>",py::module_local())
+      py::class_<Array2D<double>>(m,"dblArray2D")
         .def(py::init<>())
         .def(py::init<const int&,const int&>())
         .def(py::init<const int&,const int&,const int&>())

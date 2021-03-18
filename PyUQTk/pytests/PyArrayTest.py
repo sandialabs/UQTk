@@ -32,7 +32,7 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 # only necessary for cmake tests, so that user doesn have to "make install" to run
 # python tests
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 
 # try to import numpy and matplotlib
 try:
@@ -44,9 +44,9 @@ except ImportError:
 # try to import uqtk array library and
 # functions to convert between uqtk and numpy arrays
 try:
-	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
+	import pyuqtkarray
+	from pyuqtkarray import numpy2uqtk
+	from pyuqtkarray import uqtk2numpy
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
@@ -56,7 +56,7 @@ import unittest
 ''' Test converting 1d numpy array to 1d uqtk array '''
 # create 1d array
 N = 35
-x = uqtkarray.dblArray1D(N,0)
+x = pyuqtkarray.dblArray1D(N,0)
 
 # create 1d numpy array
 x_np = random.randn(N)
@@ -72,7 +72,7 @@ for i in range(N):
 # create 2d array in uqtk
 m = 100
 n = 3
-y = uqtkarray.dblArray2D(m,n,1)
+y = pyuqtkarray.dblArray2D(m,n,1)
 
 # set 2d array to numpy array
 # make sure to pass asfortranarray
