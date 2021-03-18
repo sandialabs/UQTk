@@ -37,7 +37,7 @@ import pyuqtkarray
 
 print("Loading quadrature module:")
 sys.path.append('../quad/')
-import quad
+import _quad
 
 print("Loading bayesian compressed sensing module:")
 # sys.path.append('../bcs/')
@@ -45,7 +45,7 @@ print("Loading bayesian compressed sensing module:")
 
 print("Loading polynomial chaos module:")
 sys.path.append('../pce/')
-import pce
+import _pce
 
 print("Loading tools module:")
 sys.path.append('../tools')

@@ -5,6 +5,7 @@ include_directories(../../cpp/lib/quad) #quad directory
 include_directories(../../cpp/lib/array) #array directory
 include_directories(../../cpp/lib/include) # include directory
 pybind11_add_module(_quad pyquad.cpp)
+TARGET_LINK_LIBRARIES(_quad PUBLIC uqtk blas lapack depuqtk)
 
 INSTALL(TARGETS _quad DESTINATION PyUQTk/)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/quad/quad.py DESTINATION PyUQTk)

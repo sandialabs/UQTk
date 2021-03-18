@@ -4,7 +4,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(quad, m) {
+PYBIND11_MODULE(_quad, m) {
     py::class_<Quad>(m,"Quad")
       .def(pybind11::init<>())
       .def(pybind11::init<char *,char *,int,int,double,double>())

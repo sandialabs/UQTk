@@ -24,5 +24,12 @@ endif()
 
 pybind11_add_module(_pce pypce.cpp)
 
+
+if(BUILD_SUNDIALS)
+	TARGET_LINK_LIBRARIES(_pce PUBLIC uqtk depuqtk blas lapack gfortran ${PROJECT_BINARY_DIR}/../dep/sundials/src/cvode/libsundials_cvode.a ${PROJECT_BINARY_DIR}/../dep/sundials/src/nvector/serial/libsundials_nvecserial.a ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunlinsol/dense/libsundials_sunlinsoldense.a ${PROJECT_BINARY_DIR}/../dep/sundials/src/sunmatrix/dense/libsundials_sunmatrixdense.a)
+else()
+	TARGET_LINK_LIBRARIES(_pce PUBLIC uqtk depuqtk blas lapack gfortran ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
+endif()
+
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/pce.py DESTINATION PyUQTk)
