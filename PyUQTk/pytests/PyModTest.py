@@ -32,8 +32,8 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 import sys
 
 print("Loading array module:")
-sys.path.append('../uqtkarray/')
-import uqtkarray
+sys.path.append('../pyuqtkarray/')
+import pyuqtkarray
 
 print("Loading quadrature module:")
 sys.path.append('../quad/')
