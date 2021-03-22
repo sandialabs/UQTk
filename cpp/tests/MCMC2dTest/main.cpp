@@ -134,14 +134,12 @@ int main(int argc, char ** argv){
 
     SS mchain1(L);
     mchain1.setChainDim(dim);
-    cout << mchain1.GetChainDim() << endl;
     mchain1.initChainPropCovDiag(g1);
     mchain1.setSeed(13);
     // mchain.printChainSetup();
     // mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
     mchain1.setWriteFlag(0);
     mchain1.runChain(nCalls,x);
-    cout << mchain1.getNSubSteps() << endl;
 
     // Get chain states
     Array1D<MCMC::chainstate> chainstates1;
