@@ -25,5 +25,7 @@ PYBIND11_MODULE(_quad, m) {
       .def("nextLevel",&Quad::nextLevel)
       .def("GetNQ",&Quad::GetNQ)
       .def("SetVerbosity",&Quad::SetVerbosity)
+      .def("GetRule",static_cast<void (Quad::*)(Array2D<double>&,Array1D<double>&)>(&Quad::GetRule))
+      .def("GetRule",static_cast<void (Quad::*)(Array2D<double>&,Array1D<double>&,Array2D<int>&)>(&Quad::GetRule))
       ;
 }

@@ -41,15 +41,19 @@ try:
 except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
+
 # try to import uqtk array library and
 # functions to convert between uqtk and numpy arrays
 try:
 	import pyuqtkarray
-	from pyuqtkarray import numpy2uqtk
-	from pyuqtkarray import uqtk2numpy
+	import pyuqtkarray_tools as tools
+	#import pyuqtkarray_tools as tools
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
 
 import unittest
 
@@ -88,8 +92,8 @@ for i in range(m):
 # test conversion from 1d numpy array to 1d uqtk array
 nn = 10
 x1 = random.rand(nn)
-y1 = numpy2uqtk(x1)
-z1 = uqtk2numpy(y1)
+y1 = tools.numpy2uqtk(x1)
+z1 = tools.uqtk2numpy(y1)
 for i in range(nn):
 	assert x1[i] == y1[i]
 
@@ -101,8 +105,8 @@ for i in range(nn):
 nn = 10
 mm = 5
 X1 = random.rand(mm,nn)
-Y1 = numpy2uqtk(X1)
-Z1 = uqtk2numpy(Y1)
+Y1 = tools.numpy2uqtk(X1)
+Z1 = tools.uqtk2numpy(Y1)
 for i in range(mm):
 	for j in range(nn):
 		assert X1[i,j] == Y1[i,j]

@@ -36,10 +36,11 @@ try:
 except ImportError:
 	print("Need numpy to test PyUQTk")
 
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
+
 try:
 	import pyuqtkarray
-	from pyuqtkarray import numpy2uqtk
-	from pyuqtkarray import uqtk2numpy
+	import pyuqtkarray_tools as tools
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
@@ -59,14 +60,14 @@ print("flags for a_np to show whether C or F contiguous")
 print(a_np.flags)
 
 # get a uqtk array from a numpy array (memory is copied, not shared)
-a_uqtk = numpy2uqtk(a_np)
+a_uqtk = tools.numpy2uqtk(a_np)
 print("\nflags for original numpy array to make sure it hasn't changed to F continguous after converting")
 # verify that the original numpy array is only C contiguous
 assert a_np.flags['F_CONTIGUOUS'] == False
 assert a_np.flags['C_CONTIGUOUS'] == True
 
 print("\nConvert uqtk array back to numpy array and make sure C contiguous")
-b_np = uqtk2numpy(a_uqtk)
+b_np = tools.uqtk2numpy(a_uqtk)
 # test to make sure new numpy array is *only* C contiguous (row - major)
 assert b_np.flags['F_CONTIGUOUS'] == False
 assert b_np.flags['C_CONTIGUOUS'] == True

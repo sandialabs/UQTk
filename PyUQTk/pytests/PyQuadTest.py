@@ -29,8 +29,9 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path to include PyUQTk
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
 
 try:
 	from numpy import *
@@ -39,12 +40,15 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
-	import quad as uqtkquad
+	import pyuqtkarray
+	import pyuqtkarray_tools as tools
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk array modules not found")
+
+try:
+	import _quad as uqtkquad
+except ImportError:
+	print("PyUQTk quad module not found")
 
 '''
 This file tests the quadrature pyqutk routine
@@ -102,8 +106,8 @@ qpnts_ref = array([[-9.681602395076263079e-01, 0.000000000000000000e+00],
 [9.681602395076263079e-01, 0.000000000000000000e+00]])
 
 # initiate uqtk arrays for quad points and weights
-x = uqtkarray.dblArray2D()
-w = uqtkarray.dblArray1D()
+x = pyuqtkarray.dblArray2D()
+w = pyuqtkarray.dblArray1D()
 
 # create instance of quad class and output
 # points and weights
@@ -117,7 +121,7 @@ q.GetRule(x,w)
 
 # print out x and w
 print('Displaying the quadrature points and weights:\n')
-x_np = uqtk2numpy(x)
+x_np = tools.uqtk2numpy(x)
 print(x_np)
 n = len(x)
 print('Number of quad points is ', n, '\n')
