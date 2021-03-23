@@ -34,7 +34,7 @@ sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
 sys.path.append('../tools')
-sys.path.append('../PyPCE/')
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/PyPCE/')
 
 try:
     import pyuqtkarray as uqtkarray
@@ -50,7 +50,6 @@ except ImportError:
 try:
     import _pce as uqtkpce
     import pce_tools
-    from adaptation_tools import *
 except ImportError:
     print("PyUQTk pce or pce_tools modules not found")
     
