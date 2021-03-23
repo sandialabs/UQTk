@@ -30,10 +30,10 @@
 
 import numpy as np
 import matplotlib.pyplot as mpl
-import uqtkarray as uqtkarray
+import pyuqtkarray as uqtkarray
 import pce as uqtkpce
 import tools as uqtktools
-from uqtkarray import uqtk2numpy, numpy2uqtk
+from pyuqtkarray_tools import uqtk2numpy, numpy2uqtk
 # BCS already added to path in compilation and install
 
 # cross validation splitting

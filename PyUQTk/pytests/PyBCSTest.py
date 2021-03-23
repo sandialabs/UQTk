@@ -31,9 +31,10 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 # include path for PyUQTk.
 import sys
 sys.path.append('../bcs/') # imports as build lib so installing not needed
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../tools/')
 sys.path.append('../pce/')
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools/')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -47,12 +48,21 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-	import uqtkarray as uqtkarray
-	import pce as uqtkpce
-	import tools as uqtktools
-	from bcs import bcsreg
+    import pyuqtkarray as uqtkarray
+    import pyuqtkarray_tools
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk array module not found")
+ 
+try:
+    import _pce as uqtkpce
+    import tools as uqtktools
+except ImportError:
+    print("PyUQTk PCE module not found")
+    
+try:
+    from bcs import bcsreg
+except ImportError:
+    print("BCS Regression module not found")
 
 '''
 This example uses BCS to fit
@@ -88,7 +98,7 @@ tol=1e-12
 upit=1
 
 # setup, git and predict bcs model
-regmodel = bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
+regmodel = bcs.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
 
