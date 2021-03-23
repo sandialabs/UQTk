@@ -29,20 +29,40 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path for PyUQTk.
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
+sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
 sys.path.append('../tools')
 sys.path.append('../PyPCE/')
+
 try:
-    import uqtkarray
-    import quad as uqtkquad
-    import pce as uqtkpce
-    import tools as uqtktools
+    import pyuqtkarray as uqtkarray
+    import pyuqtkarray_tools
+except ImportError:
+    print("PyUQTk array modules not found")
+    
+try:
+    import _quad as uqtkquad
+except ImportError:
+    print("PyUQTk quad modules not found")
+    
+try:
+    import _pce as uqtkpce
     import pce_tools
     from adaptation_tools import *
 except ImportError:
-    print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
+    print("PyUQTk pce or pce_tools modules not found")
+    
+try:
+    import tools as uqtktools
+except ImportError:
+    print("PyUQTk tools modules not found")
+
+try:
+    from adaptation_tools import *
+except ImportError:
+    print("PyUQTk adaptation_tools module not found")
 
 try:
 	import numpy as np
