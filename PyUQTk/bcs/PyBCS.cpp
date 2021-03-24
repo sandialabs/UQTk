@@ -1,4 +1,3 @@
-%module(directors="1") bcs
 //=====================================================================================
 //
 //                      The UQ Toolkit (UQTk) version @UQTKVERSION@
@@ -26,45 +25,13 @@
 //     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 //     Sandia National Laboratories, Livermore, CA, USA
 //=====================================================================================
+#include <pybind11/pybind11.h>
 
-%{
-#define SWIG_FILE_WITH_INIT
-#include <iostream>
-#include <iomanip>
-#include <typeinfo>
-#include <sstream>
-#include <math.h>
-#include "../../cpp/lib/bcs/bcs.h"
+#include "bcs.h"
+#include "Array1D.h"
+#include "Array2D.h"
 
-%}
-
-/*************************************************************
-// Standard SWIG Templates
-*************************************************************/
-
-// Include standard SWIG templates
-// Numpy array templates and wrapping
-%include "pyabc.i"
-%include "../numpy/numpy.i"
-%include "std_vector.i"
-%include "std_string.i"
-%include "cpointer.i"
-
-%init %{
-    import_array();
-%}
-
-%pointer_functions(double, doublep);
-
-/*************************************************************
-// Numpy SWIG Interface files
-*************************************************************/
-
-/*************************************************************
-// Include header files
-*************************************************************/
-
-%include "../../cpp/lib/bcs/bcs.h"
-
-
-%include "bcs_ext.py"
+PYBIND11_MODULE(_bcs,m){
+  m.def("WBCS",&WBCS);
+  m.def("BCS",&BCS);
+}
