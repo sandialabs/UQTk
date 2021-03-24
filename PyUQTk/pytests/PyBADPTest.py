@@ -28,31 +28,36 @@
 from __future__ import print_function # To make print() in Python 2 behave like in Python 3
 
 # include path for PyUQTk.
+
+import os
+src = os.getenv('UQTK_SRC')
+
 import sys
-sys.path.append('../pyuqtkarray/')
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools/')
-sys.path.append('../quad/')
-sys.path.append('../pce/')
-sys.path.append('../tools')
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/PyPCE/')
+sys.path.append(src + 'PyUQTk/pyuqtkarray/')
+sys.path.append(src + 'PyUQTk/pyuqtkarray_tests/')
+sys.path.append(src + 'PyUQTk/quad/')
+sys.path.append(src + 'PyUQTk/pce/')
+sys.path.append(src + 'PyUQTk/tools')
+sys.path.append(src + 'PyUQTk/PyPCE/')
+
 
 try:
     import pyuqtkarray as uqtkarray
     import pyuqtkarray_tools
 except ImportError:
     print("PyUQTk array modules not found")
-    
+
 try:
     import _quad as uqtkquad
 except ImportError:
     print("PyUQTk quad modules not found")
-    
+
 try:
     import _pce as uqtkpce
     import pce_tools
 except ImportError:
     print("PyUQTk pce or pce_tools modules not found")
-    
+
 try:
     import tools as uqtktools
 except ImportError:
