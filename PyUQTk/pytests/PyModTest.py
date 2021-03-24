@@ -40,8 +40,8 @@ sys.path.append('../quad/')
 import _quad
 
 print("Loading bayesian compressed sensing module:")
-# sys.path.append('../bcs/')
-# import bcs
+sys.path.append('../bcs/')
+import _bcs
 
 print("Loading polynomial chaos module:")
 sys.path.append('../pce/')
