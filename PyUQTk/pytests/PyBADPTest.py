@@ -33,12 +33,12 @@ import os
 src = os.getenv('UQTK_SRC')
 
 import sys
-sys.path.append(src + 'PyUQTk/pyuqtkarray/')
-sys.path.append(src + 'PyUQTk/pyuqtkarray_tests/')
-sys.path.append(src + 'PyUQTk/quad/')
-sys.path.append(src + 'PyUQTk/pce/')
-sys.path.append(src + 'PyUQTk/tools')
-sys.path.append(src + 'PyUQTk/PyPCE/')
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../quad/')
+sys.path.append('../pce/')
+sys.path.append('../tools')
+sys.path.append('../PyPCE/')
 
 
 try:

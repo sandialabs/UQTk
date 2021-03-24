@@ -36,7 +36,10 @@ try:
 except ImportError:
 	print("Need numpy to test PyUQTk")
 
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
+import os
+src = os.getenv('UQTK_SRC')
+
+sys.path.append(src + 'PyUQTk/pyuqtkarray_tools')
 
 try:
 	import pyuqtkarray

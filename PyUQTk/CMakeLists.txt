@@ -7,6 +7,7 @@ add_subdirectory (multirun)
 add_subdirectory (utils)
 if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (PyPCE)
+  add_subdirectory (pyuqtkarray_tools)
 endif()
 
 SET(copy_FILES

@@ -31,7 +31,11 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 import sys
 sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
+
+import os
+src = os.getenv('UQTK_SRC')
+
+sys.path.append(src + 'PyUQTk/pyuqtkarray_tools')
 
 try:
 	from numpy import *

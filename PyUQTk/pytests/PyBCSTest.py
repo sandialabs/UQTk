@@ -27,6 +27,8 @@
 #=====================================================================================
 from __future__ import print_function # To make print() in Python 2 behave like in Python 3
 
+import os
+src = os.getenv('UQTK_SRC')
 
 # include path for PyUQTk.
 import sys
@@ -34,7 +36,7 @@ sys.path.append('../bcs/') # imports as build lib so installing not needed
 sys.path.append('../pyuqtkarray/')
 sys.path.append('../tools/')
 sys.path.append('../pce/')
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools/')
+sys.path.append(src + '/PyUQTk/pyuqtkarray_tools/')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -52,13 +54,13 @@ try:
     import pyuqtkarray_tools
 except ImportError:
 	print("PyUQTk array module not found")
- 
+
 try:
     import _pce as uqtkpce
     import tools as uqtktools
 except ImportError:
     print("PyUQTk PCE module not found")
-    
+
 try:
     from bcs import bcsreg
 except ImportError:
