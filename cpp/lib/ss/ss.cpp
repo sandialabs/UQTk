@@ -65,7 +65,8 @@ void SS::runChain(int ncalls, Array1D<double>& chstart){
 
   // Work variables for simplicity
   string output = this -> getOutputType();
-
+  this -> setNSubSteps();
+  
   // Initial chain state
   this -> setCurrentStateStep(0);
   this -> setCurrentStateState(chstart);

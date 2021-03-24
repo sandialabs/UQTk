@@ -55,9 +55,12 @@ public:
 
     virtual void runChain(int ncalls, Array1D<double>& chstart) override;
     virtual void runChain(int ncalls) override;
+    void setNSubSteps(){
+      nSubSteps_ = this -> GetChainDim();
+    };
     int getNSubSteps() override;
 private:
-    int nSubSteps_ = this -> GetChainDim();
+    int nSubSteps_;
 
     // Proposal Function
     void proposal(Array1D<double>& m_t,Array1D<double>& m_cand,int dim);

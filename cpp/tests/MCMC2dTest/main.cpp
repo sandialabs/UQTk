@@ -149,8 +149,8 @@ int main(int argc, char ** argv){
     double mean_x3 = 0;
     double mean_x4 = 0;
     for (int i = nBurn; i < nCalls; i++){
-        mean_x3 += chainstates(i).state(0);
-        mean_x4 += chainstates(i).state(1);
+        mean_x3 += chainstates1(i).state(0);
+        mean_x4 += chainstates1(i).state(1);
     }
     mean_x3 *= 1./(nCalls-nBurn+1);
     mean_x4 *= 1./(nCalls-nBurn+1);
@@ -161,8 +161,8 @@ int main(int argc, char ** argv){
     double var_x3 = 0;
     double var_x4 = 0;
     for (int i = nBurn; i < nCalls; i=i+1){
-        var_x3 += pow(chainstates(i).state(0) - mean_x1,2);
-        var_x4 += pow(chainstates(i).state(1) - mean_x2,2);
+        var_x3 += pow(chainstates1(i).state(0) - mean_x3,2);
+        var_x4 += pow(chainstates1(i).state(1) - mean_x4,2);
     }
     var_x3 *= 1./(nCalls-nBurn);
     var_x4 *= 1./(nCalls-nBurn);
@@ -218,8 +218,8 @@ int main(int argc, char ** argv){
     double var_x5 = 0;
     double var_x6 = 0;
     for (int i = 0; i < nCalls; i=i+1){
-        var_x5 += pow(chainstates(i).state(0) - mean_x1,2);
-        var_x6 += pow(chainstates(i).state(1) - mean_x2,2);
+        var_x5 += pow(chainstates2(i).state(0) - mean_x5,2);
+        var_x6 += pow(chainstates2(i).state(1) - mean_x6,2);
     }
     var_x5 *= 1./(nCalls-1);
     var_x6 *= 1./(nCalls-1);
