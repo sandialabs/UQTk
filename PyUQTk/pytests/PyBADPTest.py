@@ -38,7 +38,9 @@ sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
 sys.path.append('../tools')
-sys.path.append('../PyPCE/')
+sys.path.append('../adaptation_tools/')
+sys.path.append('../pce_tools/')
+
 
 
 try:

@@ -35,7 +35,7 @@ sys.path.append('../quad/')
 import os
 src = os.getenv('UQTK_SRC')
 
-sys.path.append(src + 'PyUQTk/pyuqtkarray_tools')
+sys.path.append('../pyuqtkarray_tools')
 
 try:
 	from numpy import *

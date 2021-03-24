@@ -36,7 +36,7 @@ sys.path.append('../bcs/') # imports as build lib so installing not needed
 sys.path.append('../pyuqtkarray/')
 sys.path.append('../tools/')
 sys.path.append('../pce/')
-sys.path.append(src + '/PyUQTk/pyuqtkarray_tools/')
+sys.path.append('../pyuqtkarray_tools/')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
