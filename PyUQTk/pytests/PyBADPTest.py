@@ -66,7 +66,7 @@ except ImportError:
     print("PyUQTk tools modules not found")
 
 try:
-    from adaptation_tools import *
+    import adaptation_tools
 except ImportError:
     print("PyUQTk adaptation_tools module not found")
 

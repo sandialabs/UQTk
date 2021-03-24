@@ -62,7 +62,7 @@ except ImportError:
     print("PyUQTk PCE module not found")
 
 try:
-    from bcs import bcsreg
+	import _bcs as bcs
 except ImportError:
     print("BCS Regression module not found")
 
@@ -100,7 +100,7 @@ tol=1e-12
 upit=1
 
 # setup, git and predict bcs model
-regmodel = bcs.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
+regmodel = bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
 
