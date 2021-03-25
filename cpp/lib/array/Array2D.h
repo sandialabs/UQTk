@@ -359,28 +359,38 @@ public:
 
   // Sets user-defined 2d numpy array to data_ vector
   // This is not to be used for a string type
-  void setnpdblArray(double* inarray, int n1, int n2){
+  void setnpdblArray(vector<double> inarray, int n1, int n2){
     xsize_ = n1;
     ysize_ = n2;
-    data_.assign(inarray,inarray+n1*n2);
+    data_.clear();
+    for(int i=0; i < (n1 * n2); ++i){
+      data_.push_back(inarray[i]);
+    }
   }
 
   // get numpy double array from data_ vector
-  void getnpdblArray(double* outarray, int n1, int n2){
-    copy(data_.begin(), data_.end(), outarray);
+  void getnpdblArray(vector<double> outarray, int n1, int n2){
+    for(int i = 0; i < (n1*n2); ++i){
+      outarray.push_back(data_[i]);
+    }
   }
 
   // Sets user-defined 2d numpy array to data_ vector
   // This is not to be used for a string type
-  void setnpintArray(long* inarray, int n1, int n2){
+  void setnpintArray(vector<long> inarray, int n1, int n2){
     xsize_ = n1;
     ysize_ = n2;
-    data_.assign(inarray,inarray+n1*n2);
+    data_.clear();
+    for(int i=0; i < (n1 * n2); ++i){
+      data_.push_back(inarray[i]);
+    }
   }
 
   // get numpy double array from data_ vector
-  void getnpintArray(long* outarray, int n1, int n2){
-    copy(data_.begin(), data_.end(), outarray);
+  void getnpintArray(vector<long> outarray, int n1, int n2){
+    for(int i = 0; i < (n1*n2); ++i){
+      outarray.push_back(data_[i]);
+    }
   }
 
   // Returns data_ vector as a list in python in row-major (?)

@@ -84,7 +84,7 @@ y = pyuqtkarray.dblArray2D(m,n,1)
 # set 2d array to numpy array
 # make sure to pass asfortranarray
 y_np = random.randn(m,n)
-y.setnpdblArray(asfortranarray(y_np))
+y.setnpdblArray(asfortranarray(y_np),m,n)
 
 for i in range(m):
 	for j in range(n):
