@@ -62,6 +62,7 @@ a_np = np.array([[0, 2.00],[0.1, 1],[1, 5.0]])
 print("flags for a_np to show whether C or F contiguous")
 print(a_np.flags)
 
+
 # get a uqtk array from a numpy array (memory is copied, not shared)
 a_uqtk = tools.numpy2uqtk(a_np)
 print("\nflags for original numpy array to make sure it hasn't changed to F continguous after converting")

@@ -69,7 +69,7 @@ x = pyuqtkarray.dblArray1D(N,0)
 x_np = random.randn(N)
 
 # set uqtk array to numpy array
-x.setnpdblArray(x_np)
+x.setnpdblArray(x_np,N)
 
 # test to make sure array elements are the same
 for i in range(N):
