@@ -37,6 +37,7 @@ sys.path.append('../pyuqtkarray/')
 sys.path.append('../tools/')
 sys.path.append('../pce/')
 sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../bcs_ext/')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -63,6 +64,7 @@ except ImportError:
 
 try:
 	import _bcs as bcs
+	import bcs_ext as bcsTools
 except ImportError:
     print("BCS Regression module not found")
 
@@ -100,7 +102,7 @@ tol=1e-12
 upit=1
 
 # setup, git and predict bcs model
-regmodel = bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
+regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
 

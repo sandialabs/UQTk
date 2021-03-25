@@ -27,12 +27,13 @@
 #=====================================================================================
 # swig interface modules (only compiled if PyUQTK=On)
 try:
-	from . import uqtkarray
+	from . import pyuqtkarray as uqtkarray
+    from . import pyuqtkarray_tools
 except ImportError:
 	print('PyUQTk SWIG array interface not created.')
 
 try:
-	from . import quad
+	from . import _quad as quad
 except ImportError:
 	print('PyUQTk SWIG quad interface not created.')
 
@@ -47,13 +48,15 @@ except ImportError:
 	print('PyUQTk SWIG kle interface not created.')
 
 try:
-	from . import pce
-	from . import PyPCE
+	from . import _pce as pce
+	from . import adaptation_tools
+    from . import pce_tools
 except ImportError:
 	print('PyUQTk SWIG pce interface and PyPCE module not available.')
 
 try:
-	from . import bcs
+	from . import _bcs as bcs
+    from . import bcs_ext
 except ImportError:
 	print('PyUQTk SWIG bcs interface not created.')
 

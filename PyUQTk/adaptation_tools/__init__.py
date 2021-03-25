@@ -25,4 +25,4 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
-from . import adaptation_tools
+from .adaptation_tools import *

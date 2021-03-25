@@ -9,6 +9,7 @@ if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (pce_tools)
   add_subdirectory (adaptation_tools)
   add_subdirectory (pyuqtkarray_tools)
+  add_subdirectory (bcs_ext)
 endif()
 
 SET(copy_FILES

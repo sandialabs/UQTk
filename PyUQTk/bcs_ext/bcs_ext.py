@@ -1,5 +1,3 @@
-%pythoncode %{
-
 #=====================================================================================
 #
 #                      The UQ Toolkit (UQTk) version @UQTKVERSION@
@@ -34,6 +32,7 @@ import pyuqtkarray as uqtkarray
 import pce as uqtkpce
 import tools as uqtktools
 from pyuqtkarray_tools import uqtk2numpy, numpy2uqtk
+import _bcs as bcs
 # BCS already added to path in compilation and install
 
 # cross validation splitting
@@ -290,5 +289,3 @@ class bcsreg:
 			self.__M.append(self.__mindex_temp)
 		# print("avg NMSE is %f" %np.mean(E))
 		return self.__E, self.__C, self.__M
-
-%}

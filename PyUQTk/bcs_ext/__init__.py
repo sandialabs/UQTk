@@ -25,4 +25,6 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
-from .pce_tools import *
+from bcs_ext import kfold_split
+from bcs_ext import kfoldCV
+from bcs_ext import bcsreg
