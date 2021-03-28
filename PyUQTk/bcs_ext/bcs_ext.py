@@ -26,11 +26,12 @@
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 import sys
-sys.path.append('../pyuqtkarray/')
-sys.path.append('../pyuqtkarray_tools/')
-sys.path.append('../pce/')
-sys.path.append('../tools/')
-sys.path.append('../bcs/')
+sys.path.append('../pyuqtkarray')
+sys.path.append('../pce')
+sys.path.append('../pyuqtkarray_tools')
+sys.path.append('../tools')
+sys.path.append('../bcs')
+
 
 import numpy as np
 import matplotlib.pyplot as mpl
