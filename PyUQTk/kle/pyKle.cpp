@@ -36,7 +36,7 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(_kle, m) {
-  py::class_<KLDecompUni>(m,"KLDecompUni"){
+  py::class_<KLDecompUni>(m,"KLDecompUni")
     .def(py::init<>())
     .def(py::init<const Array1D<double>&>)
     .def("Init",&KLDecompUni::Init)
@@ -46,11 +46,11 @@ PYBIND11_MODULE(_kle, m) {
     .def("decompose",static_cast<int (KLDecompUni::*)(const double*, const int&)>(&KLDecompUni::decompose))
     .def("KLproject",&KLDecompUni::KLproject)
     .def("eigenvalues",static_cast<const Array1D<double> (KLDecompUni::*)() const>(&KLDecompUni::eigenvalues))
-    .def("eigenvalues",static_cast<void (KLDecompUni::*)(const int,double *) const>(&KLDecompUni::eigenvalues))
+    .def("eigenvalues",static_cast<void (KLDecompUni::*)(const int,double *)>(&KLDecompUni::eigenvalues))
     .def("KLModes",static_cast<const Array2D<double> (KLDecompUni::*)() const>(&KLDecompUni::KLmodes))
-    .def("KLModes",static_cast<void (KLDecompUni::*)(const int, const int, double *) const>(&KLDecompUni::eigenvalues))
+    .def("KLModes",static_cast<void (KLDecompUni::*)(const int, const int, double *)>(&KLDecompUni::eigenvalues))
     .def("meanRealiz",&KLDecompUni::meanRealiz)
     .def("truncRealiz",&KLDecompUni::truncRealiz)
-  }
+    ;
 
 }
