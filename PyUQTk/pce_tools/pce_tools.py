@@ -39,9 +39,9 @@ try:
     import _pce as uqtkpce
     import tools as uqtktools
 except ImportError:
-    import PyUQTk.uqtkarray as uqtkarray
-    import PyUQTk.quad as uqtkquad
-    import PyUQTk.pce as uqtkpce
+    import PyUQTk.pyuqtkarray as uqtkarray
+    import PyUQTk._quad as uqtkquad
+    import PyUQTk._pce as uqtkpce
     import PyUQTk.tools as uqtktools
 except ImportError:
     print("PyUQTk array, quad, pce, or tools modules not found")
