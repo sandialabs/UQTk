@@ -25,10 +25,17 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pce/')
+sys.path.append('../quad/')
+sys.path.append('../tools/')
+sys.path.append('../pce_tools/')
+
 try:
-    import uqtkarray
-    import quad as uqtkquad
-    import pce as uqtkpce
+    import pyuqtkarray
+    import _quad as uqtkquad
+    import _pce as uqtkpce
     import tools as uqtktools
     import pce_tools
 except ImportError:

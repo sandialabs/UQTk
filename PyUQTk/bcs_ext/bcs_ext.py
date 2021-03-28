@@ -25,11 +25,17 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../pce/')
+sys.path.append('../tools/')
+sys.path.append('../bcs/')
 
 import numpy as np
 import matplotlib.pyplot as mpl
 import pyuqtkarray as uqtkarray
-import pce as uqtkpce
+import _pce as uqtkpce
 import tools as uqtktools
 from pyuqtkarray_tools import uqtk2numpy, numpy2uqtk
 import _bcs as bcs

@@ -1,5 +1,11 @@
 project (UQTk)
 
+include_directories(../pyuqtkarray)
+include_directories(../pce)
+include_directories(../tools)
+include_directories(../pyuqtkarray_tools)
+include_directories(../bcs)
+
 SET(copy_FILES
   __init__.py
   bcs_ext.py
