@@ -50,6 +50,7 @@
 namespace py=pybind11;
 
 PYBIND11_MODULE(tools, m) {
+  // Combin.h
   m.def("choose",&choose);
   m.def("factorial",&factorial);
   m.def("logfactorial",&logfactorial);
@@ -64,6 +65,7 @@ PYBIND11_MODULE(tools, m) {
   m.def("clust_best",&clust_best);
   m.def("findNumCl",&findNumCl);
 
+  // rosenblatt.h
   m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&, Array1D<double>&)>(&invRos));
   m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&, double)>(&invRos));
   m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&)>(&invRos));
@@ -72,5 +74,24 @@ PYBIND11_MODULE(tools, m) {
   m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, Array1D<double>&)>(&Rosen));
   m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, double)>(&Rosen));
   m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&Rosen));
+
+  m.def("head_ext_",&heap_ext_);
+  m.def("computeNPCTerms",&computeNPCTerms);
+  m.def("computeMultiIndex",static_cast<int (*)(int,int, Array2D<int> &)>(&computeMultiIndex));
+  m.def("computeMultiIndex",static_cast<int (*)(int,int, Array2D<int> &,string)>(&computeMultiIndex));
+  m.def("computeMultiIndexT",&computeMultiIndexT);
+  m.def("computeMultiIndexTP",&computeMultiIndexTP);
+  m.def("computeNPCTermsHDMR",&computeNPCTermsHDMR);
+  m.def("computeMultiIndexHDMR",&computeMultiIndexHDMR);
+  m.def("decodeMindex",&decodeMindex);
+  m.def("upOrder",&upOrder);
+  m.def("is_admis",&is_admis);
+  m.def("getOrders",&getOrders);
+  m.def("get_invmindex",&get_invmindex);
+  m.def("get_invmindex_ord",&get_invmindex_ord)
+
+
+
+
 
 }
