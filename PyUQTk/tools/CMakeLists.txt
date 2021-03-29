@@ -9,7 +9,7 @@ include_directories(../../dep/figtree) #figtree directory
 
 
 pybind11_add_module(_tools pyTools.cpp)
-TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk)
+TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk depuqtk)
 
 INSTALL(TARGETS _tools DESTINATION PyUQTk/)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/tools/tools.py

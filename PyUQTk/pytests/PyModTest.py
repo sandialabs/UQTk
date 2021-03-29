@@ -49,7 +49,7 @@ import _pce
 
 print("Loading tools module:")
 sys.path.append('../tools')
-import tools
+import _tools
 
 #print("Loading dfi module:")
 #sys.path.append('../dfi/')
