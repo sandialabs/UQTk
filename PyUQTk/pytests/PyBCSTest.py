@@ -58,7 +58,7 @@ except ImportError:
 
 try:
     import _pce as uqtkpce
-    import tools as uqtktools
+    import _tools as uqtktools
 except ImportError:
     print("PyUQTk PCE module not found")
 
