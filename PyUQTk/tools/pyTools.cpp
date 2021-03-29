@@ -90,10 +90,10 @@ PYBIND11_MODULE(_tools, m) {
   m.def("is_admis",&is_admis);
   m.def("getOrders",&getOrders);
   m.def("get_invmindex",&get_invmindex);
-  m.def("get_invmindex_ord",&get_invmindex_ord)
+  m.def("get_invmindex_ord",&get_invmindex_ord);
 
   //probability.h
-  m.def("erff",&erff);
+  m.def("erff",static_cast<double (*)(const double)>(&erff));
   m.def("inverf",&inverf);
   m.def("invnormcdf",&invnormcdf);
   m.def("normcdf",&normcdf);
@@ -114,8 +114,8 @@ PYBIND11_MODULE(_tools, m) {
   m.def("get_std",&get_std);
   m.def("get_var",&get_var);
   m.def("getMean_Variance",&getMean_Variance);
-  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&GetMean));
-  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&,char *)>(&GetMean));
+  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&getMean));
+  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&,char *)>(&getMean));
   m.def("rperm",&rperm);
   m.def("getPdf_figtree",&getPdf_figtree);
   m.def("getPdf_cl",&getPdf_cl);
@@ -123,7 +123,7 @@ PYBIND11_MODULE(_tools, m) {
   m.def("ihsU",static_cast<void (*)(Array2D<double> &, int, dsfmt_t *)>(&ihsU));
   m.def("ihsU",static_cast<void (*)(int, int, double *, int, dsfmt_t *)>(&ihsU));
   m.def("ihsP",&ihsP);
-  m.def("distCorr",&dissCorr);
+  m.def("distCorr",&distCorr);
 
   //pcmaps.h
   m.def("PCtoPC",static_cast<double (*)(double, const std::string, double, double, const std::string, double, double)>(&PCtoPC));
@@ -157,7 +157,7 @@ PYBIND11_MODULE(_tools, m) {
   m.def("maxVal",static_cast<int (*)(const Array1D<int>&)>(&maxVal));
   m.def("maxVal",static_cast<double (*)(const Array2D<double>&)>(&maxVal));
   m.def("maxVal",static_cast<int (*)(const Array2D<int>&)>(&maxVal));
-  m.def("minVal",static_cast<double (*)(Array1D<double>&)>(&minVal));
+  m.def("minVal",static_cast<double (*)(const Array1D<double>&)>(&minVal));
   m.def("minVal",static_cast<int (*)(const Array1D<int>&)>(&minVal));
   m.def("minVal",static_cast<double (*)(const Array2D<double>&)>(&minVal));
   m.def("minVal",static_cast<int (*)(const Array2D<int>&)>(&minVal));
