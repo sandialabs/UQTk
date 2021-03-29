@@ -151,6 +151,29 @@ PYBIND11_MODULE(tools, m) {
   m.def("Func_PCs",&Func_PCs);
   m.def("augment",&augment);
 
+  //minmax.h
+  m.def("getDomain",&getDomain);
+  m.def("maxVal",static_cast<double (*)(Array1D<double>&)>(&maxVal));
+  m.def("maxVal",static_cast<int (*)(const Array1D<int>&)>(&maxVal));
+  m.def("maxVal",static_cast<double (*)(const Array2D<double>&)>(&maxVal));
+  m.def("maxVal",static_cast<int (*)(const Array2D<int>&)>(&maxVal));
+  m.def("minVal",static_cast<double (*)(Array1D<double>&)>(&minVal));
+  m.def("minVal",static_cast<int (*)(const Array1D<int>&)>(&minVal));
+  m.def("minVal",static_cast<double (*)(const Array2D<double>&)>(&minVal));
+  m.def("minVal",static_cast<int (*)(const Array2D<int>&)>(&minVal));
+  m.def("maxIndex",static_cast<int (*)(Array1D<double>&)>(&maxIndex));
+  m.def("maxIndex",static_cast<int (*)(Array1D<int>&)>(&maxIndex));
+  m.def("minIndex",static_cast<int (*)(Array1D<double>&)>(&minIndex));
+  m.def("minIndex",static_cast<int (*)(Array1D<int>&)>(&minIndex));
+  m.def("maxIndexC_2D",&maxIndexC_2D);
+  m.def("maxIndexC_2D",&minIndexC_2D);
+
+  //gq.h
+  m.def("gq",static_cast<void (*)(const int, const double, const double, Array1D<double> &, Array1D<double> &)>(&gq));
+  m.def("gq",static_cast<void (*)(const int, const int, const double, const double, double *, double *)>(&gq));
+  m.def("gq_gen",&gq_gen);
+  m.def("vandermonde_gq",&vandermonde_gq);
+  m.def("gchb",&gchb);
 
 
 
