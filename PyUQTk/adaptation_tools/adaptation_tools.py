@@ -36,7 +36,7 @@ try:
     import pyuqtkarray
     import _quad as uqtkquad
     import _pce as uqtkpce
-    import tools as uqtktools
+    import _tools as uqtktools
     import pce_tools
 except ImportError:
     import PyUQTk.uqtkarray as uqtkarray

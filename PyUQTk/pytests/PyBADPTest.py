@@ -61,7 +61,7 @@ except ImportError:
     print("PyUQTk pce or pce_tools modules not found")
 
 try:
-    import tools as uqtktools
+    import _tools as uqtktools
 except ImportError:
     print("PyUQTk tools modules not found")
 
