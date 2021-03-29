@@ -64,6 +64,13 @@ PYBIND11_MODULE(tools, m) {
   m.def("clust_best",&clust_best);
   m.def("findNumCl",&findNumCl);
 
-
+  m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&, Array1D<double>&)>(&invRos));
+  m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&, double)>(&invRos));
+  m.def("invRos",static_cast<void (*)(Array1D<double>&, Array2D<double>&, Array1D<double>&)>(&invRos));
+  m.def("invRos",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&invRos));
+  m.def("get_opt_KDEbdwth",&get_opt_KDEbdwth);
+  m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, Array1D<double>&)>(&Rosen));
+  m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, double)>(&Rosen));
+  m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&Rosen));
 
 }
