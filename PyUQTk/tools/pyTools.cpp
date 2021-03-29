@@ -50,7 +50,7 @@
 
 namespace py=pybind11;
 
-PYBIND11_MODULE(tools, m) {
+PYBIND11_MODULE(_tools, m) {
   // Combin.h
   m.def("choose",&choose);
   m.def("factorial",&factorial);
