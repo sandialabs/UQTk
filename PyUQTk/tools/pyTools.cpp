@@ -132,6 +132,24 @@ PYBIND11_MODULE(tools, m) {
   m.def("linint",static_cast<void (*)(Array2D<double> &, const double, double &, int)>(&linint));
   m.def("linint",static_cast<void (*)(Array2D<double> &, const double, double &)>(&linint));
 
+  //func.h
+  m.def("Func_Prop",&Func_Prop);
+  m.def("Func_PropQuad",&Func_PropQuad);
+  m.def("Func_Exp",&Func_Exp);
+  m.def("Func_ExpQuad",&Func_ExpQuad);
+  m.def("Func_Const",&Func_Const);
+  m.def("Func_Linear",&Func_Linear);
+  m.def("Func_BB",&Func_BB);
+  m.def("Func_HT1",&Func_HT1);
+  m.def("Func_HT2",&Func_HT2);
+  m.def("Func_FracPower",&Func_FracPower);
+  m.def("Func_ExpSketch",&Func_ExpSketch);
+  m.def("Func_Inputs",&Func_Inputs);
+  m.def("Func_PCl",&Func_PCl);
+  m.def("Func_PCx",&Func_PCx);
+  m.def("Func_PC",&Func_PC);
+  m.def("Func_PCs",&Func_PCs);
+  m.def("augment",&augment);
 
 
 
