@@ -26,6 +26,7 @@
 //     Sandia National Laboratories, Livermore, CA, USA
 //=====================================================================================
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include <iostream>
 #include <string.h>
@@ -75,6 +76,7 @@ PYBIND11_MODULE(tools, m) {
   m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, double)>(&Rosen));
   m.def("Rosen",static_cast<void (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&)>(&Rosen));
 
+  // multiindex.h
   m.def("head_ext_",&heap_ext_);
   m.def("computeNPCTerms",&computeNPCTerms);
   m.def("computeMultiIndex",static_cast<int (*)(int,int, Array2D<int> &)>(&computeMultiIndex));
@@ -89,6 +91,46 @@ PYBIND11_MODULE(tools, m) {
   m.def("getOrders",&getOrders);
   m.def("get_invmindex",&get_invmindex);
   m.def("get_invmindex_ord",&get_invmindex_ord)
+
+  //probability.h
+  m.def("erff",&erff);
+  m.def("inverf",&inverf);
+  m.def("invnormcdf",&invnormcdf);
+  m.def("normcdf",&normcdf);
+  m.def("normcdfc",&normcdfc);
+  m.def("generate_uniform",static_cast<void (*)(double*,int, int, int)>(&generate_uniform));
+  m.def("generate_uniform",static_cast<void (*)(Array2D<double>&,int)>(&generate_uniform));
+  m.def("generate_uniform",static_cast<void (*)(double *, int, int, dsfmt_t *)>(&generate_uniform));
+  m.def("generate_uniform",static_cast<void (*)(Array2D<double> &, dsfmt_t *)>(&generate_uniform));
+  m.def("generate_uniform_lhs",static_cast<void (*)(double*,int, int, int)>(&generate_uniform_lhs));
+  m.def("generate_uniform_lhs",static_cast<void (*)(Array2D<double>&,int)>(&generate_uniform_lhs));
+  m.def("generate_uniform_lhs",static_cast<void (*)(double *, int, int, dsfmt_t *)>(&generate_uniform_lhs));
+  m.def("generate_uniform_lhs",static_cast<void (*)(Array2D<double> &, dsfmt_t *)>(&generate_uniform_lhs));
+  m.def("generate_normal",&generate_normal);
+  m.def("generate_normal_lhs",&generate_normal_lhs);
+  m.def("get_median",&get_median);
+  m.def("get_mean",static_cast<double (*)(const Array1D<double>&)>(&get_mean));
+  m.def("get_mean",static_cast<double (*)(const Array2D<double>&)>(&get_mean));
+  m.def("get_std",&get_std);
+  m.def("get_var",&get_var);
+  m.def("getMean_Variance",&getMean_Variance);
+  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&)>(&GetMean));
+  m.def("getMean",static_cast<void (*)(Array2D<double>&, Array1D<double>&,char *)>(&GetMean));
+  m.def("rperm",&rperm);
+  m.def("getPdf_figtree",&getPdf_figtree);
+  m.def("getPdf_cl",&getPdf_cl);
+  m.def("covariance",&covariance);
+  m.def("ihsU",static_cast<void (*)(Array2D<double> &, int, dsfmt_t *)>(&ihsU));
+  m.def("ihsU",static_cast<void (*)(int, int, double *, int, dsfmt_t *)>(&ihsU));
+  m.def("ihsP",&ihsP);
+  m.def("distCorr",&dissCorr);
+
+  //pcmaps.h
+  m.def("PCtoPC",static_cast<double (*)(double, const std::string, double, double, const std::string, double, double)>(&PCtoPC));
+  m.def("PCtoPC",static_cast<void (*)(Array2D<double>&, const std::string, double, double, Array2D<double>&, const std::string, double, double)>(&PCtoPC));
+  m.def("rtbis_mod",&rtbis_mod);
+  m.def("linint",static_cast<void (*)(Array2D<double> &, const double, double &, int)>(&linint));
+  m.def("linint",static_cast<void (*)(Array2D<double> &, const double, double &)>(&linint));
 
 
 
