@@ -38,12 +38,12 @@ except ImportError:
 	print('PyUQTk SWIG quad interface not created.')
 
 try:
-	from . import tools
+	from . import _tools
 except ImportError:
 	print('PyUQTk SWIG tools interface not created.')
 
 try:
-	from . import kle
+	from . import _kle
 except ImportError:
 	print('PyUQTk SWIG kle interface not created.')
 
