@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -31,9 +31,10 @@
 #include "PCSet.h"
 #include "tools.h"
 #include "mcmc.h"
+#include "ss.h"
 #include "arrayio.h"
 #include "arraytools.h"
-
+#include "amcmc.h"
 #include "model.h"
 #include "XMLreader.h"
 
@@ -68,7 +69,7 @@ int main()
   Array1D<string> modelparamnames;
   // Auxiliary parameters: final time and time step of integration
   Array1D<double> modelauxparams;
-  
+
   // Read the xml tree
   RefPtr<XMLElement> xmlTree=readXMLTree("surf_rxn.in.xml");
   // Read the model-specific input
@@ -86,11 +87,10 @@ int main()
 
   // Initial conditions of zero coverage (based on Makeev:2002)
   double outValues[]={0.e0,0.e0,0.e0};
-  
+
   // Forward ODE function, see model.h
   forwardFunction(modelparams.GetArrayPointer(), t0, tf, dTym, outValues,outprint);
 
 
   return 0;
 }
-

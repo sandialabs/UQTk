@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.0
-#                          Copyright (2020) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.1
+#                          Copyright (2021) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -29,7 +29,7 @@
 import os
 import sys
 
-sys.path.append(os.environ['UQTK_SRC'] + '/PyUQTk')
+sys.path.append(os.environ['UQTK_INS'] + '/PyUQTk')
 from PyUQTk.utils import pdf_kde
 
 try:

@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -32,6 +32,7 @@
 #include "Array2D.h"
 #include "Array3D.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "quad.h"
 #include "math.h"
 #include "arrayio.h"
@@ -64,7 +65,7 @@ class DFIsurr{
 	public:
 
 	//model surrogate containers
-	
+
 	//PCE dimension
 	int PCEdim;
 
@@ -277,7 +278,7 @@ class DFI{
 	//run the true data model
 	void runModel(Array1D<double> &modelDataY, Array1D<double> &modelDataX, Array1D<double> & parameters, Array1D<double> &hyperparameters){
 
-	//if a surrogate is defined, use it 
+	//if a surrogate is defined, use it
 	if (dataPostInfo.surrModelObj.surrDefined){
 
 		/* map parameters of interest to surrogate parameters */

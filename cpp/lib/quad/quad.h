@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -190,10 +190,15 @@ public:
   int maxlevel_;
   Array1D<int> param_;
 
+  /// \brief Working arrays
+  Array2D<int> npts_all, npts_1_all;
+  Array2D<QuadRule> qr_all, qr_1_all;
+
   /// \brief Multiply two rules (full tensor product)
   void MultiplyTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_prod);
   /// \brief Multiply many rules (full tensor product)
   void MultiplyManyRules(int nrules, QuadRule *rules, QuadRule *rule_prod);
+  void MultiplyManyRules_(int nrules, QuadRule *rules, QuadRule *rule_prod);
   /// \brief Add two rules
   void AddTwoRules(QuadRule *rule1,QuadRule *rule2,QuadRule *rule_sum);
   /// \brief Subtract two rules

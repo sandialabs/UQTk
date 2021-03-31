@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -30,6 +30,7 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "quad.h"
 #include "dsfmt_add.h"
 #include "arrayio.h"
@@ -39,36 +40,35 @@
 using namespace std;
 
 /*************************************************
-Define Likelihood functions
+Define LogPosterior functions
 *************************************************/
-class Likelihood: public LikelihoodBase{
+class LogPosterior: public LogPosteriorBase{
 public:
-	Likelihood(){};
-	~Likelihood(){};
+	LogPosterior(){};
+	~LogPosterior(){};
 	double eval(Array1D<double>&);
 };
-class Likelihood_in: public LikelihoodBase{
+class LogPosterior_in: public LogPosteriorBase{
 public:
-	Likelihood_in(){};
-	~Likelihood_in(){};
+	LogPosterior_in(){};
+	~LogPosterior_in(){};
 	double eval(Array1D<double>&);
 };
-class Likelihood2: public LikelihoodBase{
+class LogPosterior2: public LogPosteriorBase{
 public:
-	Likelihood2(){};
-	~Likelihood2(){};
+	LogPosterior2(){};
+	~LogPosterior2(){};
 	double eval(Array1D<double>&);
 };
 
 // Rosnebrock function
-double Likelihood::eval(Array1D<double>& x){
-	Likelihood_in L;
+double LogPosterior::eval(Array1D<double>& x){
+	LogPosterior_in L;
 	int dim = 2;
 	int nCalls = 100;
 	Array1D<double> g(dim,.1);
-	MCMC mchaintemp(L);
+	AMCMC mchaintemp(L);
 	mchaintemp.setChainDim(dim);
-	mchaintemp.initMethod("am");
 	mchaintemp.initChainPropCovDiag(g);
 	mchaintemp.setWriteFlag(0);
 	mchaintemp.setSeed(10);
@@ -82,12 +82,12 @@ double Likelihood::eval(Array1D<double>& x){
   return lnpost;
 }
 // Rosnebrock function
-double Likelihood_in::eval(Array1D<double>& x){
+double LogPosterior_in::eval(Array1D<double>& x){
 	double lnpost = -.5*(x(0)*x(0)/.01 + x(1)*x(1)/.64);
   return lnpost;
 }
 // Rosnebrock function
-double Likelihood2::eval(Array1D<double>& x){
+double LogPosterior2::eval(Array1D<double>& x){
 	double lnpost = -(1-x(0))*(1-x(0)) - 100*(x(1) - x(0)*x(0))*(x(1) - x(0)*x(0));
   return lnpost;
 }
@@ -99,7 +99,7 @@ int main(int argc, char ** argv){
 
 	/*************************************************
 	Initial start for MCMC chain
-	and set Likelihood function
+	and set LogPosterior function
 	*************************************************/
 	int dim = 2;
 	int nCalls = 100;
@@ -108,11 +108,10 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run MCMC chain
 	*************************************************/
-	Likelihood L;
+	LogPosterior L;
 	Array1D<double> g(dim,.1);
-	MCMC mchain(L);
+	AMCMC mchain(L);
 	mchain.setChainDim(dim);
-	mchain.initMethod("am");
 	mchain.initChainPropCovDiag(g);
 	mchain.setOutputInfo("txt","chain.txt",nCalls,nCalls);
 	mchain.setWriteFlag(0);
@@ -125,11 +124,10 @@ int main(int argc, char ** argv){
 	/*************************************************
 	Initiate and Run MCMC chain
 	*************************************************/
-	Likelihood2 L2;
+	LogPosterior2 L2;
 	Array1D<double> g2(dim,.1);
-	MCMC mchain2(L2);
+	AMCMC mchain2(L2);
 	mchain2.setChainDim(dim);
-	mchain2.initMethod("am");
 	mchain2.initChainPropCovDiag(g2);
 	mchain2.setOutputInfo("txt","chain.txt",nCalls,nCalls);
 	mchain2.setWriteFlag(0);

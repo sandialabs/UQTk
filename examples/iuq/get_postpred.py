@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.0
-#                          Copyright (2020) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.1
+#                          Copyright (2021) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -66,8 +66,11 @@ outputs = np.zeros((ninput, nout))
 # For each output, read corresponding multiindex and
 # PC coefficients and evaluate the PC
 for j in range(nout):
+    # mindex = np.loadtxt('mindexp.dat',
+    #                     dtype=int).reshape(-1, dim)
     mindex = np.loadtxt('mindexp.' + str(j) + '_pred.dat',
-                        dtype=int).reshape(-1, dim)
+                       dtype=int).reshape(-1, dim)
+    # pcf = np.loadtxt('pccf_all.dat')[:,j]
     pcf = np.loadtxt('pccfp.' + str(j) + '_pred.dat').reshape(-1, 1)
     outputs[:, j] = func(pinput, 'PCmi', [mindex, pcf, pctype])
 

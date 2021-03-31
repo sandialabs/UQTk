@@ -11,9 +11,11 @@ endif()
 
 
 # set( CMAKE_VERBOSE_MAKEFILE on ) # see all output
+
+
 include( CTest )
 
-# # set cpack for packagin
+# # set cpack for packaging
 # SET(CPACK_GENERATOR "STGZ;TGZ;TZ")
 # SET(CPACK_PACKAGE_NAME "UQTk")
 # SET(CPACK_PACKAGE_VERSION "3.0")
@@ -38,6 +40,14 @@ foreach(p LIB BIN INCLUDE)
     set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
   endif()
 endforeach()
+
+# Add the lib directory for this package to the install RPATH
+# (see https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling for more info)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+# Set it up so the installed binaries have the full RPATH so they can find all their libraries
+# (see https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling for more info)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 option(PyUQTk "PyUQTk" OFF)
 #option(DFI "DFI" OFF)

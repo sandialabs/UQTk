@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -30,12 +30,13 @@
 #include "Array1D.h"
 #include "Array2D.h"
 #include "mcmc.h"
+#include "tmcmc.h"
 #include "quad.h"
 #include "dsfmt_add.h"
 #include "arrayio.h"
 #include "arraytools.h"
 
-using namespace std; 
+using namespace std;
 
 /*************************************************
 Begin main code
@@ -45,7 +46,7 @@ int main(int argc, char ** argv){
 /*************************************************
 	Dimensionality and number of samples requested
 	*************************************************/
-	int dim = 3; 
+	int dim = 3;
 	int nCalls = 5000;
 
 	/*************************************************
@@ -53,11 +54,10 @@ int main(int argc, char ** argv){
 	*************************************************/
 	Array1D<double> g(dim,.1);
 
-	MCMC mchain;
+	TMCMC mchain;
 	mchain.setChainDim(dim);
-	mchain.initMethod("tmcmc");
 	mchain.setSeed(1);
-	mchain.setWriteFlag(1); 
+	mchain.setWriteFlag(1);
     mchain.setOutputInfo("txt","tmcmc_chain.dat",1,1);
     mchain.initTMCMCNprocs(4);
     mchain.initTMCMCCv(0.1);

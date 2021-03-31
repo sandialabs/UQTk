@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -29,9 +29,10 @@
 #include <math.h>
 #include "tools.h"
 #include "mcmc.h"
+#include "amcmc.h"
 #include "arrayio.h"
 #include "XMLUtils.h"
-
+#include "ss.h"
 #include "model.h"
 #include "posterior.h"
 #include "XMLreader.h"
@@ -59,16 +60,17 @@ int main(int argc, char *argv[])
   // Array to hold the starting values of the chain
   Array1D<double> chstart;
   // Define the MCMC object
-  MCMC mchain(LogPosterior,(void*) pinfo);
+    ///\note It appears based on the .xml file that the MCMC passed in is of the AMCMC variety
+  AMCMC mchain(LogPosterior,(void*) pinfo);
   // Read the xml file for MCMC-specific information
   readXMLChainInput(xmlTree,&mchain, chstart, &nsteps,pinfo->chainParamInd,pinfo->priortype,pinfo->priorparam1,pinfo->priorparam2);
 
   // Prepend the parameter names to the output file
-  FILE* f_out;  
+  FILE* f_out;
   string filename=mchain.getFilename();
   int chdim=chstart.XSize();
-  
-  f_out = fopen(filename.c_str(),"w"); 
+
+  f_out = fopen(filename.c_str(),"w");
 
   fprintf(f_out, "%s ","Step");
   for(int i=0;i<chdim;i++)
@@ -80,8 +82,6 @@ int main(int argc, char *argv[])
   mchain.namesPrepended();
   // Run the chain
   mchain.runChain(nsteps, chstart);
-   
+
   return 0;
 }
-
-

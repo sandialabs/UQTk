@@ -12,7 +12,7 @@ Bayesian Inference of a Line
 ================================================================================
 Files
 
-line_infer.py: main scripts
+line_infer.py: main scripts, run this program to run the example
 
 line_infer.cpp: C++ code that produces some of the needed functions
 

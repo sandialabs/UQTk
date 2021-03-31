@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.0
-                          Copyright (2020) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.1
+                          Copyright (2021) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -29,6 +29,7 @@
 
 #define MAX(a,b)        (((a) > (b)) ? (a) : (b))
 #define MIN(a,b)        (((a) < (b)) ? (a) : (b))
+#include "amcmc.h"
 
 
 RefPtr<XMLElement> readXMLTree(const string inFileName);
@@ -55,7 +56,7 @@ RefPtr<XMLElement> readXMLTree(const string inFileName)
   }else if(xmlUPos != string::npos){
     outFileName.replace(xmlUPos,4,outFileExt);
   }else{
-    throw Tantrum(std::string("The XML input file ") + inFileName + 
+    throw Tantrum(std::string("The XML input file ") + inFileName +
                   " does not have a valid (.xml or .XML) extension");
   }
 
@@ -134,7 +135,7 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
   string inpc_type= pcInput->attributes()->get("inpc","default");
 
   RefPtr<XMLElement> inpc_types = pcInput->get_child("inpc_types");
-  RefPtr<XMLElement> pt = inpc_types->get_child(inpc_type);  
+  RefPtr<XMLElement> pt = inpc_types->get_child(inpc_type);
 
   bool noFileFlag=true;
   string inpcfile;
@@ -143,16 +144,16 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
     inpcfile=pt->attributes()->get("name","input_pc.dat");
 
   }
-  
+
 
  RefPtr<XMLElement> params = xmlTree->get_child("ModelParameters");
   int np=params->count_children();
-  
+
   uncParamInd.Clear();
   Array1D<string> types(np);
   // count the number of uncertain params
   int ic=0;
-  
+
   for (int i=0;i<np;i++){
     types(i)=params->get_child(i)->attributes()->get("type","no_type_given");
     if(!strcmp(types(i).c_str(),"uncertain")){
@@ -164,7 +165,7 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
   int npc=computeNPCTerms(uncdim,(*outOrder));
   allPCcoefs.Resize(npc,np,0.e0);
   for (int i=0;i<np;i++){
-    
+
 	double val=params->get_child(i)->attributes()->get_double("value",1.0);
 	allPCcoefs(0,i)=val;
   }
@@ -174,7 +175,7 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
   // Reset the counter
   ic=0;
   for (int i=0;i<np;i++){
-    
+
     if(!strcmp(types(i).c_str(),"uncertain")){
 	for(int ip=1;ip<=(*outOrder);ip++){
 	  char buff[100];
@@ -185,11 +186,11 @@ void readXMLUncInput(RefPtr<XMLElement> xmlTree, Array2D<double>& allPCcoefs,Arr
 	  allPCcoefs(get_invmindex(mi),i)=params->get_child(i)->attributes()->get_double(cf_str,0.0);
 	}
 
-      
-      
+
+
       ic++;
     }
-  
+
 }
       }
 
@@ -223,8 +224,8 @@ void readXMLDumpInfo(RefPtr<XMLElement> xmlTree, int* dumpInt, int* fdumpInt, st
 
 
 
-
-void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>& chstart, int* nsteps, Array1D<int>& chainParamInd, Array1D<string>& priortype, Array1D<double>& priorparam1, Array1D<double>& priorparam2)
+///\note Based on the .xml files it seems that the MCMC passed in is of the AMCMC variety
+void readXMLChainInput(RefPtr<XMLElement> xmlTree,AMCMC* pmchain, Array1D<double>& chstart, int* nsteps, Array1D<int>& chainParamInd, Array1D<string>& priortype, Array1D<double>& priorparam1, Array1D<double>& priorparam2)
 {
 
   // Select the tree element with the input parameters for this run
@@ -239,7 +240,7 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
   cout << "Output     : " << output << endl;
 
   RefPtr<XMLElement> method_types = mcmcInput->get_child("method_types");
-  RefPtr<XMLElement> pt1=method_types->get_child(method);  
+  RefPtr<XMLElement> pt1=method_types->get_child(method);
   double gamma=pt1->attributes()->get_double("gamma",1.);
   double eps_cov=pt1->attributes()->get_double("eps_cov",1e-8);
 
@@ -250,7 +251,7 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
 
 
   RefPtr<XMLElement> chainparam_types = mcmcInput->get_child("chainparam_types");
-  RefPtr<XMLElement> pt2=chainparam_types->get_child(chainparam);  
+  RefPtr<XMLElement> pt2=chainparam_types->get_child(chainparam);
 
   Array1D<double> chsig;
   bool noFileFlag;
@@ -266,14 +267,14 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
 
   RefPtr<XMLElement> params = xmlTree->get_child("ModelParameters");
   int np=params->count_children();
-  
+
   chainParamInd.Clear();
   priortype.Clear();
   priorparam1.Clear();
   priorparam2.Clear();
 
   for (int i=0;i<np;i++){
-    
+
     string type=params->get_child(i)->attributes()->get("type","no_type_given");
     if(!strcmp(type.c_str(),"infer")){
       chainParamInd.PushBack(i);
@@ -282,7 +283,7 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
 	chstart.PushBack(val);
 	chsig.PushBack(params->get_child(i)->attributes()->get_double("sigma",MAX(fabs(0.01*val),0.001)));
       }
-      
+
       priortype.PushBack(params->get_child(i)->attributes()->get("prior","uniform"));
       priorparam1.PushBack(params->get_child(i)->attributes()->get_double("pr1",0.0));
       priorparam2.PushBack(params->get_child(i)->attributes()->get_double("pr2",1000.0));
@@ -294,13 +295,13 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
 
 
   RefPtr<XMLElement> output_types = mcmcInput->get_child("output_types");
-  RefPtr<XMLElement> pt3=output_types->get_child(output);  
+  RefPtr<XMLElement> pt3=output_types->get_child(output);
   string filename=pt3->attributes()->get("file","chain.dat");
   int freq_outscreen=pt3->attributes()->get_int("screen",1000);
   int freq_chainfile=pt3->attributes()->get_int("freq",1000);
 
   pmchain->setChainDim(chdim);
-  pmchain->initMethod(method);
+  //pmchain->initMethod(method);
 
  // \todo Need to set checks since the next three lines only useful for method=am
   pmchain->initAdaptSteps(adaptstart,adaptstep,adaptend);
@@ -309,7 +310,93 @@ void readXMLChainInput(RefPtr<XMLElement> xmlTree,MCMC* pmchain, Array1D<double>
 
   pmchain->setOutputInfo(output,filename,freq_chainfile, freq_outscreen);
   pmchain->initChainPropCovDiag(chsig);
-  
+
+
+  return;
+}
+
+///\note Based on the .xml files it seems that the MCMC passed in is of the AMCMC variety
+void readXMLChainInput(RefPtr<XMLElement> xmlTree,SS* pmchain, Array1D<double>& chstart, int* nsteps, Array1D<int>& chainParamInd, Array1D<string>& priortype, Array1D<double>& priorparam1, Array1D<double>& priorparam2)
+{
+
+  // Select the tree element with the input parameters for this run
+  RefPtr<XMLElement> mcmcInput = xmlTree->get_child("MCMC");
+  string name = mcmcInput->attributes()->get("name","no_name_specified");
+  string method = mcmcInput->attributes()->get("method","no_method_specified");
+  string chainparam = mcmcInput->attributes()->get("chainparam","no_chainparam_specified");
+  string output = mcmcInput->attributes()->get("output","no_output_specified");
+  cout << "Name       : " << name << endl;
+  cout << "Method     : " << method << endl;
+  cout << "Chainparam : " << chainparam << endl;
+  cout << "Output     : " << output << endl;
+
+  RefPtr<XMLElement> method_types = mcmcInput->get_child("method_types");
+  RefPtr<XMLElement> pt1=method_types->get_child(method);
+  double gamma=pt1->attributes()->get_double("gamma",1.);
+  double eps_cov=pt1->attributes()->get_double("eps_cov",1e-8);
+
+  int adaptstart=pt1->attributes()->get_int("adstart",1000);
+  int adaptstep=pt1->attributes()->get_int("adstep",10);
+  int adaptend=pt1->attributes()->get_int("adstop",1000000);
+  (*nsteps)=pt1->attributes()->get_int("nsteps",10000);
+
+
+  RefPtr<XMLElement> chainparam_types = mcmcInput->get_child("chainparam_types");
+  RefPtr<XMLElement> pt2=chainparam_types->get_child(chainparam);
+
+  Array1D<double> chsig;
+  bool noFileFlag;
+
+  if(!strcmp(chainparam.c_str(),"file")) {
+    noFileFlag=false;
+    /// \todo Put proper checks on the file sizes
+    read_datafileVS(chstart, pt2->attributes()->get("chstart","chain_start.dat").c_str());
+    read_datafileVS(chsig,   pt2->attributes()->get("chsig","chain_sig.dat").c_str());
+  }
+  else
+    noFileFlag=true;
+
+  RefPtr<XMLElement> params = xmlTree->get_child("ModelParameters");
+  int np=params->count_children();
+
+  chainParamInd.Clear();
+  priortype.Clear();
+  priorparam1.Clear();
+  priorparam2.Clear();
+
+  for (int i=0;i<np;i++){
+
+    string type=params->get_child(i)->attributes()->get("type","no_type_given");
+    if(!strcmp(type.c_str(),"infer")){
+      chainParamInd.PushBack(i);
+      if(noFileFlag){
+	double val=params->get_child(i)->attributes()->get_double("value",1.0);
+	chstart.PushBack(val);
+	chsig.PushBack(params->get_child(i)->attributes()->get_double("sigma",MAX(fabs(0.01*val),0.001)));
+      }
+
+      priortype.PushBack(params->get_child(i)->attributes()->get("prior","uniform"));
+      priorparam1.PushBack(params->get_child(i)->attributes()->get_double("pr1",0.0));
+      priorparam2.PushBack(params->get_child(i)->attributes()->get_double("pr2",1000.0));
+    }
+  }
+
+  int chdim=chainParamInd.XSize();
+
+
+
+  RefPtr<XMLElement> output_types = mcmcInput->get_child("output_types");
+  RefPtr<XMLElement> pt3=output_types->get_child(output);
+  string filename=pt3->attributes()->get("file","chain.dat");
+  int freq_outscreen=pt3->attributes()->get_int("screen",1000);
+  int freq_chainfile=pt3->attributes()->get_int("freq",1000);
+
+  pmchain->setChainDim(chdim);
+  //pmchain->initMethod(method);
+
+  pmchain->setOutputInfo(output,filename,freq_chainfile, freq_outscreen);
+  pmchain->initChainPropCovDiag(chsig);
+
 
   return;
 }

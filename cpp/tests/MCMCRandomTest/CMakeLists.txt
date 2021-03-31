@@ -43,7 +43,7 @@ include_directories(../../lib/include)
 include_directories(../../lib/quad   )
 include_directories(../../lib/tools  )
 include_directories(../../lib/mcmc  )
-
+include_directories(../../lib/amcmc  )
 include_directories(../../../dep/dsfmt)
 include_directories(../../../dep/slatec)
 include_directories(../../../dep/lbfgs)
