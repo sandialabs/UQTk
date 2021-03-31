@@ -366,7 +366,7 @@ public:
   }
 
   // get numpy double array from data_ vector
-  void getnpdblArray(double* outarray, int n1, int n2){
+  void getnpdblArray(double* outarray){
     copy(data_.begin(), data_.end(), outarray);
   }
 
@@ -379,7 +379,7 @@ public:
   }
 
   // get numpy double array from data_ vector
-  void getnpintArray(long* outarray, int n1, int n2){
+  void getnpintArray(long* outarray){
     copy(data_.begin(), data_.end(), outarray);
   }
 

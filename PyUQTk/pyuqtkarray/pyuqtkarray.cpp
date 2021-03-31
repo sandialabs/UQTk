@@ -453,6 +453,52 @@ Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
   return y;
 }
 
+void getnpdblArray(Array2D<double>& x,py::array_t<double> &outarray){
+  using py_arr = pybind11::array_t<double>;
+  py_arr a({x.XSize(), x.YSize()});
+  auto buf = a.request();
+	double *ptr1 = (double *)buf.ptr;
+  x.getnpdblArray(ptr1);
+
+  outarray = py_arr(buf);
+}
+
+void getnpintArray(Array2D<int>& x,py::array_t<int> &outarray){
+  using py_arr = pybind11::array_t<int>;
+  py_arr a({x.XSize(), x.YSize()});
+  auto buf = a.request();
+	long *ptr1 = (long *)buf.ptr;
+  x.getnpintArray(ptr1);
+
+  outarray = py_arr(buf);
+}
+
+void setnpdblArray(Array2D<double>& x,py::array_t<double> &inarray){
+  /*  read input arrays buffer_info */
+	auto buf1 = inarray.request();
+
+  /*  variables */
+	double *ptr1 = (double *) buf1.ptr;
+	int n1 = buf1.shape[0];
+  int n2 = buf1.shape[1];
+
+	// Calling the class function
+	x.setnpdblArray(ptr1,n1,n2);
+}
+
+void setnpintArray(Array2D<int>& x,py::array_t<int> &inarray){
+  /*  read input arrays buffer_info */
+	auto buf1 = inarray.request();
+
+  /*  variables */
+	long *ptr1 = (long *) buf1.ptr;
+	int n1 = buf1.shape[0];
+  int n2 = buf1.shape[1];
+
+	// Calling the class function
+	x.setnpintArray(ptr1,n1,n2);
+}
+
 PYBIND11_MODULE(pyuqtkarray, m) {
     py::class_<Array1D<int>>(m, "intArray1D")
       .def(py::init<>())
@@ -559,8 +605,8 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         .def("setArray",&Array2D<int>::setArray)
         .def("flatten",&Array2D<int>::flatten)
         .def("type",&Array2D<int>::type)
-        .def("setnpintArray",py::vectorize(&Array2D<int>::setnpintArray))
-        .def("getnpintArray",py::vectorize(&Array2D<int>::getnpintArray))
+        //.def("setnpintArray",py::vectorize(&Array2D<int>::setnpintArray))
+        //.def("getnpintArray",py::vectorize(&Array2D<int>::getnpintArray))
         .def("shape",&Array2D<int>::shape)
         ;
 
@@ -597,8 +643,8 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         .def("setArray",&Array2D<double>::setArray)
         .def("flatten",&Array2D<double>::flatten)
         .def("type",&Array2D<double>::type)
-        .def("setnpdblArray",py::vectorize(&Array2D<double>::setnpdblArray))
-        .def("getnpdblArray",py::vectorize(&Array2D<double>::getnpdblArray))
+        //.def("setnpdblArray",py::vectorize(&Array2D<double>::setnpdblArray))
+        //.def("getnpdblArray",py::vectorize(&Array2D<double>::getnpdblArray))
         .def("shape",&Array2D<double>::shape)
         ;
 
@@ -746,6 +792,12 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       m.def("printarray",static_cast<void (*)(Array1D<int>&)>(&printarray));
       m.def("printarray",static_cast<void (*)(Array2D<double>&)>(&printarray));
       m.def("printarray",static_cast<void (*)(Array2D<int>&)>(&printarray));
+
+      m.def("setnpdblArray",&setnpdblArray);
+      m.def("setnpintArray",&setnpintArray);
+      m.def("getnpdblArray",&getnpdblArray);
+      m.def("getnpintArray",&getnpintArray);
+
 
 
 
