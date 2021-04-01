@@ -453,30 +453,26 @@ Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
   return y;
 }
 
-void getnpdblArray(Array2D<double>& x,py::array_t<double> &outarray){
-  using py_arr = pybind11::array_t<double>;
-  py_arr a({x.XSize(), x.YSize()});
-  auto buf = a.request();
-	double *ptr1 = (double *)buf.ptr;
-  x.getnpdblArray(ptr1);
+py::array_t<double> getnpdblArray(Array2D<double>& x){
+  py::array_t<double> r_val(x.data_.size());
+  auto buf = r_val.request();
 
-  outarray = py_arr(buf);
+  x.getnpdblArray((double * )buf.ptr);
+
+  r_val.resize({x.XSize(),x.YSize()});
+
+  return r_val;
 }
 
-void getnpintArray(Array2D<int>& x,py::array_t<int> &outarray){
-  long * ptr1;
+py::array_t<int> getnpintArray(Array2D<int>& x){
+  py::array_t<int> r_val(x.data_.size());
+  auto buf = r_val.request();
 
-  x.getnpintArray(ptr1);
-  int n1 = x.XSize();
-  int n2 = x.YSize();
+  x.getnpintArray((long *)buf.ptr);
 
-  auto buf1 = outarray.request();
+  r_val.resize({x.XSize(),x.YSize()});
 
-  buf1.shape[0] = n1;
-  buf1.shape[1] = n2;
-  buf1.ptr = (auto *) ptr1;
-
-
+  return r_val;
 }
 
 void setnpdblArray(Array2D<double>& x,py::array_t<double> &inarray){
@@ -801,8 +797,8 @@ PYBIND11_MODULE(pyuqtkarray, m) {
 
       m.def("setnpdblArray",&setnpdblArray);
       m.def("setnpintArray",&setnpintArray);
-      m.def("getnpdblArray",&getnpdblArray);
-      m.def("getnpintArray",&getnpintArray);
+      m.def("getnpdblArray",&getnpdblArray,py::arg("x"),py::return_value_policy::take_ownership);
+      m.def("getnpintArray",&getnpintArray,py::arg("x"),py::return_value_policy::take_ownership);
 
 
 
