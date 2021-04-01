@@ -464,13 +464,19 @@ void getnpdblArray(Array2D<double>& x,py::array_t<double> &outarray){
 }
 
 void getnpintArray(Array2D<int>& x,py::array_t<int> &outarray){
-  using py_arr = pybind11::array_t<int>;
-  py_arr a({x.XSize(), x.YSize()});
-  auto buf = a.request();
-	long *ptr1 = (long *)buf.ptr;
-  x.getnpintArray(ptr1);
+  long * ptr1;
 
-  outarray = py_arr(buf);
+  x.getnpintArray(ptr1);
+  int n1 = x.XSize();
+  int n2 = x.YSize();
+
+  auto buf1 = outarray.request();
+
+  buf1.shape[0] = n1;
+  buf1.shape[1] = n2;
+  buf1.ptr = (auto *) ptr1;
+
+
 }
 
 void setnpdblArray(Array2D<double>& x,py::array_t<double> &inarray){
