@@ -41,12 +41,12 @@ def uqtk2numpy(x):
 		if len(s) == 1:
 			n = s[0]
 			y = np.zeros(n,dtype='int64')
-			x.getnpintArray(y)
+			pyuqtkarray.getnpintArray(x,y)
 		if len(s) == 2 and np.amin(s) > 1:
 			n = s[0]
 			m = s[1]
 			y = np.zeros((n,m),dtype='int64')
-			x.getnpintArray(y)
+			pyuqtkarray.getnpintArray(x,y)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 		return y.copy()
@@ -56,12 +56,12 @@ def uqtk2numpy(x):
 		if len(s) == 1:
 			n = s[0]
 			y = np.zeros(n)
-			x.getnpdblArray(y)
+			pyuqtkarray.getnpdblArray(x,y)
 		if len(s) == 2 and np.amin(s) > 1:
 			n = s[0]
 			m = s[1]
 			y = np.zeros((n,m))
-			x.getnpdblArray(y)
+			pyuqtkarray.getnpdblArray(x,y)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 		return y.copy()
@@ -75,5 +75,6 @@ def numpy2uqtk(y):
 		n = s[0]
 		m = s[1]
 		x = pyuqtkarray.dblArray2D(n,m)
-	x.setnpdblArray(np.asfortranarray(y.copy()))
+	#x.setnpdblArray(np.asfortranarray(y.copy()))
+	pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
 	return x
