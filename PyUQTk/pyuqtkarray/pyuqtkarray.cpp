@@ -612,6 +612,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         //.def("setnpintArray",py::vectorize(&Array2D<int>::setnpintArray))
         //.def("getnpintArray",py::vectorize(&Array2D<int>::getnpintArray))
         .def("shape",&Array2D<int>::shape)
+        .def("at",&Array2D<int>::at)
         ;
 
       py::class_<Array2D<double>>(m,"dblArray2D")
@@ -650,6 +651,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         //.def("setnpdblArray",py::vectorize(&Array2D<double>::setnpdblArray))
         //.def("getnpdblArray",py::vectorize(&Array2D<double>::getnpdblArray))
         .def("shape",&Array2D<double>::shape)
+        .def("at",&Array2D<double>::at)
         ;
 
       m.def("read_datafile",&read_datafile<int>);

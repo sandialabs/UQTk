@@ -384,7 +384,7 @@ public:
   }
 
   // Get the value at location x,y
-  T at(int ix,int iy){
+  T& at(int ix,int iy){
     return data_[ix + xsize_*iy];
   }
 
