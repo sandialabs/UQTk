@@ -140,7 +140,8 @@ xpnts = pyuqtkarray.getnpdblArray(x)
 
 # convert the quad weights to numpy arrays
 w_np = zeros(n)
-w.getnpdblArray(w_np,n)
+#w.getnpdblArray(w_np,n)
+w_np = pyuqtkarray.getnpdblArray(w)
 
 # asserting the quadrature points are correct
 m,n = x_np.shape
