@@ -106,7 +106,7 @@ def forward_propagation(mu, sigma, \
     npce = pc_model.GetNumberPCTerms() # Number of terms in the PCE
     qdpts, totquat= pce_tools.UQTkGetQuadPoints(pc_model)
     # map the quadrature from eta space to xi space
-    qdpts_xi = eta_to_xi_mapping(qdpts, R)
+    qdpts_xi = adaptation_tools.eta_to_xi_mapping(qdpts, R)
     # map germs to input parameters
     xx = mu + sigma * qdpts_xi
     # evaluate at input parameters

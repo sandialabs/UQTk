@@ -27,6 +27,7 @@
 #=====================================================================================
 import sys
 sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
@@ -35,6 +36,7 @@ sys.path.append('../pce_tools/')
 # Import Modules
 try:
     import pyuqtkarray as uqtkarray
+    import pyuqtkarray_tools as uqtkarraytools
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
@@ -303,7 +305,8 @@ def UQTkGetQuadPoints(pc_model):
 
     # Convert quad points to a numpy array
     qdpts = np.zeros((totquat,n_dim))
-    qdpts_uqtk.getnpdblArray(qdpts)
+    #qdpts_uqtk.getnpdblArray(qdpts)
+    qdpts = uqtkarraytools.uqtk2numpy(qdpts_uqtk)
     return qdpts, totquat
 ################################################################################
 def UQTkStDv(pc_model,pc_coeffs):

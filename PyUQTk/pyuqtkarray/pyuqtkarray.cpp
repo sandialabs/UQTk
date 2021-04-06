@@ -541,7 +541,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       py::class_<Array1D<double>>(m,"dblArray1D")
         .def(py::init<>())
         .def(py::init<const int&>())
-        .def(py::init<const int&,const int&>())
+        .def(py::init<const int&,const double&>())
         .def("Assign", &Array1D<double>::operator=)
         .def(py::init<const Array1D<double> &>())
         .def("Clear",&Array1D<double>::Clear)
