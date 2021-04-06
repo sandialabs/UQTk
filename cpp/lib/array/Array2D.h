@@ -383,6 +383,11 @@ public:
     copy(data_.begin(), data_.end(), outarray);
   }
 
+  // Get the value at location x,y
+  T at(int ix,int iy){
+    return data_[ix + xsize_*iy];
+  }
+
   // Returns data_ vector as a list in python in row-major (?)
   // Also acts as a print to see individual elements
   vector<T> flatten(){

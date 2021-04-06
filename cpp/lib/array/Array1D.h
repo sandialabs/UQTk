@@ -467,7 +467,7 @@ public:
     }
   }
     // This is not to be used for a string type
-  void getnpintArray(vector<int> outarray, int n){
+  void getnpintArray(vector<int>& outarray, int n){
     // xsize_ = n;
     // data_.assign(inarray,inarray+n);
     //copy(data_.begin(), data_.end(), outarray);
@@ -693,7 +693,7 @@ public:
   }
   // Sets user-defined 1d numpy array to data_ vector
   // This is not to be used for a string type
-  void getnpdblArray(vector<double> outarray, int n){
+  void getnpdblArray(vector<double>& outarray, int n){
     // xsize_ = n;
     // data_.assign(inarray,inarray+n);
     //copy(data_.begin(), data_.end(), outarray);

@@ -88,7 +88,7 @@ pyuqtkarray.setnpdblArray(y,asfortranarray(y_np))
 
 for i in range(m):
 	for j in range(n):
-		assert (y[i,j] - y_np[i,j]) < 0.0005
+		assert (y.at(i,j) - y_np[i,j]) < 0.0005
 
 
 print("alternative using uqtk2numpy and numpy2uqtk")
@@ -98,6 +98,11 @@ nn = 10
 x1 = random.rand(nn)
 y1 = tools.numpy2uqtk(x1)
 z1 = tools.uqtk2numpy(y1)
+
+print(x1)
+print(z1)
+pyuqtkarray.printarray(y1)
+
 for i in range(nn):
 	assert x1[i] == y1[i]
 
