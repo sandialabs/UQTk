@@ -41,12 +41,13 @@ def uqtk2numpy(x):
 		if len(s) == 1:
 			n = s[0]
 			y = np.zeros(n,dtype='int64')
-			y = pyuqtkarray.getnpintArray(x)
+			x.getnpintArray(y,n)
 		if len(s) == 2 and np.amin(s) > 1:
 			n = s[0]
 			m = s[1]
-			y = np.zeros((n,m),dtype='int64')
-			y = pyuqtkarray.getnpintArray(x)
+			z = np.zeros((n,m),dtype='int64')
+			z = pyuqtkarray.getnpintArray(x)
+			y = fixer(z)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 		return y.copy()
@@ -56,12 +57,13 @@ def uqtk2numpy(x):
 		if len(s) == 1:
 			n = s[0]
 			y = np.zeros(n)
-			y = pyuqtkarray.getnpdblArray(x)
+			x.getnpdblArray(y,n)
 		if len(s) == 2 and np.amin(s) > 1:
 			n = s[0]
 			m = s[1]
-			y = np.zeros((n,m))
-			y = pyuqtkarray.getnpdblArray(x)
+			z = np.zeros((n,m))
+			z = pyuqtkarray.getnpdblArray(x)
+			y = fixer(z)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 		return y.copy()
@@ -78,3 +80,23 @@ def numpy2uqtk(y):
 	#x.setnpdblArray(np.asfortranarray(y.copy()))
 	pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
 	return x
+
+def fixer(x):
+	s = np.shape(x)
+	n = s[0]
+	m = s[1]
+	helper = np.zeros((n*m))
+	counter = 0
+	for i in range(n):
+		for j in range(m):
+			helper[counter] = x[i][j]
+			counter = counter + 1
+
+	y = np.zeros((n,m))
+	counter = 0
+	for j in range(m):
+		for i in range(n):
+			y[i,j] = helper[counter]
+			counter = counter + 1
+
+	return y
