@@ -206,6 +206,11 @@ public:
     return s;
   }
 
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const T val){
+    data_[x] = val;
+  }
+
   /// \brief Dump contents of the array to a file in binary format
   // cannot be read with numpy's fromfile after creation
   void DumpBinary(char *filename){
@@ -409,6 +414,11 @@ public:
     vector<int> s (1,0);
     s[0] = this -> XSize();
     return s;
+  }
+
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const int val){
+    data_[x] = val;
   }
 
   /// \brief Dump contents of the array to a file in binary format
@@ -633,6 +643,11 @@ public:
     vector<int> s (1,0);
     s[0] = this -> XSize();
     return s;
+  }
+
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const double val){
+    data_[x] = val;
   }
 
   /// \brief Dump contents of the array to a file in binary format

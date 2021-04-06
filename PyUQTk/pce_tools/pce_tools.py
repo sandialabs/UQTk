@@ -272,7 +272,8 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     # UQTk array for function evaluations at quadrature points for that variable
     f_uqtk = uqtkarray.dblArray1D(nqp,0.0)
     for ipt in range(nqp):
-        f_uqtk[ipt]=f_evaluations[ipt]
+        #f_uqtk[ipt]=f_evaluations[ipt]
+        f_uqtk.assign(ipt,f_evaluations[ipt])
 
     # Galerkin Projection
     pc_model.GalerkProjection(f_uqtk,c_k_1d_uqtk)
@@ -281,6 +282,7 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     c_k = np.zeros(npce)
     for ip in range(npce):
         c_k[ip] = c_k_1d_uqtk[ip]
+        #c_k[ip] = c_k_1d_uqtk.at(ip)
 
     # Return numpy array of PC coefficients
     return c_k

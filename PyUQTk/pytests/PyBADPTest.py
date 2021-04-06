@@ -162,7 +162,7 @@ pc_model0, c_k0, totquat0 = forward_propagation(mu, sigma, \
 tol = 1e-6                 # tolerance to check l2 errors
 for method in range(4):    # loop over 4 different methods
     # Using different method to obtain rotation matrix and perform 1 dimensional adaptation
-    R = gauss_adaptation(c_k0[1:ndim+1], ndim, method)
+    R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
     pc_model1, c_k1, totquat1 = forward_propagation(mu, sigma, \
         nord, 1, pc_type,param, R, main_verbose, sf="full")
 
@@ -178,7 +178,7 @@ for method in range(4):    # loop over 4 different methods
 ####                    Check other functions                      #####
 ########################################################################
 # Using method =3 to perform full dimesnion adaptation
-R = gauss_adaptation(c_k0[1:ndim+1], ndim, method)
+R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
 pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
     nord, ndim, pc_type,param, R, main_verbose, sf)
 # test l2_error_eta by 1 dimensional and full dimension expansions in eta space

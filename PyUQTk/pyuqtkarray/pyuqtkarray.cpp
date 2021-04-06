@@ -506,7 +506,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       .def(py::init<>())
       .def(py::init<const int&>())
       .def(py::init<const int&,const int&>())
-      .def("Assign", &Array1D<int>::operator=)
+      //.def("Assign", &Array1D<int>::operator=)
       .def(py::init<const Array1D<int> &>())
       .def("Clear",&Array1D<int>::Clear)
       .def("XSize",&Array1D<int>::XSize)
@@ -536,13 +536,14 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       .def("flatten",&Array1D<int>::flatten)
       .def("type",&Array1D<int>::type)
       .def("shape",&Array1D<int>::shape)
+      .def("assign",&Array1D<int>::assign)
       ;
 
       py::class_<Array1D<double>>(m,"dblArray1D")
         .def(py::init<>())
         .def(py::init<const int&>())
         .def(py::init<const int&,const double&>())
-        .def("Assign", &Array1D<double>::operator=)
+        //.def("Assign", &Array1D<double>::operator=)
         .def(py::init<const Array1D<double> &>())
         .def("Clear",&Array1D<double>::Clear)
         .def("XSize",&Array1D<double>::XSize)
@@ -572,6 +573,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
         .def("flatten",&Array1D<double>::flatten)
         .def("type",&Array1D<double>::type)
         .def("shape",&Array1D<double>::shape)
+        .def("assign",&Array1D<double>::assign)
         ;
 
       py::class_<Array2D<int>>(m,"intArray2D")
