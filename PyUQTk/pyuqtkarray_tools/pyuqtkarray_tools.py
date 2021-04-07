@@ -50,6 +50,7 @@ def uqtk2numpy(x):
 			y = fixer(z)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
+			y = y[...,None]
 		return y.copy()
 	else:
 		s = x.shape()
@@ -66,6 +67,7 @@ def uqtk2numpy(x):
 			y = fixer(z)
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
+			y = y[...,None]
 		return y.copy()
 
 def numpy2uqtk(y):

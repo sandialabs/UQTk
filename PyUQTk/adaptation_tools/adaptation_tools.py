@@ -33,7 +33,7 @@ sys.path.append('../tools/')
 sys.path.append('../pce_tools/')
 
 try:
-    import pyuqtkarray
+    import pyuqtkarray as uqtkarray
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
@@ -154,7 +154,8 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
     MI_uqtk = uqtkarray.intArray2D()
     pc_model2.GetMultiIndex(MI_uqtk)
     MI = np.zeros((pc_model2.GetNumberPCTerms(), d2),dtype='int64')
-    MI_uqtk.getnpintArray(MI)
+    #MI_uqtk.getnpintArray(MI)
+    MI = uqtkarray.getnpintArray(MI_uqtk)
 
     # find locations where the first d1 multi-indices of d2 space agree with
     # multi-indices in d1 space, while the remaining indices equal zeros

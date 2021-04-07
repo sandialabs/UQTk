@@ -184,9 +184,9 @@ pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
 # test l2_error_eta by 1 dimensional and full dimension expansions in eta space
 # and obtain coefficients C1, which is the projection of 1 dimensional expansion
 # coeffients in full dimensional expansion
-l2_error_eta, C1 = l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
+l2_error_eta, C1 = adaptation_tools.l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
 # test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
-c_xi = transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
+c_xi = adaptation_tools.transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
 l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
 
 assert l2_error_eta<tol, "l2_error_eta function fails to obtain correct values :-("
