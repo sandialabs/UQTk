@@ -156,10 +156,12 @@ CRef = np.array([[0.25*ndim, 0.075*ndim**(3.0/2.0)+np.sqrt(ndim),\
     0.25*ndim, 0.025*ndim**(3.0/2.0)]])
 # first order expansion to obtain Gaussian coefficients
 R0 = np.eye(ndim)
+print("Got to 159")
 pc_model0, c_k0, totquat0 = forward_propagation(mu, sigma, \
 	nord0, ndim, pc_type, param0, R0,main_verbose, sf)
 
 tol = 1e-6                 # tolerance to check l2 errors
+print("Got to 163")
 for method in range(4):    # loop over 4 different methods
     # Using different method to obtain rotation matrix and perform 1 dimensional adaptation
     R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
@@ -178,13 +180,17 @@ for method in range(4):    # loop over 4 different methods
 ####                    Check other functions                      #####
 ########################################################################
 # Using method =3 to perform full dimesnion adaptation
+print("Got to 181")
 R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
+print("Got to 183")
 pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
     nord, ndim, pc_type,param, R, main_verbose, sf)
+print("Got to 186")
 # test l2_error_eta by 1 dimensional and full dimension expansions in eta space
 # and obtain coefficients C1, which is the projection of 1 dimensional expansion
 # coeffients in full dimensional expansion
 l2_error_eta, C1 = adaptation_tools.l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
+print("Got to 191")
 # test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
 c_xi = adaptation_tools.transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
 l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
