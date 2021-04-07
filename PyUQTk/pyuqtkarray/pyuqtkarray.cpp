@@ -485,7 +485,7 @@ py::array_t<int> getnpintArray(Array1D<int>& x){
 }
 
 py::array_t<double> getnpdblArray(Array1D<double>& x){
-  py::array_t<int> r_val(x.data_.size());
+  py::array_t<double> r_val(x.data_.size());
   auto buf = r_val.request();
 
   x.getnpdblArray((double *)buf.ptr);
