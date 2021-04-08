@@ -27,6 +27,7 @@
 #=====================================================================================
 import sys
 sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
@@ -34,6 +35,7 @@ sys.path.append('../pce_tools/')
 
 try:
     import pyuqtkarray as uqtkarray
+    import pyuqtkarray_tools as uqtkarray_tools
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
@@ -224,7 +226,8 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     psi_xi_uqtk = uqtkarray.dblArray2D()
     pc_model_xi.EvalBasisAtCustPts(qdpts_xi_uqtk, psi_xi_uqtk)
     psi_xi = np.zeros((totquat_eta, pc_model_xi.GetNumberPCTerms()))
-    psi_xi = uqtkarray.getnpdblArray(psi_xi_uqtk)
+    psi_xi = uqtkarray_tools.uqtk2numpy(psi_xi_uqtk)
+    #psi_xi = uqtkarray.getnpdblArray(psi_xi_uqtk)
 
     ##### Obtian Psi_eta at quadrature points of eta #####
     weight_eta_uqtk = uqtkarray.dblArray1D()
@@ -235,6 +238,7 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     psi_eta_uqtk = uqtkarray.dblArray2D()
     pc_model_eta.GetPsi(psi_eta_uqtk)
     psi_eta = np.zeros( (totquat_eta, pc_model_eta.GetNumberPCTerms()) )
-    psi_eta = uqtkarray.getnpdblArray(psi_eta_uqtk)
+    psi_eta = uqtkarray_tools.uqtk2numpy(psi_eta_uqtk)
+    #psi_eta = uqtkarray.getnpdblArray(psi_eta_uqtk)
 
     return np.dot(coeffs, np.dot(psi_eta.T * weight_eta, psi_xi))

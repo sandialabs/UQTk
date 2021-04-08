@@ -161,13 +161,6 @@ pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
 # coeffients in full dimensional expansion
 l2_error_eta, C1 = l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
 # test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
-print("C1 =", C1)
-print("nord =",nord)
-print("ndim =",ndim)
-print("pc_type =",pc_type)
-print("param =",param)
-print("R =",R)
-print("sf =",sf)
 c_xi = transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
 l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
 
