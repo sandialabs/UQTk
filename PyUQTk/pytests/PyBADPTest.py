@@ -45,9 +45,9 @@ except ImportError:
     print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
 
 try:
-    import numpy as np
+	import numpy as np
 except ImportError:
-    print("Need numpy to test PyUQTk")
+	print("Need numpy to test PyUQTk")
 
 '''
 This test use basis adaptation method to do expansion of
@@ -131,7 +131,7 @@ CRef = np.array([[0.25*ndim, 0.075*ndim**(3.0/2.0)+np.sqrt(ndim),\
 # first order expansion to obtain Gaussian coefficients
 R0 = np.eye(ndim)
 pc_model0, c_k0, totquat0 = forward_propagation(mu, sigma, \
-    nord0, ndim, pc_type, param0, R0,main_verbose, sf)
+	nord0, ndim, pc_type, param0, R0,main_verbose, sf)
 
 tol = 1e-6                 # tolerance to check l2 errors
 for method in range(4):    # loop over 4 different methods
@@ -143,8 +143,8 @@ for method in range(4):    # loop over 4 different methods
     # compare the first order coefficients with reference ones
     c_ktmp = np.copy(c_k1)
     if R[0,0] < 0:
-        c_ktmp[1] = -c_ktmp[1]
-        c_ktmp[3] = -c_ktmp[3]
+    	c_ktmp[1] = -c_ktmp[1]
+    	c_ktmp[3] = -c_ktmp[3]
     l2 = np.linalg.norm(c_ktmp-CRef)/np.linalg.norm(CRef)
     assert l2<tol, "Basis adaptation fails to obtain correct 1 dimension coefficients :-("
 
@@ -161,38 +161,6 @@ pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
 l2_error_eta, C1 = l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
 # test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
 c_xi = transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
-l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
-
-assert l2_error_eta<tol, "l2_error_eta function fails to obtain correct values :-("
-assert l22<tol, "transf_coeffs_xi function fails to obtain correct values :-("
-    pc_model1, c_k1, totquat1 = forward_propagation(mu, sigma, \
-        nord, 1, pc_type,param, R, main_verbose, sf="full")
-
-    # compare the first order coefficients with reference ones
-    c_ktmp = np.copy(c_k1)
-    if R[0,0] < 0:
-    	c_ktmp[1] = -c_ktmp[1]
-    	c_ktmp[3] = -c_ktmp[3]
-    l2 = np.linalg.norm(c_ktmp-CRef)/np.linalg.norm(CRef)
-    assert l2<tol, "Basis adaptation fails to obtain correct 1 dimension coefficients :-("
-
-########################################################################
-####                    Check other functions                      #####
-########################################################################
-# Using method =3 to perform full dimesnion adaptation
-print("Got to 181")
-R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
-print("Got to 183")
-pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
-    nord, ndim, pc_type,param, R, main_verbose, sf)
-print("Got to 186")
-# test l2_error_eta by 1 dimensional and full dimension expansions in eta space
-# and obtain coefficients C1, which is the projection of 1 dimensional expansion
-# coeffients in full dimensional expansion
-l2_error_eta, C1 = adaptation_tools.l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
-print("Got to 191")
-# test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
-c_xi = adaptation_tools.transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
 l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
 
 assert l2_error_eta<tol, "l2_error_eta function fails to obtain correct values :-("
