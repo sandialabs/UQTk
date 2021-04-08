@@ -157,7 +157,8 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
     pc_model2.GetMultiIndex(MI_uqtk)
     MI = np.zeros((pc_model2.GetNumberPCTerms(), d2),dtype='int64')
     #MI_uqtk.getnpintArray(MI)
-    MI = uqtkarray.getnpintArray(MI_uqtk)
+    MI = uqtkarray_tools.uqtk2numpy(MI_uqtk)
+    #MI = uqtkarray.getnpintArray(MI_uqtk)
 
     # find locations where the first d1 multi-indices of d2 space agree with
     # multi-indices in d1 space, while the remaining indices equal zeros
@@ -189,8 +190,7 @@ def l2_error_eta(c_1, c_2, d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_be
     assert np.shape(c_1)[0] <= np.shape(c_2)[0]
     C1 = np.zeros(c_2.shape[0])
     # call mi_terms_loc to make projections
-    a = np.array([0, 1, 6, 21], dtype=np.int64)
-    C1[a] = c_1
+    C1[mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)] = c_1
     return (np.linalg.norm((C1 - c_2),2) / np.linalg.norm(c_2,2)), C1
 
 def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alpha=0.0, pc_beta=1.0):
