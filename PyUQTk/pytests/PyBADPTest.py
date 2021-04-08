@@ -29,16 +29,17 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path for PyUQTk.
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
 sys.path.append('../tools')
-sys.path.append('../PyPCE/')
+sys.path.append('../pce_tools')
+sys.path.append('../adaptation_tools')
 try:
-    import uqtkarray
-    import quad as uqtkquad
-    import pce as uqtkpce
-    import tools as uqtktools
+    import pyuqtkarray as uqtkarray
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
     import pce_tools
     from adaptation_tools import *
 except ImportError:
