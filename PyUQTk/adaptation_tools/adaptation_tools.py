@@ -143,7 +143,7 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
         locs   : N1 numpy array (N1 is # of PC terms in d1 dimesnional expansion),
                  the coefficients locations of d1 dimensional expansion in d2 dimensional expansion
     '''
-    assert d1 < d2
+    assert d1 < d2, "lower dimension is not less than higher dimenison"
 
     # obtain pc_model of d2 dimensional expansion
     pc_model2 = uqtkpce.PCSet("NISP", nord, d2, pc_type, pc_alpha, pc_beta)
@@ -156,8 +156,10 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
     MI_uqtk = uqtkarray.intArray2D()
     pc_model2.GetMultiIndex(MI_uqtk)
     MI = np.zeros((pc_model2.GetNumberPCTerms(), d2),dtype='int64')
+    #uqtkarray.printarray(MI_uqtk)
     #MI_uqtk.getnpintArray(MI)
     MI = uqtkarray_tools.uqtk2numpy(MI_uqtk)
+    #print(MI)
     #MI = uqtkarray.getnpintArray(MI_uqtk)
 
     # find locations where the first d1 multi-indices of d2 space agree with
@@ -190,7 +192,17 @@ def l2_error_eta(c_1, c_2, d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_be
     assert np.shape(c_1)[0] <= np.shape(c_2)[0]
     C1 = np.zeros(c_2.shape[0])
     # call mi_terms_loc to make projections
-    C1[mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)] = c_1
+    print("d1=",d1)
+    print("d2=",d2)
+    print("nord=",nord)
+    print("pc_type=",pc_type)
+    print("param=",param)
+    print("sf=",sf)
+    print("pc_alpha=",pc_alpha)
+    print("pc_beta=",pc_beta)
+    array = mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)
+    print(array)
+    C1[array] = c_1
     return (np.linalg.norm((C1 - c_2),2) / np.linalg.norm(c_2,2)), C1
 
 def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alpha=0.0, pc_beta=1.0):

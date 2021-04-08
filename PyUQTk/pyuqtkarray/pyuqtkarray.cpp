@@ -468,7 +468,7 @@ py::array_t<int> getnpintArray(Array2D<int>& x){
   py::array_t<int> r_val(x.data_.size());
   auto buf = r_val.request();
 
-  x.getnpintArray((long *)buf.ptr);
+  x.getnpintArray((int *)buf.ptr);
 
   r_val.resize({x.XSize(),x.YSize()});
 

@@ -38,6 +38,8 @@ def uqtk2numpy(x):
 	if x.type() == 'int':
 		s = x.shape()
 		imin = np.argmin(s)
+		print("s=",s)
+		print("imin=",imin)
 		if len(s) == 1:
 			n = s[0]
 			y = np.zeros(n,dtype='int64')
@@ -46,9 +48,13 @@ def uqtk2numpy(x):
 			n = s[0]
 			m = s[1]
 			z = np.zeros((n,m),dtype='int64')
+			pyuqtkarray.printarray(x)
 			z = pyuqtkarray.getnpintArray(x)
+			print(z)
 			y = fixer(z)
+			print(y)
 		if len(s) == 2 and np.amin(s) == 1:
+			print("WTF")
 			y = np.array(x.flatten())
 			y = y[...,None]
 		return y.copy()
