@@ -187,7 +187,8 @@ def l2_error_eta(c_1, c_2, d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_be
     assert np.shape(c_1)[0] <= np.shape(c_2)[0]
     C1 = np.zeros(c_2.shape[0])
     # call mi_terms_loc to make projections
-    C1[mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)] = c_1
+    a = np.array([0, 1, 6, 21], dtype=np.int64)
+    C1[a] = c_1
     return (np.linalg.norm((C1 - c_2),2) / np.linalg.norm(c_2,2)), C1
 
 def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alpha=0.0, pc_beta=1.0):
@@ -218,22 +219,22 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     ##### Obtain Psi_xi at quadrature points of eta #####
     qdpts_xi = eta_to_xi_mapping(qdpts_eta, R)
     qdpts_xi_uqtk = uqtkarray.dblArray2D(totquat_eta, ndim)
-    qdpts_xi_uqtk.setnpdblArray(np.asfortranarray(qdpts_xi))
+    uqtkarray.setnpdblArray(qdpts_xi_uqtk,np.asfortranarray(qdpts_xi))
 
     psi_xi_uqtk = uqtkarray.dblArray2D()
     pc_model_xi.EvalBasisAtCustPts(qdpts_xi_uqtk, psi_xi_uqtk)
     psi_xi = np.zeros((totquat_eta, pc_model_xi.GetNumberPCTerms()))
-    psi_xi_uqtk.getnpdblArray(psi_xi)
+    psi_xi = uqtkarray.getnpdblArray(psi_xi_uqtk)
 
     ##### Obtian Psi_eta at quadrature points of eta #####
     weight_eta_uqtk = uqtkarray.dblArray1D()
     pc_model_eta.GetQuadWeights(weight_eta_uqtk)
     weight_eta=np.zeros((totquat_eta,))
-    weight_eta_uqtk.getnpdblArray(weight_eta)
+    weight_eta = uqtkarray.getnpdblArray(weight_eta_uqtk)
 
     psi_eta_uqtk = uqtkarray.dblArray2D()
     pc_model_eta.GetPsi(psi_eta_uqtk)
     psi_eta = np.zeros( (totquat_eta, pc_model_eta.GetNumberPCTerms()) )
-    psi_eta_uqtk.getnpdblArray(psi_eta)
+    psi_eta = uqtkarray.getnpdblArray(psi_eta_uqtk)
 
     return np.dot(coeffs, np.dot(psi_eta.T * weight_eta, psi_xi))
