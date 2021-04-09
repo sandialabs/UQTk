@@ -69,11 +69,15 @@ def uqtk2numpy(x):
 			y = np.zeros(n)
 			y = pyuqtkarray.getnpdblArray(x)
 		if len(s) == 2 and np.amin(s) > 1:
-			n = s[0]
-			m = s[1]
-			z = np.zeros((n,m))
-			z = pyuqtkarray.getnpdblArray(x)
-			y = fixer(z)
+			list = pyuqtkarray.getnpdblArray(x)
+			m = x.XSize();
+			n = x.YSize();
+			y = np.full((m,n),0,dtype=float)
+			counter = 0
+			for i in range(m):
+				for j in range(n):
+					y[i,j]=list[counter]
+					counter = counter + 1
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 			y = y[...,None]
@@ -92,23 +96,3 @@ def numpy2uqtk(y):
 	#x.setnpdblArray(np.asfortranarray(y.copy()))
 		pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
 	return x
-
-def fixer(x):
-	s = np.shape(x)
-	n = s[0]
-	m = s[1]
-	helper = np.zeros((n*m))
-	counter = 0
-	for i in range(n):
-		for j in range(m):
-			helper[counter] = x[i][j]
-			counter = counter + 1
-
-	y = np.zeros((n,m))
-	counter = 0
-	for j in range(m):
-		for i in range(n):
-			y[i,j] = helper[counter]
-			counter = counter + 1
-
-	return y

@@ -453,7 +453,7 @@ Array1D<double> swag(Array1D<double>& x, Array2D<double>& A){
   return y;
 }
 
-py::array_t<double> getnpdblArray(Array2D<double>& x){
+/*py::array_t<double> getnpdblArray(Array2D<double>& x){
   py::array_t<double> r_val(x.data_.size());
   auto buf = r_val.request();
 
@@ -464,7 +464,7 @@ py::array_t<double> getnpdblArray(Array2D<double>& x){
   return r_val;
 }
 
-/*py::array_t<int> getnpintArray(Array2D<int>& x){
+py::array_t<int> getnpintArray(Array2D<int>& x){
   py::array_t<int> r_val(x.data_.size());
   auto buf = r_val.request();
 
@@ -487,6 +487,17 @@ vector<int> getnpintArray(Array2D<int>& x){
   return a;
 }
 
+vector<double> getnpdblArray(Array2D<double>& x){
+  vector<double> a;
+  int m = x.XSize();
+  int n = x.YSize();
+  for(int ip = 0;ip < m; ++ip){
+    for(int idim = 0; idim < n; ++idim){
+      a.push_back(x(ip,idim));
+    }
+  }
+  return a;
+}
 
 py::array_t<int> getnpintArray(Array1D<int>& x){
   py::array_t<int> r_val(x.data_.size());
@@ -834,7 +845,7 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       m.def("setnpintArray",&setnpintArray);
       m.def("getnpdblArray",static_cast<py::array_t<double> (*)(Array1D<double> &)>(&getnpdblArray),py::arg("x"),py::return_value_policy::take_ownership);
       m.def("getnpintArray",static_cast<py::array_t<int> (*)(Array1D<int> &)>(&getnpintArray),py::arg("x"),py::return_value_policy::take_ownership);
-      m.def("getnpdblArray",static_cast<py::array_t<double> (*)(Array2D<double> &)>(&getnpdblArray),py::arg("x"),py::return_value_policy::take_ownership);
+      m.def("getnpdblArray",static_cast<vector<double> (*)(Array2D<double> &)>(&getnpdblArray),py::arg("x"),py::return_value_policy::take_ownership);
       m.def("getnpintArray",static_cast<vector<int> (*)(Array2D<int> &)>(&getnpintArray),py::arg("x"),py::return_value_policy::take_ownership);
 
 
