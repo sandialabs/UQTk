@@ -43,11 +43,20 @@ def uqtk2numpy(x):
 			y = np.zeros(n,dtype='int64')
 			y = pyuqtkarray.getnpintArray(x)
 		if len(s) == 2 and np.amin(s) > 1:
-			n = s[0]
-			m = s[1]
-			z = np.zeros((n,m),dtype='int64')
-			z = pyuqtkarray.getnpintArray(x)
-			y = fixer(z)
+			#n = s[0]
+			#m = s[1]
+			#z = np.zeros((n,m),dtype='int64')
+			#z = pyuqtkarray.getnpintArray(x)
+			#y = fixer(z)
+			list = pyuqtkarray.getnpintArray(x)
+			m = x.XSize();
+			n = x.YSize();
+			y = np.full((m,n),0,dtype=int)
+			counter = 0
+			for i in range(m):
+				for j in range(n):
+					y[i,j]=list[counter]
+					counter = counter + 1
 		if len(s) == 2 and np.amin(s) == 1:
 			y = np.array(x.flatten())
 			y = y[...,None]
