@@ -735,8 +735,8 @@ PYBIND11_MODULE(pyuqtkarray, m) {
       m.def("getCol",&getCol<double>);
       m.def("subVector",&subVector<int>);
       m.def("subVector",&subVector<double>);
-      m.def("subMatrix_row",&subMatrix_row<int>);
-      m.def("subMatrix_row",&subMatrix_row<double>);
+      m.def("subMatrix_row_int",&subMatrix_row<int>);
+      m.def("subMatrix_row_dbl",&subMatrix_row<double>);
       m.def("subMatrix_col",&subMatrix_col<double>);
       m.def("subMatrix_col",&subMatrix_col<int>);
       m.def("matPvec",&matPvec<double>);
