@@ -487,3 +487,16 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     WBCS(PHI, y, sigma2, eta, lambda_init, adaptive, optimal, scale, verbose,
         weights, used, errbars, basis, alpha, Sig);
 }
+
+void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
+                double eta, Array1D<double> &lambda_init,
+                int adaptive, int optimal, double scale, int verbose,
+                Array1D<double> &weights, Array1D<int> &used,
+                Array1D<double> &errbars, Array1D<double> &basis,
+                Array1D<double> &alpha, Array1D<double> &lambda){
+                  double sigma2_val = sigma2[0];
+                  double lambda_val = lambda[0];
+                  BCS(PHI,y,sigma2_val,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars, basis,alpha,lambda_val);
+                  sigma2[0] = sigma2_val;
+                  lambda[0] = lambda_val;
+                }

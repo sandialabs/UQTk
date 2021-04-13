@@ -145,7 +145,7 @@ class bcsreg:
 		# now we begin BCS routine
 		# set work variables
 		self.__newmindex_uqtk = uqtkarray.intArray2D() # for uporder iteration
-		self.__sigma2_p = uqtktools.new_doublep() # initial noise variance
+		self.__sigma2_p = uqtkarray.dblArray1D(1) # initial noise variance
 		self.__lambda_init = uqtkarray.dblArray1D() # hierarchical prior parameter
 		self.__adaptive, self.__optimal, self.__scale, self.__verbose = adaptive,optimal,scale,verbose
 		self.__weights_uqtk = uqtkarray.dblArray1D() # weights/ coefficients for basis
@@ -153,9 +153,10 @@ class bcsreg:
 		self.__errbars_uqtk = uqtkarray.dblArray1D() # error bars for each weight
 		self.__nextbasis_uqtk = uqtkarray.dblArray1D() # if adaptive
 		self.__alpha_uqtk = uqtkarray.dblArray1D() # prior hyperparameter (1/gamma)
-		self.__lambda_p = uqtktools.new_doublep()
+		self.__lambda_p = uqtkarray.dblArray1D(1)
 
-		uqtktools.doublep_assign(self.__lambda_p,l_init)
+		#uqtktools.doublep_assign(self.__lambda_p,l_init)
+		self.__lambda_p.assign(0,l_init)
 
 		self.__compiled = True
 
@@ -199,7 +200,8 @@ class bcsreg:
 		if sigsq == None:
 			self.__sigma2 = np.var(y)/1e2
 		else: self.__sigma2 = sigsq
-		uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
+		#uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
+		self.__sigma2_p.assign(0,self.__sigma2)
 
 		self.__tol = tol
 		self.__upit = upit
@@ -213,10 +215,11 @@ class bcsreg:
 			self.__Phi = uqtk2numpy(self.__Phi_uqtk)
 
 			# resest sigma parameter (if not, may get seg fault)
-			uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
+			#uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
+			self.__sigma2_p.assign(0,self.__sigma2)
 
 			# change to uqtkbcs.BCS if testing outside source
-			BCS(self.__Phi_uqtk,self.__y_uqtk,self.__sigma2_p,self.__tol,self.__lambda_init,self.__adaptive,self.__optimal,self.__scale,self.__verbose,self.__weights_uqtk,self.__used_uqtk,self.__errbars_uqtk,self.__nextbasis_uqtk,self.__alpha_uqtk,self.__lambda_p)
+			bcs.BCS(self.__Phi_uqtk,self.__y_uqtk,self.__sigma2_p,self.__tol,self.__lambda_init,self.__adaptive,self.__optimal,self.__scale,self.__verbose,self.__weights_uqtk,self.__used_uqtk,self.__errbars_uqtk,self.__nextbasis_uqtk,self.__alpha_uqtk,self.__lambda_p)
 
 			# add new mulitindex to newmindex
 			uqtkarray.subMatrix_row_int(self.__mindex_uqtk,self.__used_uqtk,self.__newmindex_uqtk)

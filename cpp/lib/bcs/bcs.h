@@ -79,6 +79,15 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
                  Array1D<double> &errbars, Array1D<double> &basis,
                  Array1D<double> &alpha, double &lambda) ;
 
+/// \brief Essentially same functionality as WBCS, but slightly altered I/O.
+/// \note Kept for backward compatibility with PyUQTk and BCS tests
+void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
+                double eta, Array1D<double> &lambda_init,
+                int adaptive, int optimal, double scale, int verbose,
+                Array1D<double> &weights, Array1D<int> &used,
+                Array1D<double> &errbars, Array1D<double> &basis,
+                Array1D<double> &alpha, Array1D<double> &lambda) ;
+
 
 
 #endif // BCS_H
