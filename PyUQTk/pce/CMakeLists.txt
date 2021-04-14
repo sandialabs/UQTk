@@ -36,4 +36,4 @@ else()
 endif()
 
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/pce.py DESTINATION PyUQTk)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/_pce.cpython-37m-darwin.so DESTINATION PyUQTk)

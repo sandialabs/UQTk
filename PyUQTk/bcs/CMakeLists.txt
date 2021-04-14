@@ -16,5 +16,5 @@ TARGET_LINK_LIBRARIES(_bcs PUBLIC uqtk)
 
 
 INSTALL(TARGETS _bcs DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/bcs/bcs.py
+INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/bcs/_bcs.cpython-37m-darwin.so
 	      DESTINATION PyUQTk)
