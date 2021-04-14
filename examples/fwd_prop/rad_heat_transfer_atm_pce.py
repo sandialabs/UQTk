@@ -53,20 +53,20 @@ try:
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import PyUQTk.quad as uqtkquad
+    import PyUQTk._quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import PyUQTk.pce as uqtkpce
+    import PyUQTk._pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import PyUQTk.tools as uqtktools
+    import PyUQTk._tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
 
 try:
-    import PyUQTk.PyPCE.pce_tools as pce_tools
+    import PyUQTk.pce_tools as pce_tools
 except ImportError:
     print("PyUQTk pce_tools module not found")
 

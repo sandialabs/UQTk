@@ -46,19 +46,19 @@ except ImportError:
     print("Scipy optimize module could not be found")
 
 try:
-    import PyUQTk.uqtkarray as uqtkarray
+    import PyUQTk.pyuqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import PyUQTk.quad as uqtkquad
+    import PyUQTk._quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import PyUQTk.pce as uqtkpce
+    import PyUQTk._pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import PyUQTk.tools as uqtktools
+    import PyUQTk._tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
 #################################################################

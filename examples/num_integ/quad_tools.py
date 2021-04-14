@@ -32,8 +32,8 @@ except ImportError:
     print("Need numpy")
 
 try:
-    import PyUQTk.uqtkarray as uqtkarray
-    import PyUQTk.quad as uqtkquad
+    import PyUQTk.pyuqtkarray as uqtkarray
+    import PyUQTk._quad as uqtkquad
     from PyUQTk.utils.func import *
 except ImportError:
     print("PyUQTk array and quad module not found")

@@ -45,8 +45,8 @@ except ImportError:
 	print("File with d_springs_tools not found")
 
 try:
-    import PyUQTk.PyPCE.adaptation_tools as adp
-    from PyUQTk.PyPCE import pce_tools
+    import PyUQTk.adaptation_tools as adp
+    from PyUQTk import pce_tools
 except ImportError:
     print("PyUQTk pce_tools or adaptation_tools module not found")
 ####################################################

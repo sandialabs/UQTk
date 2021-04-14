@@ -105,6 +105,7 @@ upit=1
 regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
+print("Passed here")
 
 # print mean squared prediction error
 mse = np.mean((ypred - ytest)**2)
@@ -113,7 +114,10 @@ print("\nMSE is {:.5g}".format(mse))
 print("NMSE is {:.5g}".format(nmse))
 
 # print sensitivities
-print("\nSensitivities are ", regmodel.getsens())
+try:
+	print("\nSensitivities are ", regmodel.getsens())
+except:
+	print("Issue with gensens()")
 
 prec = 1e-7
 assert mse < prec, "BCS failed to recover the coefficients to desired precision :-("
