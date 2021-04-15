@@ -8,4 +8,4 @@ SET(copy_FILES
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyuqtkarray_tools.py
                ${CMAKE_CURRENT_BINARY_DIR}/pyuqtkarray_tools.py COPYONLY)
 
-INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarrray_tools)
+INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarray_tools)
