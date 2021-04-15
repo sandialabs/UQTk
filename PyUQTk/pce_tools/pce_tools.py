@@ -180,7 +180,8 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
     # Create and fill UQTk array for PC coefficients
     p = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        p[ip] = pc_coeffs[ip]
+        #p[ip] = pc_coeffs[ip]
+        p.assign(ip,pc_coeffs[ip])
 
     #create UQTk array to store outputs in
     samples = uqtkarray.dblArray1D(n_samples,0.0)
