@@ -39,6 +39,7 @@ from PyUQTk.utils.func import *
 from quad_tools import *
 import matplotlib.pyplot as plt
 import numpy as np
+sys.path.append('../../PyUQTk/pyuqtkarray/')
 ####################################################################
 
 #check which python version, handle input differently for 2 vs 3
@@ -53,7 +54,7 @@ else:
 if python3:
     model= input("Please enter desired model from choices:\ngenz_osc\ngenz_exp\ngenz_cont\ngenz_gaus\
         \ngenz_cpeak\ngenz_ppeak\n\n")
-else: 
+else:
     model= raw_input("Please enter desired model from choices:\ngenz_osc\ngenz_exp\ngenz_cont\ngenz_gaus\
         \ngenz_cpeak\ngenz_ppeak\n\n")
 #Check that model selected is one listed

@@ -26,17 +26,23 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+
 try:
     from numpy import *
 except ImportError:
     print("Need numpy")
 
-try:
-    import PyUQTk.pyuqtkarray as uqtkarray
-    import PyUQTk._quad as uqtkquad
-    from PyUQTk.utils.func import *
-except ImportError:
-    print("PyUQTk array and quad module not found")
+sys.path.append('../../PyUQTk/pyuqtkarray/')
+sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
+sys.path.append('../../PyUQTk/quad/')
+
+#try:
+import pyuqtkarray as uqtkarray
+import _quad as uqtkquad
+from PyUQTk.utils.func import *
+#except ImportError:
+    #print("PyUQTk array and quad module not found")
 
 
 from math import *
