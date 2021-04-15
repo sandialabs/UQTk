@@ -40,12 +40,14 @@ except ImportError:
     print("Scipy stats module not found")
 
 sys.path.append("../../PyUQTk/pyuqtkarray")
+sys.path.append("../../PyUQTk/pyuqtkarray_tools")
 sys.path.append("../../PyUQTk/quad")
 sys.path.append("../../PyUQTk/pce")
 sys.path.append("../../PyUQTk/tools")
 
 try:
     import pyuqtkarray as uqtkarray
+    import pyuqtkarray_tools as uqtkarray_tools
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
@@ -120,7 +122,9 @@ def EvaluatePCE(pc_model,pc_coeffs,germ_samples):
 
     # Put PC germ samples in a UQTk array
     std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
+    std_samples_uqtk = uqtkarray_tools.numpy2uqtk(np.asfortranarray(germ_samples))
+    #uqtkarray.setnpdblArray(std_samples_uqtk,np.asfortranarray(germ_samples))
+    #std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
 
     # Numpy array to store all RVs evaluated from sampled PCEs
     rvs_sampled = np.zeros(n_test_samples)
@@ -129,7 +133,8 @@ def EvaluatePCE(pc_model,pc_coeffs,germ_samples):
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        c_k_1d_uqtk[ip] = pc_coeffs[ip]
+        c_k_1d_uqtk.assign(ip,pc_coeffs[ip])
+        #c_k_1d_uqtk[ip] = pc_coeffs[ip]
 
     # Create UQTk array to store outputs in
     rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)

@@ -46,6 +46,11 @@ except ImportError:
 
 sys.path.append("../../PyUQTk/adaptation_tools")
 sys.path.append("../../PyUQTk/pce_tools")
+sys.path.append("../../PyUQTk/pyuqtkarray")
+sys.path.append("../../PyUQTk/pyuqtkarray_tools")
+sys.path.append("../../PyUQTk/quad")
+sys.path.append("../../PyUQTk/pce")
+sys.path.append("../../PyUQTk/tools")
 
 #try:
 import adaptation_tools as adp
@@ -53,10 +58,7 @@ import pce_tools
 #except ImportError:
     #print("PyUQTk pce_tools or adaptation_tools module not found")
 
-sys.path.append("../../PyUQTk/pyuqtkarray")
-sys.path.append("../../PyUQTk/quad")
-sys.path.append("../../PyUQTk/pce")
-sys.path.append("../../PyUQTk/tools")
+
 
 try:
     import pyuqtkarray as uqtkarray
@@ -287,9 +289,9 @@ figname = 'Coefficients_in_xi_space_'+str(s0)+'d'+str(ndim)+'d.pdf'
 # Generate germ samples for KDE
 germ_samples3=np.random.normal(0,1, (n_MC,s))
 # Evaluate the PCE at the germ samples
-pce_evals3=EvaluatePCE(pc_model3,c_k3,germ_samples3)
+pce_evals3=d_springs_tools.EvaluatePCE(pc_model3,c_k3,germ_samples3)
 #Peform kernel density estimation
-xpts_pce3, PDF_data_pce3= KDE(pce_evals3)
+xpts_pce3, PDF_data_pce3= d_springs_tools.KDE(pce_evals3)
 
 # Print statements to indicate number of samples used
 print("\nMonte Carlo sampling used %s points" %(n_MC))
