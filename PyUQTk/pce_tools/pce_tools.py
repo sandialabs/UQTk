@@ -32,6 +32,7 @@ sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
 sys.path.append('../pce_tools/')
+sys.path.append('..')
 
 # Import Modules
 try:
@@ -44,7 +45,7 @@ except ImportError:
     import PyUQTk.pyuqtkarray as uqtkarray
     import PyUQTk._quad as uqtkquad
     import PyUQTk._pce as uqtkpce
-    import PyUQTk.tools as uqtktools
+    import PyUQTk._tools as uqtktools
 except ImportError:
     print("PyUQTk array, quad, pce, or tools modules not found")
 

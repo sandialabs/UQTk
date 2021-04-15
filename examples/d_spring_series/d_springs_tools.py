@@ -27,6 +27,7 @@
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 import math
+import sys
 
 try:
 	import numpy as np
@@ -38,11 +39,13 @@ try:
 except ImportError:
 	print("Scipy stats module not found")
 
+sys.path.append("../../PyUQTk")
+
 try:
-	import PyUQTk.pyuqtkarray as uqtkarray
-	import PyUQTk._quad as uqtkquad
-	import PyUQTk._pce as uqtkpce
-	import PyUQTk._tools as uqtktools
+	import pyuqtkarray as uqtkarray
+	import _quad as uqtkquad
+	import _pce as uqtkpce
+	import _tools as uqtktools
 except ImportError:
 	print("PyUQTk array, quad, PCE, or tools module not found")
 

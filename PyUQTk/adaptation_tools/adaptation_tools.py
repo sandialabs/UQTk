@@ -32,6 +32,7 @@ sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
 sys.path.append('../pce_tools/')
+sys.path.append('..')
 
 try:
     import pyuqtkarray as uqtkarray
