@@ -37,16 +37,16 @@ sys.path.append('..')
 try:
     import pyuqtkarray as uqtkarray
     import pyuqtkarray_tools as uqtkarray_tools
-    import _quad as uqtkquad
-    import _pce as uqtkpce
-    import _tools as uqtktools
+    import quad as uqtkquad
+    import pce as uqtkpce
+    import tools as uqtktools
     import pce_tools
 except ImportError:
-    import PyUQTk.uqtkarray as uqtkarray
+    import PyUQTk.pyuqtkarray as uqtkarray
     import PyUQTk.quad as uqtkquad
     import PyUQTk.pce as uqtkpce
     import PyUQTk.tools as uqtktools
-    from PyUQTk.PyPCE import pce_tools
+    import PyUQTk.pce_tools
 except ImportError:
     print("PyUQTk array, quad, pce, tools or pce_tools modules not found")
 

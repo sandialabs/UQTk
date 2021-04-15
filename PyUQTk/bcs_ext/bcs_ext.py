@@ -36,10 +36,10 @@ sys.path.append('../bcs')
 import numpy as np
 import matplotlib.pyplot as mpl
 import pyuqtkarray as uqtkarray
-import _pce as uqtkpce
-import _tools as uqtktools
+import pce as uqtkpce
+import tools as uqtktools
 from pyuqtkarray_tools import uqtk2numpy, numpy2uqtk
-import _bcs as bcs
+import bcs as bcs
 # BCS already added to path in compilation and install
 
 # cross validation splitting
