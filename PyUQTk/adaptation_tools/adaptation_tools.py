@@ -37,9 +37,9 @@ sys.path.append('..')
 try:
     import pyuqtkarray as uqtkarray
     import pyuqtkarray_tools as uqtkarray_tools
-    import quad as uqtkquad
-    import pce as uqtkpce
-    import tools as uqtktools
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
     import pce_tools
 except ImportError:
     import PyUQTk.pyuqtkarray as uqtkarray
@@ -62,7 +62,7 @@ def gauss_adaptation(c_k, ndim, method = 0):
            c_k: N0 dimensional numpy array of first order coefficients,
                 where N0 is the # of pc terms of 1 dimensional expansion
           ndim: dimension of the problem
-	    method: The method to compute the isometry (Rotation matrix), from set {0,1,2,3}. Returns isometry.
+        method: The method to compute the isometry (Rotation matrix), from set {0,1,2,3}. Returns isometry.
             0 : (default) By Gram-Schmidt procedure on matrix A with Gaussian coeffs (normalized) at its first row,
                 and ones along diagonal zeros elsewhere for other rows.
             1 : By orthogonal decomposition of a * a.T, where a contains Gaussian coeffs
