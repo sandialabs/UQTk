@@ -12,6 +12,12 @@ include_directories(../../cpp/lib/kle) # kle directory
 pybind11_add_module(_kle PyKle.cpp)
 TARGET_LINK_LIBRARIES(_kle PUBLIC uqtk)
 
-INSTALL(TARGETS _kle DESTINATION PyUQTk/)
+SET(copy_FILES
+  __init__.py
+  )
+
+INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/kle)
+
+INSTALL(TARGETS _kle DESTINATION PyUQTk/kle)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/kle/_kle.cpython-37m-darwin.so
-	      DESTINATION PyUQTk)
+	      DESTINATION PyUQTk/kle)

@@ -27,43 +27,43 @@
 #=====================================================================================
 # swig interface modules (only compiled if PyUQTK=On)
 try:
-    from .pyuqtkarray import pyuqtkarray
-    from .pyuqtkarray_tools import pyuqtkarray_tools
+    from pyuqtkarray import *
+    from pyuqtkarray_tools import *
 except ImportError:
     print('PyUQTk SWIG array interface not created.')
 
 try:
-    from .quad import _quad as quad
+    from quad import *
 except ImportError:
     print('PyUQTk SWIG quad interface not created.')
 
 try:
-    from .tools import _tools
+    from tools import *
 except ImportError:
-	print('PyUQTk SWIG tools interface not created.')
+    print('PyUQTk SWIG tools interface not created.')
 
 try:
-    from .kle import _kle
+    from kle import *
 except ImportError:
-	print('PyUQTk SWIG kle interface not created.')
+    print('PyUQTk SWIG kle interface not created.')
 
 try:
-    from .pce import _pce
-    from .adaptation_tools import adaptation_tools
-    from .pce_tools import pce_tools
+    from pce import *
+    from adaptation_tools import *
+    from pce_tools import *
 except ImportError:
-	print('PyUQTk SWIG pce interface and PyPCE module not available.')
+    print('PyUQTk SWIG pce interface and PyPCE module not available.')
 
 try:
-    from .bcs import _bcs
-    from .bcs_ext import bcs_ext
+    from bcs import *
+    from bcs_ext import *
 except ImportError:
-	print('PyUQTk SWIG bcs interface not created.')
+    print('PyUQTk SWIG bcs interface not created.')
 
 try:
     from . import mcmc
 except ImportError:
-	print('PyUQTk SWIG mcmc interface not created.')
+    print('PyUQTk SWIG mcmc interface not created.')
 
 # pure python tools (always included)
 try:
@@ -71,7 +71,7 @@ try:
     from . import plotting
     from . import sens
 except:
-	print('Scipy and/or matplotlib may need to be installed')
+    print('Scipy and/or matplotlib may need to be installed')
 
 
 from . import utils
