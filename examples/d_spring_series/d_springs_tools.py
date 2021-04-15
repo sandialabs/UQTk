@@ -30,43 +30,46 @@ import math
 import sys
 
 try:
-	import numpy as np
+    import numpy as np
 except ImportError:
-	print("Numpy module not found")
+    print("Numpy module not found")
 
 try:
-	from scipy import stats
+    from scipy import stats
 except ImportError:
-	print("Scipy stats module not found")
+    print("Scipy stats module not found")
 
-sys.path.append("../../PyUQTk")
+sys.path.append("../../PyUQTk/pyuqtkarray")
+sys.path.append("../../PyUQTk/quad")
+sys.path.append("../../PyUQTk/pce")
+sys.path.append("../../PyUQTk/tools")
 
 try:
-	import pyuqtkarray as uqtkarray
-	import _quad as uqtkquad
-	import _pce as uqtkpce
-	import _tools as uqtktools
+    import pyuqtkarray as uqtkarray
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
 except ImportError:
-	print("PyUQTk array, quad, PCE, or tools module not found")
+    print("PyUQTk array, quad, PCE, or tools module not found")
 
 #################################################################
 
 def KDE(fcn_evals):
-	"""
-	Performs kernel density estimation
-	Input:
-		fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
-	Output:
-		xpts_pce: numpy array of points at which the PDF is estimated.
-		PDF_data_pce: numpy array of estimated PDF values.
-	"""
-	# Perform KDE on fcn_evals
-	kern_pce=stats.kde.gaussian_kde(fcn_evals)
-	# Generate points at which to evaluate the PDF
-	xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
-	# Evaluate the estimated PDF at these points
-	PDF_data=kern_pce(xpts)
-	return xpts, PDF_data
+    """
+    Performs kernel density estimation
+    Input:
+        fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
+    Output:
+        xpts_pce: numpy array of points at which the PDF is estimated.
+        PDF_data_pce: numpy array of estimated PDF values.
+    """
+    # Perform KDE on fcn_evals
+    kern_pce=stats.kde.gaussian_kde(fcn_evals)
+    # Generate points at which to evaluate the PDF
+    xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
+    # Evaluate the estimated PDF at these points
+    PDF_data=kern_pce(xpts)
+    return xpts, PDF_data
 
 def fwd_model(xx, a, b, main_verbose=0):
     '''

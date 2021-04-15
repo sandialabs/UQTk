@@ -27,72 +27,75 @@
 #=====================================================================================
 
 import numpy as np
+import sys
+
+sys.path.append('../pyuqtkarray/')
 
 try:
-	import pyuqtkarray
+    import pyuqtkarray
 except ImportError:
-	print("PyUQTk array module not found")
-	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+    print("PyUQTk array module not found")
+    print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
 
 def uqtk2numpy(x):
-	if x.type() == 'int':
-		s = x.shape()
-		imin = np.argmin(s)
-		if len(s) == 1:
-			n = s[0]
-			y = np.zeros(n,dtype='int64')
-			y = pyuqtkarray.getnpintArray(x)
-		if len(s) == 2 and np.amin(s) > 1:
-			#n = s[0]
-			#m = s[1]
-			#z = np.zeros((n,m),dtype='int64')
-			#z = pyuqtkarray.getnpintArray(x)
-			#y = fixer(z)
-			list = pyuqtkarray.getnpintArray(x)
-			m = x.XSize();
-			n = x.YSize();
-			y = np.full((m,n),0,dtype=int)
-			counter = 0
-			for i in range(m):
-				for j in range(n):
-					y[i,j]=list[counter]
-					counter = counter + 1
-		if len(s) == 2 and np.amin(s) == 1:
-			y = np.array(x.flatten())
-			y = y[...,None]
-		return y.copy()
-	else:
-		s = x.shape()
-		imin = np.argmin(s)
-		if len(s) == 1:
-			n = s[0]
-			y = np.zeros(n)
-			y = pyuqtkarray.getnpdblArray(x)
-		if len(s) == 2 and np.amin(s) > 1:
-			list = pyuqtkarray.getnpdblArray(x)
-			m = x.XSize();
-			n = x.YSize();
-			y = np.full((m,n),0,dtype=float)
-			counter = 0
-			for i in range(m):
-				for j in range(n):
-					y[i,j]=list[counter]
-					counter = counter + 1
-		if len(s) == 2 and np.amin(s) == 1:
-			y = np.array(x.flatten())
-			y = y[...,None]
-		return y.copy()
+    if x.type() == 'int':
+        s = x.shape()
+        imin = np.argmin(s)
+        if len(s) == 1:
+            n = s[0]
+            y = np.zeros(n,dtype='int64')
+            y = pyuqtkarray.getnpintArray(x)
+        if len(s) == 2 and np.amin(s) > 1:
+            #n = s[0]
+            #m = s[1]
+            #z = np.zeros((n,m),dtype='int64')
+            #z = pyuqtkarray.getnpintArray(x)
+            #y = fixer(z)
+            list = pyuqtkarray.getnpintArray(x)
+            m = x.XSize();
+            n = x.YSize();
+            y = np.full((m,n),0,dtype=int)
+            counter = 0
+            for i in range(m):
+                for j in range(n):
+                    y[i,j]=list[counter]
+                    counter = counter + 1
+        if len(s) == 2 and np.amin(s) == 1:
+            y = np.array(x.flatten())
+            y = y[...,None]
+        return y.copy()
+    else:
+        s = x.shape()
+        imin = np.argmin(s)
+        if len(s) == 1:
+            n = s[0]
+            y = np.zeros(n)
+            y = pyuqtkarray.getnpdblArray(x)
+        if len(s) == 2 and np.amin(s) > 1:
+            list = pyuqtkarray.getnpdblArray(x)
+            m = x.XSize();
+            n = x.YSize();
+            y = np.full((m,n),0,dtype=float)
+            counter = 0
+            for i in range(m):
+                for j in range(n):
+                    y[i,j]=list[counter]
+                    counter = counter + 1
+        if len(s) == 2 and np.amin(s) == 1:
+            y = np.array(x.flatten())
+            y = y[...,None]
+        return y.copy()
 
 def numpy2uqtk(y):
-	s = np.shape(y)
-	if len(s) == 1:
-		n = s[0]
-		x = pyuqtkarray.dblArray1D(n)
-		x.setnpdblArray(y,n)
-	if len(s) == 2:
-		n = s[0]
-		m = s[1]
-		x = pyuqtkarray.dblArray2D(n,m)
-	#x.setnpdblArray(np.asfortranarray(y.copy()))
-		pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
-	return x
+    s = np.shape(y)
+    if len(s) == 1:
+        n = s[0]
+        x = pyuqtkarray.dblArray1D(n)
+        x.setnpdblArray(y,n)
+    if len(s) == 2:
+        n = s[0]
+        m = s[1]
+        x = pyuqtkarray.dblArray2D(n,m)
+    #x.setnpdblArray(np.asfortranarray(y.copy()))
+        pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
+    return x

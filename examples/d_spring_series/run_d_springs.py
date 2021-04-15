@@ -30,28 +30,41 @@ import sys
 import math
 
 try:
-	import numpy as np
+    import numpy as np
 except ImportError:
-	print("Numpy module not found")
+    print("Numpy module not found")
 
 try:
-	import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
 except ImportError:
-	print("Matplotlib not found")
+    print("Matplotlib not found")
 
 try:
-	from d_springs_tools import *
+    import d_springs_tools
 except ImportError:
-	print("File with d_springs_tools not found")
- 
+    print("File with d_springs_tools not found")
+
 sys.path.append("../../PyUQTk/adaptation_tools")
 sys.path.append("../../PyUQTk/pce_tools")
 
+#try:
+import adaptation_tools as adp
+import pce_tools
+#except ImportError:
+    #print("PyUQTk pce_tools or adaptation_tools module not found")
+
+sys.path.append("../../PyUQTk/pyuqtkarray")
+sys.path.append("../../PyUQTk/quad")
+sys.path.append("../../PyUQTk/pce")
+sys.path.append("../../PyUQTk/tools")
+
 try:
-    import adaptation_tools as adp
-    import pce_tools
+    import pyuqtkarray as uqtkarray
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
 except ImportError:
-    print("PyUQTk pce_tools or adaptation_tools module not found")
+    print("PyUQTk array, quad, PCE, or tools module not found")
 ####################################################
 
 def forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
@@ -75,7 +88,7 @@ def forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
     xx[:,5] = x6 + qdpts_xi[:,5]*std_x6
     xx[:,6] = x7 + qdpts_xi[:,6]*std_x7
     # evaluate QoI of the input parameters
-    Q_evals = fwd_model(xx, a, b, main_verbose)
+    Q_evals = d_springs_tools.fwd_model(xx, a, b, main_verbose)
     c_k = pce_tools.UQTkGalerkinProjection(pc_model,Q_evals)
     return pc_model, c_k, totquat
 
@@ -130,8 +143,8 @@ xx[:,3] = np.random.normal(x4, std_x4, n_MC)
 xx[:,4] = np.random.normal(x5, std_x5, n_MC)
 xx[:,5] = np.random.normal(x6, std_x6, n_MC)
 xx[:,6] = np.random.normal(x7, std_x7, n_MC)
-Q_evals = fwd_model(xx, a, b, main_verbose)
-xpts_MC, PDF_data_MC= KDE(Q_evals)
+Q_evals = d_springs_tools.fwd_model(xx, a, b, main_verbose)
+xpts_MC, PDF_data_MC= d_springs_tools.KDE(Q_evals)
 
 
 ##################################################################
@@ -148,9 +161,9 @@ pc_model2, c_k2, totquat2 = forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
 # Generate germ samples
 germ_samples2=np.random.normal(0,1, (n_MC,ndim))
 # Evaluate the PCE at the germ samples
-pce_evals2=EvaluatePCE(pc_model2,c_k2,germ_samples2)
+pce_evals2=d_springs_tools.EvaluatePCE(pc_model2,c_k2,germ_samples2)
 #Peform kernel density estimation
-xpts_pce2, PDF_data_pce2= KDE(pce_evals2)
+xpts_pce2, PDF_data_pce2= d_springs_tools.KDE(pce_evals2)
 
 ###################################################################
 ##### Forward Propagation using Adaptative PCEs ###################
@@ -165,7 +178,7 @@ totquat_adapt = 0
 R0 = np.eye(ndim)
 pc_model0, c_k0, totquat0 = forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
     std_x1, std_x2, std_x3, std_x4, std_x5, std_x6, std_x7, a, b, \
-	nord0, ndim, pc_type, param0, R0, main_verbose, sf="sparse", pc_alpha=0.0, pc_beta=1.0)
+    nord0, ndim, pc_type, param0, R0, main_verbose, sf="sparse", pc_alpha=0.0, pc_beta=1.0)
 # mean value correction using the known 0 order coefficient, which is obtained from first order PCE
 coeff0 = c_k0[0]
 # Obtain the rotation matrix
@@ -185,7 +198,7 @@ while not converge:
     if s==1:
         pc_model3, c_k3, totquat3 = forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
             std_x1, std_x2, std_x3, std_x4, std_x5, std_x6, std_x7, a, b, \
-	        nord, s, pc_type,param, R, main_verbose, sf="full", pc_alpha=0.0, pc_beta=1.0)
+            nord, s, pc_type,param, R, main_verbose, sf="full", pc_alpha=0.0, pc_beta=1.0)
         # mean value correction
         c_k3[0] = coeff0
         # obtain norm of coefficients in eta space
@@ -195,7 +208,7 @@ while not converge:
     else:
         pc_model3, c_k3, totquat3 = forward_propagation(x1, x2, x3, x4, x5, x6, x7, \
             std_x1, std_x2, std_x3, std_x4, std_x5, std_x6, std_x7, a, b, \
-	        nord, s, pc_type,param, R, main_verbose, sf="sparse", pc_alpha=0.0, pc_beta=1.0)
+            nord, s, pc_type,param, R, main_verbose, sf="sparse", pc_alpha=0.0, pc_beta=1.0)
         totquat_adapt += totquat3
         # mean value correction
         c_k3[0] = coeff0
