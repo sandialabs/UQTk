@@ -75,6 +75,7 @@ def generate_qw(ndim,param,sp='full',type='LU'):
     # get quad points
     x_np = zeros((n,ndim))
     x_np = uqtkarray_tools.uqtk2numpy(x)
+    x_np = x_np.transpose()
     #x.getnpdblArray(x_np)
 
     # get quad weights

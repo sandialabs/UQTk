@@ -29,6 +29,10 @@
 import sys
 import os
 
+sys.path.append('../../PyUQTk/pyuqtkarray/')
+sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
+sys.path.append('../../PyUQTk/quad/')
+
 try:
     from numpy import *
     from matplotlib.pyplot import *
