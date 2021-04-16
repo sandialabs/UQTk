@@ -39,6 +39,7 @@ sys.path.append('../../PyUQTk/quad/')
 
 #try:
 import pyuqtkarray as uqtkarray
+import pyuqtkarray_tools as uqtkarray_tools
 import _quad as uqtkquad
 from PyUQTk.utils.func import *
 #except ImportError:
@@ -52,6 +53,8 @@ import numpy as np
 #####################################################
 
 def generate_qw(ndim,param,sp='full',type='LU'):
+
+    import pyuqtkarray as uqtkarray
 
     # get quad points and weights
     x = uqtkarray.dblArray2D()
@@ -73,10 +76,13 @@ def generate_qw(ndim,param,sp='full',type='LU'):
 
     # get quad points
     x_np = zeros((n,ndim))
-    x.getnpdblArray(x_np)
+    x_np = uqtkarray_tools.uqtk2numpy(x)
+    #x.getnpdblArray(x_np)
 
     # get quad weights
     w_np = zeros(n)
+    w_np = uqtkarray_tools.uqtk2numpy(w)
+
     w.getnpdblArray(w_np)
     xpts=array((x_np))
 

@@ -29,24 +29,27 @@
 import sys
 import os
 
+sys.path.append('../../PyUQTk/pyuqtkarray/')
+sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
+
 try:
-	from numpy import *
-	from matplotlib.pyplot import *
+    from numpy import *
+    from matplotlib.pyplot import *
 except ImportError:
-	print("Need numpy and matplotlib")
+    print("Need numpy and matplotlib")
 
 from PyUQTk.utils.func import *
 from quad_tools import *
 import matplotlib.pyplot as plt
 import numpy as np
-sys.path.append('../../PyUQTk/pyuqtkarray/')
+
 ####################################################################
 
 #check which python version, handle input differently for 2 vs 3
 if sys.version_info[0] < 3:
-	python3 = False
+    python3 = False
 else:
-	python3 = True
+    python3 = True
 
 ###### User Input #######
 
@@ -111,20 +114,20 @@ q_errors=[]
 
 #Loop though different values for number of quad points per dimension
 for quad_param in num_points:
-	#Generate quadrature points
-	xpts,wghts=generate_qw(ndim,quad_param)
+    #Generate quadrature points
+    xpts,wghts=generate_qw(ndim,quad_param)
 
-	#Evaluate the function
-	func_params=ones(ndim+1) #Genz parameters
-	ypts=func(xpts,model,func_params)
+    #Evaluate the function
+    func_params=ones(ndim+1) #Genz parameters
+    ypts=func(xpts,model,func_params)
 
-	#Quadrature integration
-	integ=dot(ypts,wghts)
-	#Evaluate its exact integral
-	integ_ex=integ_exact(model,func_params)
-	#Calculate error in quad integration and add to list
-	q_error=abs(integ-integ_ex)
-	q_errors.append(q_error)
+    #Quadrature integration
+    integ=dot(ypts,wghts)
+    #Evaluate its exact integral
+    integ_ex=integ_exact(model,func_params)
+    #Calculate error in quad integration and add to list
+    q_error=abs(integ-integ_ex)
+    q_errors.append(q_error)
 
 
 ###### Monte Carlo Integration ######
@@ -133,9 +136,9 @@ for quad_param in num_points:
 mc_errors=[]
 #Let number of sampling points vary
 for pts in mc_pts:
-	#Calculate average error in 10 MC integrations and add to list
-	error=find_error(pts,ndim,model,integ_ex, func_params)
-	mc_errors.append(error)
+    #Calculate average error in 10 MC integrations and add to list
+    error=find_error(pts,ndim,model,integ_ex, func_params)
+    mc_errors.append(error)
 
 ###### Create Graph ######
 #Create figure
