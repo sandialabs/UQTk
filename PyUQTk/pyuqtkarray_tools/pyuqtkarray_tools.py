@@ -29,7 +29,7 @@
 import numpy as np
 import sys
 
-sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray')
 
 try:
     import pyuqtkarray

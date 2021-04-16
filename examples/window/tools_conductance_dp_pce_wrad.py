@@ -47,6 +47,7 @@ except ImportError:
 
 import sys
 sys.path.append('../../PyUQTk/pyuqtkarray/')
+sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
 sys.path.append('../../PyUQTk/quad/')
 sys.path.append('../../PyUQTk/pce/')
 sys.path.append('../../PyUQTk/tools/')
@@ -55,6 +56,10 @@ try:
     import pyuqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
+try:
+    import pyuqtkarray_tools as uqtkarray_tools
+except ImportError:
+    print("PyUQTk array_tools module not found")
 try:
     import _quad as uqtkquad
 except ImportError:
@@ -154,7 +159,8 @@ def GalerkinProjection(pc_model,f_evaluations):
     # UQTk array for function evaluations at quadrature points for that variable
     f_uqtk = uqtkarray.dblArray1D(nqp,0.0)
     for ipt in range(nqp):
-        f_uqtk[ipt]=f_evaluations[ipt]
+        #f_uqtk[ipt]=f_evaluations[ipt]
+        f_uqtk.assign(ipt,f_evaluations[ipt])
 
     # Galerkin Projection
     pc_model.GalerkProjection(f_uqtk,c_k_1d_uqtk)
@@ -189,7 +195,8 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
 
     # Put PC germ samples in a UQTk array
     std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
+    std_samples_uqtk = uqtkarray_tools.numpy2uqtk(np.asfortranarray(germ_samples))
+    #std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
 
     # Numpy array to store all RVs evaluated from sampled PCEs
     rvs_sampled = np.zeros(n_test_samples)
@@ -198,7 +205,8 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        c_k_1d_uqtk[ip] = pc_coeffs[ip]
+        #c_k_1d_uqtk[ip] = pc_coeffs[ip]
+        c_k_1d_uqtk.assign(ip,pc_coeffs[ip])
 
     # Create UQTk array to store outputs in
     rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)
@@ -229,7 +237,8 @@ def get_quadpts(pc_model,ndim):
 
     # Convert quad points to a numpy array
     qdpts = np.zeros((totquat,ndim))
-    qdpts_uqtk.getnpdblArray(qdpts)
+    qdpts = uqtkarray_tools.uqtk2numpy(qdpts_uqtk)
+    #qdpts_uqtk.getnpdblArray(qdpts)
     return qdpts, totquat
 
 def fwd_model(Ti_samples,To_samples,Ts_samples,dw_samples,da_samples,kw_samples,ka_samples,hi_samples,ho_samples,mu_samples,rho_samples,beta_samples):

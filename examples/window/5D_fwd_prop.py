@@ -48,17 +48,22 @@ try:
     from scipy import stats
 except ImportError:
     print("Scipy stats module could not be found")
-    
+
 import sys
 sys.path.append('../../PyUQTk/pyuqtkarray/')
 sys.path.append('../../PyUQTk/quad/')
 sys.path.append('../../PyUQTk/pce/')
 sys.path.append('../../PyUQTk/tools/')
+sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
 
 try:
     import pyuqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
+try:
+    import pyuqtkarray_tools as uqtkarray
+except ImportError:
+    print("PyUQTk array_tools module not found")
 try:
     import _quad as uqtkquad
 except ImportError:
