@@ -45,7 +45,7 @@ def uqtk2numpy(x):
             n = s[0]
             y = np.zeros(n,dtype='int64')
             y = pyuqtkarray.getnpintArray(x)
-        if len(s) == 2 and np.amin(s) > 1:
+        if len(s) == 2:
             #n = s[0]
             #m = s[1]
             #z = np.zeros((n,m),dtype='int64')
@@ -60,9 +60,9 @@ def uqtk2numpy(x):
                 for j in range(n):
                     y[i,j]=list[counter]
                     counter = counter + 1
-        if len(s) == 2 and np.amin(s) == 1:
-            y = np.array(x.flatten())
-            y = y[...,None]
+#        if len(s) == 2 and np.amin(s) == 1:
+#            y = np.array(x.flatten())
+#            y = y[...,None]
         return y.copy()
     else:
         s = x.shape()
@@ -71,7 +71,7 @@ def uqtk2numpy(x):
             n = s[0]
             y = np.zeros(n)
             y = pyuqtkarray.getnpdblArray(x)
-        if len(s) == 2 and np.amin(s) > 1:
+        if len(s) == 2:
             list = pyuqtkarray.getnpdblArray(x)
             m = x.XSize();
             n = x.YSize();
@@ -81,9 +81,9 @@ def uqtk2numpy(x):
                 for j in range(n):
                     y[i,j]=list[counter]
                     counter = counter + 1
-        if len(s) == 2 and np.amin(s) == 1:
-            y = np.array(x.flatten())
-            y = y[...,None]
+#        if len(s) == 2 and np.amin(s) == 1:
+#            y = np.array(x.flatten())
+#            y = y[...,None]
         return y.copy()
 
 def numpy2uqtk(y):
