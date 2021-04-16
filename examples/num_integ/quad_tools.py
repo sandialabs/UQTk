@@ -54,8 +54,6 @@ import numpy as np
 
 def generate_qw(ndim,param,sp='full',type='LU'):
 
-    import pyuqtkarray as uqtkarray
-
     # get quad points and weights
     x = uqtkarray.dblArray2D()
     w = uqtkarray.dblArray1D()
