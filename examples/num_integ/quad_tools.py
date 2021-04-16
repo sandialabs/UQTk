@@ -62,7 +62,7 @@ def generate_qw(ndim,param,sp='full',type='LU'):
 
 
     #print 'Create an instance of Quad class'
-    q = uqtkquad.Quad(type,sp,ndim,param)
+    q = uqtkquad.Quad(type,sp,ndim,param,0.0,1.0)
 
     #print 'Now set and get the quadrature rule...'
     q.SetRule()
@@ -72,7 +72,7 @@ def generate_qw(ndim,param,sp='full',type='LU'):
     #print 'Displaying the quadrature points and weights:\n'
     #print x
     #print w
-    n = len(x)
+    n = x.XSize()
 
     # get quad points
     x_np = zeros((n,ndim))
@@ -83,7 +83,6 @@ def generate_qw(ndim,param,sp='full',type='LU'):
     w_np = zeros(n)
     w_np = uqtkarray_tools.uqtk2numpy(w)
 
-    w.getnpdblArray(w_np)
     xpts=array((x_np))
 
     return xpts,w_np
