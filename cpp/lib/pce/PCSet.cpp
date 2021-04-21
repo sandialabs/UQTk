@@ -2889,10 +2889,10 @@ void PCSet::ComputeMainSens(Array1D<double>& coef, Array1D<double>& mainsens)
     if (effdim(ipc)==1){
       // Add the variance contributions for the univariate terms
       for(int id=0;id<this->nDim_;id++){
-	if ( multiIndex_(ipc,id) != 0 ){
-	  mainsens(id)+=varfrac(ipc);
-	  break;
-	}
+      	if ( multiIndex_(ipc,id) != 0 ){
+      	  mainsens(id)+=varfrac(ipc);
+      	  break;
+      	}
       }
     }
   }
