@@ -6,3 +6,27 @@
 	path = dep/pybind11
 	url = https://github.com/pybind/pybind11
 	branch = stable
+[submodule "PyUQTk/bcs/pybind11"]
+	path = PyUQTk/bcs/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
+[submodule "PyUQTk/kle/pybind11"]
+	path = PyUQTk/kle/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
+[submodule "PyUQTk/pyuqtkarray/pybind11"]
+	path = PyUQTk/pyuqtkarray/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
+[submodule "PyUQTk/pce/pybind11"]
+	path = PyUQTk/pce/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
+[submodule "PyUQTk/quad/pybind11"]
+	path = PyUQTk/quad/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
+[submodule "PyUQTk/tools/pybind11"]
+	path = PyUQTk/tools/pybind11
+	url = https://github.com/pybind/pybind11
+	branch = stable
