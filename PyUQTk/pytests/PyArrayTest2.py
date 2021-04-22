@@ -30,16 +30,12 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 # include path to include PyUQTk
 import sys
 sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
 
 try:
 	import numpy as np
 except ImportError:
 	print("Need numpy to test PyUQTk")
-
-import os
-src = os.getenv('UQTK_SRC')
-
-sys.path.append(src + 'PyUQTk/pyuqtkarray_tools')
 
 try:
 	import pyuqtkarray

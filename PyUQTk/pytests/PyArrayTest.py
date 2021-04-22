@@ -33,6 +33,7 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 # python tests
 import sys
 sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
 
 # try to import numpy and matplotlib
 try:
@@ -40,11 +41,6 @@ try:
 	from matplotlib.pyplot import *
 except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
-
-import os
-src = os.getenv('UQTK_SRC')
-
-sys.path.append(src + 'PyUQTk/pyuqtkarray_tools')
 
 # try to import uqtk array library and
 # functions to convert between uqtk and numpy arrays
@@ -55,8 +51,6 @@ try:
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
-
-sys.path.append('/Users/lukeboll/Desktop/UQTk-SNL/PyUQTk/pyuqtkarray_tools')
 
 import unittest
 
