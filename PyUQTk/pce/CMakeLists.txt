@@ -1,10 +1,6 @@
 # Using Pybind to build the python module for PCE
 
-find_package(pybind11 REQUIRED)
-
-IF(NOT pybind11_FOUND)
-  add_subdirectory (../../dep/pybind11)
-endif()
+add_subdirectory(pybind11)
 
 #include source files
 INCLUDE_DIRECTORIES(../../cpp/lib/array/) # array classes, array input output, and array tools
