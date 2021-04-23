@@ -88,6 +88,8 @@ else()
   add_library(depuqtk ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
 endif()
 
-
+if(NOT pybind11_FOUND)
+  add_subdirectory(pybind11)
+endif()
 
 INSTALL(TARGETS depuqtk DESTINATION lib)

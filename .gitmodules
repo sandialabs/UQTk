@@ -30,3 +30,6 @@
 	path = PyUQTk/tools/pybind11
 	url = https://github.com/pybind/pybind11
 	branch = stable
+[submodule "dep/pybind11"]
+	path = dep/pybind11
+	url = https://github.com/pybind/pybind11

@@ -1,6 +1,10 @@
 # Using Pybind to build the python module
 
-add_subdirectory(pybind11)
+if(NOT pybind11_FOUND)
+  include_directories(../../dep/pybind11)
+else()
+  find_package(pybind11)
+endif()
 
 include_directories(../../cpp/lib/array) #array directory
 include_directories(../../cpp/lib/include) # include directory
