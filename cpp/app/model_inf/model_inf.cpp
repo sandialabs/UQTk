@@ -25,8 +25,8 @@
      Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
-/// \file model_inf.cpp 
-/// \author K. Sargsyan 2015 - 
+/// \file model_inf.cpp
+/// \author K. Sargsyan 2015 -
 /// \brief Command-line utility for model parameter inference
 
 #include <unistd.h>
@@ -56,7 +56,7 @@ using namespace std;
 
 
 /// default model type
-#define MODELTYPE "linear" //"exp", "exp_quad", "prop", "prop_quad", "pcx","pc", "pcs", linear", "bb", "heat_transfer1", "heat_transfer2", "exp_sketch" 
+#define MODELTYPE "linear" //"exp", "exp_quad", "prop", "prop_quad", "pcx","pc", "pcs", linear", "bb", "heat_transfer1", "heat_transfer2", "exp_sketch"
 /// default likelihood type
 #define LIKTYPE "classical" //"classical", "abc", "gausmarg", "marg", "mvn", "full", "koh"
 /// default likelihood parameter of type double
@@ -134,7 +134,7 @@ int usage(){
     printf("       : mindexpx.dat, pccfpx.dat (if model='pcx')\n");
     printf("       : mindexp.dat, pccf_all.dat (if model='pc')\n");
     printf("       : mindexp.*.dat, pccfp.*.dat (if model='pcs')\n");
-    printf("Output : chain.dat, pchain.dat, mapparam.dat, datavars.dat, parampccfs.dat\n"); 
+    printf("Output : chain.dat, pchain.dat, mapparam.dat, datavars.dat, parampccfs.dat\n");
     printf("         pmeans.dat, pvars.dat, fmeans.dat, fvars.dat\n");
     printf("       : pdens.dat and pdens_log.dat (if -q)\n");
     printf("================================================================================\n");
@@ -143,8 +143,8 @@ int usage(){
 }
 
 ///  Main program: Bayesian inference of a few standard function types
-int main (int argc, char *argv[]) 
-{   
+int main (int argc, char *argv[])
+{
     /// Set the defaults, where necessary
     const char* modeltype=MODELTYPE;
     const char* liktype=LIKTYPE;
@@ -278,8 +278,9 @@ int main (int argc, char *argv[])
 
 
     /// Read datafiles
-    Array2D<double> xdata,ydata;
+    Array2D<double> xdata;
     read_datafileVS(xdata,xfile);
+    Array1D<Array1D<double> > ydata;
     read_datafileVS(ydata,yfile);
     int nx=xdata.XSize();
 
@@ -355,7 +356,7 @@ int main (int argc, char *argv[])
         }
         else
         {
-            
+
             double datanoise = strtod(datanoise_input, (char **)NULL);
 
             if (datanoise<0.0){
@@ -422,18 +423,18 @@ int main (int argc, char *argv[])
     func_dict["exp"]             = Func_Exp;
     func_dict["exp_quad"]        = Func_ExpQuad;
     func_dict["const"]           = Func_Const;
-    func_dict["linear"]          = Func_Linear; 
+    func_dict["linear"]          = Func_Linear;
     func_dict["bb"]              = Func_BB;
-    func_dict["heat_transfer1"]  = Func_HT1; 
+    func_dict["heat_transfer1"]  = Func_HT1;
     func_dict["heat_transfer2"]  = Func_HT2;
     func_dict["frac_power"]      = Func_FracPower;
-    func_dict["exp_sketch"]      = Func_ExpSketch; 
+    func_dict["exp_sketch"]      = Func_ExpSketch;
     func_dict["inp"]             = Func_Inputs;
     func_dict["pcl"]             = Func_PCl;
-    func_dict["pcx"]             = Func_PCx; 
+    func_dict["pcx"]             = Func_PCx;
     func_dict["pc"]              = Func_PC;
     func_dict["pcs"]             = Func_PCs;
-    
+
 
     if (func_dict.count(modeltype)==0){
         cout << "Model type " << modeltype << " is not found. Exiting." << endl;
@@ -470,19 +471,19 @@ int main (int argc, char *argv[])
         likParam_dbl,likParam_int,
         pgrid, pchain, nburn, nstep,
         mapparam, datavar_map,
-        pmean_map,pvar_map, 
+        pmean_map,pvar_map,
         fmean_map,fvar_map,
         postave_datavar,
-        p_postave_mean,p_postave_var,p_postvar_mean, 
+        p_postave_mean,p_postave_var,p_postvar_mean,
         f_postsam_mean,f_postave_mean,f_postave_var,f_postvar_mean,
         paramPCcfs);
 
     /// Write the outputs
     if (!pflag){
         write_datafile(pchain,"pchain.dat");
-        write_datafile_1d(mapparam,"mapparam.dat");    
+        write_datafile_1d(mapparam,"mapparam.dat");
     }
-    
+
     array1Dto2D(p_postave_mean, pmeans);
     pmeans.insertCol(pmean_map,1);
     write_datafile(pmeans,"pmeans.dat");
@@ -498,14 +499,14 @@ int main (int argc, char *argv[])
     fvars.insertCol(f_postvar_mean,1);
     fvars.insertCol(fvar_map,2);
     write_datafile(fvars,"fvars.dat");
-    array1Dto2D(postave_datavar,datavars);    
+    array1Dto2D(postave_datavar,datavars);
     datavars.insertCol(datavar_map,1);
     write_datafile(datavars,"datavars.dat");
 
     write_datafile(f_postsam_mean,"fmeans_sams.dat");
     write_datafile(paramPCcfs,"parampccfs.dat");
 
-    
+
   return 0;
 }
 
