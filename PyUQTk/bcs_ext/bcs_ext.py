@@ -154,10 +154,11 @@ class bcsreg:
         self.__errbars_uqtk = uqtkarray.dblArray1D() # error bars for each weight
         self.__nextbasis_uqtk = uqtkarray.dblArray1D() # if adaptive
         self.__alpha_uqtk = uqtkarray.dblArray1D() # prior hyperparameter (1/gamma)
-        self.__lambda_p = uqtkarray.dblArray1D(1)
+        self.__lambda_p = uqtkarray.dblArray1D(1,l_init)
+        print(self.__lambda_p[0])
 
         #uqtktools.doublep_assign(self.__lambda_p,l_init)
-        self.__lambda_p.assign(0,l_init)
+        #self.__lambda_p.assign(0,l_init)
 
         self.__compiled = True
 
@@ -203,6 +204,7 @@ class bcsreg:
         else: self.__sigma2 = sigsq
         #uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
         self.__sigma2_p.assign(0,self.__sigma2)
+        print(self.__sigma2_p[0])
 
         self.__tol = tol
         self.__upit = upit
@@ -221,7 +223,7 @@ class bcsreg:
 
             # change to uqtkbcs.BCS if testing outside source
             bcs.BCS(self.__Phi_uqtk,self.__y_uqtk,self.__sigma2_p,self.__tol,self.__lambda_init,self.__adaptive,self.__optimal,self.__scale,self.__verbose,self.__weights_uqtk,self.__used_uqtk,self.__errbars_uqtk,self.__nextbasis_uqtk,self.__alpha_uqtk,self.__lambda_p)
-
+            print(self.__lambda_p[0])
             # add new mulitindex to newmindex
             uqtkarray.subMatrix_row_int(self.__mindex_uqtk,self.__used_uqtk,self.__newmindex_uqtk)
 
