@@ -52,7 +52,6 @@ echo "and that UQTk will be installed in $UQTK_INSTALL_DIR"
 
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_SUNDIALS_DIR=/Users/lukeboll/Desktop/sundials/sundials-5.7.0-install \
-      
       -DCMAKE_Fortran_COMPILER=/opt/local/bin/gfortran/ \
       -DCMAKE_C_COMPILER=/opt/local/bin/gcc/            \
       -DCMAKE_CXX_COMPILER=/opt/local/bin/g++/          \
