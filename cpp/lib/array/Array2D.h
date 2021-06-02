@@ -406,6 +406,11 @@ public:
       return "double";
     }
   }
+
+  // For python, allows the user to assign a value to a specific index (x,y)
+  void assign(const int x,const int y,const T val){
+    data_[ix + xsize_*iy] = val;
+  }
 };
 
 #endif /* ARRAY2D_H_SEEN */

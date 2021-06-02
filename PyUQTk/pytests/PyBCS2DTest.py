@@ -68,56 +68,77 @@ try:
 except ImportError:
     print("BCS Regression module not found")
 
-'''
-This example uses BCS to fit
+ck = uqtkarray.dblArray1D(10,0.0)
+mindex = uqtkarray.intArray2D(10,2)
 
-f(x,y) = 1 + x + .5(3y^2-1)
+ck.assign(0,0.666666666666664)
+ck.assign(1,1.600000000000499)
+ck.assign(2,1.000000000000289)
+ck.assign(5,-0.6666666666668039)
+ck.assign(6,0.4000000000008473)
 
-using 100 randomly generating training data points
-and 20 test data points. Sensitivity analysis is also
-performed post fitting.
+mindex.assign(0,0,0)
+mindex.assign(0,1,0)
+mindex.assign(1,0,1)
+mindex.assign(1,1,0)
+mindex.assign(2,0,0)
+mindex.assign(2,1,1)
+mindex.assign(3,0,2)
+mindex.assign(3,1,0)
+mindex.assign(4,0,1)
+mindex.assign(4,1,1)
+mindex.assign(5,0,0)
+mindex.assign(5,1,2)
+mindex.assign(6,0,3)
+mindex.assign(6,1,0)
+mindex.assign(7,0,2)
+mindex.assign(7,1,1)
+mindex.assign(8,0,1)
+mindex.assign(8,1,2)
+mindex.assign(9,0,0)
+mindex.assign(9,1,3)
 
-'''
+pcmodel = uqtkpce.PCSet("NISPnoq",mindex,"LEG")
 
-# set dimension
-ndim = 2
+q = uqtkquad.Quad("LU","sparse",2,5)
+x = uqtkarray.dblArray2D()
+w = uqtkarray.dblArray1D()
+q.SetRule()
+q.GetRule(x,w)
 
-# Create training data
-rn = np.random.RandomState(145)
-X = 2*rn.rand(100,ndim) - 1
-x1,x2 = X.T[0],X.T[1]
-f = lambda x1,x2: 1 + x1 + .5*(3*x2**2-1)
-y = f(x1,x2)
+y = dblArray1D(x.XSize(),0.0)
+pcmodel.EvalPCAtCustPoints(y,x,ck)
 
-# create test data
-Xtest = 2*rn.rand(20,ndim) - 1
-ytest = f(Xtest.T[0],Xtest.T[1])
-testdata = {'X': Xtest, 'y': ytest}
+Phi = uqtkarray.dblArray2D()
+pcmodel.EvalBasisAtCustPts(x,Phi)
 
-# BCS hyperparameter definitions
-sigsq=None
-pcorder = 2
-pctype = "LU"
-tol=1e-12
-upit=1
+sigma = 1e-8
+eta = 1e-12
+lambda_init = uqtkarray.dblArray1D()
+scale = 0.1
 
-# setup, git and predict bcs model
-regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
-err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
-ypred = regmodel.predict(Xtest)
-print("Passed here")
+weights = uqtkarray.dblArray1D()
+errbars = uqtkarray.dblArray1D()
+basis = uqtkarray.dblArray1D()
+alpha = uqtkarray.dblArray1D()
+used = uqtkarray.intArray1D()
+_lambda = 0.0
 
-# print mean squared prediction error
-mse = np.mean((ypred - ytest)**2)
-nmse = np.mean((ypred - ytest)**2)/np.mean(ytest)
-print("\nMSE is {:.5g}".format(mse))
-print("NMSE is {:.5g}".format(nmse))
+adaptive = 1
+optimal = 1
+verbose = 0
 
-# print sensitivities
-try:
-	print("\nSensitivities are ", regmodel.getsens())
-except:
-	print("Issue with gensens()")
+bcs.BCS(Phi,y,sigma,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
 
-prec = 1e-7
-assert mse < prec, "BCS failed to recover the coefficients to desired precision :-("
+uqtkarray.printarray(weights)
+uqtkarray.printarray(used)
+uqtkarray.printarray(errbars)
+uqtkarray.printarray(ck)
+
+assert used[0] == 1
+assert used[1] == 2
+assert used[2] == 0
+
+assert abs(weights[0] - 1.6) < 1e-8
+assert abs(weights[1] - 1) < 1e-8
+assert abs(weights[2] - float(2/3)) < 1e-8
