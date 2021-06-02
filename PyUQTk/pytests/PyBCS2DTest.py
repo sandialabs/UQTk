@@ -100,7 +100,7 @@ mindex.assign(9,1,3)
 
 pcmodel = uqtkpce.PCSet("NISPnoq",mindex,"LEG")
 
-q = uqtkquad.Quad("LU","sparse",2,5)
+q = uqtkquad.Quad("LU","sparse",2,5,0.0,1.0)
 x = uqtkarray.dblArray2D()
 w = uqtkarray.dblArray1D()
 q.SetRule()

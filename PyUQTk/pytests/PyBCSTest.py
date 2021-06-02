@@ -105,7 +105,6 @@ upit=1
 regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
-print("Passed here")
 
 # print mean squared prediction error
 mse = np.mean((ypred - ytest)**2)

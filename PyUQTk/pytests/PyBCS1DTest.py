@@ -78,7 +78,7 @@ except ImportError:
 nord = 8
 ndim = 1
 level = 16
-q = quad.Quad("LU","full",ndim,level)
+q = quad.Quad("LU","full",ndim,level,0.0,1.0)
 
 x = uqtkarray.dblArray2D()
 w = uqtkarray.dblArray1D()
