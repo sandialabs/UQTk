@@ -98,7 +98,7 @@ mindex.assign(8,1,2)
 mindex.assign(9,0,0)
 mindex.assign(9,1,3)
 
-pcmodel = uqtkpce.PCSet("NISPnoq",mindex,"LEG")
+pcmodel = uqtkpce.PCSet("NISPnoq",mindex,"LEG",0.0,1.0)
 
 q = uqtkquad.Quad("LU","sparse",2,5,0.0,1.0)
 x = uqtkarray.dblArray2D()

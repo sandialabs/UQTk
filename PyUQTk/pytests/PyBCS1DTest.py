@@ -86,12 +86,12 @@ index = uqtkarray.intArray2D()
 q.SetRule()
 q.GetRule(x,w,index)
 
-pcmodel = uqtkpce.PCSet("NISPnoq",nord,ndim,"LEG")
+pcmodel = uqtkpce.PCSet("NISPnoq",nord,ndim,"LEG",0.0,1.0)
 
 Phi = uqtkarray.dblArray2D()
 pcmodel.EvalBasisAtCustPts(x,Phi)
 
-y = dblArray1D(x.XSize(),0.0)
+y = uqtkarray.dblArray1D(x.XSize(),0.0)
 for i in range(x.XSize()):
 	value = 1.0/(1.0 + x.at(i,0)*x.at(i,0));
 	y.assign(i,value)
