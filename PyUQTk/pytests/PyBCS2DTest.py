@@ -38,6 +38,7 @@ sys.path.append('../tools/')
 sys.path.append('../pce/')
 sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../bcs_ext/')
+sys.path.append('../quad')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -55,6 +56,11 @@ try:
     import pyuqtkarray_tools
 except ImportError:
 	print("PyUQTk array module not found")
+
+try:
+    import _quad as uqtkquad
+except ImportError:
+	print("PyUQTk quad module not found")
 
 try:
     import _pce as uqtkpce
@@ -106,13 +112,13 @@ w = uqtkarray.dblArray1D()
 q.SetRule()
 q.GetRule(x,w)
 
-y = dblArray1D(x.XSize(),0.0)
+y = uqtkarray.dblArray1D(x.XSize(),0.0)
 pcmodel.EvalPCAtCustPoints(y,x,ck)
 
 Phi = uqtkarray.dblArray2D()
 pcmodel.EvalBasisAtCustPts(x,Phi)
 
-sigma = 1e-8
+sigma = uqtkarray.dblArray1D(1,1e-8)
 eta = 1e-12
 lambda_init = uqtkarray.dblArray1D()
 scale = 0.1
@@ -122,7 +128,7 @@ errbars = uqtkarray.dblArray1D()
 basis = uqtkarray.dblArray1D()
 alpha = uqtkarray.dblArray1D()
 used = uqtkarray.intArray1D()
-_lambda = 0.0
+_lambda = uqtkarray.dblArray1D(1,0.0)
 
 adaptive = 1
 optimal = 1
