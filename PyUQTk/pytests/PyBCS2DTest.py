@@ -128,7 +128,7 @@ adaptive = 1
 optimal = 1
 verbose = 0
 
-bcs.BCS(Phi,y,sigma,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
+bcs.BCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
 
 uqtkarray.printarray(weights)
 uqtkarray.printarray(used)
