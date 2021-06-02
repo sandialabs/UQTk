@@ -38,6 +38,7 @@ sys.path.append('../tools/')
 sys.path.append('../pce/')
 sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../bcs_ext/')
+sys.path.append('../quad')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -57,6 +58,11 @@ except ImportError:
 	print("PyUQTk array module not found")
 
 try:
+    import _quad as quad
+except ImportError:
+	print("PyUQTk quad module not found")
+
+try:
     import _pce as uqtkpce
     import _tools as uqtktools
 except ImportError:
@@ -68,56 +74,60 @@ try:
 except ImportError:
     print("BCS Regression module not found")
 
-'''
-This example uses BCS to fit
 
-f(x,y) = 1 + x + .5(3y^2-1)
+nord = 8
+ndim = 1
+level = 16
+q = quad.Quad("LU","full",ndim,level)
 
-using 100 randomly generating training data points
-and 20 test data points. Sensitivity analysis is also
-performed post fitting.
+x = uqtkarray.dblArray2D()
+w = uqtkarray.dblArray1D()
+index = uqtkarray.intArray2D()
+q.SetRule()
+q.GetRule(x,w,index)
 
-'''
+pcmodel = uqtkpce.PCSet("NISPnoq",nord,ndim,"LEG")
 
-# set dimension
-ndim = 2
+Phi = uqtkarray.dblArray2D()
+pcmodel.EvalBasisAtCustPts(x,Phi)
 
-# Create training data
-rn = np.random.RandomState(145)
-X = 2*rn.rand(100,ndim) - 1
-x1,x2 = X.T[0],X.T[1]
-f = lambda x1,x2: 1 + x1 + .5*(3*x2**2-1)
-y = f(x1,x2)
+y = dblArray1D(x.XSize(),0.0)
+for i in range(x.XSize()):
+	value = 1.0/(1.0 + x.at(i,0)*x.at(i,0));
+	y.assign(i,value)
 
-# create test data
-Xtest = 2*rn.rand(20,ndim) - 1
-ytest = f(Xtest.T[0],Xtest.T[1])
-testdata = {'X': Xtest, 'y': ytest}
+sigma = 1e-8
+eta = 1e-8
+lambda_init = uqtkarray.dblArray1D()
+scale = 0.1
 
-# BCS hyperparameter definitions
-sigsq=None
-pcorder = 2
-pctype = "LU"
-tol=1e-12
-upit=1
+weights = uqtkarray.dblArray1D()
+errbars = uqtkarray.dblArray1D()
+basis = uqtkarray.dblArray1D()
+alpha = uqtkarray.dblArray1D()
+used = uqtkarray.intArray1D()
+_lambda = 0.0
 
-# setup, git and predict bcs model
-regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
-err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
-ypred = regmodel.predict(Xtest)
-print("Passed here")
+adaptive = 1
+optimal = 1
+verbose = 0
 
-# print mean squared prediction error
-mse = np.mean((ypred - ytest)**2)
-nmse = np.mean((ypred - ytest)**2)/np.mean(ytest)
-print("\nMSE is {:.5g}".format(mse))
-print("NMSE is {:.5g}".format(nmse))
+bcs.BCS(Phi,y,sigma,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
 
-# print sensitivities
-try:
-	print("\nSensitivities are ", regmodel.getsens())
-except:
-	print("Issue with gensens()")
+uqtkarray.printarray(weights)
+uqtkarray.printarray(used)
+uqtkarray.printarray(errbars)
 
-prec = 1e-7
-assert mse < prec, "BCS failed to recover the coefficients to desired precision :-("
+print(abs(0.785397 - weights[0]))
+print(abs(-0.353987 - weights[1]))
+print(abs(0.00316971 - weights[4]))
+print(abs(used[1] - 2))
+print(abs(used[2] - 4))
+print(abs(used[4] - 8))
+
+assert abs(0.785397 - weights[0]) < 1e-6
+assert abs(-0.353987 - weights[1]) < 1e-6
+assert abs(0.00316971 - weights[4]) < 1e-6
+assert abs(used[1] - 2) < 1e-16
+assert abs(used[2] - 4) < 1e-16
+assert abs(used[4] - 8) < 1e-16
