@@ -155,7 +155,6 @@ class bcsreg:
         self.__nextbasis_uqtk = uqtkarray.dblArray1D() # if adaptive
         self.__alpha_uqtk = uqtkarray.dblArray1D() # prior hyperparameter (1/gamma)
         self.__lambda_p = uqtkarray.dblArray1D(1,l_init)
-        print(self.__lambda_p[0])
 
         #uqtktools.doublep_assign(self.__lambda_p,l_init)
         #self.__lambda_p.assign(0,l_init)

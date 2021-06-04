@@ -119,7 +119,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   Array1D<double> ML(MAX_IT,0) ;
 
   // Go through the iterations
-  int count ;
+  int count = 0;
   for ( count=0; count<MAX_IT; count++ )
   {
     if ( (count%10)==0 )
