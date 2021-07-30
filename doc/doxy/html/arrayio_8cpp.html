@@ -72,6 +72,13 @@ Functions</h2></td></tr>
 <tr class="separator:a84754699e8e5fbfb2820f8a0813a584c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1e021e54f41afa5c756c52501a68dc9"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arrayio_8cpp.html#ab1e021e54f41afa5c756c52501a68dc9">read_datafileVS</a> (<a class="el" href="classArray2D.html">Array2D</a>&lt; int &gt; &amp;data, const char *filename)</td></tr>
 <tr class="separator:ab1e021e54f41afa5c756c52501a68dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf4c2686d3317d96c0188b878f5b69fa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:abf4c2686d3317d96c0188b878f5b69fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="arrayio_8cpp.html#abf4c2686d3317d96c0188b878f5b69fa">read_datafileVS</a> (<a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; T &gt; &gt; &amp;data, const char *filename)</td></tr>
+<tr class="separator:abf4c2686d3317d96c0188b878f5b69fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5add73f924cb3987bc42824081fab0a"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arrayio_8cpp.html#af5add73f924cb3987bc42824081fab0a">read_datafileVS</a> (<a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &gt; &amp;data, const char *filename)</td></tr>
+<tr class="separator:af5add73f924cb3987bc42824081fab0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb802e862bb163cf55ce9f6019d50664"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="arrayio_8cpp.html#abb802e862bb163cf55ce9f6019d50664">read_datafileVS</a> (<a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; int &gt; &gt; &amp;data, const char *filename)</td></tr>
+<tr class="separator:abb802e862bb163cf55ce9f6019d50664"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfedaa580486744b7bb39432d288a80c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adfedaa580486744b7bb39432d288a80c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="arrayio_8cpp.html#adfedaa580486744b7bb39432d288a80c">read_datafileVS</a> (std::vector&lt; T &gt; &amp;data, int &amp;nrows, int &amp;ncols, const char *filename)</td></tr>
 <tr class="memdesc:adfedaa580486744b7bb39432d288a80c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a datafile from filename in a matrix form and store it in a std::vector in column-major storage scheme.  <a href="arrayio_8cpp.html#adfedaa580486744b7bb39432d288a80c">More...</a><br /></td></tr>
@@ -318,8 +325,94 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="af5add73f924cb3987bc42824081fab0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5add73f924cb3987bc42824081fab0a">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[1/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">template void read_datafileVS </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abb802e862bb163cf55ce9f6019d50664"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb802e862bb163cf55ce9f6019d50664">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[2/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">template void read_datafileVS </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; int &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abf4c2686d3317d96c0188b878f5b69fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf4c2686d3317d96c0188b878f5b69fa">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[3/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void read_datafileVS </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; T &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af2242a66ed135dc2cdeae3cde74ef605"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2242a66ed135dc2cdeae3cde74ef605">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[1/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af2242a66ed135dc2cdeae3cde74ef605">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[4/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -347,7 +440,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a5f846ef3cf43ac2abe0f2e0dedcc7f56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f846ef3cf43ac2abe0f2e0dedcc7f56">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[2/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f846ef3cf43ac2abe0f2e0dedcc7f56">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[5/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -375,7 +468,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a58e7bd9e5511397fb3e8547a8c391e73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58e7bd9e5511397fb3e8547a8c391e73">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[3/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a58e7bd9e5511397fb3e8547a8c391e73">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[6/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -410,7 +503,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="a84754699e8e5fbfb2820f8a0813a584c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84754699e8e5fbfb2820f8a0813a584c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[4/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a84754699e8e5fbfb2820f8a0813a584c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[7/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -438,7 +531,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="ab1e021e54f41afa5c756c52501a68dc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1e021e54f41afa5c756c52501a68dc9">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[5/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1e021e54f41afa5c756c52501a68dc9">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[8/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -466,7 +559,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="ad7fd8a75f5051ae54a46a2090a38d85e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7fd8a75f5051ae54a46a2090a38d85e">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[6/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7fd8a75f5051ae54a46a2090a38d85e">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[9/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -501,7 +594,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="ae5c2e84eee6ac498388941c1fff3449b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5c2e84eee6ac498388941c1fff3449b">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[7/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5c2e84eee6ac498388941c1fff3449b">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[10/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -541,7 +634,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="a898d06c7752676a1c03c4b90c32c64f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a898d06c7752676a1c03c4b90c32c64f4">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[8/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a898d06c7752676a1c03c4b90c32c64f4">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[11/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -581,7 +674,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="adfedaa580486744b7bb39432d288a80c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfedaa580486744b7bb39432d288a80c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[9/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adfedaa580486744b7bb39432d288a80c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[12/12]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

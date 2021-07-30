@@ -52,7 +52,7 @@ using namespace std;
 void infer_model(Array1D< Array2D<double> (*)(Array2D<double>&, Array2D<double>&, Array2D<double>&, void *) > forwardFuncs, void* funcInfo,
 	string likType,
 	string priorType, double priora, double priorb,
-	Array2D<double>& xdata,Array2D<double>& ydata, Array2D<double>& xgrid,
+	Array2D<double>& xdata,Array1D<Array1D<double>>& ydata, Array2D<double>& xgrid,
 	int dataNoiseInference, Array1D<double>& datanoise_array,
 	int pdim, int order,Array1D<int>& rndInd,Array2D<double>& fixindnom, string pdfType, string pcType,
 	int seed, int nmcmc, double mcmcgamma, bool optimflag, Array1D<double>& chstart, Array1D<double>& chsig,

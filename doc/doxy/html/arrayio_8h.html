@@ -71,6 +71,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ad7fd8a75f5051ae54a46a2090a38d85e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="arrayio_8h.html#ad7fd8a75f5051ae54a46a2090a38d85e">read_datafileVS</a> (<a class="el" href="classArray2D.html">Array2D</a>&lt; T &gt; &amp;data, const char *filename)</td></tr>
 <tr class="memdesc:ad7fd8a75f5051ae54a46a2090a38d85e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a datafile from filename in a matrix form and store it in the 2d array data if typename T.  <a href="arrayio_8h.html#ad7fd8a75f5051ae54a46a2090a38d85e">More...</a><br /></td></tr>
 <tr class="separator:ad7fd8a75f5051ae54a46a2090a38d85e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf4c2686d3317d96c0188b878f5b69fa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:abf4c2686d3317d96c0188b878f5b69fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="arrayio_8h.html#abf4c2686d3317d96c0188b878f5b69fa">read_datafileVS</a> (<a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; T &gt; &gt; &amp;data, const char *filename)</td></tr>
+<tr class="separator:abf4c2686d3317d96c0188b878f5b69fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfedaa580486744b7bb39432d288a80c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adfedaa580486744b7bb39432d288a80c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="arrayio_8h.html#adfedaa580486744b7bb39432d288a80c">read_datafileVS</a> (std::vector&lt; T &gt; &amp;data, int &amp;nrows, int &amp;ncols, const char *filename)</td></tr>
 <tr class="memdesc:adfedaa580486744b7bb39432d288a80c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a datafile from filename in a matrix form and store it in a std::vector in column-major storage scheme.  <a href="arrayio_8h.html#adfedaa580486744b7bb39432d288a80c">More...</a><br /></td></tr>
@@ -173,8 +176,38 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="abf4c2686d3317d96c0188b878f5b69fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf4c2686d3317d96c0188b878f5b69fa">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void read_datafileVS </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; T &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a58e7bd9e5511397fb3e8547a8c391e73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58e7bd9e5511397fb3e8547a8c391e73">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a58e7bd9e5511397fb3e8547a8c391e73">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -209,7 +242,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="ad7fd8a75f5051ae54a46a2090a38d85e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7fd8a75f5051ae54a46a2090a38d85e">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7fd8a75f5051ae54a46a2090a38d85e">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -244,7 +277,7 @@ This function makes two passes: the first pass figures the no. or rows and colum
 </div>
 </div>
 <a id="adfedaa580486744b7bb39432d288a80c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfedaa580486744b7bb39432d288a80c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adfedaa580486744b7bb39432d288a80c">&#9670;&nbsp;</a></span>read_datafileVS() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

@@ -55,6 +55,8 @@ public:
 
   /// \brief Set the x- and y-data
   void setData(Array2D<double>& xdata,Array2D<double>& ydata);
+  /// \brief Set the x- and y-data, for the case when each datapoint have different number of measurements
+  void setData(Array2D<double>& xdata,Array1D<Array1D<double> >& ydata);
   /// \brief Set the magnitude of data noise
   void setDataNoise(Array1D<double>& sigma);
   /// \brief Indicate inference of data noise stdev
@@ -93,13 +95,13 @@ protected:
   /// \brief xdata
   Array2D<double> xData_;
   /// \brief ydata
-  Array2D<double> yData_;
-  /// \brief ydata averaged per measurement (in case more than one y is given for each x)
+  Array1D<Array1D<double>> yData_;
+  /// \brief ydata averaged per measurement
   Array1D<double> yDatam_;
   /// \brief Number of data points
   int nData_;
   /// \brief Number of samples at each input
-  int nEach_;
+  Array1D<int> nEachs_;
   /// \brief Dimensionality of x-space
   int xDim_;
   /// \brief Dimensionality of parameter space (p-space)

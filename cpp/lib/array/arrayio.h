@@ -52,6 +52,11 @@ template <typename T> void read_datafile(Array2D<T> &data, const char *filename)
 /// then the data array is appropriately resized, and the filename is read during second pass
 template <typename T> void read_datafileVS(Array2D<T> &data, const char *filename);
 
+// Read a datafile from filename and store it in an 1d array of 1d arrays
+// array data of typename T
+template <typename T>
+void read_datafileVS(Array1D<Array1D<T> > &data, const char *filename);
+
 /// \brief Read a datafile from filename in a matrix form
 /// and store it in a std::vector in column-major storage scheme
 /// \note The vector is resized to match the file contents

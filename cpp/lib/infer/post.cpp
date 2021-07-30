@@ -57,24 +57,41 @@ Post::Post()
 // Set the x- and y-data
 void Post::setData(Array2D<double>& xdata,Array2D<double>& ydata)
 {
-	this->xData_=xdata;
-	this->yData_=ydata;
+    int ndata = ydata.XSize();
+    int ns = ydata.YSize();
 
-	this->nData_=this->xData_.XSize();
-	this->xDim_=this->xData_.YSize();
-	assert(this->nData_==this->yData_.XSize());
-	this->nEach_=this->yData_.YSize();
+    Array1D<Array1D<double>> ydata2(ndata);
+    for(int i=0;i<ndata;i++){
+        getRow(ydata, i, ydata2(i));
+    }
 
-	this->yDatam_.Resize(this->nData_,0.e0);
-	for(int i=0;i<this->nData_;i++){
-        for(int j=0;j<this->nEach_;j++){
-            this->yDatam_(i)+=this->yData_(i,j);
+    this->setData(xdata, ydata2);
+
+	return;
+}
+
+// Set the x- and y-data in cases when y-data has different size for different x
+void Post::setData(Array2D<double>& xdata,Array1D<Array1D<double> >& ydata)
+{
+    this->xData_=xdata;
+    this->yData_=ydata;
+
+    this->nData_=this->xData_.XSize();
+    this->xDim_=this->xData_.YSize();
+    assert(this->nData_==this->yData_.XSize());
+
+    this->nEachs_.Resize(this->nData_,0);
+    this->yDatam_.Resize(this->nData_,0.e0);
+    for(int i=0;i<this->nData_;i++){
+        this->nEachs_(i) = this->yData_(i).XSize();
+        for(int j=0;j<this->nEachs_(i);j++){
+            this->yDatam_(i)+=this->yData_(i)(j);
         }
-        this->yDatam_(i)/=this->nEach_;
+        this->yDatam_(i)/=this->nEachs_(i);
     }
 
 
-	return;
+    return;
 }
 
 // Set the magnitude of data noise
@@ -428,9 +445,14 @@ double Lik_Full::evalLogLik(Array1D<double>& m)
 
     double pi=4.*atan(1.);
 
-
-	Array2D<double> ydatat;
-    transpose(this->yData_,ydatat);
+    int neach = this->nEachs_(0);
+	Array2D<double> ydatat(neach, this->nData_);
+    for (int ix=0;ix<this->nData_;ix++){
+        assert(this->nEachs_(ix)==neach);
+        for (int ie=0;ie<neach; ie++){
+            ydatat(ie, ix) = this->yData_(ix)(ie);
+        }
+    }
 
     Array1D<double> dataSig=this->dataSigma(m(m.Length()-1));
 
@@ -445,7 +467,7 @@ double Lik_Full::evalLogLik(Array1D<double>& m)
     addinplace(funcSam,tmp);
 
     Array1D<double> weight(this->nsam_,1.e0);
-    Array1D<double> dens(this->nEach_,0.e0);
+    Array1D<double> dens(neach,0.e0);
     Array1D<double> bdw(this->nData_,this->bdw_);
     if (this->bdw_<=0)
         get_opt_KDEbdwth(funcSam,bdw);
@@ -454,7 +476,7 @@ double Lik_Full::evalLogLik(Array1D<double>& m)
 
 
     double logLik=0.;
-    for (int ie=0;ie<this->nEach_;ie++){
+    for (int ie=0;ie<neach;ie++){
         //cout << dens(ie) << endl;
         //ldens2(ie)=-(data(ie,0)-mu)*(data(ie,0)-mu)/(2.*std*std)-log(std*sqrt(2*pi)) ;
         if (dens(ie)==0)
@@ -486,8 +508,6 @@ double Lik_Marg::evalLogLik(Array1D<double>& m)
     // TODO Assumes one function
     Array2D<double> funcSam=samForwardFcn(this->forwardFcns_(0),m, this->xData_, this->nsam_);
 
-    Array2D<double> ydatat;
-    transpose(this->yData_,ydatat);
 
 
     Array2D<double> dataNoiseSam(this->nsam_,this->nData_);
@@ -502,19 +522,19 @@ double Lik_Marg::evalLogLik(Array1D<double>& m)
 
     for (int ix=0;ix<this->nData_;ix++){
     	Array2D<double> funcSam_ix(this->nsam_,1);
-    	Array2D<double> ydatat_ix(this->nEach_,1);
+    	Array2D<double> ydatat_ix(this->nEachs_(ix),1);
     	for(int is=0;is<this->nsam_;is++)
             funcSam_ix(is,0)=funcSam(is,ix);
-        for(int ie=0;ie<this->nEach_;ie++)
-            ydatat_ix(ie,0)=ydatat(ie,ix);
+        for(int ie=0;ie<this->nEachs_(ix);ie++)
+            ydatat_ix(ie,0)=this->yData_(ix)(ie);
 	    Array1D<double> weight(this->nsam_,1.e0);
-	    Array1D<double> dens(this->nEach_,0.e0);
+	    Array1D<double> dens(this->nEachs_(ix),0.e0);
 	    Array1D<double> bdw(1,this->bdw_);
         if (this->bdw_<=0)
     	    get_opt_KDEbdwth(funcSam_ix,bdw);
 	    getPdf_figtree(funcSam_ix,ydatat_ix,bdw,dens, weight);
 
-        for(int ie=0;ie<this->nEach_;ie++){
+        for(int ie=0;ie<this->nEachs_(ix);ie++){
 			if (dens(ie)==0)
             	return -1.e80;
         	else
@@ -737,8 +757,8 @@ double Lik_Classical::evalLogLik(Array1D<double>& m)
 
     double logLik=0.;
     for (int ix=0;ix<this->nData_;ix++){
-        for (int ie=0;ie<this->nEach_;ie++){
-            double err=fabs(this->yData_(ix,ie)-fcnMean(ix));
+        for (int ie=0;ie<this->nEachs_(ix);ie++){
+            double err=fabs(this->yData_(ix)(ie)-fcnMean(ix));
             logLik-= ( 0.5*err*err/(dataSig(ix)*dataSig(ix)) + 0.5*log(2.*pi) + log(dataSig(ix)) );
         }
     }
@@ -818,8 +838,8 @@ double Lik_Eov::evalLogLik(Array1D<double>& m)
 
     double logLik=0.;
     for (int ix=0;ix<this->nData_;ix++){
-        for (int ie=0;ie<this->nEach_;ie++){
-            double err=fabs(this->yData_(ix,ie)-fcnMean(ix));
+        for (int ie=0;ie<this->nEachs_(ix);ie++){
+            double err=fabs(this->yData_(ix)(ie)-fcnMean(ix));
 
             logLik-= ( 0.5*err*err/(dataSig(ix)*dataSig(ix)+fcnVar(ix)) + 0.5*log(2.*pi) + 0.5*log(dataSig(ix)*dataSig(ix)+fcnVar(ix)) );
         }

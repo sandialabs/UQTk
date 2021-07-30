@@ -83,6 +83,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4fbfee91a3108ed9038a6078f29ac3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#ab4fbfee91a3108ed9038a6078f29ac3d">setData</a> (<a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt; &amp;xdata, <a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt; &amp;ydata)</td></tr>
 <tr class="memdesc:ab4fbfee91a3108ed9038a6078f29ac3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the x- and y-data.  <a href="classPost.html#ab4fbfee91a3108ed9038a6078f29ac3d">More...</a><br /></td></tr>
 <tr class="separator:ab4fbfee91a3108ed9038a6078f29ac3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9712518cc88031a75124a03a2269a24f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a9712518cc88031a75124a03a2269a24f">setData</a> (<a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt; &amp;xdata, <a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &gt; &amp;ydata)</td></tr>
+<tr class="memdesc:a9712518cc88031a75124a03a2269a24f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the x- and y-data, for the case when each datapoint have different number of measurements.  <a href="classPost.html#a9712518cc88031a75124a03a2269a24f">More...</a><br /></td></tr>
+<tr class="separator:a9712518cc88031a75124a03a2269a24f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56dedd6a5e845c4a3f583fa7f0bf03db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a56dedd6a5e845c4a3f583fa7f0bf03db">setDataNoise</a> (<a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &amp;sigma)</td></tr>
 <tr class="memdesc:a56dedd6a5e845c4a3f583fa7f0bf03db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the magnitude of data noise.  <a href="classPost.html#a56dedd6a5e845c4a3f583fa7f0bf03db">More...</a><br /></td></tr>
 <tr class="separator:a56dedd6a5e845c4a3f583fa7f0bf03db"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,18 +140,18 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a0a1b7beaa1910df39adc87d8200d396e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a0a1b7beaa1910df39adc87d8200d396e">xData_</a></td></tr>
 <tr class="memdesc:a0a1b7beaa1910df39adc87d8200d396e"><td class="mdescLeft">&#160;</td><td class="mdescRight">xdata  <a href="classPost.html#a0a1b7beaa1910df39adc87d8200d396e">More...</a><br /></td></tr>
 <tr class="separator:a0a1b7beaa1910df39adc87d8200d396e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96ae3e721770a6140eb5702a0cbaab7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a96ae3e721770a6140eb5702a0cbaab7f">yData_</a></td></tr>
-<tr class="memdesc:a96ae3e721770a6140eb5702a0cbaab7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">ydata  <a href="classPost.html#a96ae3e721770a6140eb5702a0cbaab7f">More...</a><br /></td></tr>
-<tr class="separator:a96ae3e721770a6140eb5702a0cbaab7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10282717dcfc0521b6986f759acee2db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a10282717dcfc0521b6986f759acee2db">yData_</a></td></tr>
+<tr class="memdesc:a10282717dcfc0521b6986f759acee2db"><td class="mdescLeft">&#160;</td><td class="mdescRight">ydata  <a href="classPost.html#a10282717dcfc0521b6986f759acee2db">More...</a><br /></td></tr>
+<tr class="separator:a10282717dcfc0521b6986f759acee2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01d708b95e2e8b9da1ea19b2e148fbf5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a01d708b95e2e8b9da1ea19b2e148fbf5">yDatam_</a></td></tr>
-<tr class="memdesc:a01d708b95e2e8b9da1ea19b2e148fbf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">ydata averaged per measurement (in case more than one y is given for each x)  <a href="classPost.html#a01d708b95e2e8b9da1ea19b2e148fbf5">More...</a><br /></td></tr>
+<tr class="memdesc:a01d708b95e2e8b9da1ea19b2e148fbf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">ydata averaged per measurement  <a href="classPost.html#a01d708b95e2e8b9da1ea19b2e148fbf5">More...</a><br /></td></tr>
 <tr class="separator:a01d708b95e2e8b9da1ea19b2e148fbf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62e859b8d7dea689c3bb253701455e1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a62e859b8d7dea689c3bb253701455e1b">nData_</a></td></tr>
 <tr class="memdesc:a62e859b8d7dea689c3bb253701455e1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of data points.  <a href="classPost.html#a62e859b8d7dea689c3bb253701455e1b">More...</a><br /></td></tr>
 <tr class="separator:a62e859b8d7dea689c3bb253701455e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96abd3c86a3bbcec6acb02e1c2c09ddf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a96abd3c86a3bbcec6acb02e1c2c09ddf">nEach_</a></td></tr>
-<tr class="memdesc:a96abd3c86a3bbcec6acb02e1c2c09ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of samples at each input.  <a href="classPost.html#a96abd3c86a3bbcec6acb02e1c2c09ddf">More...</a><br /></td></tr>
-<tr class="separator:a96abd3c86a3bbcec6acb02e1c2c09ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5240bbd3fa67faeddcfa843dc70053f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classArray1D.html">Array1D</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#a5240bbd3fa67faeddcfa843dc70053f0">nEachs_</a></td></tr>
+<tr class="memdesc:a5240bbd3fa67faeddcfa843dc70053f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of samples at each input.  <a href="classPost.html#a5240bbd3fa67faeddcfa843dc70053f0">More...</a><br /></td></tr>
+<tr class="separator:a5240bbd3fa67faeddcfa843dc70053f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05111a73623045ba90030e5e1db4b10"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPost.html#ac05111a73623045ba90030e5e1db4b10">xDim_</a></td></tr>
 <tr class="memdesc:ac05111a73623045ba90030e5e1db4b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dimensionality of x-space.  <a href="classPost.html#ac05111a73623045ba90030e5e1db4b10">More...</a><br /></td></tr>
 <tr class="separator:ac05111a73623045ba90030e5e1db4b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -646,8 +649,38 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a9712518cc88031a75124a03a2269a24f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9712518cc88031a75124a03a2269a24f">&#9670;&nbsp;</a></span>setData() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Post::setData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classArray2D.html">Array2D</a>&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>xdata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classArray1D.html">Array1D</a>&lt; <a class="el" href="classArray1D.html">Array1D</a>&lt; double &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ydata</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the x- and y-data, for the case when each datapoint have different number of measurements. </p>
+
+</div>
+</div>
 <a id="ab4fbfee91a3108ed9038a6078f29ac3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4fbfee91a3108ed9038a6078f29ac3d">&#9670;&nbsp;</a></span>setData()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4fbfee91a3108ed9038a6078f29ac3d">&#9670;&nbsp;</a></span>setData() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1105,8 +1138,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a96abd3c86a3bbcec6acb02e1c2c09ddf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96abd3c86a3bbcec6acb02e1c2c09ddf">&#9670;&nbsp;</a></span>nEach_</h2>
+<a id="a5240bbd3fa67faeddcfa843dc70053f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5240bbd3fa67faeddcfa843dc70053f0">&#9670;&nbsp;</a></span>nEachs_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1115,7 +1148,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int Post::nEach_</td>
+          <td class="memname"><a class="el" href="classArray1D.html">Array1D</a>&lt;int&gt; Post::nEachs_</td>
         </tr>
       </table>
   </td>
@@ -1391,8 +1424,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a96ae3e721770a6140eb5702a0cbaab7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96ae3e721770a6140eb5702a0cbaab7f">&#9670;&nbsp;</a></span>yData_</h2>
+<a id="a10282717dcfc0521b6986f759acee2db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10282717dcfc0521b6986f759acee2db">&#9670;&nbsp;</a></span>yData_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1401,7 +1434,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classArray2D.html">Array2D</a>&lt;double&gt; Post::yData_</td>
+          <td class="memname"><a class="el" href="classArray1D.html">Array1D</a>&lt;<a class="el" href="classArray1D.html">Array1D</a>&lt;double&gt; &gt; Post::yData_</td>
         </tr>
       </table>
   </td>
@@ -1435,7 +1468,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>ydata averaged per measurement (in case more than one y is given for each x) </p>
+<p>ydata averaged per measurement </p>
 
 </div>
 </div>
