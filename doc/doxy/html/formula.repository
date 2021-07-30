@@ -1,0 +1,92 @@
+\_form#0=56x11:$j+i\times ny$
+\_form#1=51x14:$ C=A\backslash B$
+\_form#2=49x13:$y=\alpha Ax$
+\_form#3=40x14:$\left[n\times m\right]$
+\_form#4=13x6:$m$
+\_form#5=9x6:$n$
+\_form#6=56x14:$y=\alpha A^Tx$
+\_form#7=40x14:$\left[m\times n\right]$
+\_form#8=54x10:$C=\alpha AB$
+\_form#9=39x8:$m\times m$
+\_form#10=61x11:$C=\alpha A^TB$
+\_form#11=80x15:$x_i=x_i+\alpha y_i^ip$
+\_form#12=30x11:$a^T B c$
+\_form#13=28x11:$A^T A$
+\_form#14=35x14:$\left[n\times k\right]$
+\_form#15=36x14:$\left[n\times n\right]$
+\_form#16=115x14:$A_{n+1,i}=A_{i,n+1}=x_i$
+\_form#17=90x14:$A_{n+1,n+1}=scal$
+\_form#18=15x10:$V^*$
+\_form#19=10x10:$A$
+\_form#20=8x6:$\alpha$
+\_form#21=9x13:$\beta$
+\_form#22=60x14:$y=f(\lambda;x)$
+\_form#23=39x11:$x\in\mathbf{R}^s$
+\_form#24=39x13:$\lambda\in\mathbf{R}^d$
+\_form#25=8x6:$r$
+\_form#26=8x10:$\lambda$
+\_form#27=8x6:$x$
+\_form#28=29x10:$r\times d$
+\_form#29=30x8:$n\times s$
+\_form#30=30x8:$r\times n$
+\_form#31=93x14:$y=f(\lambda;x)=\lambda x$
+\_form#32=39x13:$x\in\mathbf{R}^1$
+\_form#33=38x13:$\lambda\in\mathbf{R}^1$
+\_form#34=138x15:$y=f(\lambda;x)=\lambda_1 x+\lambda_2x^2$
+\_form#35=38x13:$\lambda\in\mathbf{R}^2$
+\_form#36=119x15:$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x}$
+\_form#37=146x18:$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x+\lambda_3x^2}$
+\_form#38=38x13:$\lambda\in\mathbf{R}^3$
+\_form#39=85x14:$y=f(\lambda;x)=\lambda$
+\_form#40=126x14:$y=f(\lambda;x)=\lambda_1+\lambda_2x$
+\_form#41=129x19:$y=f(\lambda;x)=\frac{x d_w}{A_w \lambda}+T_0$
+\_form#42=163x13:$d_w=0.1, A_w=0.04, T_0=273$
+\_form#43=134x19:$y=f(\lambda;x)=\frac{x Q}{A_w \lambda_1}+\lambda_2$
+\_form#44=111x13:$A_w=0.04, Q=20.0$
+\_form#45=246x15:$y=f(\lambda;x)=\lambda_1+\lambda_2 x+\lambda_3 x^2+ \lambda_4 (x+1)^{3.5}$
+\_form#46=38x13:$\lambda\in\mathbf{R}^4$
+\_form#47=135x15:$y=f(\lambda;x)=\lambda_2 e^{\lambda_1 x} - 2$
+\_form#48=93x14:$y=f(\lambda;x_i)=\lambda_i$
+\_form#49=56x13:$i=1,...,d$
+\_form#50=43x14:$x_i\in\mathbf{R}^1$
+\_form#51=160x15:$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} \lambda_\alpha \Psi_\alpha(x)$
+\_form#52=45x14:$\lambda\in\mathbf{R}^{|{\cal S}|}$
+\_form#53=10x10:${\cal S}$
+\_form#54=51x14:$z=(\lambda,x)$
+\_form#55=171x15:$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} c_\alpha \Psi_\alpha(\lambda,x)$
+\_form#56=11x9:$c_\alpha$
+\_form#57=178x18:$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\_form#58=18x10:$c_{\alpha,i}$
+\_form#59=181x18:$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}_i} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\_form#60=49x14:$(-\infty,\infty)$
+\_form#61=34x14:$[-1,1]$
+\_form#62=95x15:$\xi=R^{-1}(u)\in\mathbf{R}^d$
+\_form#63=54x15:$u\in[0,1]^d$
+\_form#64=6x10:$d$
+\_form#65=35x10:$d\times M$
+\_form#66=34x10:$N\times d$
+\_form#67=49x14:$u=R(\xi)$
+\_form#68=8x13:$\xi$
+\_form#69=35x10:$M\times d$
+\_form#70=11x13:$\xi_d$
+\_form#71=30x15:$[0,1]^d$
+\_form#72=201x36:\[ F(t,\theta) = \left < F(t,\theta) \right >_{\theta} + \sum_{k=1}^{\infty} \sqrt{\lambda_k} f_k(t) \xi_k\]
+\_form#73=10x10:$C$
+\_form#74=5x9:$t$
+\_form#75=10x6:$w$
+\_form#76=321x29:\[ \int C(s,t)f(t)dt=\lambda f(s) \rightarrow \sum w_j C(s_i,t_j) f_k(t_j) = \lambda_k f_k(s_i)\]
+\_form#77=46x13:\[A g=\lambda g \]
+\_form#78=65x10:$A=W K W$
+\_form#79=45x13:$g=Wf$
+\_form#80=14x10:$W$
+\_form#81=60x14:$W_{ii}=\sqrt{w_i}$
+\_form#82=91x14:$K_{ij}=Cov(t_i,t_j)$
+\_form#83=13x13:$\lambda_k$
+\_form#84=68x14:$f_k=W^{-1}g_k$
+\_form#85=39x14:$F(t,\theta_l)$
+\_form#86=11x13:$\xi_k$
+\_form#87=10x9:$F$
+\_form#88=11x13:$f_k$
+\_form#89=229x18:\[ \left.\xi_k\right\vert_{\theta_l}=\left <F(t,\theta_l)-\left < F(t,\theta) \right >_{\theta}, f_k(t) \right >_t/\sqrt{\lambda_k} \]
+\_form#90=265x39:\[ \left.\xi_k\right\vert_{\theta_l}=\sum_{i=1}^{N_p} w_i\left(F(t_i,\theta_l)-\left < F(t_i,\theta) \right >_{\theta} \right) f_k(t_i)/\sqrt{\lambda_k} \]
+\_form#91=238x38:\[ F(t_i,\theta_l) = \left < F(t_i,\theta) \right >_{\theta} + \sum_{k=1}^{nKL} \sqrt{\lambda_k} f_k(t_i) \left. \xi_k\right\vert_{\theta_l} \]
