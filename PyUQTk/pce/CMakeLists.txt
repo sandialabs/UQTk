@@ -31,11 +31,11 @@ else()
 	TARGET_LINK_LIBRARIES(_pce PUBLIC uqtk depuqtk blas lapack gfortran ${CMAKE_SUNDIALS_DIR}/lib/libsundials_cvode.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_nvecserial.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunlinsoldense.a ${CMAKE_SUNDIALS_DIR}/lib/libsundials_sunmatrixdense.a)
 endif()
 
-SET(copy_FILES
-  __init__.py
-  )
+#SET(copy_FILES
+#  __init__.py
+#  )
 
-INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pce)
+#INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pce)
 
-INSTALL(TARGETS _pce DESTINATION PyUQTk/pce)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/_pce.cpython-37m-darwin.so DESTINATION PyUQTk/pce)
+INSTALL(TARGETS _pce DESTINATION PyUQTk/)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/_pce.cpython-37m-darwin.so DESTINATION PyUQTk/)

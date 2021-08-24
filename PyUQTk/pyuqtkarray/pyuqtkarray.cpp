@@ -543,7 +543,7 @@ void setnpintArray(Array2D<int>& x,py::array_t<int> &inarray){
 	x.setnpintArray(ptr1,n1,n2);
 }
 
-PYBIND11_MODULE(pyuqtkarray, m) {
+PYBIND11_MODULE(_uqtkarray, m) {
     py::class_<Array1D<int>>(m, "intArray1D")
       .def(py::init<>())
       .def(py::init<const int&>())
