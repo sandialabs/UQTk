@@ -35,7 +35,7 @@ sys.path.append('../bcs')
 
 import numpy as np
 import matplotlib.pyplot as mpl
-import pyuqtkarray as uqtkarray
+import _uqtkarray as uqtkarray
 import pyuqtkarray_tools as uqtkarray_tools
 import _pce as uqtkpce
 import _tools as uqtktools

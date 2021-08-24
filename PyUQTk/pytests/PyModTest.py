@@ -33,7 +33,7 @@ import sys
 
 print("Loading array module:")
 sys.path.append('../pyuqtkarray/')
-import pyuqtkarray
+import _uqtkarray
 
 print("Loading quadrature module:")
 sys.path.append('../quad/')

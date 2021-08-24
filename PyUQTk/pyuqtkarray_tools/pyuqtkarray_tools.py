@@ -32,7 +32,7 @@ import sys
 sys.path.append('../pyuqtkarray')
 
 try:
-    import pyuqtkarray
+    import _uqtkarray as pyuqtkarray
 except ImportError:
     print("PyUQTk array module not found")
     print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")

@@ -44,7 +44,7 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-	import pyuqtkarray
+	import _uqtkarray as uqtkarray
 	import pyuqtkarray_tools as tools
 except ImportError:
 	print("PyUQTk array modules not found")
@@ -110,8 +110,8 @@ qpnts_ref = array([[-9.681602395076263079e-01, 0.000000000000000000e+00],
 [9.681602395076263079e-01, 0.000000000000000000e+00]])
 
 # initiate uqtk arrays for quad points and weights
-x = pyuqtkarray.dblArray2D()
-w = pyuqtkarray.dblArray1D()
+x = uqtkarray.dblArray2D()
+w = uqtkarray.dblArray1D()
 
 # create instance of quad class and output
 # points and weights
@@ -134,14 +134,14 @@ print('Number of quad points is ', n, '\n')
 print('Plotting the points (get points in column major order as a flattened vector)')
 print('need to use reshape with fortran ordering')
 xpnts = zeros((n,ndim))
-xpnts = pyuqtkarray.getnpdblArray(x)
+xpnts = uqtkarray.getnpdblArray(x)
 # plot(xpnts[:,0], xpnts[:,1],'ob',ms=10,alpha=.25)
 # show()
 
 # convert the quad weights to numpy arrays
 w_np = zeros(n)
 #w.getnpdblArray(w_np,n)
-w_np = pyuqtkarray.getnpdblArray(w)
+w_np = uqtkarray.getnpdblArray(w)
 
 # asserting the quadrature points are correct
 m,n = x_np.shape

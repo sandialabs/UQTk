@@ -27,43 +27,43 @@
 #=====================================================================================
 # swig interface modules (only compiled if PyUQTK=On)
 try:
-    from pyuqtkarray import *
+    from . import uqtkarray
     from pyuqtkarray_tools import *
 except ImportError:
-    print('PyUQTk SWIG array interface not created.')
+    print('PyUQTk array interface not created.')
 
 try:
-    from quad import *
+    from . import quad
 except ImportError:
-    print('PyUQTk SWIG quad interface not created.')
+    print('PyUQTk quad interface not created.')
 
 try:
-    from tools import *
+    from . import tools
 except ImportError:
-    print('PyUQTk SWIG tools interface not created.')
+    print('PyUQTk tools interface not created.')
 
 try:
-    from kle import *
+    from . import kle
 except ImportError:
-    print('PyUQTk SWIG kle interface not created.')
+    print('PyUQTk kle interface not created.')
 
 try:
-    from pce import *
+    from . import pce
     from adaptation_tools import *
     from pce_tools import *
 except ImportError:
-    print('PyUQTk SWIG pce interface and PyPCE module not available.')
+    print('PyUQTk pce interface and PyPCE module not available.')
 
 try:
-    from bcs import *
+    from . import bcs
     from bcs_ext import *
 except ImportError:
-    print('PyUQTk SWIG bcs interface not created.')
+    print('PyUQTk bcs interface not created.')
 
 try:
     from . import mcmc
 except ImportError:
-    print('PyUQTk SWIG mcmc interface not created.')
+    print('PyUQTk mcmc interface not created.')
 
 # pure python tools (always included)
 try:

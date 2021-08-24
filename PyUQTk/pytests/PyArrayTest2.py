@@ -38,7 +38,7 @@ except ImportError:
 	print("Need numpy to test PyUQTk")
 
 try:
-	import pyuqtkarray
+	import _uqtkarray
 	import pyuqtkarray_tools as tools
 except ImportError:
 	print("PyUQTk array module not found")
