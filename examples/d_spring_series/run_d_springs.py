@@ -51,6 +51,7 @@ sys.path.append("../../PyUQTk/pyuqtkarray_tools")
 sys.path.append("../../PyUQTk/quad")
 sys.path.append("../../PyUQTk/pce")
 sys.path.append("../../PyUQTk/tools")
+sys.path.append("../../PyUQTk/")
 
 #try:
 import adaptation_tools as adp
@@ -61,7 +62,7 @@ import pce_tools
 
 
 try:
-    import pyuqtkarray as uqtkarray
+    import _uqtkarray as uqtkarray
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
