@@ -55,5 +55,6 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_C_COMPILER=gcc            \
       -DCMAKE_CXX_COMPILER=g++          \
       -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python \
+      -pybind11_DIR=/ascldap/users/lboll/pybind11 \
       -DPyUQTk=ON \
       $UQTK_SRC_DIR
