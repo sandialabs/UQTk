@@ -44,7 +44,7 @@ done
 
 # Adjust the UQTK_SRC_DIR to point to where the UQTk source directory is. Feel free
 # to update the desired installation directory as you prefer.
-UQTK_SRC_DIR=../UQTk-SNL
+UQTK_SRC_DIR=../
 UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
 
 echo "This script assumes the UQTk source code is in $UQTK_SRC_DIR"
@@ -54,6 +54,6 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=$UQTK_INSTALL_DIR    \
       -DCMAKE_Fortran_COMPILER=gfortran \
       -DCMAKE_C_COMPILER=gcc            \
       -DCMAKE_CXX_COMPILER=g++          \
-      -DPYTHON_EXECUTABLE:FILEPATH=/opt/local/bin/python \
+      -DPYTHON_EXECUTABLE:FILEPATH=$(which python) \
       -DPyUQTk=ON \
       $UQTK_SRC_DIR

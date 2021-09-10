@@ -60,13 +60,13 @@ From within the build directory, configure the distribution via CMake. See examp
 CMake configuration scripts in the directory config
 Then build via ``make``, and test with ``ctest``. Install with ``make install``
 For example:
-```
-% mkdir build
-% cd build
-% ../UQTk/config/config-gcc-Python.sh
-% make -j 8
-% ctest
-% make install
+```shell
+mkdir build
+cd build
+../config/config-gcc-Python.sh
+make -j 8
+ctest
+make install
 ```
 
 For more details, please refer to the UQTk manual in PDF format.
