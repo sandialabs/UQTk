@@ -50,10 +50,11 @@ sys.path.append('../../PyUQTk/pyuqtkarray/')
 sys.path.append('../../PyUQTk/quad/')
 sys.path.append('../../PyUQTk/pce/')
 sys.path.append('../../PyUQTk/tools/')
+sys.path.append('../../PyUQTk')
 
 
 try:
-    import pyuqtkarray as uqtkarray
+    import _uqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
