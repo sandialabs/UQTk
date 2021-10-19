@@ -118,6 +118,7 @@ q_errors=[]
 for quad_param in num_points:
     #Generate quadrature points
     xpts,wghts=generate_qw(ndim,quad_param)
+    print("xpts shape: ",xpts.shape)
 
     #Evaluate the function
     func_params=ones(ndim+1) #Genz parameters
