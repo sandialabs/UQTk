@@ -89,7 +89,9 @@ def func(xdata,model,func_params):
         ydata=np.empty((sam,))
         ww=func_params[0]
         gcf=func_params[1:]
-
+        print('The shape of ww is: ',ww.shape)
+        print('The shape of gcf is: ',gcf.shape)
+        print('The shape of x is: ',xdata.shape)
         xtmp=np.dot(xdata-ww,gcf)
         for j in range(sam):
             ydata[j]=exp(xtmp[j])

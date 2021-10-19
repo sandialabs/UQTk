@@ -36,9 +36,10 @@ except ImportError:
 sys.path.append('../../PyUQTk/pyuqtkarray/')
 sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
 sys.path.append('../../PyUQTk/quad/')
+sys.path.append('../../PyUQTk/')
 
 #try:
-import pyuqtkarray as uqtkarray
+import _uqtkarray as uqtkarray
 import pyuqtkarray_tools as uqtkarray_tools
 import _quad as uqtkquad
 from PyUQTk.utils.func import *
