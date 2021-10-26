@@ -6,14 +6,19 @@ add_subdirectory (sens)
 add_subdirectory (multirun)
 add_subdirectory (utils)
 if ("${PyUQTk}" STREQUAL "ON")
-  add_subdirectory (pce_tools)
-  add_subdirectory (adaptation_tools)
+  add_subdirectory (PyPCE)
   add_subdirectory (pyuqtkarray_tools)
   add_subdirectory (bcs_ext)
 endif()
 
 SET(copy_FILES
   __init__.py
+  uqtkarray.py
+  tools.py
+  quad.py
+  pce.py
+  bcs.py
+  kle.py
   )
 INSTALL(FILES ${copy_FILES}
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

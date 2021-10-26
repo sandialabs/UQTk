@@ -25,51 +25,5 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
-# swig interface modules (only compiled if PyUQTK=On)
-try:
-    from . import uqtkarray
-except ImportError:
-    print('PyUQTk SWIG array interface not created.')
-
-try:
-    from . import quad
-except ImportError:
-    print('PyUQTk SWIG quad interface not created.')
-
-try:
-    from . import tools
-except ImportError:
-    print('PyUQTk SWIG tools interface not created.')
-
-try:
-    from . import kle
-except ImportError:
-    print('PyUQTk SWIG kle interface not created.')
-
-try:
-    from . import pce
-    from . import PyPCE
-except ImportError:
-    print('PyUQTk SWIG pce interface and PyPCE module not available.')
-
-try:
-    from . import bcs
-except ImportError:
-    print('PyUQTk SWIG bcs interface not created.')
-
-try:
-    from . import mcmc
-except ImportError:
-    print('PyUQTk SWIG mcmc interface not created.')
-
-# pure python tools (always included)
-try:
-    from . import inference
-    from . import plotting
-    from . import sens
-except:
-    print('Scipy and/or matplotlib may need to be installed')
-
-
-from . import utils
-from . import multirun
+from . import pce_tools
+from . import adaptation_tools
