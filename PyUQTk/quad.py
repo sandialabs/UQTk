@@ -1,2 +1,5 @@
 # Import the low-level C/C++ module
-from . import _quad
+if __package__ or "." in __name__:
+    from . import _quad
+else:
+    import _quad

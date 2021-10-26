@@ -1,5 +1,7 @@
 # Import the low-level C/C++ module
-from . import _bcs
-
+if __package__ or "." in __name__:
+    from . import _bcs
+else:
+    import _bcs
 # Import Python Utility for PyBCS
 from bcs_ext import *
