@@ -186,7 +186,7 @@ for idim in chdimlist:
     print(ii)
 
 print("Running the parameter inference")
-os.system('./line_infer.x >& logMCMC.dat')
+os.system('./line_infer.x > logMCMC.dat 2>&1')
 
 ## Import data from MCMC file ###################################################
 print("Loading in chain file ",chainfile )
