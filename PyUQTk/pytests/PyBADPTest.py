@@ -36,14 +36,15 @@ sys.path.append('../tools')
 sys.path.append('../pce_tools')
 sys.path.append('../adaptation_tools')
 sys.path.append('../')
+sys.path.append('../PyPCE')
 
 try:
     import _uqtkarray as uqtkarray
     import _quad as uqtkquad
     import _pce as uqtkpce
     import _tools as uqtktools
-    import pce_tools
-    import adaptation_tools
+    import PyPCE.pce_tools as pce_tools
+    import PyPCE.adaptation_tools as adaptation_tools
 except ImportError:
     print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
 

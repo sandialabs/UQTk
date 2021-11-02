@@ -306,7 +306,7 @@ def UQTkGetQuadPoints(pc_model):
     # Convert quad points to a numpy array
     qdpts = np.zeros((totquat,n_dim))
     #qdpts_uqtk.getnpdblArray(qdpts)
-    qdpts = uqtkarraytools.uqtk2numpy(qdpts_uqtk)
+    qdpts = uqtkarray.uqtk2numpy(qdpts_uqtk)
     return qdpts, totquat
 ################################################################################
 def UQTkStDv(pc_model,pc_coeffs):
