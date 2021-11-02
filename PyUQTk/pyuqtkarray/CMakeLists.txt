@@ -11,6 +11,15 @@ TARGET_LINK_LIBRARIES(_uqtkarray PUBLIC uqtk blas lapack)
 #  __init__.py
 #  )
 
+SET(copy_FILES
+  pyuqtkarray_tools.py
+  )
+
+INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarray)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyuqtkarray_tools.py
+               ${CMAKE_CURRENT_BINARY_DIR}/pyuqtkarray_tools.py COPYONLY)
+
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarray)
 
 INSTALL(TARGETS _uqtkarray DESTINATION PyUQTk/)

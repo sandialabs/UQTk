@@ -38,6 +38,7 @@ sys.path.append('../tools/')
 sys.path.append('../pce/')
 sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../bcs_ext/')
+sys.path.append('..')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -51,20 +52,19 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-    import _uqtkarray as uqtkarray
+    import uqtkarray as uqtkarray
     import pyuqtkarray_tools
 except ImportError:
 	print("PyUQTk array module not found")
 
 try:
-    import _pce as uqtkpce
-    import _tools as uqtktools
+    import pce as uqtkpce
+    import tools as uqtktools
 except ImportError:
     print("PyUQTk PCE module not found")
 
 try:
-	import _bcs as bcs
-	import bcs_ext as bcsTools
+	import bcs as bcs
 except ImportError:
     print("BCS Regression module not found")
 
@@ -102,7 +102,7 @@ tol=1e-12
 upit=1
 
 # setup, git and predict bcs model
-regmodel = bcsTools.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
+regmodel = bcs.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
 
