@@ -35,6 +35,8 @@ sys.path.append('../pce/')
 sys.path.append('../tools')
 sys.path.append('../pce_tools')
 sys.path.append('../adaptation_tools')
+sys.path.append('../')
+
 try:
     import _uqtkarray as uqtkarray
     import _quad as uqtkquad

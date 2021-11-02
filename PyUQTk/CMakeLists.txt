@@ -18,6 +18,25 @@ SET(copy_FILES
   bcs.py
   kle.py
   )
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/uqtkarray.py
+               ${CMAKE_CURRENT_BINARY_DIR}/uqtkarray.py COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tools.py
+               ${CMAKE_CURRENT_BINARY_DIR}/tools.py COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/quad.py
+               ${CMAKE_CURRENT_BINARY_DIR}/quad.py COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pce.py
+               ${CMAKE_CURRENT_BINARY_DIR}/pce.py COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bcs.py
+               ${CMAKE_CURRENT_BINARY_DIR}/bcs.py COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/kle.py
+               ${CMAKE_CURRENT_BINARY_DIR}/kle.py COPYONLY)
+
 INSTALL(FILES ${copy_FILES}
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION PyUQTk/

@@ -3,6 +3,9 @@
 #    from . import _uqtkarray
 #else:
 #    import _uqtkarray
+import sys
+sys.path.append('pyuqtkarray')
+
 from _uqtkarray import *
 
 # Import the _uqtkarray_tools to go from uqtk to numpy and vice versa

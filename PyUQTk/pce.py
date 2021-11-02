@@ -4,4 +4,6 @@
 else:
     import _pce
 '''
+import sys
+sys.path.append('pce')
 from _pce import *

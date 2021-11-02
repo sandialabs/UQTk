@@ -1,12 +1,14 @@
+import sys
+sys.path.append('bcs')
 from _bcs import *
 
 # Import Python Utility for PyBCS
+
 import numpy as np
 import matplotlib.pyplot as mpl
 import uqtkarray
 import pce as uqtkpce
 import tools
-
 # BCS already added to path in compilation and install
 
 # cross validation splitting
