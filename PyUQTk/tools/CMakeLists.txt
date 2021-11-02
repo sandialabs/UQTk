@@ -8,6 +8,18 @@ include_directories(../../cpp/lib/include) #include directory
 include_directories(../../dep/dsfmt) #dsfmt directory
 include_directories(../../dep/figtree) #figtree directory
 
+include_directories (${CMAKE_SUNDIALS_DIR}/include)
+include_directories (${CMAKE_SUNDIALS_DIR}/include/cvode)
+include_directories (${CMAKE_SUNDIALS_DIR}/include/cvodes)
+if( BUILD_SUNDIALS)
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
+  include_directories (../../../dep/sundials/include )
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include/cvode")
+  include_directories (../../../dep/sundials/include/cvode )
+  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include/cvodes")
+  include_directories (../../../dep/sundials/include/cvodes )
+endif()
+
 
 pybind11_add_module(_tools pyTools.cpp)
 TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk depuqtk)
