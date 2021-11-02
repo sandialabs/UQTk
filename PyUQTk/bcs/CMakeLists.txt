@@ -18,10 +18,12 @@ SET(copy_FILES
   bcs_ext.py
   )
 
+INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bcs_ext.py
                ${CMAKE_CURRENT_BINARY_DIR}/bcs_ext.py COPYONLY)
 
-INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/bcs)
+
 
 
 INSTALL(TARGETS _bcs DESTINATION PyUQTk/)
