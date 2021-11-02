@@ -27,25 +27,23 @@
 #=====================================================================================
 import sys
 sys.path.append('../pyuqtkarray/')
-sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
 
 # Import Modules
-
-import _uqtkarray as uqtkarray
-import pyuqtkarray_tools as uqtkarraytools
-import _quad as uqtkquad
-import _pce as uqtkpce
-import _tools as uqtktools
-#except ImportError:
-    #import PyUQTk.pyuqtkarray as uqtkarray
-    #import PyUQTk.quad as uqtkquad
-    #import PyUQTk.pce as uqtkpce
-    #import PyUQTk.tools as uqtktools
-#except ImportError:
-#    print("PyUQTk array, quad, pce, or tools modules not found")
+try:
+    import uqtkarray
+    import quad as uqtkquad
+    import pce as uqtkpce
+    import tools as uqtktools
+except ImportError:
+    import PyUQTk.uqtkarray as uqtkarray
+    import PyUQTk.quad as uqtkquad
+    import PyUQTk.pce as uqtkpce
+    import PyUQTk.tools as uqtktools
+except ImportError:
+    print("PyUQTk array, quad, pce, or tools modules not found")
 
 try:
     import numpy as np

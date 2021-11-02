@@ -27,28 +27,26 @@
 #=====================================================================================
 import sys
 sys.path.append('../pyuqtkarray/')
-sys.path.append('../pyuqtkarray_tools/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
 sys.path.append('../pce_tools/')
 sys.path.append('../')
 
-#try:
-import _uqtkarray as uqtkarray
-import pyuqtkarray_tools as uqtkarray_tools
-import _quad as uqtkquad
-import _pce as uqtkpce
-import _tools as uqtktools
-import pce_tools
-#except ImportError:
-    #import PyUQTk.pyuqtkarray as uqtkarray
-    #import PyUQTk.quad as uqtkquad
-    #import PyUQTk.pce as uqtkpce
-    #import PyUQTk.tools as uqtktools
-    #import PyUQTk.pce_tools
-#except ImportError:
-    #print("PyUQTk array, quad, pce, tools or pce_tools modules not found")
+try:
+    import uqtkarray
+    import quad as uqtkquad
+    import pce as uqtkpce
+    import tools as uqtktools
+    import pce_tools
+except ImportError:
+    import PyUQTk.uqtkarray as uqtkarray
+    import PyUQTk.quad as uqtkquad
+    import PyUQTk.pce as uqtkpce
+    import PyUQTk.tools as uqtktools
+    from PyUQTk.PyPCE import pce_tools
+except ImportError:
+    print("PyUQTk array, quad, pce, tools or pce_tools modules not found")
 
 try:
     import numpy as np
@@ -159,7 +157,7 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
     MI = np.zeros((pc_model2.GetNumberPCTerms(), d2),dtype='int64')
     #uqtkarray.printarray(MI_uqtk)
     #MI_uqtk.getnpintArray(MI)
-    MI = uqtkarray_tools.uqtk2numpy(MI_uqtk)
+    MI = uqtkarray.uqtk2numpy(MI_uqtk)
     #print(MI)
     #MI = uqtkarray.getnpintArray(MI_uqtk)
 
@@ -239,7 +237,7 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     psi_xi_uqtk = uqtkarray.dblArray2D()
     pc_model_xi.EvalBasisAtCustPts(qdpts_xi_uqtk, psi_xi_uqtk)
     psi_xi = np.zeros((totquat_eta, pc_model_xi.GetNumberPCTerms()))
-    psi_xi = uqtkarray_tools.uqtk2numpy(psi_xi_uqtk)
+    psi_xi = uqtkarray.uqtk2numpy(psi_xi_uqtk)
     #psi_xi = uqtkarray.getnpdblArray(psi_xi_uqtk)
 
     ##### Obtian Psi_eta at quadrature points of eta #####
@@ -251,7 +249,7 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     psi_eta_uqtk = uqtkarray.dblArray2D()
     pc_model_eta.GetPsi(psi_eta_uqtk)
     psi_eta = np.zeros( (totquat_eta, pc_model_eta.GetNumberPCTerms()) )
-    psi_eta = uqtkarray_tools.uqtk2numpy(psi_eta_uqtk)
+    psi_eta = uqtkarray.uqtk2numpy(psi_eta_uqtk)
     #psi_eta = uqtkarray.getnpdblArray(psi_eta_uqtk)
 
     return np.dot(coeffs, np.dot(psi_eta.T * weight_eta, psi_xi))
