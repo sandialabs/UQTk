@@ -1,12 +1,12 @@
 %module(directors="1") bcs
 //=====================================================================================
 //
-//                      The UQ Toolkit (UQTk) version @UQTKVERSION@
-//                          Copyright (@UQTKYEAR@) NTESS
+//                      The UQ Toolkit (UQTk) version 3.1.1
+//                          Copyright (2021) NTESS
 //                        https://www.sandia.gov/UQToolkit/
 //                        https://github.com/sandialabs/UQTk
 //
-//     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+//     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 //     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 //     retains certain rights in this software.
 //
