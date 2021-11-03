@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
 
     #error checking
-    if output_file_name is "":
+    if output_file_name == "":
         print("\nError: Output file name must be specified.\n")
         print(help_string)
         sys.exit(1)

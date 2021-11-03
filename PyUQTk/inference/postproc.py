@@ -40,18 +40,17 @@ import matplotlib.pyplot as plt
 from scipy import stats, mgrid, c_, reshape, random, rot90
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
-
-
 try:
     import pymc
     have_pymc = True
 except ImportError:
-    import pymc3 as pymc
-    have_pymc = True
-except ImportError:
-    print("PyMC is required for some of the MCMC postprocessing codes.")
-    print ("Will proceed without, but some convergence tests will not be available.")
-    have_pymc = False
+    try:
+        import pymc3 as pymc
+        have_pymc = True
+    except ImportError:
+        print("PyMC is required for some of the MCMC postprocessing codes.")
+        print ("Will proceed without, but some convergence tests will not be available.")
+        have_pymc = False
 
 ##################################################################################
 # Compute autocorrelation a one-dimensional set of samples
