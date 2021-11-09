@@ -9,15 +9,12 @@ include_directories(../../dep/dsfmt) #dsfmt directory
 include_directories(../../dep/figtree) #figtree directory
 
 include_directories (${CMAKE_SUNDIALS_DIR}/include)
-include_directories (${CMAKE_SUNDIALS_DIR}/include/cvode)
-include_directories (${CMAKE_SUNDIALS_DIR}/include/cvodes)
 if( BUILD_SUNDIALS)
-  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include")
-  include_directories (../../../dep/sundials/include )
-  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include/cvode")
-  include_directories (../../../dep/sundials/include/cvode )
-  include_directories ("${PROJECT_BINARY_DIR}/../../../dep/sundials/include/cvodes")
-  include_directories (../../../dep/sundials/include/cvodes )
+  include_directories (${PROJECT_BINARY_DIR}/../../dep/sundials/include)
+  include_directories (../../dep/sundials/include )
+  include_directories (/Users/lukeboll/Desktop/UQTk-SNL/dep/sundials/include/cvodes)
+  include_directories (/Users/lukeboll/Desktop/UQTk-SNL/dep/sundials/include/cvode)
+  include_directories (/Users/lukeboll/Desktop/build/dep/sundials/include)
 endif()
 
 
