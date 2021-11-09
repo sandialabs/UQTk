@@ -127,7 +127,7 @@ class bcsreg:
         # generate multi index
         self.__mindex_uqtk = uqtkarray.intArray2D()
         uqtktools.computeMultiIndex(self.ndim,self.pcorder,self.__mindex_uqtk);
-        self.mindex = uqtkarray_tools.uqtk2numpy(self.__mindex_uqtk)
+        self.mindex = uqtkarray.uqtk2numpy(self.__mindex_uqtk)
         self.__mindex0_uqtk = self.__mindex_uqtk # keep original
 
         # get projection/ Vandermonde matrix
@@ -167,14 +167,14 @@ class bcsreg:
         pc order.
         '''
         # convert input to uqtk arrays
-        self.__X_uqtk = uqtkarray_tools.numpy2uqtk(X)
-        self.__y_uqtk = uqtkarray_tools.numpy2uqtk(y)
+        self.__X_uqtk = uqtkarray.numpy2uqtk(X)
+        self.__y_uqtk = uqtkarray.numpy2uqtk(y)
 
         # get vandermonde matrix w.r.t. original pc basis
         self.__V_uqtk = uqtkarray.dblArray2D()
         self.__pcmodel0 = uqtkpce.PCSet("NISPnoq",self.__mindex0_uqtk,self.pctype,0.0,1.0) # initiate
         self.__pcmodel0.EvalBasisAtCustPts(self.__X_uqtk,self.__V_uqtk)
-        self.Vandermonde = uqtkarray_tools.uqtk2numpy(self.__V_uqtk)
+        self.Vandermonde = uqtkarray.uqtk2numpy(self.__V_uqtk)
         self.__sol = np.linalg.lstsq(self.Vandermonde,y)
         return self.__sol[0], self.__sol[1]
 
@@ -193,8 +193,8 @@ class bcsreg:
             print("Need to compile first!")
 
         # convert numpy test data into uqtk data types
-        self.__X_uqtk = uqtkarray_tools.numpy2uqtk(X)
-        self.__y_uqtk = uqtkarray_tools.numpy2uqtk(y)
+        self.__X_uqtk = uqtkarray.numpy2uqtk(X)
+        self.__y_uqtk = uqtkarray.numpy2uqtk(y)
         self.Xtrain = X
         self.ytrain = y
 
@@ -214,7 +214,7 @@ class bcsreg:
             # get projection/ Vandermonde matrix
             self.__pcmodel = uqtkpce.PCSet("NISPnoq",self.__mindex_uqtk,self.pctype,0.0,1.0) # initiate with new mindex
             self.__pcmodel.EvalBasisAtCustPts(self.__X_uqtk,self.__Phi_uqtk)
-            self.__Phi = uqtkarray_tools.uqtk2numpy(self.__Phi_uqtk)
+            self.__Phi = uqtkarray.uqtk2numpy(self.__Phi_uqtk)
 
             # resest sigma parameter (if not, may get seg fault)
             #uqtktools.doublep_assign(self.__sigma2_p,self.__sigma2)
@@ -235,12 +235,12 @@ class bcsreg:
 
         # return new multiindex to create new pce model
         self.__pcmodel_new = uqtkpce.PCSet("NISPnoq",self.__newmindex_uqtk,self.pctype,0.0,1.0)
-        self.mindex = uqtkarray_tools.uqtk2numpy(self.__newmindex_uqtk)
+        self.mindex = uqtkarray.uqtk2numpy(self.__newmindex_uqtk)
         # eff_dim = self.ndim - sum(sum(self.mindex,0) == 0)
 
-        self.weights = uqtkarray_tools.uqtk2numpy(self.__weights_uqtk)
-        self.weight_index = uqtkarray_tools.uqtk2numpy(self.__used_uqtk)
-        self.error_bars = uqtkarray_tools.uqtk2numpy(self.__errbars_uqtk)
+        self.weights = uqtkarray.uqtk2numpy(self.__weights_uqtk)
+        self.weight_index = uqtkarray.uqtk2numpy(self.__used_uqtk)
+        self.error_bars = uqtkarray.uqtk2numpy(self.__errbars_uqtk)
 
         # get main effect sensitivity indices
         self.__main_eff_uqtk = uqtkarray.dblArray1D()
@@ -249,9 +249,9 @@ class bcsreg:
         self.__pcmodel_new.ComputeMainSens(self.__weights_uqtk,self.__main_eff_uqtk)
         self.__pcmodel_new.ComputeTotSens(self.__weights_uqtk,self.__tot_eff_uqtk)
         self.__pcmodel_new.ComputeJointSens(self.__weights_uqtk,self.__joint_eff_uqtk)
-        self.main_eff = uqtkarray_tools.uqtk2numpy(self.__main_eff_uqtk)
-        self.tot_eff = uqtkarray_tools.uqtk2numpy(self.__tot_eff_uqtk)
-        self.joint_eff = uqtkarray_tools.uqtk2numpy(self.__joint_eff_uqtk)
+        self.main_eff = uqtkarray.uqtk2numpy(self.__main_eff_uqtk)
+        self.tot_eff = uqtkarray.uqtk2numpy(self.__tot_eff_uqtk)
+        self.joint_eff = uqtkarray.uqtk2numpy(self.__joint_eff_uqtk)
         self.senssum = {"main effect": self.main_eff, "total effect": self.tot_eff, "joint effect": self.joint_eff}
         return self.weights, self.mindex
 
@@ -266,10 +266,10 @@ class bcsreg:
             if verbose == 1:
                 print("CV should only be used for hyperparameter tuning. Once tuned, run with nk = 1. ")
 
-        self.__Xtest_uqtk = uqtkarray_tools.numpy2uqtk(Xtest)
+        self.__Xtest_uqtk = uqtkarray.numpy2uqtk(Xtest)
         self.__ytest_uqtk = uqtkarray.dblArray1D()
         self.__pcmodel_new.EvalPCAtCustPoints(self.__ytest_uqtk,self.__Xtest_uqtk,self.__weights_uqtk)
-        self.__ytest = uqtkarray_tools.uqtk2numpy(self.__ytest_uqtk)
+        self.__ytest = uqtkarray.uqtk2numpy(self.__ytest_uqtk)
         return self.__ytest
     def getsens(self):
         '''

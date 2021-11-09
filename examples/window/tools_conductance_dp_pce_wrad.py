@@ -53,23 +53,19 @@ sys.path.append('../../PyUQTk/pce/')
 sys.path.append('../../PyUQTk/tools/')
 
 try:
-    import pyuqtkarray as uqtkarray
+    import PyUQTk.uqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import pyuqtkarray_tools as uqtkarray_tools
-except ImportError:
-    print("PyUQTk array_tools module not found")
-try:
-    import _quad as uqtkquad
+    import PyUQTk.quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import _pce as uqtkpce
+    import PyUQTk.pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import _tools as uqtktools
+    import PyUQTk.tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
 
@@ -195,7 +191,7 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
 
     # Put PC germ samples in a UQTk array
     std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk = uqtkarray_tools.numpy2uqtk(np.asfortranarray(germ_samples))
+    std_samples_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(germ_samples))
     #std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
 
     # Numpy array to store all RVs evaluated from sampled PCEs
@@ -237,7 +233,7 @@ def get_quadpts(pc_model,ndim):
 
     # Convert quad points to a numpy array
     qdpts = np.zeros((totquat,ndim))
-    qdpts = uqtkarray_tools.uqtk2numpy(qdpts_uqtk)
+    qdpts = uqtkarray.uqtk2numpy(qdpts_uqtk)
     #qdpts_uqtk.getnpdblArray(qdpts)
     return qdpts, totquat
 

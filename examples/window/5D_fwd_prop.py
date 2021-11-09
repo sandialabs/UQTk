@@ -57,23 +57,19 @@ sys.path.append('../../PyUQTk/tools/')
 sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
 
 try:
-    import pyuqtkarray as uqtkarray
+    import PyUQTk.uqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import pyuqtkarray_tools as uqtkarray
-except ImportError:
-    print("PyUQTk array_tools module not found")
-try:
-    import _quad as uqtkquad
+    import PyUQTk.quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import _pce as uqtkpce
+    import PyUQTk.pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import _tools as uqtktools
+    import PyUQTk.tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
 try:
