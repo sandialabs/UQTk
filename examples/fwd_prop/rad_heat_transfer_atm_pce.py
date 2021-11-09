@@ -49,33 +49,26 @@ except ImportError:
 	print("Scipy stats module could not be found")
 
 import sys
-sys.path.append('../../PyUQTk/pyuqtkarray/')
-sys.path.append('../../PyUQTk/quad/')
-sys.path.append('../../PyUQTk/pce/')
-sys.path.append('../../PyUQTk/tools/')
-sys.path.append('../../PyUQTk/pce_tools/')
-sys.path.append('../../PyUQTk/pyuqtkarray_tools/')
-sys.path.append('../../PyUQTk/adaptation_tools/')
-sys.path.append('../../PyUQTk/')
 
 try:
-    import _uqtkarray as uqtkarray
+    import PyUQTk.uqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import _quad as uqtkquad
+    import PyUQTk.quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import _pce as uqtkpce
+    import PyUQTk.pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import _tools as uqtktools
+    import PyUQTk.tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
+
 try:
-    import pce_tools as pce_tools
+    import PyUQTk.PyPCE.pce_tools as pce_tools
 except ImportError:
     print("PyUQTk pce_tools module not found")
 

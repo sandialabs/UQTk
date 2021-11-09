@@ -54,8 +54,8 @@ sys.path.append("../../PyUQTk/tools")
 sys.path.append("../../PyUQTk/")
 
 #try:
-import adaptation_tools as adp
-import pce_tools
+import PyUQTk.PyPCE.adaptation_tools as adp
+from PyUQTk.PyPCE import pce_tools
 #except ImportError:
     #print("PyUQTk pce_tools or adaptation_tools module not found")
 
