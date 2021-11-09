@@ -23,5 +23,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyuqtkarray_tools.py
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarray)
 
 INSTALL(TARGETS _uqtkarray DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pyuqtkarray/_uqtkarray.cpython-37m-darwin.so
-	      DESTINATION PyUQTk/)
+#INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pyuqtkarray/_uqtkarray
+#	      DESTINATION PyUQTk/)

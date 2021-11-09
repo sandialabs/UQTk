@@ -30,5 +30,3 @@ TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk depuqtk)
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/tools)
 
 INSTALL(TARGETS _tools DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/tools/_tools.cpython-37m-darwin.so
-	      DESTINATION PyUQTk/)

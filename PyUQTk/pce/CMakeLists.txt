@@ -38,4 +38,3 @@ endif()
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pce)
 
 INSTALL(TARGETS _pce DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pce/_pce.cpython-37m-darwin.so DESTINATION PyUQTk/)

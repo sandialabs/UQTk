@@ -15,4 +15,3 @@ TARGET_LINK_LIBRARIES(_quad PUBLIC uqtk blas lapack depuqtk)
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/quad)
 
 INSTALL(TARGETS _quad DESTINATION PyUQTk/)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/quad/_quad.cpython-37m-darwin.so DESTINATION PyUQTk/)
