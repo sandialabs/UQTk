@@ -63,10 +63,10 @@ def main(args):
         shutil.copyfile('surf_rxn.in.xml.templ','surf_rxn.in.xml')
         for idim in range(ndim,0,-1):
             for line in fileinput.input("surf_rxn.in.xml", inplace = 1):
-                print line.replace('PAR_'+str(idim), str(params[ip,idim-1])),
+                print(line.replace('PAR_'+str(idim), str(params[ip,idim-1])), end=' ')
 
         print("======================================================================================================================")
-        print("Running the ODE solver for parameter %d/%d" % (ip+1,nruns))
+        print(("Running the ODE solver for parameter %d/%d" % (ip+1,nruns)))
         os.system('./SurfRxnDet.x')
 
         # Store the solution file
@@ -85,8 +85,8 @@ def main(args):
         arr=np.fft.rfft(cursol[-tail:,spid])
         period.append(tail/(abs(arr[1:]).argmax()))
 
-    print("Average: ", np.array(ave))
-    print("Period: ", np.array(period))
+    print(("Average: ", np.array(ave)))
+    print(("Period: ", np.array(period)))
 
 ## Execute main if this file is run as a script
 #

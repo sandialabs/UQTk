@@ -1,7 +1,7 @@
 # Sandia National Labs
 # Uncertainty Quantification Toolkit (UQTk) version @UQTKVERSION@
 
-#### Bert Debusschere, Cosmin Safta, Khachik Sargsyan, Katherine Johnston, Prashant Rai, Mohammad Khalil, Tiernan Casey, Xiaoshu Zeng, Kenny Chowdhary
+#### Bert Debusschere, Cosmin Safta, Katherine Johnston, Kenny Chowdhary, Khachik Sargsyan, Luke Boll, Mohammad Khalil, Prashant Rai, Tiernan Casey, Xiaoshu Zeng
 
 ## Overview
 The UQ Toolkit (UQTk) is a collection of libraries and tools for the

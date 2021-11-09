@@ -39,8 +39,6 @@
 #include "Utils.h"
 #include "amcmc.h"
 
-
-
 /// \brief Example that solves deterministic 3-equation model for heterogeneous surface
 /// reaction involving a monomer, dimer, and inert species adsorbing
 /// onto a surface out of gas phase. This model mimics some aspects

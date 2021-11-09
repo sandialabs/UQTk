@@ -57,13 +57,13 @@ def extract_vars(samples_file_name,n_burnin,v_names,debug,stride=1):
             i_v = col_labels.index(s_v)
             v_indices.append(i_v)
         except ValueError:
-            print "Variable", s_v, "is not found in the list of labels", col_labels
+            print(("Variable", s_v, "is not found in the list of labels", col_labels))
             sys.exit(1)
 
     if (debug > 0):
-        print "Column labels in file",samples_file_name,"are:",col_labels
+        print(("Column labels in file",samples_file_name,"are:",col_labels))
         for i_v in range(len(v_names)):
-            print "The column number of",v_names[i_v],"is:",v_indices[i_v]
+            print(("The column number of",v_names[i_v],"is:",v_indices[i_v]))
 
     # Read subsequent lines, leaving out the first n_burnin, and only one
     # in every stride lines after that
@@ -97,7 +97,7 @@ def extract_vars(samples_file_name,n_burnin,v_names,debug,stride=1):
             # Remove the last line
             del samples_list[-1]
             if (debug > 0):
-                print "The last sample line has been deleted as it contained the MAP values"
+                print("The last sample line has been deleted as it contained the MAP values")
 
     # Convert list to array
     steady_samples = np.array(samples_list)
@@ -118,13 +118,13 @@ def extract_vars(samples_file_name,n_burnin,v_names,debug,stride=1):
 
     samples = np.array(samples_cols).T
     if (debug > 0):
-        print "Shape of samples array:",samples.shape
+        print(("Shape of samples array:",samples.shape))
 
     n_samples = len(samples[:,0])
     n_vars = len(samples[0,:])
 
     if (debug > 0):
-        print "Read in", n_samples, "regular samples of", n_vars, "variables from file", samples_file_name
+        print(("Read in", n_samples, "regular samples of", n_vars, "variables from file", samples_file_name))
 
     return samples
 
@@ -152,8 +152,8 @@ def extract_all_vars(samples_file_name,n_burnin,debug,stride=1):
     v_names = col_labels[1:1+n_vars]
 
     if (debug > 0):
-        print "Column labels in file", samples_file_name, "are:", col_labels
-        print "MCMC chain variables are", v_names
+        print(("Column labels in file", samples_file_name, "are:", col_labels))
+        print(("MCMC chain variables are", v_names))
 
     # Read subsequent lines, leaving out the first n_burnin, and only one
     # in every stride lines after that
@@ -187,7 +187,7 @@ def extract_all_vars(samples_file_name,n_burnin,debug,stride=1):
             # Remove the last line
             del samples_list[-1]
             if (debug > 0):
-                print "The last sample line has been deleted as it contained the MAP values"
+                print("The last sample line has been deleted as it contained the MAP values")
 
     # Convert list to array
     samples = np.array(samples_list)
@@ -204,7 +204,7 @@ def extract_all_vars(samples_file_name,n_burnin,debug,stride=1):
     n_samples = len(samples[:,0])
 
     if (debug > 0):
-        print "Read in", n_samples, "regular samples of", n_vars, "variables from file", samples_file_name
+        print(("Read in", n_samples, "regular samples of", n_vars, "variables from file", samples_file_name))
 
     return samples, v_names
 

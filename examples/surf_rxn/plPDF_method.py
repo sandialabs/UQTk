@@ -49,12 +49,12 @@ rc('ytick',labelsize=20)
 
 # define uqtkbin
 if os.environ.get("UQTK_INS") is None:
-    print "Error: Need to set path to UQTk install direactory as environment variable UQTK_INS -> Abort"
+    print("Error: Need to set path to UQTk install direactory as environment variable UQTK_INS -> Abort")
     quit()
 
 else:
     if ( not os.path.isdir(os.environ["UQTK_INS"]) ):
-        print "\"",os.environ["UQTK_INS"],"\" is not a valid path -> Abort"
+        print("\"",os.environ["UQTK_INS"],"\" is not a valid path -> Abort")
         quit()
 
 uqtkbin=os.environ["UQTK_INS"]+"/bin"
@@ -87,19 +87,19 @@ for method in methlist:
     sol=np.loadtxt("solution_"+method+"_modes.dat")
 
 
-    # Get the second half of the time series 
-    tail=sol.shape[0]/2
+    # Get the second half of the time series
+    tail=sol.shape[0]//2
 
     # Compute the average of the given species
     if (qoi=='ave'):
         ave=np.average(sol[-tail:,1:],axis=0)
         ncol=ave.shape[0]
-        npc=ncol/3
+        npc=ncol//3
         np.savetxt("pccf.dat",ave[npc*(spid-1):npc*spid])
     elif (qoi=='tf'):
         sp_tf=np.array(sol[-1,1:])
         ncol=sp_tf.shape[0]
-        npc=ncol/3
+        npc=ncol//3
         np.savetxt("pccf.dat",sp_tf[npc*(spid-1):npc*spid])
 
     # Find (in a very unpleasant way) the stochastic dimension
@@ -107,7 +107,7 @@ for method in methlist:
         npcc=get_npc(dim,ord)
         if (npc==npcc):
             break
-    
+
     pcerv=uqtkbin+"/pce_rv"
     os.system(pcerv+" -w'PC' -f'pccf.dat' -x" + pctype + " -d1 -n" + str(nsam) +" -p"+str(dim)+" -o"+str(ord))
     spls=np.genfromtxt("rvar.dat")
@@ -131,8 +131,3 @@ if species == 'u':
 else:
     plt.legend(loc="upper right")
 plt.savefig("forUQ_"+species+"_"+qoi+"_PCEdens.pdf")
-
-
-
-
-

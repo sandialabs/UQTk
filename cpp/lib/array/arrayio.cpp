@@ -177,6 +177,90 @@ void read_datafileVS(Array2D<T> &data, const char *filename)
 template void read_datafileVS(Array2D<double> &data, const char *filename);
 template void read_datafileVS(Array2D<int>    &data, const char *filename);
 
+// Read a datafile from filename and store it in an 1d array of 1d arrays
+// array data of typename T
+template <typename T>
+void read_datafileVS(Array1D<Array1D<T> > &data, const char *filename)
+{
+
+  ifstream in(filename);
+
+  if(!in){
+    printf("read_datafileVS() : the requested file %s does not exist\n",filename) ;
+    exit(1) ;
+  }
+
+  string theLine="";
+
+  Array1D<int> nys(0);
+  // figure out number of lines and columns
+  int nx, ix = 0 ;
+  while(in.good()){
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp    ;
+    while( s >> tmp ) iy++ ;
+
+    nys.PushBack(iy);
+
+    ix++ ;
+
+  }
+
+  nx = ix ;
+
+#ifdef VERBOSE
+  printf("File \"%s\" contains %d rows\n",filename,nx) ;
+#endif
+  // Resize, goto beginning, and read again
+
+  if ( ( (int) data.XSize() != nx )  )
+    data.Resize(nx) ;
+
+  //in.close() ;
+  //in.open(filename);
+  in.clear() ;
+  in.seekg(0, ios::beg ) ;
+  ix = 0 ;
+  while( in.good() ){
+
+    getline(in,theLine);
+
+    if ( theLine == "" ) break;
+    if ( theLine.compare(0,1,"#") == 0 ) continue ;
+
+    data(ix).Resize(nys(ix));
+    istringstream s(theLine);
+    int    iy = 0 ;
+    T      tmp ;
+    while( s >> tmp ) {
+      data(ix)(iy)=tmp;
+      iy++;
+    }
+    if ( iy != nys(ix) ) {
+      printf("read_datafileVS() : Error in file \"%s\" \n",filename);
+      printf("                    -> at line %d while reading %s; number of columns should be %d\n",
+              ix+1, filename, nys(ix));
+      exit(1) ;
+    }
+    ix++;
+  }
+  if ( ix != nx ) {
+    printf("read_datafileVS() : Error while reading \"%s\" -> number of rows should be %d\n", filename,nx) ;
+    exit(1) ;
+  }
+
+  return ;
+
+}
+template void read_datafileVS(Array1D<Array1D<double> > &data, const char *filename);
+template void read_datafileVS(Array1D<Array1D<int> > &data, const char *filename);
+
 // Read a datafile from filename in a vector form and store it in a 2d
 // array data of typename T
 template <typename T>
