@@ -49,9 +49,7 @@ import matplotlib.ticker as mticker
 
 import PyUQTk.inference.postproc as uqtkinfpp
 import PyUQTk.utils.pdf_kde as uqtk_kde
-
-sys.path.append('../../PyUQTk/pyuqtkarray/')
-import pyuqtkarray as uqtkarray
+import PyUQTk.uqtkarray as uqtkarray
 
 try:
     import PyUQTk.inference.postproc as uqtkinfpp
