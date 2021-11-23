@@ -25,43 +25,6 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
-# Pybind interface modules (only compiled if PyUQTK=On)
-try:
-    from . import uqtkarray
-except ImportError:
-    print('PyUQTk array interface not created.')
-
-try:
-    from . import quad
-except ImportError:
-    print('PyUQTk quad interface not created.')
-
-try:
-    from . import tools
-except ImportError:
-    print('PyUQTk tools interface not created.')
-
-try:
-    from . import kle
-except ImportError:
-    print('PyUQTk kle interface not created.')
-
-try:
-    from . import pce
-    from . import PyPCE
-except ImportError:
-    print('PyUQTk pce interface and PyPCE module not available.')
-
-try:
-    from . import bcs
-except ImportError:
-    print('PyUQTk bcs interface not created.')
-
-try:
-    from . import mcmc
-except ImportError:
-    print('PyUQTk mcmc interface not created.')
-
 # pure python tools (always included)
 try:
     from . import inference
