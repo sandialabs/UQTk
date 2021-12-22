@@ -52,12 +52,12 @@ def version_cmp(version1, version2):
 if ( len(sys.argv) > 1 ):
     sample_file_name=sys.argv[1]
 else:
-    print "Please specify the file name samples.a.dat or samples.loga.dat as argument"
+    print("Please specify the file name samples.a.dat or samples.loga.dat as argument")
     quit()
 
 # Get scipy version to see if the method set_bandwidth is available
 spver=spy.__version__
-print "scipy version: ",spver
+print("scipy version: ",spver)
 
 # set_bandwidth is available as of scipy version 0.11
 min_version = "0.11"
@@ -74,7 +74,7 @@ kernsS=stats.kde.gaussian_kde(samples)
 pdf1=kernsS(xS)
 
 if bandwidth_present:
-    print ("Performing KDE with a range of bandwidths:")
+    print("Performing KDE with a range of bandwidths:")
     kernsS.set_bandwidth(bw_method=kernsS.factor/2.0)
     pdf2=kernsS(xS);
     kernsS.set_bandwidth(bw_method=kernsS.factor*4.0)
