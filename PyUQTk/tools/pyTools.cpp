@@ -47,8 +47,6 @@
 #include "gq.h"
 #include "rosenblatt.h"
 #include "func.h"
-#include "cvode_direct.h"
-#include "cvodes_direct.h"
 
 namespace py=pybind11;
 
