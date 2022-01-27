@@ -6,7 +6,7 @@ include_directories(../../cpp/lib/array) #array directory
 include_directories(../../cpp/lib/bcs) #bcs directory
 include_directories(../../cpp/lib/include) #bcs directory
 pybind11_add_module(_bcs PyBCS.cpp)
-TARGET_LINK_LIBRARIES(_bcs PUBLIC uqtk)
+TARGET_LINK_LIBRARIES(_bcs PUBLIC uqtk depuqtk lapack blas)
 
 #SET(copy_FILES
 #  __init__.py

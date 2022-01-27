@@ -12,7 +12,7 @@ include_directories (${CMAKE_SUNDIALS_DIR}/include)
 include_directories (${CMAKE_SUNDIALS_DIR}/include/cvodes)
 include_directories (${CMAKE_SUNDIALS_DIR}/include/cvode)
 if( BUILD_SUNDIALS)
-  include_directories (${PROJECT_BINARY_DIR}/../../dep/sundials/include)
+  #include_directories (${PROJECT_BINARY_DIR}/../../dep/sundials/include)
   include_directories (${PROJECT_BINARY_DIR}/../dep/sundials/include)
   include_directories ($ENV{UQTK_SRC}/dep/sundials/include/cvodes)
   include_directories ($ENV{UQTK_SRC}/dep/sundials/include/cvode)
@@ -21,7 +21,8 @@ endif()
 
 
 pybind11_add_module(_tools pyTools.cpp)
-TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk depuqtk)
+target_link_directories(_tools PUBLIC "${PROJECT_BINARY_DIR}/../dep/sundials/src/cvode/")
+TARGET_LINK_LIBRARIES(_tools PUBLIC uqtk depuqtk lapack blas sundials_cvode)
 
 #SET(copy_FILES
 #  __init__.py
