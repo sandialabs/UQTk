@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -27,43 +27,52 @@
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 import math
+import sys
 
 try:
-	import numpy as np
+    import numpy as np
 except ImportError:
-	print("Numpy module not found")
+    print("Numpy module not found")
 
 try:
-	from scipy import stats
+    from scipy import stats
 except ImportError:
-	print("Scipy stats module not found")
+    print("Scipy stats module not found")
+
+sys.path.append("../../PyUQTk/pyuqtkarray")
+sys.path.append("../../PyUQTk/pyuqtkarray_tools")
+sys.path.append("../../PyUQTk/quad")
+sys.path.append("../../PyUQTk/pce")
+sys.path.append("../../PyUQTk/tools")
+sys.path.append("../../PyUQTk/")
 
 try:
-	import PyUQTk.uqtkarray as uqtkarray
-	import PyUQTk.quad as uqtkquad
-	import PyUQTk.pce as uqtkpce
-	import PyUQTk.tools as uqtktools
+    import _uqtkarray as uqtkarray
+    import pyuqtkarray_tools as uqtkarray_tools
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
 except ImportError:
-	print("PyUQTk array, quad, PCE, or tools module not found")
+    print("PyUQTk array, quad, PCE, or tools module not found")
 
 #################################################################
 
 def KDE(fcn_evals):
-	"""
-	Performs kernel density estimation
-	Input:
-		fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
-	Output:
-		xpts_pce: numpy array of points at which the PDF is estimated.
-		PDF_data_pce: numpy array of estimated PDF values.
-	"""
-	# Perform KDE on fcn_evals
-	kern_pce=stats.kde.gaussian_kde(fcn_evals)
-	# Generate points at which to evaluate the PDF
-	xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
-	# Evaluate the estimated PDF at these points
-	PDF_data=kern_pce(xpts)
-	return xpts, PDF_data
+    """
+    Performs kernel density estimation
+    Input:
+        fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
+    Output:
+        xpts_pce: numpy array of points at which the PDF is estimated.
+        PDF_data_pce: numpy array of estimated PDF values.
+    """
+    # Perform KDE on fcn_evals
+    kern_pce=stats.kde.gaussian_kde(fcn_evals)
+    # Generate points at which to evaluate the PDF
+    xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
+    # Evaluate the estimated PDF at these points
+    PDF_data=kern_pce(xpts)
+    return xpts, PDF_data
 
 def fwd_model(xx, a, b, main_verbose=0):
     '''
@@ -114,7 +123,9 @@ def EvaluatePCE(pc_model,pc_coeffs,germ_samples):
 
     # Put PC germ samples in a UQTk array
     std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
+    std_samples_uqtk = uqtkarray_tools.numpy2uqtk(np.asfortranarray(germ_samples))
+    #uqtkarray.setnpdblArray(std_samples_uqtk,np.asfortranarray(germ_samples))
+    #std_samples_uqtk.setnpdblArray(np.asfortranarray(germ_samples))
 
     # Numpy array to store all RVs evaluated from sampled PCEs
     rvs_sampled = np.zeros(n_test_samples)
@@ -123,7 +134,8 @@ def EvaluatePCE(pc_model,pc_coeffs,germ_samples):
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        c_k_1d_uqtk[ip] = pc_coeffs[ip]
+        c_k_1d_uqtk.assign(ip,pc_coeffs[ip])
+        #c_k_1d_uqtk[ip] = pc_coeffs[ip]
 
     # Create UQTk array to store outputs in
     rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)

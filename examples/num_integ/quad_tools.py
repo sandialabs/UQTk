@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -26,6 +26,8 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+
 try:
     from numpy import *
 except ImportError:
@@ -37,6 +39,8 @@ try:
     from PyUQTk.utils.func import *
 except ImportError:
     print("PyUQTk array and quad module not found")
+#except ImportError:
+    #print("PyUQTk array and quad module not found")
 
 
 from math import *
@@ -53,7 +57,7 @@ def generate_qw(ndim,param,sp='full',type='LU'):
 
 
     #print 'Create an instance of Quad class'
-    q = uqtkquad.Quad(type,sp,ndim,param)
+    q = uqtkquad.Quad(type,sp,ndim,param,0.0,1.0)
 
     #print 'Now set and get the quadrature rule...'
     q.SetRule()
@@ -63,15 +67,18 @@ def generate_qw(ndim,param,sp='full',type='LU'):
     #print 'Displaying the quadrature points and weights:\n'
     #print x
     #print w
-    n = len(x)
+    n = x.XSize()
 
     # get quad points
     x_np = zeros((n,ndim))
-    x.getnpdblArray(x_np)
+    x_np = uqtkarray.uqtk2numpy(x)
+    #x_np = x_np.transpose()
+    #x.getnpdblArray(x_np)
 
     # get quad weights
     w_np = zeros(n)
-    w.getnpdblArray(w_np)
+    w_np = uqtkarray.uqtk2numpy(w)
+
     xpts=array((x_np))
 
     return xpts,w_np

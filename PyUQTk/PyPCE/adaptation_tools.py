@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -25,6 +25,14 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pce/')
+sys.path.append('../quad/')
+sys.path.append('../tools/')
+sys.path.append('../pce_tools/')
+sys.path.append('../')
+
 try:
     import uqtkarray
     import quad as uqtkquad
@@ -52,7 +60,7 @@ def gauss_adaptation(c_k, ndim, method = 0):
            c_k: N0 dimensional numpy array of first order coefficients,
                 where N0 is the # of pc terms of 1 dimensional expansion
           ndim: dimension of the problem
-	    method: The method to compute the isometry (Rotation matrix), from set {0,1,2,3}. Returns isometry.
+        method: The method to compute the isometry (Rotation matrix), from set {0,1,2,3}. Returns isometry.
             0 : (default) By Gram-Schmidt procedure on matrix A with Gaussian coeffs (normalized) at its first row,
                 and ones along diagonal zeros elsewhere for other rows.
             1 : By orthogonal decomposition of a * a.T, where a contains Gaussian coeffs
@@ -134,7 +142,7 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
         locs   : N1 numpy array (N1 is # of PC terms in d1 dimesnional expansion),
                  the coefficients locations of d1 dimensional expansion in d2 dimensional expansion
     '''
-    assert d1 < d2
+    assert d1 < d2, "lower dimension is not less than higher dimenison"
 
     # obtain pc_model of d2 dimensional expansion
     pc_model2 = uqtkpce.PCSet("NISP", nord, d2, pc_type, pc_alpha, pc_beta)
@@ -147,7 +155,11 @@ def mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_beta=1.0):
     MI_uqtk = uqtkarray.intArray2D()
     pc_model2.GetMultiIndex(MI_uqtk)
     MI = np.zeros((pc_model2.GetNumberPCTerms(), d2),dtype='int64')
-    MI_uqtk.getnpintArray(MI)
+    #uqtkarray.printarray(MI_uqtk)
+    #MI_uqtk.getnpintArray(MI)
+    MI = uqtkarray.uqtk2numpy(MI_uqtk)
+    #print(MI)
+    #MI = uqtkarray.getnpintArray(MI_uqtk)
 
     # find locations where the first d1 multi-indices of d2 space agree with
     # multi-indices in d1 space, while the remaining indices equal zeros
@@ -179,7 +191,17 @@ def l2_error_eta(c_1, c_2, d1, d2, nord, pc_type, param, sf, pc_alpha=0.0, pc_be
     assert np.shape(c_1)[0] <= np.shape(c_2)[0]
     C1 = np.zeros(c_2.shape[0])
     # call mi_terms_loc to make projections
-    C1[mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)] = c_1
+    print("d1=",d1)
+    print("d2=",d2)
+    print("nord=",nord)
+    print("pc_type=",pc_type)
+    print("param=",param)
+    print("sf=",sf)
+    print("pc_alpha=",pc_alpha)
+    print("pc_beta=",pc_beta)
+    array = mi_terms_loc(d1, d2, nord, pc_type, param, sf, pc_alpha, pc_beta)
+    print(array)
+    C1[array] = c_1
     return (np.linalg.norm((C1 - c_2),2) / np.linalg.norm(c_2,2)), C1
 
 def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alpha=0.0, pc_beta=1.0):
@@ -210,22 +232,24 @@ def transf_coeffs_xi(coeffs, nord, ndim, pc_type, param, R, sf="sparse", pc_alph
     ##### Obtain Psi_xi at quadrature points of eta #####
     qdpts_xi = eta_to_xi_mapping(qdpts_eta, R)
     qdpts_xi_uqtk = uqtkarray.dblArray2D(totquat_eta, ndim)
-    qdpts_xi_uqtk.setnpdblArray(np.asfortranarray(qdpts_xi))
+    uqtkarray.setnpdblArray(qdpts_xi_uqtk,np.asfortranarray(qdpts_xi))
 
     psi_xi_uqtk = uqtkarray.dblArray2D()
     pc_model_xi.EvalBasisAtCustPts(qdpts_xi_uqtk, psi_xi_uqtk)
     psi_xi = np.zeros((totquat_eta, pc_model_xi.GetNumberPCTerms()))
-    psi_xi_uqtk.getnpdblArray(psi_xi)
+    psi_xi = uqtkarray.uqtk2numpy(psi_xi_uqtk)
+    #psi_xi = uqtkarray.getnpdblArray(psi_xi_uqtk)
 
     ##### Obtian Psi_eta at quadrature points of eta #####
     weight_eta_uqtk = uqtkarray.dblArray1D()
     pc_model_eta.GetQuadWeights(weight_eta_uqtk)
     weight_eta=np.zeros((totquat_eta,))
-    weight_eta_uqtk.getnpdblArray(weight_eta)
+    weight_eta = uqtkarray.getnpdblArray(weight_eta_uqtk)
 
     psi_eta_uqtk = uqtkarray.dblArray2D()
     pc_model_eta.GetPsi(psi_eta_uqtk)
     psi_eta = np.zeros( (totquat_eta, pc_model_eta.GetNumberPCTerms()) )
-    psi_eta_uqtk.getnpdblArray(psi_eta)
+    psi_eta = uqtkarray.uqtk2numpy(psi_eta_uqtk)
+    #psi_eta = uqtkarray.getnpdblArray(psi_eta_uqtk)
 
     return np.dot(coeffs, np.dot(psi_eta.T * weight_eta, psi_xi))

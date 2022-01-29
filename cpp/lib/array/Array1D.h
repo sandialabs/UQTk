@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -193,16 +193,28 @@ public:
   }
 
   /**********************************************************
-  // Methods for interfacing with python 
+  // Methods for interfacing with python
   **********************************************************/
 
   // For calling [] in Python
   T& operator[](int i) {return data_[i];}
 
+  // For calling shape in Python
+  vector<int> shape(){
+    vector<int> s (1,0);
+    s[0] = this -> XSize();
+    return s;
+  }
+
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const T val){
+    data_[x] = val;
+  }
+
   /// \brief Dump contents of the array to a file in binary format
   // cannot be read with numpy's fromfile after creation
   void DumpBinary(char *filename){
-    FILE *f_out; 
+    FILE *f_out;
     f_out = fopen(filename,"wb");
     fwrite(&xsize_,sizeof(xsize_),1,f_out);
     fwrite(this->GetConstArrayPointer(),sizeof(T),xsize_,f_out);
@@ -222,7 +234,7 @@ public:
   }
 
   // Following two methods are not compatable with certain clang comilers
-  // creates binary file that can be read with numpy's fromfile 
+  // creates binary file that can be read with numpy's fromfile
   void DumpBinary4py(char *filename){
     ofstream f_out;
     f_out.open(filename, ios::out | ios::binary);
@@ -233,7 +245,7 @@ public:
   // can read in DumpBinary4py output, but needs size of vector
   // fromfile can automatically detect size file, so, if need by, one can use numpy's fromfile to determine # of elements
   void ReadBinary4py(char *filename, int n){
-    xsize_ = n; 
+    xsize_ = n;
     ifstream f_in;
     f_in.open(filename, ios::in | ios::binary);
     f_in.read((char*)this->GetArrayPointer(),sizeof(T[xsize_])); // convert array pointer to char string
@@ -243,7 +255,7 @@ public:
   // Set user-defined list to data_ vector
   // This will work even for string type
   void setArray(vector<T> inarray){
-    data_ = inarray; 
+    data_ = inarray;
     xsize_ = inarray.size();
   }
 
@@ -391,16 +403,28 @@ public:
   }
 
   /**********************************************************
-  // Methods for interfacing with python 
+  // Methods for interfacing with python
   **********************************************************/
 
   // For calling [] in Python
   int& operator[](int i) {return data_[i];}
 
+  // For calling shape in Python
+  vector<int> shape(){
+    vector<int> s (1,0);
+    s[0] = this -> XSize();
+    return s;
+  }
+
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const int val){
+    data_[x] = val;
+  }
+
   /// \brief Dump contents of the array to a file in binary format
   // cannot be read with numpy's fromfile after creation
   void DumpBinary(char *filename){
-    FILE *f_out; 
+    FILE *f_out;
     f_out = fopen(filename,"wb");
     fwrite(&xsize_,sizeof(xsize_),1,f_out);
     fwrite(this->GetConstArrayPointer(),sizeof(int),xsize_,f_out);
@@ -419,7 +443,7 @@ public:
     fclose(f_in);
   }
 
-  // creates binary file that can be read with numpy's fromfile 
+  // creates binary file that can be read with numpy's fromfile
   void DumpBinary4py(char *filename){
     ofstream f_out;
     f_out.open(filename, ios::out | ios::binary);
@@ -430,7 +454,7 @@ public:
   // can read in DumpBinary4py output, but needs size of vector
   // fromfile can automatically detect size file, so, if need by, one can use numpy's fromfile to determine # of elements
   void ReadBinary4py(char *filename, int n){
-    xsize_ = n; 
+    xsize_ = n;
     ifstream f_in;
     f_in.open(filename, ios::in | ios::binary);
     f_in.read((char*)this->GetArrayPointer(),xsize_*sizeof(int)); // convert array pointer to char string
@@ -440,17 +464,20 @@ public:
   // Set user-defined list to data_ vector
   // This will work even for string type
   void setArray(vector<int> inarray){
-    data_ = inarray; 
+    data_ = inarray;
     xsize_ = inarray.size();
   }
 
   // // Sets user-defined 1d numpy array to data_ vector
-  void setnpintArray(long* inarray, int n){
+  void setnpintArray(vector<int> inarray, int n){
     xsize_ = n;
-    data_.assign(inarray,inarray+n);
+    data_.clear();
+    for(int i = 0; i < n; ++i){
+      data_.push_back(inarray[i]);
+    }
   }
     // This is not to be used for a string type
-  void getnpintArray(long* outarray, int n){
+  void getnpintArray(long * outarray){
     // xsize_ = n;
     // data_.assign(inarray,inarray+n);
     copy(data_.begin(), data_.end(), outarray);
@@ -602,16 +629,28 @@ public:
   }
 
   /**********************************************************
-  // Methods for interfacing with python 
+  // Methods for interfacing with python
   **********************************************************/
 
   // For calling [] in Python
   double& operator[](int i) {return data_[i];}
 
+  // For calling shape in Python
+  vector<int> shape(){
+    vector<int> s (1,0);
+    s[0] = this -> XSize();
+    return s;
+  }
+
+  // For assigning a value to a specified index in the array
+  void assign(const int x,const double val){
+    data_[x] = val;
+  }
+
   /// \brief Dump contents of the array to a file in binary format
   // cannot be read with numpy's fromfile after creation
   void DumpBinary(char *filename){
-    FILE *f_out; 
+    FILE *f_out;
     f_out = fopen(filename,"wb");
     fwrite(&xsize_,sizeof(xsize_),1,f_out);
     fwrite(this->GetConstArrayPointer(),sizeof(double),xsize_,f_out);
@@ -630,7 +669,7 @@ public:
     fclose(f_in);
   }
 
-  // creates binary file that can be read with numpy's fromfile 
+  // creates binary file that can be read with numpy's fromfile
   void DumpBinary4py(char *filename){
     ofstream f_out;
     f_out.open(filename, ios::out | ios::binary);
@@ -641,7 +680,7 @@ public:
   // can read in DumpBinary4py output, but needs size of vector
   // fromfile can automatically detect size file, so, if need by, one can use numpy's fromfile to determine # of elements
   void ReadBinary4py(char *filename, int n){
-    xsize_ = n; 
+    xsize_ = n;
     ifstream f_in;
     f_in.open(filename, ios::in | ios::binary);
     f_in.read((char*)this->GetArrayPointer(),xsize_*sizeof(double)); // convert array pointer to char string
@@ -651,19 +690,22 @@ public:
   // Set user-defined list to data_ vector
   // This will work even for string type
   void setArray(vector<double> inarray){
-    data_ = inarray; 
+    data_ = inarray;
     xsize_ = inarray.size();
   }
 
   // Sets user-defined 1d numpy array to data_ vector
   // This is not to be used for a string type
-  void setnpdblArray(double* inarray, int n){
+  void setnpdblArray(vector<double> inarray, int n){
     xsize_ = n;
-    data_.assign(inarray,inarray+n);
+    data_.clear();
+    for(int i = 0; i < n; ++i){
+      data_.push_back(inarray[i]);
+    }
   }
   // Sets user-defined 1d numpy array to data_ vector
   // This is not to be used for a string type
-  void getnpdblArray(double* outarray, int n){
+  void getnpdblArray(double* outarray){
     // xsize_ = n;
     // data_.assign(inarray,inarray+n);
     copy(data_.begin(), data_.end(), outarray);

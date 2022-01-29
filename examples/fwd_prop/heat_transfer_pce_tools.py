@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -45,20 +45,28 @@ try:
 except ImportError:
     print("Scipy optimize module could not be found")
 
+import sys
+sys.path.append('../../PyUQTk/pyuqtkarray/')
+sys.path.append('../../PyUQTk/quad/')
+sys.path.append('../../PyUQTk/pce/')
+sys.path.append('../../PyUQTk/tools/')
+sys.path.append('../../PyUQTk')
+
+
 try:
-    import PyUQTk.uqtkarray as uqtkarray
+    import _uqtkarray as uqtkarray
 except ImportError:
     print("PyUQTk array module not found")
 try:
-    import PyUQTk.quad as uqtkquad
+    import _quad as uqtkquad
 except ImportError:
     print("PyUQTk quad module not found")
 try:
-    import PyUQTk.pce as uqtkpce
+    import _pce as uqtkpce
 except ImportError:
     print("PyUQTk PCE module not found")
 try:
-    import PyUQTk.tools as uqtktools
+    import _tools as uqtktools
 except ImportError:
     print("PyUQTk tools module not found")
 #################################################################

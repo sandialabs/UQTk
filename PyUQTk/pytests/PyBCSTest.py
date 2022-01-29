@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -27,13 +27,18 @@
 #=====================================================================================
 from __future__ import print_function # To make print() in Python 2 behave like in Python 3
 
+import os
+src = os.getenv('UQTK_SRC')
 
 # include path for PyUQTk.
 import sys
 sys.path.append('../bcs/') # imports as build lib so installing not needed
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../tools/')
 sys.path.append('../pce/')
+sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../bcs_ext/')
+sys.path.append('..')
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -47,12 +52,21 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-	import uqtkarray as uqtkarray
-	import pce as uqtkpce
-	import tools as uqtktools
-	from bcs import bcsreg
+    import uqtkarray as uqtkarray
+    import pyuqtkarray_tools
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk array module not found")
+
+try:
+    import pce as uqtkpce
+    import tools as uqtktools
+except ImportError:
+    print("PyUQTk PCE module not found")
+
+try:
+	import bcs as bcs
+except ImportError:
+    print("BCS Regression module not found")
 
 '''
 This example uses BCS to fit
@@ -88,7 +102,7 @@ tol=1e-12
 upit=1
 
 # setup, git and predict bcs model
-regmodel = bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
+regmodel = bcs.bcsreg(ndim=2,pcorder=pcorder,pctype="LU")
 err, coeff, mindex = regmodel.fit(X,y,upit=upit,tol=tol)
 ypred = regmodel.predict(Xtest)
 
@@ -99,7 +113,10 @@ print("\nMSE is {:.5g}".format(mse))
 print("NMSE is {:.5g}".format(nmse))
 
 # print sensitivities
-print("\nSensitivities are ", regmodel.getsens())
+try:
+	print("\nSensitivities are ", regmodel.getsens())
+except:
+	print("Issue with gensens()")
 
 prec = 1e-7
 assert mse < prec, "BCS failed to recover the coefficients to desired precision :-("

@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -29,7 +29,10 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path to include PyUQTk
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../')
+
 
 try:
 	import numpy as np
@@ -38,8 +41,6 @@ except ImportError:
 
 try:
 	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
@@ -58,15 +59,16 @@ a_np = np.array([[0, 2.00],[0.1, 1],[1, 5.0]])
 print("flags for a_np to show whether C or F contiguous")
 print(a_np.flags)
 
+
 # get a uqtk array from a numpy array (memory is copied, not shared)
-a_uqtk = numpy2uqtk(a_np)
+a_uqtk = uqtkarray.numpy2uqtk(a_np)
 print("\nflags for original numpy array to make sure it hasn't changed to F continguous after converting")
 # verify that the original numpy array is only C contiguous
 assert a_np.flags['F_CONTIGUOUS'] == False
 assert a_np.flags['C_CONTIGUOUS'] == True
 
 print("\nConvert uqtk array back to numpy array and make sure C contiguous")
-b_np = uqtk2numpy(a_uqtk)
+b_np = uqtkarray.uqtk2numpy(a_uqtk)
 # test to make sure new numpy array is *only* C contiguous (row - major)
 assert b_np.flags['F_CONTIGUOUS'] == False
 assert b_np.flags['C_CONTIGUOUS'] == True

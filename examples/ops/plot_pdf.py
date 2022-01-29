@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -46,18 +46,22 @@ def version_cmp(version1, version2):
     """
     def normalize(v):
         return [int(x) for x in re.sub(r'(\.0+)*$','', v).split(".")]
-    return cmp(normalize(version1), normalize(version2))
+
+    def my_cmp(a,b): # Since Python 3 no longer has the cmp() function
+        return (a > b) - (a < b)
+
+    return my_cmp(normalize(version1), normalize(version2))
 ################################################################################
 
 if ( len(sys.argv) > 1 ):
     sample_file_name=sys.argv[1]
 else:
-    print "Please specify the file name samples.a.dat or samples.loga.dat as argument"
+    print("Please specify the file name samples.a.dat or samples.loga.dat as argument")
     quit()
 
 # Get scipy version to see if the method set_bandwidth is available
 spver=spy.__version__
-print "scipy version: ",spver
+print("scipy version: ",spver)
 
 # set_bandwidth is available as of scipy version 0.11
 min_version = "0.11"
@@ -74,7 +78,7 @@ kernsS=stats.kde.gaussian_kde(samples)
 pdf1=kernsS(xS)
 
 if bandwidth_present:
-    print ("Performing KDE with a range of bandwidths:")
+    print("Performing KDE with a range of bandwidths:")
     kernsS.set_bandwidth(bw_method=kernsS.factor/2.0)
     pdf2=kernsS(xS);
     kernsS.set_bandwidth(bw_method=kernsS.factor*4.0)
@@ -88,7 +92,7 @@ fs1=18
 fig = plt.figure(figsize=(8,6))
 ax=fig.add_axes([0.10, 0.10, 0.85, 0.85]) ;
 l1=plt.plot(xS,pdf1,linewidth=lw1,label="optimal")
-if spver > 10:
+if bandwidth_present:
     l2=plt.plot(xS,pdf2,linewidth=lw1,label="optimal/2")
     l3=plt.plot(xS,pdf3,linewidth=lw1,label="optimal*2")
 

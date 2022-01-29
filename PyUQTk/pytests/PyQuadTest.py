@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -29,8 +29,15 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path to include PyUQTk
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
+sys.path.append('../')
+
+
+import os
+src = os.getenv('UQTK_SRC')
+
+sys.path.append('../pyuqtkarray_tools')
 
 try:
 	from numpy import *
@@ -39,12 +46,15 @@ except ImportError:
 	print("Need numpy and matplotlib to test PyUQTk")
 
 try:
-	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
-	import quad as uqtkquad
+	import _uqtkarray as uqtkarray
+	import pyuqtkarray_tools as tools
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk array modules not found")
+
+try:
+	import _quad as uqtkquad
+except ImportError:
+	print("PyUQTk quad module not found")
 
 '''
 This file tests the quadrature pyqutk routine
@@ -117,22 +127,23 @@ q.GetRule(x,w)
 
 # print out x and w
 print('Displaying the quadrature points and weights:\n')
-x_np = uqtk2numpy(x)
+x_np = tools.uqtk2numpy(x)
 print(x_np)
-n = len(x)
+n = x.XSize()
 print('Number of quad points is ', n, '\n')
 
 # plot the quadrature points
 print('Plotting the points (get points in column major order as a flattened vector)')
 print('need to use reshape with fortran ordering')
 xpnts = zeros((n,ndim))
-x.getnpdblArray(xpnts)
+xpnts = uqtkarray.getnpdblArray(x)
 # plot(xpnts[:,0], xpnts[:,1],'ob',ms=10,alpha=.25)
 # show()
 
 # convert the quad weights to numpy arrays
 w_np = zeros(n)
-w.getnpdblArray(w_np)
+#w.getnpdblArray(w_np,n)
+w_np = uqtkarray.getnpdblArray(w)
 
 # asserting the quadrature points are correct
 m,n = x_np.shape

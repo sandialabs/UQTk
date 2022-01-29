@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -119,7 +119,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   Array1D<double> ML(MAX_IT,0) ;
 
   // Go through the iterations
-  int count ;
+  int count = 0;
   for ( count=0; count<MAX_IT; count++ )
   {
     if ( (count%10)==0 )
@@ -487,3 +487,16 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     WBCS(PHI, y, sigma2, eta, lambda_init, adaptive, optimal, scale, verbose,
         weights, used, errbars, basis, alpha, Sig);
 }
+
+void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
+                double eta, Array1D<double> &lambda_init,
+                int adaptive, int optimal, double scale, int verbose,
+                Array1D<double> &weights, Array1D<int> &used,
+                Array1D<double> &errbars, Array1D<double> &basis,
+                Array1D<double> &alpha, Array1D<double> &lambda){
+                  double sigma2_val = sigma2[0];
+                  double lambda_val = lambda[0];
+                  BCS(PHI,y,sigma2_val,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars, basis,alpha,lambda_val);
+                  sigma2[0] = sigma2_val;
+                  lambda[0] = lambda_val;
+                }

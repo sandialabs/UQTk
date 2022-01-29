@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -32,24 +32,24 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 import sys
 
 print("Loading array module:")
-sys.path.append('../uqtkarray/')
-import uqtkarray
+sys.path.append('../pyuqtkarray/')
+import _uqtkarray
 
 print("Loading quadrature module:")
 sys.path.append('../quad/')
-import quad
+import _quad
 
 print("Loading bayesian compressed sensing module:")
-# sys.path.append('../bcs/')
-# import bcs
+sys.path.append('../bcs/')
+import _bcs
 
 print("Loading polynomial chaos module:")
 sys.path.append('../pce/')
-import pce
+import _pce
 
 print("Loading tools module:")
 sys.path.append('../tools')
-import tools
+import _tools
 
 #print("Loading dfi module:")
 #sys.path.append('../dfi/')

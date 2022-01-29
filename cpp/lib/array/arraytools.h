@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -27,7 +27,7 @@
 ===================================================================================== */
 /// \file arraytools.h
 /// \brief Header file for array tools
-/// \todo Some functions are not optimal in terms of array access. 
+/// \todo Some functions are not optimal in terms of array access.
 /// \todo Some functions should be templated and or moved to array class
 
 #ifndef ARRAYTOOLS_H
@@ -89,6 +89,9 @@ void swap(Array2D<double>& arr,int i,int j);
 
 /// \brief Access element \f$j+i\times ny\f$ from 1D array 'arr_1'
 double access(int nx, int ny, Array1D<double>& arr_1, int i, int j);
+
+/// \brief Function written exclusively for Pybind11 to be able to load in the function access
+double accessPythonHelper(int nx, int ny, Array1D<double>& arr_1, int i, int j);
 
 /// \brief Retrieves row 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'
 template <typename T> void getRow(Array2D<T> &arr2d, int k, Array1D<T> &arr1d);

@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -25,6 +25,11 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+import sys
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pce/')
+sys.path.append('../quad/')
+sys.path.append('../tools/')
 
 # Import Modules
 try:
@@ -173,7 +178,8 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
     # Create and fill UQTk array for PC coefficients
     p = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        p[ip] = pc_coeffs[ip]
+        #p[ip] = pc_coeffs[ip]
+        p.assign(ip,pc_coeffs[ip])
 
     #create UQTk array to store outputs in
     samples = uqtkarray.dblArray1D(n_samples,0.0)
@@ -264,7 +270,8 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     # UQTk array for function evaluations at quadrature points for that variable
     f_uqtk = uqtkarray.dblArray1D(nqp,0.0)
     for ipt in range(nqp):
-        f_uqtk[ipt]=f_evaluations[ipt]
+        #f_uqtk[ipt]=f_evaluations[ipt]
+        f_uqtk.assign(ipt,f_evaluations[ipt])
 
     # Galerkin Projection
     pc_model.GalerkProjection(f_uqtk,c_k_1d_uqtk)
@@ -273,6 +280,7 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     c_k = np.zeros(npce)
     for ip in range(npce):
         c_k[ip] = c_k_1d_uqtk[ip]
+        #c_k[ip] = c_k_1d_uqtk.at(ip)
 
     # Return numpy array of PC coefficients
     return c_k
@@ -297,7 +305,8 @@ def UQTkGetQuadPoints(pc_model):
 
     # Convert quad points to a numpy array
     qdpts = np.zeros((totquat,n_dim))
-    qdpts_uqtk.getnpdblArray(qdpts)
+    #qdpts_uqtk.getnpdblArray(qdpts)
+    qdpts = uqtkarray.uqtk2numpy(qdpts_uqtk)
     return qdpts, totquat
 ################################################################################
 def UQTkStDv(pc_model,pc_coeffs):

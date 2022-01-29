@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -32,7 +32,10 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 # only necessary for cmake tests, so that user doesn have to "make install" to run
 # python tests
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
+sys.path.append('../pyuqtkarray_tools/')
+sys.path.append('../')
+
 
 # try to import numpy and matplotlib
 try:
@@ -45,8 +48,7 @@ except ImportError:
 # functions to convert between uqtk and numpy arrays
 try:
 	import uqtkarray
-	from uqtkarray import numpy2uqtk
-	from uqtkarray import uqtk2numpy
+	#import uqtkarray_tools as tools
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
@@ -62,7 +64,7 @@ x = uqtkarray.dblArray1D(N,0)
 x_np = random.randn(N)
 
 # set uqtk array to numpy array
-x.setnpdblArray(x_np)
+x.setnpdblArray(x_np,N)
 
 # test to make sure array elements are the same
 for i in range(N):
@@ -77,19 +79,21 @@ y = uqtkarray.dblArray2D(m,n,1)
 # set 2d array to numpy array
 # make sure to pass asfortranarray
 y_np = random.randn(m,n)
-y.setnpdblArray(asfortranarray(y_np))
+uqtkarray.setnpdblArray(y,asfortranarray(y_np))
 
 for i in range(m):
 	for j in range(n):
-		assert y[i,j] == y_np[i,j]
+		assert abs(y.at(i,j) - y_np[i,j]) < 0.0005
 
-''' alternative using uqtk2numpy and numpy2uqtk '''
+
+print("alternative using uqtk2numpy and numpy2uqtk")
 
 # test conversion from 1d numpy array to 1d uqtk array
 nn = 10
 x1 = random.rand(nn)
-y1 = numpy2uqtk(x1)
-z1 = uqtk2numpy(y1)
+y1 = uqtkarray.numpy2uqtk(x1)
+z1 = uqtkarray.uqtk2numpy(y1)
+
 for i in range(nn):
 	assert x1[i] == y1[i]
 
@@ -101,11 +105,12 @@ for i in range(nn):
 nn = 10
 mm = 5
 X1 = random.rand(mm,nn)
-Y1 = numpy2uqtk(X1)
-Z1 = uqtk2numpy(Y1)
+Y1 = uqtkarray.numpy2uqtk(X1)
+Z1 = uqtkarray.uqtk2numpy(Y1)
+
 for i in range(mm):
 	for j in range(nn):
-		assert X1[i,j] == Y1[i,j]
+		assert abs(X1[i,j] - Y1.at(i,j)) < 0.00005
 
 # test for conversion from 2d uqtk array to numpy array
 for i in range(mm):

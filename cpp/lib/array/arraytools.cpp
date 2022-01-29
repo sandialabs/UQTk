@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -385,6 +385,11 @@ double access(int nx, int ny,Array1D<double>& arr_1, int i, int j)
   CHECKEQ(nx*ny,(int) arr_1.XSize());
 
   return arr_1(j+i*ny);
+}
+
+double accessPythonHelper(int nx, int ny,Array1D<double>& arr_1, int i, int j)
+{
+  return access(nx,ny,arr_1,i,j);
 }
 
 // Retrieves row 'k' from 2D array 'arr2d' and returns it in 1D array 'arr1d'
@@ -1127,8 +1132,6 @@ Array2D<double> MatTMat(Array2D<double>& A)
 
   return B;
 }
-
-
 
 // Deletes a row from a matrix
 template <typename T>

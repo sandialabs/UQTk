@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.1
-#                          Copyright (2021) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -29,18 +29,22 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 # include path for PyUQTk.
 import sys
-sys.path.append('../uqtkarray/')
+sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
 sys.path.append('../tools')
-sys.path.append('../PyPCE/')
+sys.path.append('../pce_tools')
+sys.path.append('../adaptation_tools')
+sys.path.append('../')
+sys.path.append('../PyPCE')
+
 try:
-    import uqtkarray
-    import quad as uqtkquad
-    import pce as uqtkpce
-    import tools as uqtktools
-    import pce_tools
-    from adaptation_tools import *
+    import _uqtkarray as uqtkarray
+    import _quad as uqtkquad
+    import _pce as uqtkpce
+    import _tools as uqtktools
+    import PyPCE.pce_tools as pce_tools
+    import PyPCE.adaptation_tools as adaptation_tools
 except ImportError:
     print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
 
@@ -80,7 +84,7 @@ def forward_propagation(mu, sigma, \
     npce = pc_model.GetNumberPCTerms() # Number of terms in the PCE
     qdpts, totquat= pce_tools.UQTkGetQuadPoints(pc_model)
     # map the quadrature from eta space to xi space
-    qdpts_xi = eta_to_xi_mapping(qdpts, R)
+    qdpts_xi = adaptation_tools.eta_to_xi_mapping(qdpts, R)
     # map germs to input parameters
     xx = mu + sigma * qdpts_xi
     # evaluate at input parameters
@@ -136,7 +140,7 @@ pc_model0, c_k0, totquat0 = forward_propagation(mu, sigma, \
 tol = 1e-6                 # tolerance to check l2 errors
 for method in range(4):    # loop over 4 different methods
     # Using different method to obtain rotation matrix and perform 1 dimensional adaptation
-    R = gauss_adaptation(c_k0[1:ndim+1], ndim, method)
+    R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
     pc_model1, c_k1, totquat1 = forward_propagation(mu, sigma, \
         nord, 1, pc_type,param, R, main_verbose, sf="full")
 
@@ -152,15 +156,15 @@ for method in range(4):    # loop over 4 different methods
 ####                    Check other functions                      #####
 ########################################################################
 # Using method =3 to perform full dimesnion adaptation
-R = gauss_adaptation(c_k0[1:ndim+1], ndim, method)
+R = adaptation_tools.gauss_adaptation(c_k0[1:ndim+1], ndim, method)
 pc_model2, c_k2, totquat2 = forward_propagation(mu, sigma, \
     nord, ndim, pc_type,param, R, main_verbose, sf)
 # test l2_error_eta by 1 dimensional and full dimension expansions in eta space
 # and obtain coefficients C1, which is the projection of 1 dimensional expansion
 # coeffients in full dimensional expansion
-l2_error_eta, C1 = l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
+l2_error_eta, C1 = adaptation_tools.l2_error_eta(c_k1, c_k2, 1, ndim, nord, pc_type, param, sf, 0.0, 1.0)
 # test transf_coeffs_xi by transfer C1 to xi space, which is compared with pre-computed results
-c_xi = transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
+c_xi = adaptation_tools.transf_coeffs_xi(C1, nord, ndim, pc_type, param, R, sf, 0.0, 1.0)
 l22 = np.linalg.norm(c_xi- c_xiRef)/np.linalg.norm(c_xiRef)
 
 assert l2_error_eta<tol, "l2_error_eta function fails to obtain correct values :-("

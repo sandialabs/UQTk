@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -2889,10 +2889,10 @@ void PCSet::ComputeMainSens(Array1D<double>& coef, Array1D<double>& mainsens)
     if (effdim(ipc)==1){
       // Add the variance contributions for the univariate terms
       for(int id=0;id<this->nDim_;id++){
-	if ( multiIndex_(ipc,id) != 0 ){
-	  mainsens(id)+=varfrac(ipc);
-	  break;
-	}
+      	if ( multiIndex_(ipc,id) != 0 ){
+      	  mainsens(id)+=varfrac(ipc);
+      	  break;
+      	}
       }
     }
   }

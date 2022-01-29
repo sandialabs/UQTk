@@ -1,11 +1,11 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.1
-                          Copyright (2021) NTESS
+                      The UQ Toolkit (UQTk) version 3.1.2
+                          Copyright (2022) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
 
-     Copyright 2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
      Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
      retains certain rights in this software.
 
@@ -66,8 +66,8 @@ public:
   int xsize_;
   int ysize_;
   vector<T> data_;
-  Array1D<T> arraycopy; 
-  Array1D<T> rowvec; 
+  Array1D<T> arraycopy;
+  Array1D<T> rowvec;
 
   /// \brief Default constructor, which does not allocate any memory
   Array2D(): xsize_(0), ysize_(0) {};
@@ -75,7 +75,7 @@ public:
   /// \brief Constructor that allocates the memory
   Array2D(const int& nx, const int& ny):  xsize_(nx), ysize_(ny){
   data_.resize(xsize_*ysize_);
-  } 
+  }
 
   /// \brief Constructor that allocates and initializes the data to a constant t
   Array2D(const int& nx, const int& ny, const T& t):  xsize_(nx), ysize_(ny){
@@ -149,20 +149,20 @@ public:
       throw Tantrum("Array2D:insertRow():: insert index out of bounds.");
     if ( insarr.Length() != ysize_ )
       throw Tantrum("Array2D:insertRow():: insert row size does not match.");
-      
+
     vector<T> data_old;
     data_old=data_;
 
     xsize_ += 1; // new number of rows
     data_.resize(xsize_*ysize_);
 
-    for(int iy=0;iy<ysize_;iy++){  
+    for(int iy=0;iy<ysize_;iy++){
       for(int i=0; i < ix; i++)
         data_[i+xsize_*iy] = data_old[i+(xsize_-1)*iy];
       data_[ix+xsize_*iy]=insarr(iy);
       for(int i=ix+1; i < xsize_; i++)
         data_[i+xsize_*iy] = data_old[i-1+(xsize_-1)*iy];
-    }   
+    }
   }
 
   /// \brief Insert a 2d-array insarr into a row position ix
@@ -180,33 +180,33 @@ public:
     xsize_ += insx;
     data_.resize(xsize_*ysize_);
 
-    for(int iy=0;iy<ysize_;iy++){  
+    for(int iy=0;iy<ysize_;iy++){
       for(int i=0; i < ix; i++)
       data_[i+xsize_*iy] = data_old[i+(xsize_-insx)*iy];
       for(int i=ix; i < ix+insx; i++)
       data_[i+xsize_*iy]=insarr(i-ix,iy);
       for(int i=ix+insx; i < xsize_; i++)
       data_[i+xsize_*iy] = data_old[i-insx+(xsize_-insx)*iy];
-    }    
+    }
   }
 
   /// \brief Erase the row ix
   void eraseRow(int ix){
     if (ix<0 || ix>=xsize_)
       throw Tantrum("Array2D:eraseRow():: erase index out of bounds.");
-    
+
     vector<T> data_old;
-    data_old=data_;  
+    data_old=data_;
 
     xsize_-=1;
     data_.resize(xsize_*ysize_);
 
-    for(int iy=0;iy<ysize_;iy++){  
+    for(int iy=0;iy<ysize_;iy++){
       for(int i=0; i < ix; i++)
       data_[i+xsize_*iy] = data_old[i+(xsize_+1)*iy];
       for(int i=ix; i < xsize_; i++)
       data_[i+xsize_*iy] = data_old[i+1+(xsize_+1)*iy];
-    }        
+    }
 
     //if (xsize_==0)
     //  printf("eraseRow(): WARNING: the xsize is zeroed!");
@@ -219,13 +219,13 @@ public:
       throw Tantrum("Array2D:insertCol():: insert index out of bounds.");
     if ( insarr.Length() != xsize_ )
       throw Tantrum("Array2D:insertCol():: insert column size does not match.");
-    
-    
+
+
     T* ptr=insarr.GetArrayPointer();
     data_.insert(data_.begin()+xsize_*iy,ptr,ptr+xsize_);
-    
+
     ysize_+=1;
-    
+
   }
 
   /// \brief Insert a 2d-array insarr into a column position iy
@@ -240,7 +240,7 @@ public:
     T* ptr=insarr.GetArrayPointer();
     data_.insert(data_.begin()+xsize_*iy,ptr,ptr+xsize_*insy);
 
-    ysize_+=insy;   
+    ysize_+=insy;
     }
 
     /// \brief Erase the column iy
@@ -263,8 +263,8 @@ public:
     fwrite(&ysize_,sizeof(ysize_),1,f_out);
     fwrite(this->GetConstArrayPointer(),sizeof(T),xsize_*ysize_,f_out);
   }
-  
-   
+
+
   /// \brief Read contents of the array from a file in binary format
   void ReadBinary(FILE* f_in){
     fread(&xsize_,sizeof(xsize_),1,f_in);
@@ -274,7 +274,7 @@ public:
   }
 
   /********************************************************
-  // Methods for interfacing with python 
+  // Methods for interfacing with python
   ********************************************************/
 
   // assignment operator []
@@ -282,17 +282,25 @@ public:
   // make more efficient by setting two vectors equal
   Array1D<T>& operator[](int ix) {
     // get the ith row
-    int stride = xsize_; 
+    int stride = xsize_;
     rowvec.Resize(ysize_);
     for (int iy = 0; iy < ysize_; iy++){
       rowvec(iy) = data_[ix + stride*iy];
-    } 
+    }
     return rowvec;
+  }
+
+  // For calling shape in Python
+  vector<int> shape(){
+    vector<int> s (2,0);
+    s[0] = this -> XSize();
+    s[1] = this -> YSize();
+    return s;
   }
 
   void getRow(int row){
     arraycopy.Resize(ysize_,0);
-    int stride = xsize_; 
+    int stride = xsize_;
     for (int i = 0; i < ysize_; i++){
       arraycopy[i] = data_[i*stride + row];
     }
@@ -302,7 +310,7 @@ public:
   // Cannot use numpy's from files
   // only for use in c++
   void DumpBinary(char *filename){
-  FILE *f_out; 
+  FILE *f_out;
   f_out = fopen(filename,"wb");
   fwrite(&xsize_,sizeof(xsize_),1,f_out);
   fwrite(&ysize_,sizeof(ysize_),1,f_out);
@@ -311,7 +319,7 @@ public:
   }
 
   // Only for use if DumpBinary was used
-  // can only be read in c++ 
+  // can only be read in c++
   // can be opened with ReadBinary(FILE* file) above
   void ReadBinary(char *filename){
   FILE *f_in;
@@ -323,7 +331,7 @@ public:
   fclose(f_in);
   }
 
-  // creates binary file that can be read with numpy's fromfile  
+  // creates binary file that can be read with numpy's fromfile
   void DumpBinary4py(char *filename){
   ofstream f_out;
   f_out.open(filename, ios::out | ios::binary);
@@ -334,8 +342,8 @@ public:
   // can read in DumpBinary4py output, but needs size of vector
   // fromfile can automatically detect size file, so, if need by, one can use numpy's fromfile to determine # of elements
   void ReadBinary4py(char *filename, int n1, int n2){
-  xsize_ = n1; 
-  ysize_ = n2; 
+  xsize_ = n1;
+  ysize_ = n2;
   ifstream f_in;
   f_in.open(filename, ios::in | ios::binary);
   f_in.read((char*)this->GetArrayPointer(),sizeof(T[xsize_*ysize_])); // convert array pointer to char string
@@ -346,19 +354,19 @@ public:
   // This will work even for string type
   void setArray(vector<T> inarray){
     data_ = inarray;
-    // xsize_ = inarray.size(); 
+    // xsize_ = inarray.size();
   }
 
   // Sets user-defined 2d numpy array to data_ vector
   // This is not to be used for a string type
   void setnpdblArray(double* inarray, int n1, int n2){
     xsize_ = n1;
-    ysize_ = n2; 
-    data_.assign(inarray,inarray+n1*n2); 
+    ysize_ = n2;
+    data_.assign(inarray,inarray+n1*n2);
   }
 
   // get numpy double array from data_ vector
-  void getnpdblArray(double* outarray, int n1, int n2){
+  void getnpdblArray(double* outarray){
     copy(data_.begin(), data_.end(), outarray);
   }
 
@@ -366,13 +374,18 @@ public:
   // This is not to be used for a string type
   void setnpintArray(long* inarray, int n1, int n2){
     xsize_ = n1;
-    ysize_ = n2; 
-    data_.assign(inarray,inarray+n1*n2); 
+    ysize_ = n2;
+    data_.assign(inarray,inarray+n1*n2);
   }
 
   // get numpy double array from data_ vector
-  void getnpintArray(long* outarray, int n1, int n2){
+  void getnpintArray(long* outarray){
     copy(data_.begin(), data_.end(), outarray);
+  }
+
+  // Get the value at location x,y
+  T& at(int ix,int iy){
+    return data_[ix + xsize_*iy];
   }
 
   // Returns data_ vector as a list in python in row-major (?)
@@ -392,6 +405,11 @@ public:
     else {
       return "double";
     }
+  }
+
+  // For python, allows the user to assign a value to a specific index (x,y)
+  void assign(const int x,const int y,const T val){
+    data_[x + xsize_*y] = val;
   }
 };
 

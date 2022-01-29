@@ -88,6 +88,4 @@ else()
   add_library(depuqtk ${slatecsrc} ${dsfmtsrc} ${lbfgsCsrc} ${lbfgsFsrc} ${annsrc} ${figtreesrc})
 endif()
 
-
-
 INSTALL(TARGETS depuqtk DESTINATION lib)
