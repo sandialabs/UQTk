@@ -27,12 +27,19 @@
 #=====================================================================================
 # pure python tools (always included)
 try:
-    from . import inference
     from . import plotting
-    from . import sens
-except:
+except ImportError as ie:
     print('Scipy and/or matplotlib may need to be installed')
 
+try:
+    from . import sens
+except ImportError as ie:
+    print('Scipy and/or matplotlib may need to be installed')
+
+try:
+    from . import inference
+except ImportError as ie:
+    print('Scipy and/or matplotlib may need to be installed')
 
 from . import utils
 from . import multirun
