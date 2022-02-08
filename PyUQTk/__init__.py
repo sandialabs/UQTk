@@ -36,3 +36,33 @@ except:
 
 from . import utils
 from . import multirun
+
+try:
+    import bcs
+except:
+    print('PyBCS module not imported')
+
+try:
+    import kle
+except:
+    print('PyKLE module not imported')
+
+try:
+    import pce
+except:
+    print('PyPCE module not imported')
+
+try:
+    import quad
+except:
+    print('PyQuad module not imported')
+
+try:
+    import tools
+except:
+    print('PyTools module not imported')
+
+try:
+    import uqtkarray
+except:
+    print('PyUQTkArray module not imported')
