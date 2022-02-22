@@ -27,12 +27,49 @@
 #=====================================================================================
 # pure python tools (always included)
 try:
-    from . import inference
     from . import plotting
-    from . import sens
-except:
+except ImportError as ie:
     print('Scipy and/or matplotlib may need to be installed')
 
+try:
+    from . import sens
+except ImportError as ie:
+    print('Scipy and/or matplotlib may need to be installed')
+
+try:
+    from . import inference
+except ImportError as ie:
+    print('Scipy and/or matplotlib may need to be installed')
 
 from . import utils
 from . import multirun
+
+try:
+    import bcs
+except:
+    print('PyBCS module not imported')
+
+try:
+    import kle
+except:
+    print('PyKLE module not imported')
+
+try:
+    import pce
+except:
+    print('PyPCE module not imported')
+
+try:
+    import quad
+except:
+    print('PyQuad module not imported')
+
+try:
+    import tools
+except:
+    print('PyTools module not imported')
+
+try:
+    import uqtkarray
+except:
+    print('PyUQTkArray module not imported')

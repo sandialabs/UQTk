@@ -153,9 +153,9 @@ public:
   /// \brief Insert a given array to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(Array1D<T>& insarr,int ix){
-    if (ix<0 || ix>xsize_){
+    /*if (ix<0 || ix>xsize_){
       throw Tantrum("Array1D:insert():: insert index out of bounds.");
-    }
+    }*/
     int addsize = insarr.Length();
     xsize_+=addsize;
     T* ptr=insarr.GetArrayPointer();
@@ -165,16 +165,16 @@ public:
   /// \brief Insert a given value to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(const T& insval,int ix){
-    if (ix<0 || ix>xsize_)
-      throw Tantrum("Array1D:insert():: insert index out of bounds.");
+    /*if (ix<0 || ix>xsize_)
+      throw Tantrum("Array1D:insert():: insert index out of bounds.");*/
     xsize_+=1;
     data_.insert(data_.begin()+ix,insval);
   }
 
   /// \brief Erase the value from the position ix
   void erase(int ix){
-    if (ix<0 || ix>=xsize_)
-      throw Tantrum("Array1D:erase():: erase index out of bounds.");
+    /*if (ix<0 || ix>=xsize_)
+      throw Tantrum("Array1D:erase():: erase index out of bounds.");*/
     xsize_-=1;
     data_.erase(data_.begin()+ix);
   }
@@ -363,9 +363,9 @@ public:
   /// \brief Insert a given array to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(Array1D<int>& insarr,int ix){
-    if (ix<0 || ix>xsize_){
+    /*if (ix<0 || ix>xsize_){
       throw Tantrum("Array1D:insert():: insert index out of bounds.");
-    }
+    }*/
     int addsize = insarr.Length();
     xsize_+=addsize;
     int* ptr=insarr.GetArrayPointer();
@@ -375,16 +375,16 @@ public:
   /// \brief Insert a given value to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(const int& insval,int ix){
-    if (ix<0 || ix>xsize_)
-      throw Tantrum("Array1D:insert():: insert index out of bounds.");
+    /*if (ix<0 || ix>xsize_)
+      throw Tantrum("Array1D:insert():: insert index out of bounds.");*/
     xsize_+=1;
     data_.insert(data_.begin()+ix,insval);
   }
 
   /// \brief Erase the value from the position ix
   void erase(int ix){
-    if (ix<0 || ix>=xsize_)
-      throw Tantrum("Array1D:erase():: erase index out of bounds.");
+    /*if (ix<0 || ix>=xsize_)
+      throw Tantrum("Array1D:erase():: erase index out of bounds.");*/
     xsize_-=1;
     data_.erase(data_.begin()+ix);
   }
@@ -589,9 +589,9 @@ public:
   /// \brief Insert a given array to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(Array1D<double>& insarr,int ix){
-    if (ix<0 || ix>xsize_){
+    /*if (ix<0 || ix>xsize_){
       throw Tantrum("Array1D:insert():: insert index out of bounds.");
-    }
+    }*/
     int addsize = insarr.Length();
     xsize_+=addsize;
     double* ptr=insarr.GetArrayPointer();
@@ -601,16 +601,16 @@ public:
   /// \brief Insert a given value to the position ix
   /// \note ix=0 means insert at the beginning, ix=xsize_ means insert at the end
   void insert(const double& insval,int ix){
-    if (ix<0 || ix>xsize_)
-      throw Tantrum("Array1D:insert():: insert index out of bounds.");
+    /*if (ix<0 || ix>xsize_)
+      throw Tantrum("Array1D:insert():: insert index out of bounds.");*/
     xsize_+=1;
     data_.insert(data_.begin()+ix,insval);
   }
 
   /// \brief Erase the value from the position ix
   void erase(int ix){
-    if (ix<0 || ix>=xsize_)
-      throw Tantrum("Array1D:erase():: erase index out of bounds.");
+    /*if (ix<0 || ix>=xsize_)
+      throw Tantrum("Array1D:erase():: erase index out of bounds.");*/
     xsize_-=1;
     data_.erase(data_.begin()+ix);
   }

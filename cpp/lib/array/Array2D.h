@@ -145,10 +145,10 @@ public:
 
    /// \brief Insert array insarr as a row into position ix
   void insertRow(Array1D<T>& insarr,int ix){
-    if (ix<0 || ix>xsize_)
+    /*if (ix<0 || ix>xsize_)
       throw Tantrum("Array2D:insertRow():: insert index out of bounds.");
     if ( insarr.Length() != ysize_ )
-      throw Tantrum("Array2D:insertRow():: insert row size does not match.");
+      throw Tantrum("Array2D:insertRow():: insert row size does not match.");*/
 
     vector<T> data_old;
     data_old=data_;
@@ -167,10 +167,10 @@ public:
 
   /// \brief Insert a 2d-array insarr into a row position ix
   void insertRow(Array2D<T>& insarr,int ix){
-    if (ix<0 || ix>xsize_)
+    /*if (ix<0 || ix>xsize_)
       throw Tantrum("Array2D:insertRow():: insert index out of bounds.");
     if ( insarr.YSize() != ysize_ )
-      throw Tantrum("Array2D:insertRow():: insert row size does not match.");
+      throw Tantrum("Array2D:insertRow():: insert row size does not match.");*/
 
     vector<T> data_old;
     data_old=data_;
@@ -192,8 +192,8 @@ public:
 
   /// \brief Erase the row ix
   void eraseRow(int ix){
-    if (ix<0 || ix>=xsize_)
-      throw Tantrum("Array2D:eraseRow():: erase index out of bounds.");
+    /*if (ix<0 || ix>=xsize_)
+      throw Tantrum("Array2D:eraseRow():: erase index out of bounds.");*/
 
     vector<T> data_old;
     data_old=data_;
@@ -215,10 +215,10 @@ public:
 
   // /// \brief Insert array insarr as a column into position iy
   void insertCol(Array1D<T>& insarr,int iy){
-    if (iy<0 || iy>ysize_)
+    /*if (iy<0 || iy>ysize_)
       throw Tantrum("Array2D:insertCol():: insert index out of bounds.");
     if ( insarr.Length() != xsize_ )
-      throw Tantrum("Array2D:insertCol():: insert column size does not match.");
+      throw Tantrum("Array2D:insertCol():: insert column size does not match.");*/
 
 
     T* ptr=insarr.GetArrayPointer();
@@ -230,10 +230,10 @@ public:
 
   /// \brief Insert a 2d-array insarr into a column position iy
   void insertCol(Array2D<T>& insarr,int iy){
-    if (iy<0 || iy>ysize_)
+    /*if (iy<0 || iy>ysize_)
       throw Tantrum("Array2D:insertCol():: insert index out of bounds.");
     if ( insarr.XSize() != xsize_ )
-      throw Tantrum("Array2D:insertRow():: insert column size does not match.");
+      throw Tantrum("Array2D:insertRow():: insert column size does not match.");*/
 
     int insy=insarr.YSize();
 
@@ -245,8 +245,8 @@ public:
 
     /// \brief Erase the column iy
   void eraseCol(int iy){
-    if (iy<0 || iy>=ysize_)
-      throw Tantrum("Array2D:eraseCol():: erase index out of bounds.");
+    /*if (iy<0 || iy>=ysize_)
+      throw Tantrum("Array2D:eraseCol():: erase index out of bounds.");*/
 
     data_.erase(data_.begin()+xsize_*iy,data_.begin()+xsize_*(iy+1));
 
