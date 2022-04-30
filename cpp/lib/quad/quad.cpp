@@ -876,7 +876,6 @@ void Quad::nextLevel()
   Array2D<int> multiIndexLevel_npts(nMultiIndicesLevel,ndim_,0);
 
   for(int j=0;j<nMultiIndicesLevel;j++){
-cout << "KUKU " << j << " " << nMultiIndicesLevel << endl;
 
     if (quadverbose_==2) cout << j << " / " << nMultiIndicesLevel << endl;
 
