@@ -50,6 +50,17 @@ try:
 except ImportError:
     print("Numpy module could not be found")
 
+try:
+    from scipy import stats
+except ImportError:
+    print("Scipy stats module could not be found")
+
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib import rc
+    rc('mathtext', default='regular')
+except ImportError:
+    print("Matplotlib not found")
 ################################################################################
 def UQTkMap2PCE(pc_model,rvs_in,verbose=0):
     """Obtain PC representation for the random variables that are described by samples.
@@ -219,12 +230,12 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
 
     # Put PC samples in a UQTk array
     std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk.setnpdblArray(np.asfortranarray(samples))
+    std_samples_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(samples))
 
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
     for ip in range(npce):
-        c_k_1d_uqtk[ip] = pc_coeffs[ip]
+        c_k_1d_uqtk.assign(ip,pc_coeffs[ip])
 
     # Create UQTk array to store outputs in
     rv_from_pce_uqtk = uqtkarray.dblArray1D(n_test_samples,0.0)
@@ -331,3 +342,136 @@ def UQTkStDv(pc_model,pc_coeffs):
 
     return pc_stdv
 ################################################################################
+def UQTkKDE(fcn_evals):
+    """
+    Performs kernel density estimation
+    Input:
+        fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
+    Output:
+        xpts_pce: numpy array of points at which the PDF is estimated.
+        PDF_data_pce: numpy array of estimated PDF values.
+    """
+    # Perform KDE on fcn_evals
+    kern_pce=stats.kde.gaussian_kde(fcn_evals)
+    # Generate points at which to evaluate the PDF
+    xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
+    # Evaluate the estimated PDF at these points
+    PDF_data=kern_pce(xpts)
+    return xpts, PDF_data
+################################################################################
+def UQTkGetMultiIndex(pc_model,ndim):
+    """
+    Function that returns a 2D array of the PC multiindex.
+    Input:
+        pc_model, ndim.
+    Output:
+        2D array of the PC multiindex
+    """
+    # Get number of PC terms
+    totpc = pc_model.GetNumberPCTerms()
+    # Create  2D int UQTk array with width of ndim and height of totpc
+    mi_uqtk = uqtkarray.intArray2D(totpc,ndim)
+    # Populate UQTk array with PC multiindex
+    pc_model.GetMultiIndex(mi_uqtk)
+    # Convert UQTk array to numpy array
+    mi = np.zeros((totpc,ndim))
+    mi = uqtkarray.uqtk2numpy(mi_uqtk)
+    #mi_uqtk.getnpdblArray(mi)
+    return mi
+################################################################################
+def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
+    """
+    Function that creates a plot of the behavior of the absolute value of the
+    PC coefficient for each order.
+    Input:
+        pc_model, ndim(number of parameters), and c_k(array of pc coefficients).
+        Order of the PC
+        string indicating the type of plot for labeling purposes
+    Output:
+        Matplotlib plot.
+    """
+    # Get array of PC multiindicies
+    mi = UQTkGetMultiIndex(pc_model,ndim)
+
+    # Get the order of the PC coefficient by taking the sum of the multiindex row
+    # that corresponds to that value
+    misum = np.sum(mi, axis=1)
+
+    #find values that separate the orders
+    sep=[]
+    for i in range(misum.shape[0]):
+        if misum[i]!=misum[i-1]:
+            sep.append(i)
+
+    # Create an numpy array of the log of the absolute value of the PC coefficients
+    cklen = len(c_k)
+    ac_k = np.absolute(c_k)
+    ac_k = np.log10(ac_k)
+
+    #Create an array to represent the PC coefficient number
+    x = np.arange(1,cklen+1)
+
+    #Set the plot size
+    plt.figure(figsize=(16,10))
+    # Set Plot min, max
+    xmin = np.amin(x)
+    xmax = np.amax(x)
+    ymin = np.amin(ac_k)
+    ymax = np.amax(ac_k)
+    plt.ylim(ymin,ymax)
+    plt.xlim(xmin-2,xmax)
+
+    # Create axis and title labels
+    plt.xlabel("Coefficient Number", size=25)
+    plt.ylabel("PC Coefficient Magnitude", size=25)
+    sup="Spectral Decay of the PC Coefficients for "+type+" Quadrature"
+    plt.suptitle(sup, size=25)
+
+    #get the correct number of y-labels
+    y=[]
+    val=0
+    while (val>ymin-2):
+        y.insert(0, val)
+        val=val-2
+    labels=[]
+    for val in y:
+        new=r'$10^{'+str(val)+'}$'
+        labels.append(new)
+
+    #labels = [r'$10^{-10}$',r'$10^{-8}$',r'$10^{-6}$',r'$10^{-4}$',r'$10^{-2}$',r'$0$']
+    plt.yticks(y,labels,size=20)
+    plt.xticks(size=20)
+
+
+    # Create verticle lines seperating orders
+    if (cklen<100):
+        ylab=cklen-1
+    else:
+        ylab=100
+
+    for i in range(nord+1):
+        if (i==1):
+            label=r'$'+str(i)+'^{st}$'
+        if (i==2):
+            label=r'$'+str(i)+'^{nd}$'
+        if (i==3):
+            label=r'$'+str(i)+'^{rd}$'
+        else:
+            label=r'$'+str(i)+'^{th}$'
+
+        if i>0:
+            dotted_line=plt.Line2D((sep[i],sep[i]), (y[0],ymax), lw=1, c='r')
+            plt.gca().add_line(dotted_line)
+
+        if (sep[i]==sep[-1]):
+            plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i]+cklen)/2,ac_k[ylab]),size = 16)
+        else:
+            plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i+1]+sep[i])/2,ac_k[ylab]),size = 16)
+
+    # Plot figure
+    plt.plot(x,ac_k,linewidth=2,color='b',)
+    # Set plot name, and save as PDF
+    fig_name="Multi_Index_Dim_"+type+".pdf"
+    plt.savefig(fig_name)
+    print("\n"+fig_name+" has been saved.")
+    plt.show()
