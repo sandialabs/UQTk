@@ -76,7 +76,7 @@ def compute_heat_flux(samples):
     Computes heat flux, outside wall temp, and inside wall temp
     assuming no radiative heat transfer. Solves a linear system of 3 equations (the forward model).
 
-    Input: an array of uncertain, Gaussian parameters.
+    Input: An array of uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, and outer window temperature T2
 
     """
@@ -112,7 +112,7 @@ def compute_heat_flux2(samples):
     Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
     temperature of the interior of second window pane T3, and outer window temperature T4.
     """
-    #samples[0]
+
     hi=samples[1]
     ho=samples[2]
     kw=samples[3]
@@ -123,6 +123,45 @@ def compute_heat_flux2(samples):
     da = 0.01  # Width of the gap between the panes (m)
     Ti = 293.0 # Room temperature (K)
     To = 273.0 # Outside temperature (K)
+
+    #Consolidation of variables
+    A = ho*ka*kw
+    B = ho*da*kw
+    C = hi*ka*kw
+    D = ho*ka*dw
+
+    # Compute T1
+    T1 = (A*To+((C+hi*B+2*D*hi)*Ti))/(C+hi*B+2*D*hi+A)
+    # Compute T2
+    T2 = (A*To+D*hi*To+((C+B*hi+D*hi)*Ti))/(C+hi*B+hi*2*D+A)
+    # Compute T3
+    T3 = (To*(B*hi+D*hi+A)+(C+hi*D)*Ti)/(C+hi*(B+2*D)+A)
+    # Compute T4
+    T4 = (((hi*B+2*D*hi+A)*To)+C*Ti)/(C+hi*(B+2*D)+A)
+    # Compute Q
+    Q = ho*(T4-To)
+
+    return (Q,T1,T2,T3,T4)
+###################################################################################
+def compute_heat_flux3(samples):
+    """
+    Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
+    in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
+
+    Input: Array of samples (scalars) of the uncertain, Gaussian parameters.
+    Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
+    temperature of the interior of second window pane T3, and outer window temperature T4.
+    """
+
+    Ti=samples[0]
+    To=samples[1]
+    dw=samples[2]
+    da=samples[3]
+    kw=samples[4]
+    ka=samples[5]
+    hi=samples[6]
+    ho=samples[7]
+
     #Consolidation of variables
     A = ho*ka*kw
     B = ho*da*kw
@@ -147,7 +186,7 @@ def r_heat_flux(samples, estimates):
     Function to compute Q,T1,and T2 assuming radiative heat transfer occurs.
     Assumes radiative heat transfer to atmosphere and requires solving a nonlinear system of equations
 
-    Input: Samples of the 7 uncertain, Gaussian parameters
+    Input: An array of samples of the 7 uncertain, Gaussian parameters
            estimates: For the required estimates of Q,T1, and T2 needed to solve the nonlinear system,
            we use the values obtained by solving the system assuming no radiative heat transfer
 
@@ -184,7 +223,7 @@ def r_heat_flux2(samples,estimates):
     heat transfer for this region is calculated by in terms of known parameters for air. A nonlinear system
     of five equation is solved to compute Q.
 
-    Input: Samples of the 8 uncertain, Gaussian parameters
+    Input: An array of samples of the uncertain, Gaussian parameters
            estimates: For the required estimates of Q,T1,T2,T3 and T4 needed to solve the nonlinear system,
            we use the values obtained by solving the system assuming no convective heat transfer for air gap.
 
@@ -219,6 +258,49 @@ def r_heat_flux2(samples,estimates):
     Q,T1,T2,T3,T4 = optimize.fsolve(equations,estimates)
     return(Q)
 ###################################################################################
+def r_heat_flux3(samples,estimates):
+    """
+    Function to compute Q,T1,T2,T3 and T4 taking into account convective heat transfer in window air gap as
+    well as contributions from radiation.
+    Since the convective coefficent for the air gap is unknown, the combined convective and conductive
+    heat transfer for this region is calculated by in terms of known parameters for air. A nonlinear system
+    of five equation is solved to compute Q.
+
+    Input: Array of samples of the 8 uncertain, Gaussian parameters
+           estimates: For the required estimates of Q,T1,T2,T3 and T4 needed to solve the nonlinear system,
+           we use the values obtained by solving the system assuming no convective heat transfer for air gap.
+
+    Output: Heat Flux Q
+    """
+    def equations(variables):
+        Q,T1,T2,T3,T4 = variables
+        g = 9.8  # Acceleration due to gravity (m/s^2)
+        e = 0.95 # Emissivity of uncoated glass, unitless value
+        SBC = 5.67037321e-8 # Stefan-Boltzmann constant (W/m^2*K^4)
+        f1 = hi*(Ti-T1)-Q
+        f2 = (kw/dw)*(T1-T2)-Q
+        f3 = ((0.41*(ka/da)*(((g*beta*rho**2*da**3)/mu**2)*abs(T2-T3))**0.16)*(T2-T3))-Q
+        f4 = (kw/dw)*(T3-T4)-Q
+        f5 = ho*(T4-To)+(e*SBC*(T4**4-Ts**4))-Q
+        return(f1,f2,f3,f4,f5)
+
+    Ti=samples[0]
+    To=samples[1]
+    dw=samples[2]
+    da=samples[3]
+    kw=samples[4]
+    ka=samples[5]
+    hi=samples[6]
+    ho=samples[7]
+    Ts=samples[8]
+    mu=samples[9]
+    rho=samples[10]
+    beta=samples[11]
+
+    # Solve the nonlinear system of 5 equations using the estimates
+    Q,T1,T2,T3,T4 = optimize.fsolve(equations,estimates)
+    return(Q)
+###################################################################################
 def fwd_model(samples, model, compute_rad, sub_verbose=0):
     """
     Evaluates the forward model
@@ -232,8 +314,7 @@ def fwd_model(samples, model, compute_rad, sub_verbose=0):
     # Determine number of samples
     n_samples=len(samples[0])
 
-    # List to store values of Q calculated
-    # the random samples of the parameters
+    # List to store values of Q calculated by the random samples of the parameters
     Q_samples=[]
 
     # Each entry of samples is an array for a single parameter
@@ -245,32 +326,32 @@ def fwd_model(samples, model, compute_rad, sub_verbose=0):
     if sub_verbose > 0:
         print("\nComputing heat transfer for",n_samples,"parameter samples:" )
 
+    # Calculate Q for each set of inputs
     for i_s in range(n_samples):
         if sub_verbose > 0 and i_s % (n_samples/10) == 0:
             print("  Sample",i_s,"out of",n_samples)
 
-        if (model==1):
+        if (model==1): # single-pane window
             (Q,T1,T2)=compute_heat_flux(samples[i_s])
-            if (compute_rad):
-                #adds radiation component
-                #using a non-radiation evaluation as a starting estimate
+            if (compute_rad): # adds radiation component
+                # uses a non-radiation evaluation as a starting estimate
                 Q=r_heat_flux(samples[i_s], (Q,T1,T2))
 
-        if (model==2):
+        if (model==2): # double-pane window
             (Q,T1,T2,T3,T4)=compute_heat_flux2(samples[i_s])
-            if (compute_rad):
-                #adds radiation component
-                #using a non-radiation evaluation as a starting estimate
+            if (compute_rad): #adds radiation component
+                #uses a non-radiation evaluation as a starting estimate
                 Q=r_heat_flux2(samples[i_s],(Q,T1,T2,T3,T4))
+
+        if (model==3):
+            (Q,T1,T2,T3,T4)=compute_heat_flux3(samples[i_s])
+            if (compute_rad): #adds radiation component
+                #uses a non-radiation evaluation as a starting estimate
+                Q=r_heat_flux3(samples[i_s],(Q,T1,T2,T3,T4))
 
         Q_samples.append(Q)
 
     #Convert Q_samples to numpy array
     Q_evals = np.array(Q_samples)
     return Q_evals
-
-
-###################################################################################
-
-
 ###################################################################################
