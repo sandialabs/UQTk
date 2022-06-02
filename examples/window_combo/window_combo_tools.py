@@ -70,13 +70,12 @@ try:
 except ImportError:
     print("PyUQTk tools module not found")
 #################################################################
-
 def compute_heat_flux(samples):
     """
     Computes heat flux, outside wall temp, and inside wall temp
     assuming no radiative heat transfer. Solves a linear system of 3 equations (the forward model).
 
-    Input: An array of uncertain, Gaussian parameters.
+    Input: An 1D array of 6 uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, and outer window temperature T2
 
     """
@@ -108,7 +107,7 @@ def compute_heat_flux2(samples):
     Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
     in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
 
-    Input: An array of samples of the uncertain, Gaussian parameters.
+    Input: An 1D array of samples of the 5 uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
     temperature of the interior of second window pane T3, and outer window temperature T4.
     """
@@ -148,7 +147,7 @@ def compute_heat_flux3(samples):
     Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
     in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
 
-    Input: Array of samples (scalars) of the uncertain, Gaussian parameters.
+    Input: 1D Array of samples (scalars) of the 12 uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
     temperature of the interior of second window pane T3, and outer window temperature T4.
     """
@@ -223,7 +222,7 @@ def r_heat_flux2(samples,estimates):
     heat transfer for this region is calculated by in terms of known parameters for air. A nonlinear system
     of five equation is solved to compute Q.
 
-    Input: An array of samples of the uncertain, Gaussian parameters
+    Input: An 1D array of samples of the 5 uncertain, Gaussian parameters
            estimates: For the required estimates of Q,T1,T2,T3 and T4 needed to solve the nonlinear system,
            we use the values obtained by solving the system assuming no convective heat transfer for air gap.
 
@@ -266,7 +265,7 @@ def r_heat_flux3(samples,estimates):
     heat transfer for this region is calculated by in terms of known parameters for air. A nonlinear system
     of five equation is solved to compute Q.
 
-    Input: Array of samples of the 8 uncertain, Gaussian parameters
+    Input: 1D array of samples of the 12 uncertain, Gaussian parameters
            estimates: For the required estimates of Q,T1,T2,T3 and T4 needed to solve the nonlinear system,
            we use the values obtained by solving the system assuming no convective heat transfer for air gap.
 
@@ -305,7 +304,7 @@ def fwd_model(samples, model, compute_rad, sub_verbose=0):
     """
     Evaluates the forward model
     Input:
-        samples: array of uncertain parameters, Gaussian inputs
+        samples: Array of uncertain parameters, Gaussian inputs
         sub_verbose: verbosity level [default = 0]
     Output:
         Q_evals: numpy array of evaluations of the forward model

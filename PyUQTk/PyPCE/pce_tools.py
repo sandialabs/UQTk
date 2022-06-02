@@ -452,9 +452,9 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
     for i in range(nord+1):
         if (i==1):
             label=r'$'+str(i)+'^{st}$'
-        if (i==2):
+        elif (i==2):
             label=r'$'+str(i)+'^{nd}$'
-        if (i==3):
+        elif (i==3):
             label=r'$'+str(i)+'^{rd}$'
         else:
             label=r'$'+str(i)+'^{th}$'
