@@ -75,7 +75,7 @@ def compute_heat_flux(samples):
     Computes heat flux, outside wall temp, and inside wall temp
     assuming no radiative heat transfer. Solves a linear system of 3 equations (the forward model).
 
-    Input: An 1D array of 6 uncertain, Gaussian parameters.
+    Input: An 1D array of 6 uncertain, Gaussian parameters with sample values (scalars).
     Output: Heat flux Q, inside window temperature T1, and outer window temperature T2
 
     """
@@ -107,16 +107,15 @@ def compute_heat_flux2(samples):
     Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
     in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
 
-    Input: An 1D array of samples of the 5 uncertain, Gaussian parameters.
+    Input: An 1D array of samples of the 4 uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
     temperature of the interior of second window pane T3, and outer window temperature T4.
     """
 
-    hi=samples[1]
-    ho=samples[2]
-    kw=samples[3]
-    ka=samples[4]
-
+    hi=samples[0]
+    ho=samples[1]
+    kw=samples[2]
+    ka=samples[3]
 
     dw = 0.005 # Width of the glass pane (m)
     da = 0.01  # Width of the gap between the panes (m)
@@ -147,7 +146,7 @@ def compute_heat_flux3(samples):
     Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
     in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
 
-    Input: 1D Array of samples (scalars) of the 12 uncertain, Gaussian parameters.
+    Input: 1D Array of samples (scalars) of the 8 uncertain, Gaussian parameters.
     Output: Heat flux Q, inside window temperature T1, temprature of the interior of first window pane temperature T2,
     temperature of the interior of second window pane T3, and outer window temperature T4.
     """
@@ -185,8 +184,8 @@ def r_heat_flux(samples, estimates):
     Function to compute Q,T1,and T2 assuming radiative heat transfer occurs.
     Assumes radiative heat transfer to atmosphere and requires solving a nonlinear system of equations
 
-    Input: An array of samples of the 7 uncertain, Gaussian parameters
-           estimates: For the required estimates of Q,T1, and T2 needed to solve the nonlinear system,
+    Input: A 1D array of samples of the 7 uncertain, Gaussian parameters
+           estimates: For the required estimates of Q, T1, and T2 needed to solve the nonlinear system,
            we use the values obtained by solving the system assuming no radiative heat transfer
 
     Output: Heat Flux Q
@@ -247,11 +246,11 @@ def r_heat_flux2(samples,estimates):
         f5 = ho*(T4-To)+(e*SBC*(T4**4-Ts**4))-Q
         return(f1,f2,f3,f4,f5)
 
-    Ts=samples[0]
-    hi=samples[1]
-    ho=samples[2]
-    kw=samples[3]
-    ka=samples[4]
+    hi=samples[0]
+    ho=samples[1]
+    kw=samples[2]
+    ka=samples[3]
+    Ts=samples[4]
 
     # Solve the nonlinear system of 5 equations using the estimates
     Q,T1,T2,T3,T4 = optimize.fsolve(equations,estimates)
@@ -305,6 +304,7 @@ def fwd_model(samples, model, compute_rad, sub_verbose=0):
     Evaluates the forward model
     Input:
         samples: Array of uncertain parameters, Gaussian inputs
+            with dimensions of the number of parameters by the number of samples
         sub_verbose: verbosity level [default = 0]
     Output:
         Q_evals: numpy array of evaluations of the forward model
