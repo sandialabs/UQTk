@@ -92,11 +92,13 @@ def UQTkMap2PCE(pc_model,rvs_in,verbose=0):
     pc_model.GetQuadPoints(qdpts)
 
     totquat = pc_model.GetNQuadPoints()
-    print("Total number of quadrature points =",totquat)
+    if (verbose>0):
+        print("Total number of quadrature points =",totquat)
 
     # Set up transpose of input data for the inverse Rosenblatt transformation in a UQTk array
     ydata_t = uqtkarray.dblArray2D(ndim,nsamp)
-    ydata_t.setnpdblArray(np.asfortranarray(rvs_in.T))
+    #ydata_t.setnpdblArray(np.asfortranarray(rvs_in.T))
+    y_data_t=uqtkarray.numpy2uqtk(np.asfortranarray(rvs_in.T))
 
     # Set up numpy array for mapped quadrature points
     invRosData = np.zeros((totquat,ndim))
@@ -127,8 +129,9 @@ def UQTkMap2PCE(pc_model,rvs_in,verbose=0):
             invRosData[ipt,idim] = invRosData_1s[idim]
 
         # Screen diagnostic output
-        if ((ipt+1)%iiout == 0) or ipt==0 or (ipt+1)==totquat:
-            print("Inverse Rosenblatt for Galerkin projection:",(ipt+1),"/",totquat,"=",(ipt+1)*100/totquat,"% completed")
+        if (verbose>0):
+            if ((ipt+1)%iiout == 0) or ipt==0 or (ipt+1)==totquat:
+                print("Inverse Rosenblatt for Galerkin projection:",(ipt+1),"/",totquat,"=",(ipt+1)*100/totquat,"% completed")
 
     # Get PC coefficients by Galerkin projection
     # Set up numpy array for PC coefficients (one column for each transformed random variable)
@@ -196,7 +199,7 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
     samples = uqtkarray.dblArray1D(n_samples,0.0)
 
     #draw the samples
-    pc_model.DrawSampleSet(p, samples)
+    pc_model.DrawSampleSet(p, samples) #Does the same thing as EvalPCAtCustPoints?
 
     #convert samples to a numpy array
     pce_samples = np.zeros(n_samples)
@@ -346,7 +349,7 @@ def UQTkKDE(fcn_evals):
     """
     Performs kernel density estimation
     Input:
-        fcn_evals: numpy array of evaluations of the forward model (values of heat flux Q)
+        fcn_evals: numpy array of evaluations of the forward model
     Output:
         xpts_pce: numpy array of points at which the PDF is estimated.
         PDF_data_pce: numpy array of estimated PDF values.
@@ -408,10 +411,10 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
     ac_k = np.absolute(c_k)
     ac_k = np.log10(ac_k)
 
-    #Create an array to represent the PC coefficient number
+    # Create an array to represent the PC coefficient number
     x = np.arange(1,cklen+1)
 
-    #Set the plot size
+    # Set the plot size
     plt.figure(figsize=(16,10))
     # Set Plot min, max
     xmin = np.amin(x)
@@ -427,7 +430,7 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
     sup="Spectral Decay of the PC Coefficients for "+type+" Quadrature"
     plt.suptitle(sup, size=25)
 
-    #get the correct number of y-labels
+    # Get the correct number of y-labels
     y=[]
     val=0
     while (val>ymin-2):
@@ -438,7 +441,6 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
         new=r'$10^{'+str(val)+'}$'
         labels.append(new)
 
-    #labels = [r'$10^{-10}$',r'$10^{-8}$',r'$10^{-6}$',r'$10^{-4}$',r'$10^{-2}$',r'$0$']
     plt.yticks(y,labels,size=20)
     plt.xticks(size=20)
 
@@ -471,7 +473,7 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
     # Plot figure
     plt.plot(x,ac_k,linewidth=2,color='b',)
     # Set plot name, and save as PDF
-    fig_name="Multi_Index_Dim_"+type+".pdf"
-    plt.savefig(fig_name)
-    print("\n"+fig_name+" has been saved.")
+    #fig_name="Multi_Index_Dim_"+type+".pdf"
+    #plt.savefig(fig_name)
+    #print("\n"+fig_name+" has been saved.")
     plt.show()
