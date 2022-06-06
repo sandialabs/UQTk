@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version @UQTKVERSION@
-#                          Copyright (@UQTKYEAR@) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.2
+#                          Copyright (2022) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -78,7 +78,7 @@ except ImportError:
     print("Matplotlib not found")
 
 #################################################################
-def compute_heat_flux(kw,ka,hi,ho):
+def compute_heat_flux(kw,ka,hi,ho,i):
     """
     Computes heat flux, and temperature of four window pane surfaces, neglecting conduction
     in air gap between panes, and radiative heat transfer. Uses a solved system of 5 equations.
@@ -96,6 +96,8 @@ def compute_heat_flux(kw,ka,hi,ho):
     B = ho*da*kw
     C = hi*ka*kw
     D = ho*ka*dw
+
+    
 
     # Compute T1
     T1 = (A*To+((C+hi*B+2*D*hi)*Ti))/(C+hi*B+2*D*hi+A)
@@ -147,7 +149,7 @@ def r_heat_flux(Ts,kw,ka,hi,ho,estimates):
     return(Q)
 
 
-def GalerkinProjection(pc_model,f_evaluations):
+#def GalerkinProjection(pc_model,f_evaluations):
     """
     Obtain PC coefficients by Galerkin Projection
     Input:
@@ -187,7 +189,7 @@ def GalerkinProjection(pc_model,f_evaluations):
     # Return numpy array of PC coefficients
     return c_k
 
-def evaluate_pce(pc_model,pc_coeffs,germ_samples):
+#def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     """
     Evaluate PCE at a set of samples of the germ of this PCE
     Input:
@@ -235,7 +237,7 @@ def evaluate_pce(pc_model,pc_coeffs,germ_samples):
     # Return numpy array of PCE evaluations
     return rvs_sampled
 
-def get_quadpts(pc_model,ndim):
+#def get_quadpts(pc_model,ndim):
     """
     Generates quadrature points
     Input:
@@ -288,7 +290,7 @@ def fwd_model(Ts_samples,kw_samples,ka_samples,hi_samples,ho_samples):
     return Q_evals
 
 
-def KDE(fcn_evals):
+#def KDE(fcn_evals):
     """
     Performs kernel density estimation
     Input:
@@ -305,7 +307,7 @@ def KDE(fcn_evals):
     PDF_data_pce=kern_pce(xpts_pce)
     return xpts_pce, PDF_data_pce
 
-def get_multi_index(pc_model,ndim):
+#def get_multi_index(pc_model,ndim):
     """
     Function that returns a 2D array of the PC multiindex.
     Input:
@@ -325,7 +327,7 @@ def get_multi_index(pc_model,ndim):
     #mi_uqtk.getnpdblArray(mi)
     return mi
 
-def plot_mi_dims(pc_model,c_k,ndim):
+#def plot_mi_dims(pc_model,c_k,ndim):
     """
     Function that creates a plot of the behavior of the absolute value of the
     PC coefficient for each order.
