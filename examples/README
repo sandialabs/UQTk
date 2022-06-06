@@ -7,7 +7,7 @@ Example with springs in series to demonstrate dimensionality
 reduction through basis adaptation (Xiaoshu Zeng, Aug 2018)
 
 ==============================
-fwd_prop
+heat_transfer_window
 ==============================
 forward propagation with heat transfer example
 
@@ -69,11 +69,6 @@ iuq
 ==============================
 surrogate-enabled inverse UQ workflow
 
-==============================
-window
-==============================
-extended version of fwd_prop demonstrating forward propagation
-using a number of methods on more complicated examples
 
 ==============================
 tmcmc_bimodal
