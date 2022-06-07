@@ -308,9 +308,9 @@ def UQTkRegression(pc_model,f_evaluations):
     Input:
         pc_model : PC object with info about basis
         f_evaluations: 1D numpy array (vector) with function,
-                       evaluated at the quadrature points
+                       evaluated at the quadrature points [nqp,]
     Output:
-        1D Numpy array with PC coefficients
+        1D Numpy array with PC coefficients for each PC term [npce,]
     """
 
     # Get parameters
