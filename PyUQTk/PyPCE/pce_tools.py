@@ -299,6 +299,42 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
+def UQTkRegression(pc_model,f_evaluations):
+    """
+    Obtain PC coefficients by regression via UQTk
+
+    Note: need to generalize this to allow projecting multiple variables at the time
+
+    Input:
+        pc_model : PC object with info about basis
+        f_evaluations: 1D numpy array (vector) with function,
+                       evaluated at the quadrature points
+    Output:
+        1D Numpy array with PC coefficients
+    """
+
+    # Get parameters
+    if len(f_evaluations.shape) > 1:
+        print("This function can only project single variables for now")
+        exit(1)
+
+    npce = pc_model.GetNumberPCTerms()
+    nqp = f_evaluations.shape[0]        # Number of quadrature points
+
+    # UQTk array for polynomials evaluated at the quadrature points
+    psi_uqtk = uqtkarray.dblArray2D()
+    pc_model.GetPsi(psi_uqtk)
+
+    # NumPy array for polynomials evaluated at the quadrature points
+    psi_np = np.zeros( (nqp, npce) )
+    psi_np = uqtkarray.uqtk2numpy(psi_uqtk)
+
+    # Regression
+    c_k, resids, rank, s = np.linalg.lstsq(psi_np,f_evaluations,rcond=None)
+
+    # Return numpy array of PC coefficients
+    return c_k
+################################################################################
 def UQTkGetQuadPoints(pc_model):
     """
     Generates quadrature points through UQTk and returns them in numpy array
@@ -446,11 +482,11 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
 
 
     # Create verticle lines seperating orders
-    if (cklen<100):
-        ylab=cklen-1
-    else:
-        ylab=100
-
+    #if (cklen<100):
+    #    ylab=cklen-1
+    #else:
+    #    ylab=100
+    ylab=2
     for i in range(nord+1):
         if (i==1):
             label=r'$'+str(i)+'^{st}$'
@@ -467,6 +503,7 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
 
         if (sep[i]==sep[-1]):
             plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i]+cklen)/2,ac_k[ylab]),size = 16)
+            print("sep[i]", sep[i], "ac_k[ylab]", ac_k[ylab])
         else:
             plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i+1]+sep[i])/2,ac_k[ylab]),size = 16)
 
