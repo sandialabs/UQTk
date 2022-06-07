@@ -218,7 +218,7 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
         samples:    2D numpy array with samples of the PCE at which the RV
                     are to be evaluated. Each line is one sample. [n_samples, ndim]
     Output:
-        1D Numpy array with PCE evaluations
+        1D Numpy array with PCE evaluations [n_test_samples,]
     """
 
     #need a 1d array passed into pc_coeffs
@@ -265,9 +265,9 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     Input:
         pc_model : PC object with info about basis to project on
         f_evaluations: 1D numpy array (vector) with function to be projected,
-                       evaluated at the quadrature points
+                       evaluated at the quadrature points [npq,]
     Output:
-        1D Numpy array with PC coefficients
+        1D Numpy array with PC coefficients [npce,]
     """
 
     # Get parameters
@@ -341,7 +341,7 @@ def UQTkGetQuadPoints(pc_model):
     Input:
         pc_model: PC object with info about PCE
     Output:
-        qdpts: numpy array of quadrature points [totquat,n_dim]
+        qdpts: numpy array of quadrature points [totquat, n_dim]
         totquat: total number of quadrature points
     """
 
@@ -385,7 +385,7 @@ def UQTkKDE(fcn_evals):
     """
     Performs kernel density estimation
     Input:
-        fcn_evals: numpy array of evaluations of the forward model
+        fcn_evals: numpy array of evaluations of the forward model [n_samples,]
     Output:
         xpts_pce: numpy array of points at which the PDF is estimated.
         PDF_data_pce: numpy array of estimated PDF values.
@@ -482,11 +482,6 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
 
 
     # Create verticle lines seperating orders
-    #if (cklen<100):
-    #    ylab=cklen-1
-    #else:
-    #    ylab=100
-    ylab=2
     for i in range(nord+1):
         if (i==1):
             label=r'$'+str(i)+'^{st}$'
@@ -502,10 +497,9 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
             plt.gca().add_line(dotted_line)
 
         if (sep[i]==sep[-1]):
-            plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i]+cklen)/2,ac_k[ylab]),size = 16)
-            print("sep[i]", sep[i], "ac_k[ylab]", ac_k[ylab])
+            plt.annotate(label, xy=(sep[i],ac_k[2]),xytext=((sep[i]+cklen)/2,ac_k[2]),size = 16)
         else:
-            plt.annotate(label, xy=(sep[i],ac_k[ylab]),xytext=((sep[i+1]+sep[i])/2,ac_k[ylab]),size = 16)
+            plt.annotate(label, xy=(sep[i],ac_k[2]),xytext=((sep[i+1]+sep[i])/2,ac_k[2]),size = 16)
 
     # Plot figure
     plt.plot(x,ac_k,linewidth=2,color='b',)
