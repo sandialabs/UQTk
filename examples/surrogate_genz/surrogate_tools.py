@@ -50,40 +50,46 @@ import PyUQTk.PyPCE.pce_tools as pce_tools
 from PyUQTk.utils.func import *
 
 ################################################################################
-def surrogate(nord, ndim, pc_type, pc_alpha, pc_beta, param, quad_type, model_genz, coef_type, nSam):
+def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, quad_type=None):
     """
     Create a PC surrogate for a Genz function
     
     Input:
-        nord:
-        ndim:
-        pc_type:
+        method: Method for surrogate construction; choose "galerkin" or "regression"
+        nord: PC order
+        ndim: number of dimensions
+        pc_type: type of PCE; choose 'LU', 'HG', etc
         pc_alpha:
         pc_beta:
-        param:
-        quad_type:
-        model_genz:
-        coef_type:
-        nSam:
+        param: number of quadrature points per dimension or level for sparse quadrature
+        model_genz: which genz function to use
+        nSam: number of samples to from the PCE
+        quad_type: type of quadrature, default is None
+        
     Output:
-        1D Numpy array with PC coefficients
+        1D Numpy array with PC coefficients [number PC terms,]
+        1D Numpy array with actual outputs of the genz function at sample points [nSam,]
     """
 
     # Instantiate PC model
     pc_model = uqtkpce.PCSet("NISPnoq", nord, ndim, pc_type, pc_alpha, pc_beta)
-    pc_model.SetQuadRule(pc_type, quad_type, param) # set full or sparse
     
-    # Get and evaluate quadrature points
-    qdpts, totquat= pce_tools.UQTkGetQuadPoints(pc_model)
-    f_evals=func(qdpts,model_genz,np.ones(ndim+1)) #genz-specific
+    # get training points
+    if (method=='regression'):
+        nTest=int((pc_model.GetNumberPCTerms())*1.1)
+        train_pts=np.random.normal(loc=0, scale=0.5, size=(nTest, ndim))
+    if (method=='galerkin'):
+        param=nord+1
+        pc_model.SetQuadRule(pc_type, quad_type, param) # set full or sparse
+        train_pts, totquat= pce_tools.UQTkGetQuadPoints(pc_model)
+    
+    # evaluate at training points
+    f_evals=func(train_pts,model_genz,np.ones(ndim+1)) #genz-specific
     
     # Obtain Coefficients
-    if (coef_type=='regression'):
-        c_k = pce_tools.UQTkRegression(pc_model, f_evals)
-    elif (coef_type=='galerkin'):
-        c_k = pce_tools.UQTkGalerkinProjection(pc_model,f_evals)
-    else:
-        print("Invalid input. Galerkin projection used by default.")
+    if (method=='regression'):
+        c_k = pce_tools.UQTkRegression(pc_model, f_evals, train_pts)
+    elif (method=='galerkin'):
         c_k = pce_tools.UQTkGalerkinProjection(pc_model,f_evals)
     
     germ_samples=np.random.normal(0,1, (nSam,ndim))
