@@ -71,13 +71,16 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
         1D Numpy array with actual outputs of the genz function at sample points [nSam,]
     """
 
-    # Instantiate PC model
+    # Instantiate PC model and random number generator
     pc_model = uqtkpce.PCSet("NISPnoq", nord, ndim, pc_type, pc_alpha, pc_beta)
+    rng = np.random.default_rng()
     
     # get training points
     if (method=='regression'):
         nTest=int((pc_model.GetNumberPCTerms())*1.1)
-        train_pts=np.random.normal(loc=0, scale=0.5, size=(nTest, ndim))
+        #train_pts=np.random.normal(loc=0, scale=0.5, size=(nTest, ndim))
+        train_pts=2*rng.random((int(nTest), ndim))-1
+        
     if (method=='galerkin'):
         param=nord+1
         pc_model.SetQuadRule(pc_type, quad_type, param) # set full or sparse
@@ -92,7 +95,8 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
     elif (method=='galerkin'):
         c_k = pce_tools.UQTkGalerkinProjection(pc_model,f_evals)
     
-    germ_samples=np.random.normal(0,1, (nSam,ndim))
+    #germ_samples=np.random.normal(0,1, (nSam,ndim))
+    germ_samples=2*rng.random((nSam, ndim))-1
     pce_evals=pce_tools.UQTkEvaluatePCE(pc_model,c_k,germ_samples)
     f_actual=func(germ_samples,model_genz,np.ones(ndim+1))
    

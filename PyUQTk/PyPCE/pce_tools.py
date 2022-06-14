@@ -322,7 +322,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     nqp = f_evaluations.shape[0]        # Number of sample points
     ndim=samplepts.shape[1]
 
-    #UQTk array for samples - number of sample points by model dimension
+    #UQTk array for samples - [nqp, ndim]
     sam_uqtk=uqtkarray.dblArray2D(nqp,ndim)
     sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
 
