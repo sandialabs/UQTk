@@ -199,7 +199,7 @@ def UQTkDrawSamplesPCE(pc_model,pc_coeffs,n_samples):
     samples = uqtkarray.dblArray1D(n_samples,0.0)
 
     #draw the samples
-    pc_model.DrawSampleSet(p, samples) #Does the same thing as EvalPCAtCustPoints?
+    pc_model.DrawSampleSet(p, samples)
 
     #convert samples to a numpy array
     pce_samples = np.zeros(n_samples)
