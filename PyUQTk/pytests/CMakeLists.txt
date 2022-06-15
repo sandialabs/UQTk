@@ -28,3 +28,9 @@ add_test( NAME PyBCSTest2D COMMAND ${PYTHON_EXECUTABLE} PyBCSTest2D.py WORKING_D
 
 configure_file( PyBADPTest.py "${CMAKE_SWIG_OUTDIR}/PyBADPTest.py" COPYONLY )
 add_test( NAME PyBADPTest COMMAND ${PYTHON_EXECUTABLE} PyBADPTest.py WORKING_DIRECTORY ${CMAKE_SWIG_OUTDIR} )
+
+configure_file( PyRegressionTest.py "${CMAKE_SWIG_OUTDIR}/PyRegressionTest.py" COPYONLY )
+add_test( NAME PyRegressionTest COMMAND ${PYTHON_EXECUTABLE} PyRegressionTest.py WORKING_DIRECTORY ${CMAKE_SWIG_OUTDIR} )
+
+configure_file( PyGalerkinTest.py "${CMAKE_SWIG_OUTDIR}/PyGalerkinTest.py" COPYONLY )
+add_test( NAME PyGalerkinTest COMMAND ${PYTHON_EXECUTABLE} PyGalerkinTest.py WORKING_DIRECTORY ${CMAKE_SWIG_OUTDIR} )

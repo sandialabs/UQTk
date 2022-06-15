@@ -299,7 +299,7 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkRegression(pc_model,f_evaluations):
+def UQTkRegression(pc_model,f_evaluations, samplepts):
     """
     Obtain PC coefficients by regression via UQTk
 
@@ -308,9 +308,9 @@ def UQTkRegression(pc_model,f_evaluations):
     Input:
         pc_model : PC object with info about basis
         f_evaluations: 1D numpy array (vector) with function,
-                       evaluated at the quadrature points
+                       evaluated at the quadrature points [nqp,]
     Output:
-        1D Numpy array with PC coefficients
+        1D Numpy array with PC coefficients for each PC term [npce,]
     """
 
     # Get parameters
@@ -319,13 +319,18 @@ def UQTkRegression(pc_model,f_evaluations):
         exit(1)
 
     npce = pc_model.GetNumberPCTerms()
-    nqp = f_evaluations.shape[0]        # Number of quadrature points
+    nqp = f_evaluations.shape[0]        # Number of sample points
+    ndim=samplepts.shape[1]
 
-    # UQTk array for polynomials evaluated at the quadrature points
+    #UQTk array for samples - [nqp, ndim]
+    sam_uqtk=uqtkarray.dblArray2D(nqp,ndim)
+    sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
+
+    # UQTk array for polynomials evaluated at the sample points
     psi_uqtk = uqtkarray.dblArray2D()
-    pc_model.GetPsi(psi_uqtk)
+    pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
 
-    # NumPy array for polynomials evaluated at the quadrature points
+    # NumPy array for polynomials evaluated at the sample points
     psi_np = np.zeros( (nqp, npce) )
     psi_np = uqtkarray.uqtk2numpy(psi_uqtk)
 
