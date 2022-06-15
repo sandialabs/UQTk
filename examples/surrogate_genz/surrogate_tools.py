@@ -42,12 +42,10 @@ except ImportError:
 
 
 from math import *
-
-import math  
+from scipy.stats import qmc 
 
 import PyUQTk.pce as uqtkpce
 import PyUQTk.PyPCE.pce_tools as pce_tools
-from PyUQTk.utils.func import *
 
 ################################################################################
 def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, quad_type=None):
@@ -73,13 +71,13 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
 
     # Instantiate PC model and random number generator
     pc_model = uqtkpce.PCSet("NISPnoq", nord, ndim, pc_type, pc_alpha, pc_beta)
-    rng = np.random.default_rng()
+    rng = qmc.LatinHypercube(d=ndim, seed=42)
     
     # get training points
     if (method=='regression'):
         nTest=int((pc_model.GetNumberPCTerms())*1.1)
         #train_pts=np.random.normal(loc=0, scale=0.5, size=(nTest, ndim))
-        train_pts=2*rng.random((int(nTest), ndim))-1
+        train_pts=2*rng.random(n=(int(nTest)))-1
         
     if (method=='galerkin'):
         param=nord+1
@@ -96,7 +94,7 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
         c_k = pce_tools.UQTkGalerkinProjection(pc_model,f_evals)
     
     #germ_samples=np.random.normal(0,1, (nSam,ndim))
-    germ_samples=2*rng.random((nSam, ndim))-1
+    germ_samples=2*rng.random(n=nSam)-1
     pce_evals=pce_tools.UQTkEvaluatePCE(pc_model,c_k,germ_samples)
     f_actual=func(germ_samples,model_genz,np.ones(ndim+1))
    
