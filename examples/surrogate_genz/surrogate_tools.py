@@ -53,7 +53,7 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
     Create a PC surrogate for a Genz function
     
     Input:
-        method: Method for surrogate construction; choose "galerkin" or "regression"
+        method: Method for surrogate construction; choose "galerkin," "regression," or "bcs"
         nord: PC order
         ndim: number of dimensions
         pc_type: type of PCE; choose 'LU', 'HG', etc
@@ -69,15 +69,18 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
         1D Numpy array with actual outputs of the genz function at sample points [nSam,]
     """
 
+    if not(method=='regression' or method=='galerkin' or method=='bcs'):
+        print("Enter a valid method: regression, galerkin, or bcs.")
+        
     # Instantiate PC model and random number generator
     pc_model = uqtkpce.PCSet("NISPnoq", nord, ndim, pc_type, pc_alpha, pc_beta)
     rng = qmc.LatinHypercube(d=ndim, seed=42)
     
     # get training points
-    if (method=='regression'):
-        nTest=int((pc_model.GetNumberPCTerms())*1.1)
+    if (method=='regression' or method=='bcs'):
+        nTest=int((pc_model.GetNumberPCTerms())*1.2)
         #train_pts=np.random.normal(loc=0, scale=0.5, size=(nTest, ndim))
-        train_pts=2*rng.random(n=(int(nTest)))-1
+        train_pts=2*rng.random(n=nTest)-1
         
     if (method=='galerkin'):
         param=nord+1
@@ -92,6 +95,14 @@ def surrogate(method, nord, ndim, pc_type, pc_alpha, pc_beta, model_genz, nSam, 
         c_k = pce_tools.UQTkRegression(pc_model, f_evals, train_pts)
     elif (method=='galerkin'):
         c_k = pce_tools.UQTkGalerkinProjection(pc_model,f_evals)
+    elif (method=='bcs'):
+        sigma = np.array([1.e-08]) # inital noise variance; updated in BCS
+        eta = 1e-8                           # threshold for stopping the algorithm
+        lambda_init = np.array([]) # set lambda to a fixed nonnegative value
+        scale = 0.1     # diagonal loading parameter
+        adaptive = 1    # generative basis for adaptive CS, 0 or 1
+        optimal = 1     # use the rigorous implementation of adaptive CS, 0 or 1
+        c_k=pce_tools.UQTkBCS(pc_model, f_evals, train_pts, sigma, eta, lambda_init, adaptive, optimal, scale)
     
     #germ_samples=np.random.normal(0,1, (nSam,ndim))
     germ_samples=2*rng.random(n=nSam)-1
