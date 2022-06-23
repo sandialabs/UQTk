@@ -307,10 +307,10 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     Note: need to generalize this to allow projecting multiple variables at the time
 
     Input:
-        pc_model : PC object with info about basis
+        pc_model :     PC object with info about basis
         f_evaluations: 1D numpy array (vector) with function,
                        evaluated at the quadrature points [nqp,]
-        samplepts: n-dimensional NumPy array with sample points [npq,ndim]
+        samplepts:     n-dimensional NumPy array with sample points [npq,ndim]
     Output:
         1D Numpy array with PC coefficients for each PC term [npce,]
     """
@@ -350,17 +350,22 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, lambda_init,\
     Note: need to generalize this to allow projecting multiple variables at the time
 
     Input:
-        pc_model : PC object with info about basis
+        pc_model :     PC object with info about basis
         f_evaluations: 1D numpy array (vector) with function,
-                       evaluated at the quadrature points [nqp,]
-        samplepts: N-dimensional NumPy array with sample points [npq,ndim]
-        sigma: 1D NumPy array with the inital noise variance [1,]
-        eta: Threshold for stopping the algorithm
-        lambda_init: To set lambda to a fixed nonnegative value;
-                        may set to empty array [,]
-        adaptive: Generative basis for adaptive CS, set to 0 or 1
-        optimal: To use the rigorous implementation of adaptive CS, set to 0 or 1
-        scale: Diagonal loading parameter
+                            evaluated at the quadrature points [nqp,]
+        samplepts:     N-dimensional NumPy array with sample points [npq,ndim]
+        sigma:         1D NumPy array with the inital noise variance [1,]
+        eta:           Threshold for stopping the algorithm; higher eta, fewer
+                            terms retained
+        lambda_init:   Parameter of the Laplace distribution, controlling the sparsity;
+                            if assigned an empty array, [], then lambda will be computed,
+                            otherwise lambda will be fixed to the given value
+        adaptive:      Flag for adaptive implementation, using a generative basis,
+                            set to 0 or 1
+        optimal:       Flag for optimal implementation, rigorous implementation
+                            of adaptive CS, set to 0 or 1
+        scale:         Diagonal loading parameter; relevant only in adaptive,
+                            non-optimal implementation
 
     Output:
         1D Numpy array with PC coefficients for each PC term [npce,]
@@ -392,16 +397,17 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, lambda_init,\
     pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
 
     # UQTk array for function f_evaluations
-    y = uqtkarray.dblArray2D()
+    y = uqtkarray.dblArray1D()
     y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
 
     # UQTk arrays for outputs
     weights = uqtkarray.dblArray1D()      # sparse weights
-    used = uqtkarray.intArray1D()         # position of the sparse weights
+    used = uqtkarray.intArray1D()         # position of the sparse weights;
+                                                #indices of the selected basis terms
     errbars = uqtkarray.dblArray1D()      # one standard deviation around the sparse weights
     basis = uqtkarray.dblArray1D()        # if adaptive==1, basis = next projection vector
     alpha = uqtkarray.dblArray1D()        # sparse hyperparameters (1/gamma)
-    _lambda = uqtkarray.dblArray1D(1,0.0) # parameter controlling the sparsity
+    _lambda = uqtkarray.dblArray1D(1,0.0) # parameter controlling the sparsity on output
 
     # BSC
     verbose=0
