@@ -1,15 +1,6 @@
 cmake_minimum_required (VERSION 3.0)
 project (UQTk)
 
-if(CMAKE_VERSION VERSION_GREATER 3.14)
-cmake_policy(SET CMP0086 OLD)
-endif()
-
-if(CMAKE_VERSION VERSION_GREATER 3.13)
-cmake_policy(SET CMP0078 OLD)
-endif()
-
-
 # set( CMAKE_VERBOSE_MAKEFILE on ) # see all output
 
 
