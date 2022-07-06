@@ -5,6 +5,7 @@ add_subdirectory (plotting)
 add_subdirectory (sens)
 add_subdirectory (multirun)
 add_subdirectory (utils)
+
 if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (PyPCE)
 endif()
@@ -17,6 +18,7 @@ SET(copy_FILES
   pce.py
   bcs.py
   kle.py
+  lowrank.py
   )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/uqtkarray.py
@@ -37,6 +39,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bcs.py
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/kle.py
                ${CMAKE_CURRENT_BINARY_DIR}/kle.py COPYONLY)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lowrank.py
+               ${CMAKE_CURRENT_BINARY_DIR}/lowrank.py COPYONLY)
+
 INSTALL(FILES ${copy_FILES}
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
         DESTINATION PyUQTk/
@@ -51,6 +56,7 @@ if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (kle)
   add_subdirectory (pce)
   add_subdirectory (bcs)
+  add_subdirectory (lowrank)
 
   add_subdirectory(pytests)
 endif()
