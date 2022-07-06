@@ -122,7 +122,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   int count = 0;
   for ( count=0; count<MAX_IT; count++ )
   {
-    if ( (count%10)==0 )
+    //if ( (count%10)==0 )
     //  cout << "Iteration # " << count << endl;
 
     Array1D<double> s,q;
@@ -437,7 +437,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     }
 
   }
-  printf("BCS algorithm converged, # iterations : %d \n",count);
+  //printf("BCS algorithm converged, # iterations : %d \n",count);
   return ;
 
 

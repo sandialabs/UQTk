@@ -1,0 +1,15 @@
+BCS Tests
+
+BCS_etas_v_upit		plots error as a function of eta, for various up-iterations
+
+BCS_genz_npts		plots error as a function of the number of samples, for various dimensions
+
+BCS_LU_npts		plots error as a function of the number of samples, for various dimensions
+
+BCS_npts_eta		plots error as a function of the number of samples, for various etas
+
+BCS_Test_Breakdown	Runs through BCS workflow without going through UQTKBCS
+
+BSC_Test_eta_loop	Plots training and testing error, for various etas
+
+BSC_Test_minimal	Runs through BSC once

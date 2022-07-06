@@ -38,6 +38,8 @@ try:
     import pce as uqtkpce
     import tools as uqtktools
     import bcs as bcs
+    import PyUQTk.bcs as bcs_tools
+    import PyUQTk.utils.multiindex as uqtkmi
 except ImportError:
     import PyUQTk.uqtkarray as uqtkarray
     import PyUQTk.quad as uqtkquad
@@ -53,8 +55,9 @@ except ImportError:
 
 try:
     from scipy import stats
+    import math
 except ImportError:
-    print("Scipy stats module could not be found")
+    print("Scipy stats or math module could not be found")
 
 try:
     import matplotlib.pyplot as plt
@@ -261,7 +264,7 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     """
     Obtain PC coefficients by Galerkin Projection via UQTk
 
-    Note: need to generalize this to allow projecting multiple variables at the time
+    Note: Need to generalize this to allow projecting multiple variables at a time
 
     Input:
         pc_model : PC object with info about basis to project on
@@ -271,12 +274,13 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
         1D Numpy array with PC coefficients [npce,]
     """
 
-    # Get parameters
+    # Sends error message if y-values are multi-dimensional
     if len(f_evaluations.shape) > 1:
         print("This function can only project single variables for now")
         exit(1)
 
-    npce = pc_model.GetNumberPCTerms()
+    # Get parameters
+    npce = pc_model.GetNumberPCTerms()  # Number of PC terms
     nqp = f_evaluations.shape[0]        # Number of quadrature points
 
     # UQTk array for PC coefficients for one variable
@@ -285,7 +289,6 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     # UQTk array for function evaluations at quadrature points for that variable
     f_uqtk = uqtkarray.dblArray1D(nqp,0.0)
     for ipt in range(nqp):
-        #f_uqtk[ipt]=f_evaluations[ipt]
         f_uqtk.assign(ipt,f_evaluations[ipt])
 
     # Galerkin Projection
@@ -295,37 +298,38 @@ def UQTkGalerkinProjection(pc_model,f_evaluations):
     c_k = np.zeros(npce)
     for ip in range(npce):
         c_k[ip] = c_k_1d_uqtk[ip]
-        #c_k[ip] = c_k_1d_uqtk.at(ip)
 
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
 def UQTkRegression(pc_model,f_evaluations, samplepts):
     """
-    Obtain PC coefficients by regression via UQTk
+    Obtain PC coefficients by regression
 
-    Note: need to generalize this to allow projecting multiple variables at the time
+    Note: Need to generalize this to allow projecting multiple variables at a time
 
     Input:
         pc_model :     PC object with info about basis
-        f_evaluations: 1D numpy array (vector) with function,
-                       evaluated at the quadrature points [nqp,]
-        samplepts:     n-dimensional NumPy array with sample points [npq,ndim]
+        f_evaluations: 1D NumPy array (vector) with function evaluated at the
+                            sample points [nsam,]
+        samplepts:     n-dimensional NumPy array with sample points
+                            [nsam, ndim]
     Output:
         1D Numpy array with PC coefficients for each PC term [npce,]
     """
 
-    # Get parameters
+    # Sends error message if y-values are multi-dimensional
     if len(f_evaluations.shape) > 1:
         print("This function can only project single variables for now")
         exit(1)
 
-    npce = pc_model.GetNumberPCTerms()
-    nqp = f_evaluations.shape[0]        # Number of sample points
-    ndim=samplepts.shape[1]
+    # Get parameters
+    npce = pc_model.GetNumberPCTerms()  # Number of PC terms
+    nsam = f_evaluations.shape[0]       # Number of sample points
+    ndim=samplepts.shape[1]             # Number of dimensions
 
-    #UQTk array for samples - [nqp, ndim]
-    sam_uqtk=uqtkarray.dblArray2D(nqp,ndim)
+    #UQTk array for samples - [nsam, ndim]
+    sam_uqtk=uqtkarray.dblArray2D(nsam,ndim)
     sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
 
     # UQTk array for the basis terms evaluated at the sample points
@@ -333,7 +337,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
 
     # NumPy array for basis terms evaluated at the sample points
-    psi_np = np.zeros( (nqp, npce) )
+    psi_np = np.zeros( (nsam, npce) )
     psi_np = uqtkarray.uqtk2numpy(psi_uqtk)
 
     # Regression
@@ -342,86 +346,181 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, lambda_init,\
-    adaptive, optimal, scale):
+def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0):
     """
-    Obtain PC coefficients by bayesian compressive sensing
+    Obtain PC coefficients by Bayesian compressive sensing
 
-    Note: need to generalize this to allow projecting multiple variables at the time
+    Note: Need to generalize this to allow multiple variables at a time
 
     Input:
         pc_model :     PC object with info about basis
-        f_evaluations: 1D numpy array (vector) with function,
-                            evaluated at the quadrature points [nqp,]
-        samplepts:     N-dimensional NumPy array with sample points [npq,ndim]
-        sigma:         1D NumPy array with the inital noise variance [1,]
-        eta:           Threshold for stopping the algorithm; higher eta, fewer
-                            terms retained
-        lambda_init:   Parameter of the Laplace distribution, controlling the sparsity;
-                            if assigned an empty array, [], then lambda will be computed,
-                            otherwise lambda will be fixed to the given value
-        adaptive:      Flag for adaptive implementation, using a generative basis,
-                            set to 0 or 1
-        optimal:       Flag for optimal implementation, rigorous implementation
-                            of adaptive CS, set to 0 or 1
-        scale:         Diagonal loading parameter; relevant only in adaptive,
-                            non-optimal implementation
+        f_evaluations: 1D numpy array (vector) with function, evaluated at the
+                            sample points [#samples,]
+        samplepts:     N-dimensional NumPy array with sample points [
+                            #samples, #dimensions]
+        sigma:         1D NumPy array with the inital noise variance we assume
+                            is in the data [1,]
+        eta:           Threshold for stopping the algorithm. Smaller values
+                            retain more nonzero coefficients.
+        upit:          Number of up-iterations; default is 0
+
 
     Output:
-        1D Numpy array with PC coefficients for each PC term [npce,]
+        c_k:      1D Numpy array with PC coefficients for each term of the final
+                       model [#terms_in_final_basis,]
+        pc_model: PC object with basis expanded by the up-iterations (if upit>0)
+
     """
 
-    # Get parameters
+    # Sends error message if y-values are multi-dimensional
     if len(f_evaluations.shape) > 1:
-        print("This function can only project single variables for now")
+        print("This function can only project single variables for now.")
         exit(1)
 
-    npce = pc_model.GetNumberPCTerms()
-    nqp = f_evaluations.shape[0]        # Number of sample points
-    ndim=samplepts.shape[1]
-
-    # UQTk array for sigma
-    sig_uqtk=uqtkarray.dblArray1D(sigma.size)
+    # UQTk array for sigma - [1,]
     sig_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(sigma))
 
-    # UQTk array for lambda_init
-    lam_uqtk=uqtkarray.dblArray1D(sigma.size)
-    lam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(lambda_init))
-
-    #UQTk array for samples - [nqp, ndim]
-    sam_uqtk=uqtkarray.dblArray2D(nqp,ndim)
+    #UQTk array for samples - [#samples, #dimensions]
     sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
 
-    # UQTk array for the basis terms evaluated at the sample points
-    psi_uqtk = uqtkarray.dblArray2D()
-    pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
-
-    # UQTk array for function f_evaluations
-    y = uqtkarray.dblArray1D()
+    # UQTk array for function f_evaluations - [#evaluations,]
     y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
 
-    # UQTk arrays for outputs
-    weights = uqtkarray.dblArray1D()      # sparse weights
-    used = uqtkarray.intArray1D()         # position of the sparse weights;
-                                                #indices of the selected basis terms
-    errbars = uqtkarray.dblArray1D()      # one standard deviation around the sparse weights
-    basis = uqtkarray.dblArray1D()        # if adaptive==1, basis = next projection vector
-    alpha = uqtkarray.dblArray1D()        # sparse hyperparameters (1/gamma)
-    _lambda = uqtkarray.dblArray1D(1,0.0) # parameter controlling the sparsity on output
+    # Initial run of BCS
+    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta)
 
-    # BSC
-    verbose=0
-    bcs.BCS(psi_uqtk, y, sig_uqtk, eta, lam_uqtk, adaptive, optimal, scale,\
-     verbose, weights, used, errbars, basis, alpha, _lambda)
+    # Loop through up-iterations, growing basis with higher order terms
+    if(upit>=0):
+        for it in range(upit):
+            weights, used, pc_model = UpItBCS(pc_model, used, sam_uqtk, y,\
+                sig_uqtk, eta, adaptive, optimal, scale)
+    else:
+        print("Invalid value for upit.")
 
-    # Create Numpy array of PC coefficients
-    c_k=np.zeros(npce)
+    # Create NumPy array of PC coefficients
+    c_k=np.zeros(pc_model.GetNumberPCTerms())
     for i in range(used.XSize()):
         pos = used[i]
         c_k[pos]=weights[i]
 
-    # Return numpy array of PC coefficients
-    return c_k
+    # Return numpy array of PC coefficients and new pc model
+    return c_k, pc_model
+################################################################################
+def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
+    """
+    Perform one iteration of Bayesian compressive sensing
+
+    Input:
+        pc_model:  PC object with info about the basis
+        y:         1D UQTk array of function evaluations [#samples,]
+        sam_uqtk:  N-dimensional UQTk of array of samples [#samples, #dimensions]
+        sig_uqtk:  1D UQTk array with the inital noise variance we assume is in
+                        the data [1,]
+        eta:       Threshold for stopping the algorithm. Smaller values
+                            retain more nonzero coefficients.
+
+    Output:
+        weights: 1D UQTk array with PC coefficients at indices in used [#used,]
+        used:    1D UQTk array with inidices of the sparse weights
+    """
+
+    # Configure BCS parameters to defaults
+    lambda_init=np.array([]) # Parameter of the Laplace distribution and
+                             # coefficient in the l_1 regularization term;
+                             # if assigned an empty array, it will be computed,
+                             # otherwise lambda will be fixed to the given value.
+    adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
+    optimal = 1  # Flag for optimal implementation of adaptive CS, set to 0 or 1
+    scale = 0.1  # Diagonal loading parameter; relevant only in adaptive,
+                    # non-optimal implementation
+    verbose = 0  # silence print statements
+
+    # UQTk array for lambda_init - []
+    lam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(lambda_init))
+
+    #UQTk array for the basis terms evaluated at the sample points
+    psi_uqtk = uqtkarray.dblArray2D()
+    pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
+
+    # UQTk arrays for outputs
+    weights = uqtkarray.dblArray1D()  # sparse weights
+    used = uqtkarray.intArray1D()     # position of the sparse weights;
+                                          #indices of selected basis terms
+    errbars = uqtkarray.dblArray1D()  # 1 standard dev around sparse weights
+    basis = uqtkarray.dblArray1D()    # if adaptive==1, basis = next projection
+                                          #vector
+    alpha = uqtkarray.dblArray1D()    # sparse hyperparameters (1/gamma)
+    _lambda = uqtkarray.dblArray1D(1,0.0) # parameter controlling the sparsity
+                                          # on output
+
+    # Run BCS through the c++ implementation
+    bcs.BCS(psi_uqtk, y, sig_uqtk, eta, lam_uqtk, adaptive, optimal, scale,\
+     verbose, weights, used, errbars, basis, alpha, _lambda)
+
+    # Print result of the BCS iteration
+    if (verbose>1):
+        print("BCS has selected", used.XSize(), "basis terms out of",\
+            pc_model.GetNumberPCTerms())
+
+    # Return coefficients and their locations with respect to the basis terms
+    return weights, used
+################################################################################
+def UpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta):
+    """
+    Perform one up-iteration of Bayesian compressive sensing, growing the basis
+        with higher order terms and determining coefficients
+
+    Input:
+        pc_model:  PC object with info about the basis
+        used:      UQTk array of the indices of basis terms selected by BCS
+        sam_uqtk:  N-dimensional UQTk of array of samples [#samples, #dimensions]
+        y:         1D UQTk array of function evaluations [#samples,]
+        sig_uqtk:  1D UQTk array with the inital noise variance we assume is in
+                        the data [1,]
+        eta:       Threshold for stopping the algorithm. Smaller values
+                            retain more nonzero coefficients.
+
+    Output:
+        weights: 1D UQTk array with PC coefficients at indices in used [#used,]
+        used:    1D UQTk array with inidices of the sparse weights
+        pc_model: PC object with a basis expanded by the up-iteration
+
+    """
+
+    # UQTk array for multiindex - [#terms, #dimensions]
+    mi_uqtk = uqtkarray.intArray2D(pc_model.GetNumberPCTerms(), sam_uqtk.YSize())
+
+    # Retrieve multiindex
+    pc_model.GetMultiIndex(mi_uqtk)
+
+    # UQTk array new multiindex
+    used_mi_uqtk=uqtkarray.intArray2D()
+
+    # Calculate new multiindex from the rows that are used
+    uqtkarray.subMatrix_row_int(mi_uqtk, used, used_mi_uqtk)
+
+    # Convert to NumPy array
+    used_mi_np=uqtkarray.uqtk2numpy(used_mi_uqtk)
+
+    # Grow the multiindex in pertinent directions (using a conservative approach)
+    mi_next = np.array(uqtkmi.mi_addfront_cons(used_mi_np), dtype=object)[0]
+
+    # Convert to UQTk array
+    mi_next_uqtk = uqtkarray.intArray2D(mi_next.shape[0], mi_next.shape[1])
+    for i in range(mi_next.shape[0]):
+        for j in range(mi_next.shape[1]):
+            mi_next_uqtk.assign(i, j, mi_next[i][j])
+
+    # Create a PC object with the new multiindex
+    pc_model=uqtkpce.PCSet("NISPnoq", mi_next_uqtk, pc_model.GetPCType(),\
+            pc_model.GetAlpha(), pc_model.GetBeta())
+
+    # Run an iteraion of BCS using the new basis
+    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta)
+
+    # Return coefficients, their locations with respect to the the basis terms,
+        # and a PC object with the updated basis
+    return weights, used, pc_model
 ################################################################################
 def UQTkGetQuadPoints(pc_model):
     """
