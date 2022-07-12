@@ -232,12 +232,17 @@ def UQTkEvaluatePCE(pc_model,pc_coeffs,samples):
 
     # Get data set dimensions etc.
     n_test_samples = samples.shape[0]
-    ndim = samples.shape[1]
     npce = pc_model.GetNumberPCTerms()
 
     # Put PC samples in a UQTk array
-    std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
-    std_samples_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(samples))
+    if len(samples.shape)>1:
+        ndim = samples.shape[1]
+        std_samples_uqtk = uqtkarray.dblArray2D(n_test_samples, ndim)
+        std_samples_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(samples))
+    else:
+        std_samples_uqtk=uqtkarray.dblArray2D(n_test_samples,1) #UQTk array for samples - [nsam, ndim]
+        for i in range(n_test_samples):
+            std_samples_uqtk.assign(i, 0, samples[i])
 
     # Create and fill UQTk array for PC coefficients
     c_k_1d_uqtk = uqtkarray.dblArray1D(npce,0.0)
@@ -326,11 +331,18 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Get parameters
     npce = pc_model.GetNumberPCTerms()  # Number of PC terms
     nsam = f_evaluations.shape[0]       # Number of sample points
-    ndim=samplepts.shape[1]             # Number of dimensions
 
-    #UQTk array for samples - [nsam, ndim]
-    sam_uqtk=uqtkarray.dblArray2D(nsam,ndim)
-    sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
+    # if dim>1
+    if len(samplepts.shape)>1:
+        ndim=samplepts.shape[1]             # Number of dimensions
+        sam_uqtk=uqtkarray.dblArray2D(nsam,ndim) #UQTk array for samples - [nsam, ndim]
+        sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
+
+    # if dim = 1
+    else:
+        sam_uqtk=uqtkarray.dblArray2D(nsam,1) #UQTk array for samples - [nsam, ndim]
+        for i in range(nsam):
+            sam_uqtk.assign(i, 0, samplepts[i])
 
     # UQTk array for the basis terms evaluated at the sample points
     psi_uqtk = uqtkarray.dblArray2D()
@@ -346,7 +358,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0):
+def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0, nfolds=1):
     """
     Obtain PC coefficients by Bayesian compressive sensing
 
@@ -377,6 +389,13 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0):
         print("This function can only project single variables for now.")
         exit(1)
 
+    if (type(eta)==np.float64 or type(eta)==float):
+        eta_opt = eta
+    elif (type(eta)==np.ndarray or type(eta)==list):
+        eta_opt = UQTkOptimizeEta(pc_model, f_evaluations, samplepts, sigma, upit, eta, nfolds)
+    else:
+        print("Invalid input for eta.")
+
     # UQTk array for sigma - [1,]
     sig_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(sigma))
 
@@ -387,13 +406,13 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0):
     y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
 
     # Initial run of BCS
-    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta)
+    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta_opt)
 
     # Loop through up-iterations, growing basis with higher order terms
     if(upit>=0):
         for it in range(upit):
             weights, used, pc_model = UpItBCS(pc_model, used, sam_uqtk, y,\
-                sig_uqtk, eta, adaptive, optimal, scale)
+                sig_uqtk, eta_opt)
     else:
         print("Invalid value for upit.")
 
@@ -405,6 +424,44 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0):
 
     # Return numpy array of PC coefficients and new pc model
     return c_k, pc_model
+################################################################################
+def UQTkOptimizeEta(pc_start, y, x, sigma, upit, etas, nfolds):
+
+    # split data in k folds
+    k=bcs.kfoldCV(x, y, nfolds)
+
+    error=np.zeros(nfolds) # minimum error per
+    e_k=[] # list of optimum etas per fold
+
+    # loop through each fold
+    for i in range(nfolds):
+        # retrieve training and validation data
+        x_tr=k[i]['xtrain']
+        y_tr=k[i]['ytrain']
+        x_val=k[i]['xval']
+        y_val=k[i]['yval']
+        RMSE_per_eta=[]
+
+        for eta in etas:
+
+            # Coefficients through BCS
+            c_k, pc_final = UQTkBCS(pc_start, y_tr, x_tr, sigma, eta, upit)
+
+            # Evaluate the PCE
+            pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val)
+
+            # Calculate error metric
+            MSE = np.square(np.subtract(y_val, pce_evals)).mean()
+            RMSE = math.sqrt(MSE)
+            RMSE_per_eta.append(RMSE)
+
+        # pick the lowest error and the corresponding eta
+        min_error = min(RMSE_per_eta)
+        e_k.append(etas[RMSE_per_eta.index(min_error)])
+
+    # return the mean of the optimum etas for each fold
+    eta_opt = np.array(e_k).mean()
+    return eta_opt
 ################################################################################
 def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
     """
@@ -567,6 +624,39 @@ def UQTkStDv(pc_model,pc_coeffs):
     pc_stdv = pc_model.StDv(c_k_1d_uqtk)
 
     return pc_stdv
+################################################################################
+def UQTkGSA(pc_model, pc_coeffs):
+    """
+    Computes sensivity indices
+    Input:
+        pc_model: PC object with info about the basis
+        pc_coeffs: NumPy array of PC coefficients [#PCTerms,]
+    Output:
+        mainsens: 1D NumPy array of the main sensitivities [#dim,]
+        totsens:  1D NumPy array of the main [#dim,]
+        jointsens: 2D NumPy array of joint sensitivities [#dim, #dim]
+    """
+    # coefficients in a uqtk array
+    coef_uqtk = uqtkarray.numpy2uqtk(pc_coeffs)
+
+    # Compute main sensitivities
+    mainsens_uqtk=uqtkarray.dblArray1D()
+    pc_model.ComputeMainSens(coef_uqtk,mainsens_uqtk)
+    mainsens = uqtkarray.uqtk2numpy(mainsens_uqtk)
+
+    # Compute total sensitivities
+    totsens_uqtk=uqtkarray.dblArray1D()
+    pc_model.ComputeTotSens(coef_uqtk,totsens_uqtk)
+    totsens = uqtkarray.uqtk2numpy(totsens_uqtk)
+
+    # Compute joint sensitivities
+    jointsens_uqtk = uqtkarray.dblArray2D()
+    pc_model.ComputeJointSens(coef_uqtk,jointsens_uqtk)
+    for id in range(pc_model.GetNDim()):
+        jointsens_uqtk.assign(id, id, mainsens_uqtk[id])
+    jointsens = uqtkarray.uqtk2numpy(jointsens_uqtk)
+
+    return mainsens, totsens, jointsens
 ################################################################################
 def UQTkKDE(fcn_evals):
     """
