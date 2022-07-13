@@ -40,13 +40,33 @@ sys.path.append('../PyPCE')
 
 try:
     import _uqtkarray as uqtkarray
+except ImportError:
+    print("PyUQTk array module not found")
+
+try:
     import _quad as uqtkquad
+except ImportError:
+    print("PyUQTk quad module not found")
+
+try:
     import _pce as uqtkpce
+except ImportError:
+    print("PyUQTk PCE module not found")
+
+try:
     import _tools as uqtktools
+except ImportError:
+    print("PyUQTk Tools module not found")
+
+try:
     import PyPCE.pce_tools as pce_tools
+except ImportError:
+    print("PyUQTk pce_tools module not found")
+
+try:
     import PyPCE.adaptation_tools as adaptation_tools
 except ImportError:
-    print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
+    print("PyUQTk adaptation_tools module not found")
 
 try:
 	import numpy as np
