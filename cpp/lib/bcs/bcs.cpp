@@ -124,7 +124,6 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   {
     //if ( (count%10)==0 )
     //  cout << "Iteration # " << count << endl;
-
     Array1D<double> s,q;
     s=S; q=Q;
     for ( int i = 0; i< (int) index.XSize(); i++){

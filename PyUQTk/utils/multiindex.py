@@ -167,7 +167,7 @@ def mi_addfront(mindex):
     a multiindex is added only if *any* of the parents is in the current set
     """
 
-    print('Adding multiindex front (non-conservative)')
+    #print('Adding multiindex front (non-conservative)')
 
     npc=mindex.shape[0]
     ndim=mindex.shape[1]
@@ -194,7 +194,7 @@ def mi_addfront(mindex):
     mindex_new=np.vstack((mindex,mindex_add))
 
 
-    print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
+    #print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
 
     # Returns the new muliindex, the added new multiindices,
     # and the 'front', i.e. multiindices whose children are added
