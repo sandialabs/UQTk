@@ -32,9 +32,7 @@ sys.path.append('../pyuqtkarray/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
-#sys.path.append('..')
 sys.path.append('../..')
-#sys.path.append('../bcs')
 
 
 # Import Modules
@@ -44,7 +42,6 @@ try:
     import pce as uqtkpce
     import tools as uqtktools
     import bcs as bcs
-    #import PyUQTk.bcs as bcs_tools
     import PyUQTk.utils.multiindex as uqtkmi
 except ImportError:
     import PyUQTk.uqtkarray as uqtkarray
