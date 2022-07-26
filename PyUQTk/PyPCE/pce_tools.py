@@ -332,15 +332,14 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     npce = pc_model.GetNumberPCTerms()  # Number of PC terms
     nsam = f_evaluations.shape[0]       # Number of sample points
 
+    # Create UQTk array for sample points - [nsam, ndim]
     # if dim>1
     if len(samplepts.shape)>1:
-        ndim=samplepts.shape[1]             # Number of dimensions
-        sam_uqtk=uqtkarray.dblArray2D(nsam,ndim) #UQTk array for samples - [nsam, ndim]
+        ndim=samplepts.shape[1]         # Number of dimensions
         sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
-
     # if dim = 1
     else:
-        sam_uqtk=uqtkarray.dblArray2D(nsam,1) #UQTk array for samples - [nsam, ndim]
+        sam_uqtk=uqtkarray.dblArray2D(nsam,1)
         for i in range(nsam):
             sam_uqtk.assign(i, 0, samplepts[i])
 
@@ -348,8 +347,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     psi_uqtk = uqtkarray.dblArray2D()
     pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
 
-    # NumPy array for basis terms evaluated at the sample points
-    psi_np = np.zeros( (nsam, npce) )
+    # NumPy array for basis terms evaluated at the sample points - [nsam, npce]
     psi_np = uqtkarray.uqtk2numpy(psi_uqtk)
 
     # Regression
@@ -358,24 +356,31 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0, nfolds=1):
+def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, nfolds=5, upit=0,\
+    conserve=False, verbose=False):
     """
     Obtain PC coefficients by Bayesian compressive sensing
 
     Note: Need to generalize this to allow multiple variables at a time
+    ToDo: add documentation in UQTk manual on what BCS is and the basis growth schemes
+    ToDo: generalize to weighted BCS
 
     Input:
-        pc_model :     PC object with info about basis
+        pc_model :     PC object with information about the starting basis
         f_evaluations: 1D numpy array (vector) with function, evaluated at the
                             sample points [#samples,]
-        samplepts:     N-dimensional NumPy array with sample points [
-                            #samples, #dimensions]
-        sigma:         1D NumPy array with the inital noise variance we assume
-                            is in the data [1,]
-        eta:           Threshold for stopping the algorithm. Smaller values
-                            retain more nonzero coefficients.
+        samplepts:     N-dimensional NumPy array with sample points [#samples,
+                            #dimensions]
+        sigma:         Inital noise variance we assume is in the data
+        eta:           NumPy array, list, or float with the threshold for
+                            stopping the algorithm. Smaller values
+                            retain more nonzero coefficients. If eta is an array/list,
+                            the optimum value of the array is chosen. If a float,
+                            the given value is used.
+        nfolds:        Number of folds to use for eta cross-validation; default is 5
         upit:          Number of up-iterations; default is 0
-
+        conserve:      Whether to use conservative basis growth; default is a
+                            non-conservative approach
 
     Output:
         c_k:      1D Numpy array with PC coefficients for each term of the final
@@ -389,15 +394,20 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0, nfolds=1):
         print("This function can only project single variables for now.")
         exit(1)
 
+    # Choose whether to optimize eta
     if (type(eta)==np.float64 or type(eta)==float):
         eta_opt = eta
     elif (type(eta)==np.ndarray or type(eta)==list):
-        eta_opt = UQTkOptimizeEta(pc_model, f_evaluations, samplepts, sigma, upit, eta, nfolds)
+        eta_opt = UQTkOptimizeEta(pc_model, f_evaluations, samplepts, sigma,\
+         eta, conserve, upit, nfolds)
+        if verbose:
+            print("Optimal eta is", eta_opt)
     else:
         print("Invalid input for eta.")
 
     # UQTk array for sigma - [1,]
-    sig_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(sigma))
+    sig_np=np.array([sigma])
+    sig_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(sig_np))
 
     #UQTk array for samples - [#samples, #dimensions]
     sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
@@ -406,13 +416,15 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0, nfolds=1):
     y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
 
     # Initial run of BCS
-    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta_opt)
+    weights, used = UQTkEvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta_opt, verbose)
 
     # Loop through up-iterations, growing basis with higher order terms
     if(upit>=0):
         for it in range(upit):
-            weights, used, pc_model = UpItBCS(pc_model, used, sam_uqtk, y,\
-                sig_uqtk, eta_opt)
+            if verbose:
+                print("Up-iteration", it+1)
+            weights, used, pc_model = UQTkUpItBCS(pc_model, used, sam_uqtk, y,\
+                sig_uqtk, eta_opt, conserve, verbose)
     else:
         print("Invalid value for upit.")
 
@@ -425,12 +437,32 @@ def UQTkBCS(pc_model, f_evaluations, samplepts, sigma, eta, upit=0, nfolds=1):
     # Return numpy array of PC coefficients and new pc model
     return c_k, pc_model
 ################################################################################
-def UQTkOptimizeEta(pc_start, y, x, sigma, upit, etas, nfolds):
+def UQTkOptimizeEta(pc_start, y, x, sigma, etas, conserve, upit, nfolds):
+    """
+    Choose the opimum eta for Bayesian compressive sensing
+    Helper function for UQTkBCS
 
+    Input:
+        pc_start :     PC object with information about the starting basis
+        y:             1D numpy array (vector) with function, evaluated at the
+                            sample points [#samples,]
+        x:             N-dimensional NumPy array with sample points [#samples,
+                            #dimensions]
+        sigma:         Inital noise variance we assume is in the data
+        etas:          NumPy array or list with the threshold for stopping the
+                            algorithm. Smaller values retain more nonzero
+                            coefficients
+        conserve:      Whether to use conservative basis growth
+        upit:          Number of up-iterations
+        nfolds:        Number of folds to use for eta cross-validation
+
+    Output:
+        eta_opt:      Optimum eta
+
+    """
     # split data in k folds
     k=bcs.kfoldCV(x, y, nfolds)
-
-    error=np.zeros(nfolds) # minimum error per
+    error=np.zeros(nfolds) # minimum error per fold
     e_k=[] # list of optimum etas per fold
 
     # loop through each fold
@@ -442,12 +474,13 @@ def UQTkOptimizeEta(pc_start, y, x, sigma, upit, etas, nfolds):
         y_val=k[i]['yval']
         RMSE_per_eta=[]
 
+        # loop through each eta
         for eta in etas:
 
-            # Coefficients through BCS
-            c_k, pc_final = UQTkBCS(pc_start, y_tr, x_tr, sigma, eta, upit)
+            # Obtain coefficients through BCS
+            c_k, pc_final = UQTkBCS(pc_start, y_tr, x_tr, sigma, eta, 1, upit, conserve)
 
-            # Evaluate the PCE
+            # Evaluate the PCE at the validation points
             pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val)
 
             # Calculate error metric
@@ -463,12 +496,13 @@ def UQTkOptimizeEta(pc_start, y, x, sigma, upit, etas, nfolds):
     eta_opt = np.array(e_k).mean()
     return eta_opt
 ################################################################################
-def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
+def UQTkEvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta, verbose):
     """
     Perform one iteration of Bayesian compressive sensing
+    Helper function for UQTkBCS
 
     Input:
-        pc_model:  PC object with info about the basis
+        pc_model:  PC object with information about the basis
         y:         1D UQTk array of function evaluations [#samples,]
         sam_uqtk:  N-dimensional UQTk of array of samples [#samples, #dimensions]
         sig_uqtk:  1D UQTk array with the inital noise variance we assume is in
@@ -480,7 +514,6 @@ def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
         weights: 1D UQTk array with PC coefficients at indices in used [#used,]
         used:    1D UQTk array with inidices of the sparse weights
     """
-
     # Configure BCS parameters to defaults
     lambda_init=np.array([]) # Parameter of the Laplace distribution and
                              # coefficient in the l_1 regularization term;
@@ -490,7 +523,7 @@ def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
     optimal = 1  # Flag for optimal implementation of adaptive CS, set to 0 or 1
     scale = 0.1  # Diagonal loading parameter; relevant only in adaptive,
                     # non-optimal implementation
-    verbose = 0  # silence print statements
+    bcs_verbose = 0 # silence print statements
 
     # UQTk array for lambda_init - []
     lam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(lambda_init))
@@ -512,20 +545,21 @@ def EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta):
 
     # Run BCS through the c++ implementation
     bcs.BCS(psi_uqtk, y, sig_uqtk, eta, lam_uqtk, adaptive, optimal, scale,\
-     verbose, weights, used, errbars, basis, alpha, _lambda)
+     bcs_verbose, weights, used, errbars, basis, alpha, _lambda)
 
     # Print result of the BCS iteration
-    if (verbose>1):
+    if (verbose):
         print("BCS has selected", used.XSize(), "basis terms out of",\
             pc_model.GetNumberPCTerms())
 
     # Return coefficients and their locations with respect to the basis terms
     return weights, used
 ################################################################################
-def UpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta):
+def UQTkUpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta, conserve, verbose):
     """
     Perform one up-iteration of Bayesian compressive sensing, growing the basis
         with higher order terms and determining coefficients
+    Helper function for UQTkBCS
 
     Input:
         pc_model:  PC object with info about the basis
@@ -536,6 +570,8 @@ def UpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta):
                         the data [1,]
         eta:       Threshold for stopping the algorithm. Smaller values
                             retain more nonzero coefficients.
+        conserve:  Whether to use a conservative approach to basis growth
+        verbose:   Boolean flag for print statements
 
     Output:
         weights: 1D UQTk array with PC coefficients at indices in used [#used,]
@@ -559,8 +595,16 @@ def UpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta):
     # Convert to NumPy array
     used_mi_np=uqtkarray.uqtk2numpy(used_mi_uqtk)
 
-    # Grow the multiindex in pertinent directions (using a conservative approach)
-    mi_next = np.array(uqtkmi.mi_addfront_cons(used_mi_np), dtype=object)[0]
+    # Grow the multiindex in pertinent directions
+    # using a conservative approach
+    if (conserve):
+        mi_next = np.array(uqtkmi.mi_addfront_cons(used_mi_np), dtype=object)[0]
+    # using a non-conservative approach
+    else:
+        mi_next = np.array(uqtkmi.mi_addfront(used_mi_np),dtype=object)[0]
+
+    if verbose:
+        print(mi_next.shape[0]-used.XSize(), "terms added; new multiindex has", mi_next.shape[0], "terms")
 
     # Convert to UQTk array
     mi_next_uqtk = uqtkarray.intArray2D(mi_next.shape[0], mi_next.shape[1])
@@ -573,7 +617,7 @@ def UpItBCS(pc_model, used, sam_uqtk, y, sig_uqtk, eta):
             pc_model.GetAlpha(), pc_model.GetBeta())
 
     # Run an iteraion of BCS using the new basis
-    weights, used = EvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta)
+    weights, used = UQTkEvalBCS(pc_model, y, sam_uqtk, sig_uqtk, eta, verbose)
 
     # Return coefficients, their locations with respect to the the basis terms,
         # and a PC object with the updated basis
@@ -627,14 +671,17 @@ def UQTkStDv(pc_model,pc_coeffs):
 ################################################################################
 def UQTkGSA(pc_model, pc_coeffs):
     """
-    Computes sensivity indices
+    Computes Sobol' sensivity indices
+
+    ToDo: refer to documentation in the UQTk manual
+
     Input:
-        pc_model: PC object with info about the basis
+        pc_model: PC object with information about the basis
         pc_coeffs: NumPy array of PC coefficients [#PCTerms,]
     Output:
-        mainsens: 1D NumPy array of the main sensitivities [#dim,]
-        totsens:  1D NumPy array of the main [#dim,]
-        jointsens: 2D NumPy array of joint sensitivities [#dim, #dim]
+        mainsens:  1D NumPy array of the main sensitivities for each dimension [#dim,]
+        totsens:   1D NumPy array of the total sensivities for each dimension [#dim,]
+        jointsens: 2D NumPy array of joint sensitivities for each pair of dimensions [#dim, #dim]
     """
     # coefficients in a uqtk array
     coef_uqtk = uqtkarray.numpy2uqtk(pc_coeffs)
