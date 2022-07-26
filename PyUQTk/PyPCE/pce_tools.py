@@ -25,11 +25,17 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+
+# This is only necessary for the user to pass the ctest without the need for install
 import sys
 sys.path.append('../pyuqtkarray/')
 sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
+#sys.path.append('..')
+sys.path.append('../..')
+#sys.path.append('../bcs')
+
 
 # Import Modules
 try:
@@ -38,7 +44,7 @@ try:
     import pce as uqtkpce
     import tools as uqtktools
     import bcs as bcs
-    import PyUQTk.bcs as bcs_tools
+    #import PyUQTk.bcs as bcs_tools
     import PyUQTk.utils.multiindex as uqtkmi
 except ImportError:
     import PyUQTk.uqtkarray as uqtkarray
