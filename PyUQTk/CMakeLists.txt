@@ -5,6 +5,7 @@ add_subdirectory (plotting)
 add_subdirectory (sens)
 add_subdirectory (multirun)
 add_subdirectory (utils)
+
 if ("${PyUQTk}" STREQUAL "ON")
   add_subdirectory (PyPCE)
 endif()

@@ -86,7 +86,10 @@ def kfoldCV(x,y,nfolds=3,seed=13):
         test = sum(np.in1d(a,b)) + sum(np.in1d(b,a))
         print test
      '''
-    n,d1 = x.shape
+    if len(x.shape)>1:
+        n,d1 = x.shape
+    else:
+        n=x.shape
     ynew = np.atleast_2d(y)
     if len(ynew) == 1: ynew = ynew.T # change to shape (n,1)
     _,d2 = ynew.shape

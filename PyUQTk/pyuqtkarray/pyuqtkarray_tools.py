@@ -87,15 +87,35 @@ def uqtk2numpy(x):
         return y.copy()
 
 def numpy2uqtk(y):
-    s = np.shape(y)
-    if len(s) == 1:
-        n = s[0]
-        x = pyuqtkarray.dblArray1D(n)
-        x.setnpdblArray(y,n)
-    if len(s) == 2:
-        n = s[0]
-        m = s[1]
-        x = pyuqtkarray.dblArray2D(n,m)
-    #x.setnpdblArray(np.asfortranarray(y.copy()))
-        pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
+    if (y.dtype.name).find('int')>=0:
+        s = np.shape(y)
+        if len(s) == 1:
+            n = s[0]
+            x = pyuqtkarray.intArray1D(n)
+            x.setnpintArray(y,n)
+        if len(s) == 2:
+            n = s[0]
+            m = s[1]
+            x = pyuqtkarray.intArray2D(n,m)
+            for i in range(n):
+                for j in range(m):
+                    x.assign(i, j, y[i][j])
+            pyuqtkarray.setnpintArray(x,np.asfortranarray(y.copy()))
+    elif (y.dtype.name).find('float')>=0:
+        s = np.shape(y)
+        if len(s) == 1:
+            n = s[0]
+            x = pyuqtkarray.dblArray1D(n)
+            x.setnpdblArray(y,n)
+        if len(s) == 2:
+            n = s[0]
+            m = s[1]
+            x = pyuqtkarray.dblArray2D(n,m)
+            #pyuqtkarray.setnpdblArray(x,np.asfortranarray(y.copy()))
+            for i in range(n):
+                for j in range(m):
+                    x.assign(i, j, y[i][j])
+    else:
+        print('numpy2uqtk accepts arrays of integers or floats only')
+
     return x
