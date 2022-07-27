@@ -710,14 +710,14 @@ def UQTkGSA(pc_model, pc_coeffs):
 ################################################################################
 def UQTkKDE(fcn_evals):
     """
-    Performs kernel density estimation
+    Performs kernel density estimation with a Gaussian kernel
     Input:
         fcn_evals: numpy array of evaluations of the forward model [n_samples,]
     Output:
         xpts_pce: numpy array of points at which the PDF is estimated.
         PDF_data_pce: numpy array of estimated PDF values.
     """
-    # Perform KDE on fcn_evals
+    # Perform KDE on fcn_evals, determining bandwisth with Scott's rule of thumb
     kern_pce=stats.kde.gaussian_kde(fcn_evals)
     # Generate points at which to evaluate the PDF
     xpts=np.linspace(fcn_evals.min(),fcn_evals.max(),200)
