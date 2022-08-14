@@ -81,3 +81,8 @@ dfi
 ==============================
 use data-free inference to recover an approximate correlated posterior distribution for parameters of a line model
 given summary statistics on marginals
+
+==============================
+dfi_app
+==============================
+use the dfi app to calibrate a quadratic model given summary statistics on the pushforward posterior
