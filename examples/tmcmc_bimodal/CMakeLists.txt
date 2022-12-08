@@ -17,9 +17,9 @@ add_executable (tmcmc_bimodal.x tmcmc_bimodal.cpp)
 target_link_libraries (tmcmc_bimodal.x uqtk  )
 target_link_libraries (tmcmc_bimodal.x depdsfmt )
 target_link_libraries (tmcmc_bimodal.x depslatec)
+target_link_libraries (tmcmc_bimodal.x deplbfgs  )
 target_link_libraries (tmcmc_bimodal.x m lapack)
 target_link_libraries (tmcmc_bimodal.x m blas)
-target_link_libraries (tmcmc_bimodal.x deplbfgs  )
 
 
 # Link fortran libraries
