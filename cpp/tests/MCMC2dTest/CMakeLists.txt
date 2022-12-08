@@ -31,9 +31,9 @@ target_link_libraries (MCMC2dTest sundials_nvecserial)
 target_link_libraries (MCMC2dTest sundials_sunlinsoldense)
 target_link_libraries (MCMC2dTest sundials_sunmatrixdense)
 target_link_libraries (MCMC2dTest depslatec)
+target_link_libraries (MCMC2dTest deplbfgs  )
 target_link_libraries (MCMC2dTest m lapack ${LAPACK_LIBRARIES})
 target_link_libraries (MCMC2dTest m blas ${BLAS_LIBRARIES})
-target_link_libraries (MCMC2dTest deplbfgs  )
 
 # Link fortran libraries
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
