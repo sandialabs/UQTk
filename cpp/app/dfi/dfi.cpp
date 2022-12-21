@@ -50,23 +50,24 @@
 #include "likelihood.h"
 
 // Specify default values
-#define PRIOR_FILE "prior.dat"                                    // Default prior file
-#define DATA_FILES "data.{d}.dat"                                 // Default regex for data files
-#define MINDEX_FILES "mindex.{d}.{n}.dat"                         // Default PCE multi-indices file
-#define PCCF_FILES "pccf.{d}.{n}.dat"                             // Default PCE coefficients files
-#define PUSHFORWARD_MINDEX_FILES "pushforward.mindex.{d}.{n}.dat" // Default pushforward PCE multi-indices file
-#define PUSHFORWARD_PCCF_FILES "pushforward.pccf.{d}.{n}.dat"     // Default pushforward PCE coefficients files
-#define PUSHFORWARD_OUTPUT_FILES "pushforward.{d}.{n}.dat"        // Default pushforward output file
-#define CHAIN_FILE "chain.dat"                                    // Default chain output file
-#define SYNTHETIC_DATA_FILES "synthetic.data.{d}.dat"             // Default synthetic data sets input and output file
-#define CHAIN_INIT_FILE "chain.init.dat"                          // Default chain initial values file
-#define NB_OF_MCMC 100000                                         // Default number of MCMC steps
-#define BETA 1                                                    // Default scaling factor for the standard deviation of the synthetic data sets
-#define NB_OF_SYNTHETIC_DATA_SETS 100                             // Default number of synthetic data instances per data set
-#define OUTPUT_FREQUENCY 0.1                                      // Default output frequency
-#define PROPOSAL_JUMP_SIZE 0.01                                   // Default proposal jump size
-#define BURNIN 0.1                                                // Default MCMC chain burnin
-#define EVERY 1                                                   // Default MCMC chain subsamling rate
+#define PRIOR_FILE "prior.dat"                                     // Default prior file
+#define DATA_FILES "data.{d}.dat"                                  // Default regex for data files
+#define MINDEX_FILES "mindex.{d}.{n}.dat"                          // Default PCE multi-indices file
+#define PCCF_FILES "pccf.{d}.{n}.dat"                              // Default PCE coefficients files
+#define PUSHFORWARD_MINDEX_FILES "pushforward.mindex.{d}.{n}.dat"  // Default pushforward PCE multi-indices file
+#define PUSHFORWARD_PCCF_FILES "pushforward.pccf.{d}.{n}.dat"      // Default pushforward PCE coefficients files
+#define PUSHFORWARD_OUTPUT_FILES "pushforward.{d}.{n}.dat"         // Default pushforward output file
+#define PUSHFORWARD_MAP_OUTPUT_FILES "pushforward.map.{d}.{n}.dat" // Default pushforward output file
+#define CHAIN_FILE "chain.dat"                                     // Default chain output file
+#define SYNTHETIC_DATA_FILES "synthetic.data.{d}.dat"              // Default synthetic data sets input and output file
+#define CHAIN_INIT_FILE "chain.init.dat"                           // Default chain initial values file
+#define NB_OF_MCMC 100000                                          // Default number of MCMC steps
+#define BETA 1                                                     // Default scaling factor for the standard deviation of the synthetic data sets
+#define NB_OF_SYNTHETIC_DATA_SETS 100                              // Default number of synthetic data instances per data set
+#define OUTPUT_FREQUENCY 0.1                                       // Default output frequency
+#define PROPOSAL_JUMP_SIZE 0.01                                    // Default proposal jump size
+#define BURNIN 0.1                                                 // Default MCMC chain burnin
+#define EVERY 1                                                    // Default MCMC chain subsamling rate
 
 /**
  * Print options to screen.
@@ -83,10 +84,10 @@ void help()
     std::cout << "Usage:" << std::endl;
     std::cout << "dfi.x [-d <data_files>] [-c <pccf_files>] [-i <mindex_files>] [-p <prior_file>] " << std::endl;
     std::cout << "      [-n <n_mcmc>] [-k <n_synth>] [-b <betas>] [-j <weights>] [-r <seed>] " << std::endl;
-    std::cout << "      [-g <jump_size>] [-o] [-u <out_freq>] [-m <burnin>] [-e <every>] [-z] [-q] " << std::endl;
+    std::cout << "      [-g <jump_size>] [-o] [-u <out_freq>] [-m <burnin>] [-e <every>] [-z] [-q]" << std::endl;
     std::cout << "      [-a <chain>] [-t <chain_init>] [-t <chain_init>] [-f <pushforward_out>]" << std::endl;
-    std::cout << "      [-v <pushforward_pccf_files>] [-w <pushforward_mindex_files>]" << std::endl;
-    std::cout << "      [-l] [-s <synthetic_data_files>] [-h]" << std::endl;
+    std::cout << "      [-x <pushforward_out>] [-v <pushforward_map_out>]" << std::endl;
+    std::cout << "      [-w <pushforward_mindex_files>] [-l] [-s <synthetic_data_files>] [-h]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
     std::cout << "  -d  Experimental data file name(s) (default = " << DATA_FILES << ")" << std::endl;
@@ -140,6 +141,7 @@ void help()
     std::cout << "  -a  MCMC chain output file name (default = " << CHAIN_FILE << ")" << std::endl;
     std::cout << "  -t  Name of file with initial values for the chain (default = " << CHAIN_INIT_FILE << ")" << std::endl;
     std::cout << "  -f  Pushforward output file name(s) (default = " << PUSHFORWARD_OUTPUT_FILES << ")" << std::endl;
+    std::cout << "  -x  Pushforward MAP output file name(s) (default = " << PUSHFORWARD_MAP_OUTPUT_FILES << ")" << std::endl;
     std::cout << "  -v  Pushforward polynomial surrogate coefficient file name(s) (default = " << PUSHFORWARD_PCCF_FILES << ")" << std::endl;
     std::cout << "  -w  Pushforward polynomial surrogate multi-index file name(s) (default = " << PUSHFORWARD_MINDEX_FILES << ")" << std::endl;
     std::cout << "  -l  Read MCMC chain from file and compute pushforward posteriors when specified" << std::endl;
@@ -183,39 +185,40 @@ int main(int argc, char *argv[])
 {
     // Print startup message
     std::cout << "╭────────────────────────────────────────────────────╮" << std::endl;
-    std::cout << "│                       dfi.x                        │" << std::endl;
+    std::cout << "│                        dfi                         │" << std::endl;
     std::cout << "╰────────────────────────────────────────────────────╯" << std::endl;
 
     //
     // Set default values
     //
 
-    std::string prior_file = PRIOR_FILE;                             // Name of file that contains lower and upper bounds
-    std::string data_set_files = DATA_FILES;                         // Name of file that contains the measurements
-    std::string mindex_files = MINDEX_FILES;                         // Name of file that contains the multi-indices
-    std::string pccf_files = PCCF_FILES;                             // Name of file that contains the PCE coefficients
-    std::string betas = std::string();                               // Synthetic data set variacne scaling factors
-    std::string chain_file = CHAIN_FILE;                             // Name of the MCMC chain output file
-    std::string chain_init_file = CHAIN_INIT_FILE;                   // Name of the file that contains the initial values of the chain
-    std::string pushforward_mindex_files = PUSHFORWARD_MINDEX_FILES; // Name of file that contains the pushforward multi-indices
-    std::string pushforward_pccf_files = PUSHFORWARD_PCCF_FILES;     // Name of file that contains the pushforward PCE coefficients
-    std::string pushforward_output_files = PUSHFORWARD_OUTPUT_FILES; // Name of the pushforward output file
-    std::string synthetic_data_files = SYNTHETIC_DATA_FILES;         // Name of the synthetic data file
-    std::string nb_of_synthetic_data_sets = std::string();           // Number of data instances to use
-    std::string weights = std::string();                             // Likelihood weights for each data set
-    int nb_of_mcmc = NB_OF_MCMC;                                     // Number of MCMC samples
-    int seed = time(NULL);                                           // Random seed to inialize MCMC chain
-    double burnin = BURNIN;                                          // Chain burnin used to compute pushforward posterior
-    int every = EVERY;                                               // Chain downsampling ratio used to compute pushforward posterior
-    double proposal_jump_size = PROPOSAL_JUMP_SIZE;                  // Proposal jump size in MCMC chain
-    double output_frequency = OUTPUT_FREQUENCY;                      // Output frequency
-    bool optimize = false;                                           // When true, run optimizer before running MCMC
-    bool read_synthetic_data = false;                                // When true, read synthetic data sets from file
-    bool read_chain_init = false;                                    // When true, read initial values of chain from file
-    bool read_chain = false;                                         // When true, load chain from file and compute pushforward
-    bool compute_fisher_information = false;                         // When true, compute the expectation of the Fisher information over the posterior
-    bool compute_pushforward_variance = false;                       // When true, compute the variance of the pushforward posterior
-    Info info;                                                       // Info object to store problem-specific parameters
+    std::string prior_file = PRIOR_FILE;                                     // Name of file that contains lower and upper bounds
+    std::string data_set_files = DATA_FILES;                                 // Name of file that contains the measurements
+    std::string mindex_files = MINDEX_FILES;                                 // Name of file that contains the multi-indices
+    std::string pccf_files = PCCF_FILES;                                     // Name of file that contains the PCE coefficients
+    std::string betas = std::string();                                       // Synthetic data set variacne scaling factors
+    std::string chain_file = CHAIN_FILE;                                     // Name of the MCMC chain output file
+    std::string chain_init_file = CHAIN_INIT_FILE;                           // Name of the file that contains the initial values of the chain
+    std::string pushforward_mindex_files = PUSHFORWARD_MINDEX_FILES;         // Name of file that contains the pushforward multi-indices
+    std::string pushforward_pccf_files = PUSHFORWARD_PCCF_FILES;             // Name of file that contains the pushforward PCE coefficients
+    std::string pushforward_output_files = PUSHFORWARD_OUTPUT_FILES;         // Name of the pushforward output file
+    std::string pushforward_map_output_files = PUSHFORWARD_MAP_OUTPUT_FILES; // Name of the pushforward map output file
+    std::string synthetic_data_files = SYNTHETIC_DATA_FILES;                 // Name of the synthetic data file
+    std::string nb_of_synthetic_data_sets = std::string();                   // Number of data instances to use
+    std::string weights = std::string();                                     // Likelihood weights for each data set
+    int nb_of_mcmc = NB_OF_MCMC;                                             // Number of MCMC samples
+    int seed = time(NULL);                                                   // Random seed to inialize MCMC chain
+    double burnin = BURNIN;                                                  // Chain burnin used to compute pushforward posterior
+    int every = EVERY;                                                       // Chain downsampling ratio used to compute pushforward posterior
+    double proposal_jump_size = PROPOSAL_JUMP_SIZE;                          // Proposal jump size in MCMC chain
+    double output_frequency = OUTPUT_FREQUENCY;                              // Output frequency
+    bool optimize = false;                                                   // When true, run optimizer before running MCMC
+    bool read_synthetic_data = false;                                        // When true, read synthetic data sets from file
+    bool read_chain_init = false;                                            // When true, read initial values of chain from file
+    bool read_chain = false;                                                 // When true, load chain from file and compute pushforward
+    bool compute_fisher_information = false;                                 // When true, compute the expectation of the Fisher information over the posterior
+    bool compute_pushforward_variance = false;                               // When true, compute the variance of the pushforward posterior
+    Info info;                                                               // Info object to store problem-specific parameters
 
     //
     // Parse options
@@ -224,7 +227,7 @@ int main(int argc, char *argv[])
     // Loop over all input arguments
     while (true)
     {
-        switch (getopt(argc, argv, "a:b:c:d:e:f:g:hi:j:k:lm:n:op:qr:s:t:u:v:w:z"))
+        switch (getopt(argc, argv, "a:b:c:d:e:f:g:hi:j:k:lm:n:op:qr:s:t:u:v:w:x:z"))
         {
         case 'a':
             chain_file = optarg;
@@ -296,6 +299,9 @@ int main(int argc, char *argv[])
             continue;
         case 'w':
             pushforward_mindex_files = optarg;
+            continue;
+        case 'x':
+            pushforward_map_output_files = optarg;
             continue;
         case 'z':
             compute_pushforward_variance = true;
@@ -562,7 +568,7 @@ int main(int argc, char *argv[])
                 info.nb_of_synthetic_data_sets(d) = info.synthetic_data_sets(d).YSize();
 
                 // Print synthetic data set info
-                std::cout << "  => Synthetic data read from file " << synthetic_data_file << "(size " << info.synthetic_data_sets(d).XSize() << "x" << info.synthetic_data_sets(d).YSize() << ")" << std::endl;
+                std::cout << "  => Synthetic data read from file " << synthetic_data_file << " (size " << info.synthetic_data_sets(d).XSize() << "x" << info.synthetic_data_sets(d).YSize() << ")" << std::endl;
             }
             else
             {
@@ -790,16 +796,32 @@ int main(int argc, char *argv[])
         Array2D<double> chain;
         read_datafileVS(chain, chain_file.c_str());
         std::cout << "  => Done" << std::endl;
-        int nrows = chain.XSize();
-        int ncols = chain.YSize();
-        samplesT.Resize(nrows, ncols - 3);
-        for (int row = 0; row < nrows; row++)
-        {
-            for (int col = 0; col < ncols - 3; col++)
-            {
-                samplesT(row, col) = chain(row, col + 1);
+
+        // Subsample the chain
+        std::cout << "Subsampling MCMC chain..." << std::endl;
+        int nrows = (chain.XSize() - burnin)/every + 2;
+        int ncols = chain.YSize() - 3;
+        samplesT.Resize(nrows, ncols);
+        for (int row = 0; row < nrows - 1; row ++) {
+            for (int col = 0; col < ncols; col ++) {
+                samplesT(row, col) = chain(burnin + row*every, col + 1);
             }
         }
+
+        // Append the MAP
+        int max = chain(0, ncols - 1);
+        int argmax = 0;
+        for (int row = 0; row < nrows; row++) {
+            double val = chain(row, ncols - 1);
+            if (val > max) {
+                max = val;
+                argmax = row;
+            }
+        }
+        for (int col = 0; col < ncols; col ++) {
+            samplesT(nrows - 1, col) = chain(argmax, col + 1);
+        }
+        std::cout << "  => Done" << std::endl;
     }
     else
     {
@@ -977,6 +999,10 @@ int main(int argc, char *argv[])
         Array2D<double> samples;
         chain.getSamples(info.burnin, info.every, samples);
         transpose(samples, samplesT);
+
+        // Append the MAP
+        samplesT.insertRow(chain_init, samplesT.XSize());
+
     }
 
     //
@@ -993,7 +1019,8 @@ int main(int argc, char *argv[])
         int nb_of_pushforward_pces = pushforward_mindices(d).XSize();
         if (nb_of_pushforward_pces > 0)
         {
-            Array2D<double> pushforward(nb_of_mcmc_iters, 1);
+            Array2D<double> pushforward(nb_of_mcmc_iters - 1, 1);
+            Array2D<double> pushforward_map(1, 1);
             Array1D<double> y;
             for (int n = 0; n < nb_of_pushforward_pces; n++)
             {
@@ -1021,7 +1048,12 @@ int main(int argc, char *argv[])
                     pce.EvalPCAtCustPoints(y, samplesPlaceholder, pushforward_pccfs(d)(n));
                     for (int row = 0; row < nrows; row++)
                     {
-                        pushforward(start + row, 0) = y(row);
+                        if (start + row < nb_of_mcmc_iters - 1) {
+                            pushforward(start + row, 0) = y(row);
+                        }
+                        else {
+                            pushforward_map(0, 0) = y(row);
+                        }
                     }
                 }
 
@@ -1037,6 +1069,19 @@ int main(int argc, char *argv[])
                 // Write pushforward to file
                 write_datafile(pushforward, pushforward_output_file.c_str());
                 std::cout << "       -> Pushforward written to file " << pushforward_output_file << std::endl;
+
+                // Change {d} and {n} in pushforward_map_output_files by the data set number and measurement station number
+                std::string pushforward_map_output_file = pushforward_map_output_files;
+                pos = pushforward_map_output_file.find("{d}", 0);
+                if (pos != std::string::npos)
+                    pushforward_map_output_file.replace(pos, 3, std::to_string(d + 1));
+                pos = pushforward_map_output_file.find("{n}", 0);
+                if (pos != std::string::npos)
+                    pushforward_map_output_file.replace(pos, 3, std::to_string(n + 1));
+
+                // Write pushforward map to file
+                write_datafile(pushforward_map, pushforward_map_output_file.c_str());
+                std::cout << "       -> Pushforward map written to file " << pushforward_map_output_file << std::endl;
             }
         }
         else
