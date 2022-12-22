@@ -562,7 +562,6 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         print("Coefficients:")
         print(cfs)
 
-
     return pc_model_final, cfs
 ################################################################################
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
