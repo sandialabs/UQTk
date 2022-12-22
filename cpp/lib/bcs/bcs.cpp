@@ -453,7 +453,8 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
 //  |____/   \____| |____/
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//[1] refers to http://proceedings.mlr.press/r4/tipping03a/tipping03a.pdf
+//[2] refers to https://ieeexplore.ieee.org/document/4524050
 
 // Parameters:
 // %       sigma2: initial noise variance (default : std(t)^2/1e6)
