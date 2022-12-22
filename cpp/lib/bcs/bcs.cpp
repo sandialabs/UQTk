@@ -58,6 +58,38 @@
 /// and references therein
 /// \todo The array manipulations are not optimized - perhaps they need to be reconsidered using,
 /// say, fortran matrix-vector manipulation routines
+
+
+//[1] refers to http://proceedings.mlr.press/r4/tipping03a/tipping03a.pdf
+//[2] refers to https://ieeexplore.ieee.org/document/4524050
+
+// Parameters:
+// %       PHI: basis evaluated at the sample points
+// %       y:   function evaluations at the sample points
+// %       sigma2: initial noise variance (default : std(t)^2/1e6)
+// %       eta:  threshold for stopping the algorithm (default : 1e-8)
+// %       lambda_init : Initial regularization weights, which will be updated through BCS
+// %                     To set a fixed scalar, provide a fixed nonnegative value.
+// %                     To autopopulate a scalar, set lambda_init = 0. (This corresponds to the BCS algorithm in [2].)
+// %                     To set a fixed vector of weights, provide an array.
+// %                     To autopopulate a vector, set lambda_init = [], which is the suggested method.
+// %                     See [1] for technical details.
+// %
+// %   Inputs for Adaptive CS (this part is left unchanged from the BCS code, see [2])
+// %       adaptive: generate basis for adaptive CS (default: 0)
+// %       optimal: use the rigorous implementation of adaptive CS (default: 1)
+// %       scale: diagonal loading parameter (default: 0.1)
+// %
+// %       verbose: flag for print statements
+// %
+// % Outputs:
+// %   weights:  sparse weights
+// %   used:     the positions of sparse weights
+// %   errbars:  one standard deviation around the sparse weights
+// %   basis:    if adaptive==1, then basis = the next projection vector, see [2]
+// %   alpha:    inverse variance of the coefficient priors, updated through the algorithm, see [1]
+// %   Sig:      re-estimated noise variance
+
 void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
                  double eta, Array1D<double> &lambda_init,
 		             int adaptive, int optimal, double scale, int verbose,
@@ -439,11 +471,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   //printf("BCS algorithm converged, # iterations : %d \n",count);
   return ;
 
-
-
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //   ____     ____   ____
@@ -457,24 +485,32 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
 //[2] refers to https://ieeexplore.ieee.org/document/4524050
 
 // Parameters:
+// %       PHI: basis evaluated at the sample points
+// %       y:   function evaluated at the sample points
 // %       sigma2: initial noise variance (default : std(t)^2/1e6)
 // %       eta:  threshold for stopping the algorithm (default : 1e-8)
-// %       lambda_init : To set lambda equal to a fixed nonegative value.
-// %                     if lambda_init = [], lambda will be computed automatically, which is the suggested method.
-// %                     lambda_init = 0 corresponds to the BCS algorithm in [2], see [1] for technical details.
+// %       lambda_init : Initial regularization weights, which will be updated through BCS
+// %                     To set a fixed scalar, provide a fixed nonnegative value.
+// %                     To autopopulate a scalar, set lambda_init = 0. (This corresponds to the BCS algorithm in [2].)
+// %                     To set a fixed vector of weights, provide an array.
+// %                     To autopopulate a vector, set lambda_init = [], which is the suggested method.
+// %                     See [1] for technical details.
 // %
 // %   Inputs for Adaptive CS (this part is left unchanged from the BCS code, see [2])
 // %       adaptive: generate basis for adaptive CS (default: 0)
 // %       optimal: use the rigorous implementation of adaptive CS (default: 1)
 // %       scale: diagonal loading parameter (default: 0.1)
+// %
+// %       verbose: flag for print statements
+// %
 // % Outputs:
 // %   weights:  sparse weights
 // %   used:     the positions of sparse weights
 // %   sigma2:   re-estimated noise variance
 // %   errbars:  one standard deviation around the sparse weights
 // %   basis:    if adaptive==1, then basis = the next projection vector, see [2]
-// %   alpha:    sparse hyperparameters (1/gamma), see [1]
-// %   lambda:   parameter controlling the sparsity , see [1]
+// %   alpha:    inverse variance of the coefficient priors, updated through the algorithm, see [1]
+// %   lambda:   parameter controlling the sparsity , see [1]; no longer used, kept for backwards compatibility
 void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
                  double eta, Array1D<double> &lambda_init,
                  int adaptive, int optimal, double scale, int verbose,
@@ -488,15 +524,15 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
         weights, used, errbars, basis, alpha, Sig);
 }
 
-void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
-                double eta, Array1D<double> &lambda_init,
-                int adaptive, int optimal, double scale, int verbose,
-                Array1D<double> &weights, Array1D<int> &used,
-                Array1D<double> &errbars, Array1D<double> &basis,
-                Array1D<double> &alpha, Array1D<double> &lambda){
-                  double sigma2_val = sigma2[0];
-                  double lambda_val = lambda[0];
-                  BCS(PHI,y,sigma2_val,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars, basis,alpha,lambda_val);
-                  sigma2[0] = sigma2_val;
-                  lambda[0] = lambda_val;
-                }
+// void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
+//                 double eta, Array1D<double> &lambda_init,
+//                 int adaptive, int optimal, double scale, int verbose,
+//                 Array1D<double> &weights, Array1D<int> &used,
+//                 Array1D<double> &errbars, Array1D<double> &basis,
+//                 Array1D<double> &alpha, Array1D<double> &lambda){
+//                   double sigma2_val = sigma2[0];
+//                   double lambda_val = lambda[0];
+//                   BCS(PHI,y,sigma2_val,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars, basis,alpha,lambda_val);
+//                   sigma2[0] = sigma2_val;
+//                   lambda[0] = lambda_val;
+//                 }
