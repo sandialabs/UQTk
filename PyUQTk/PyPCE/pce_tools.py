@@ -685,7 +685,81 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
 
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np
+################################################################################
+def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verbose):
+    """
+    Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
+    Side (Rather than relying on a PCE Model to provide the basis)
+    Input:
+        vdm_np:    VanderMonde Matrix, evaluated at sample points;
+                        numpy array [n_samples, n_basis_terms]
+        rhs_np:    right hand side for regression; 1D numpy array [n_samples,]
+        sigma:     Inital noise variance we assume is in the data
+        eta:       Threshold for stopping the algorithm. Smaller values
+                        retain more nonzero coefficients; float
+        regparams: Regularization weights; float or 1D numpy array
+                        To set a fixed scalar, provide a fixed nonnegative value.
+                        To autopopulate a scalar, set lambda_init = 0.
+                        To set a fixed vector of weights, provide an array [n_basis_terms,].
+                        To autopopulate a vector, set lambda_init = [], which is the suggested method.
 
+        verbose:   Flag for optional print statements
+
+    Output:
+        c_k:    1D numpy array with regression coefficients. The only non-zero
+                        terms correspond to the retained basis terms
+                        [n_basis_terms,]
+    """
+    # Set dimensions
+    n_samples = vdm.shape[0]
+    n_basis_terms = vdm.shape[1]
+
+    # Configure BCS parameters to defaults
+    adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
+    optimal = 1  # Flag for optimal implementation of adaptive CS, set to 0 or 1
+    scale = 0.1  # Diagonal loading parameter; relevant only in adaptive,
+                    # non-optimal implementation
+
+    bcs_verbose = 0 # silence print statements
+
+    # Convert numpy arrays to UQTk arrays
+
+    # UQTk array for vdm matrix - [#samples, #dimensions]
+    psi_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(vdm_np))
+    # UQTk array for RHS [#samples,]
+    rhs_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(rhs_np))
+
+    # UQTk array for regparams, the initial regularization weights, which will be updated through BCS.
+    lam_uqtk=uqtkarray.dblArray1D(regparams_np.shape[0])
+    for i2 in range(regparams_np.shape[0]):
+        lam_uqtk.assign(i2, regparams_np[i2])
+
+
+    # UQTk arrays for outputs
+    weights = uqtkarray.dblArray1D()  # sparse weights
+    used = uqtkarray.intArray1D()     # position of the sparse weights;
+                                          #indices of selected basis terms
+    errbars = uqtkarray.dblArray1D()  # 1 standard dev around sparse weights
+    basis = uqtkarray.dblArray1D()    # if adaptive==1, basis = next projection
+                                          #vector
+    alpha = uqtkarray.dblArray1D()    # inverse variance of the coefficient priors,
+                                      # updated through the algorithm
+    Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
+
+    # Run BCS through the c++ implementation
+    bcs.WBCS(psi_uqtk, rhs_np, sigma, eta, lam_uqtk, adaptive, optimal, scale,\
+      bcs_verbose, weights, used, errbars, basis, alpha, Sig)
+
+    # Print result of the BCS iteration
+    if (verbose):
+        print("BCS has selected", used.XSize(), "basis terms out of %d basis terms"%(n_basis_terms))
+
+    # Coefficients in a numpy array
+    c_k=np.zeros(n_basis_terms)
+    for i in range(used.XSize()):
+        c_k[i]=weights[i]
+
+    return c_k
 ################################################################################
 def multidim_intersect(arr1, arr2):
     """
