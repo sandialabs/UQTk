@@ -34,4 +34,5 @@
 PYBIND11_MODULE(_bcs,m){
   m.def("WBCS",&WBCS);
   //m.def("BCS",static_cast<void (*)(Array2D<double> &, Array1D<double> &, Array1D<double> &, double, Array1D<double> &, int, int, double, int, Array1D<double> &, Array1D<int> &, Array1D<double> &, Array1D<double> &, Array1D<double> &, Array1D<double> &)>(&BCS));
+  m.def("BCS",static_cast<void (*)(Array2D<double> &, Array1D<double> &, double &, double, Array1D<double> &, int, int, double, int, Array1D<double> &, Array1D<int> &, Array1D<double> &, Array1D<double> &, Array1D<double> &, double &)>(&BCS));
 }

@@ -96,7 +96,8 @@ for i in range(x.XSize()):
 	value = 1.0/(1.0 + x.at(i,0)*x.at(i,0));
 	y.assign(i,value)
 
-sigma = uqtkarray.dblArray1D(1,1e-8)
+#sigma = uqtkarray.dblArray1D(1,1e-8)
+sigma = 1e-8
 eta = 1e-8
 lambda_init = uqtkarray.dblArray1D()
 scale = 0.1
@@ -106,7 +107,8 @@ errbars = uqtkarray.dblArray1D()
 basis = uqtkarray.dblArray1D()
 alpha = uqtkarray.dblArray1D()
 used = uqtkarray.intArray1D()
-_lambda = uqtkarray.dblArray1D(1,0.0)
+#_lambda = uqtkarray.dblArray1D(1,0.0)
+_lambda=0.0
 
 adaptive = 1
 optimal = 1
