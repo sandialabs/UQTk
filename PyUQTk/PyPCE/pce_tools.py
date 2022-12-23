@@ -450,8 +450,8 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     for i in range(ntry):
         # Split the data
         ind_tr, ind_val = ind_split(nsam, 'trval', [ntrain, nsam - ntrain])
-        qall_wb=xdata[ind_tr,:]
-        yall_wb=ydata[ind_tr]
+        x_split=xdata[ind_tr,:]
+        y_split=ydata[ind_tr]
 
         if verbose>0:
             print("============  Split # %d / %d ============" % (i + 1, ntry))
@@ -467,27 +467,8 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                 if verbose>1:
                     print(mindex)
 
-            # One run of BCS
-            #UQTk array for samples - [#samples, #dimensions]
-            samplepts = qall_wb
-            sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
-            # UQTk array for function f_evaluations - [#evaluations,]
-            f_evaluations=yall_wb
-            y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
-            # Initial run of BCS
-            weights, used = UQTkEvalBCS(pc_model, y, sam_uqtk, sigma, eta_opt, regparams, 0)
-
-            # Coefficients in a numpy array
-            c_k=np.zeros(pc_model.GetNumberPCTerms())
-            for i in range(used.XSize()):
-                c_k[i]=weights[i]
-
-            # Obtain new multiindex with only terms selected by BCS
-            mi_uqtk = uqtkarray.intArray2D(pc_model.GetNumberPCTerms(), sam_uqtk.YSize())
-            pc_model.GetMultiIndex(mi_uqtk)
-            used_mi_uqtk=uqtkarray.intArray2D()
-            uqtkarray.subMatrix_row_int(mi_uqtk, used, used_mi_uqtk)
-            used_mi_np=uqtkarray.uqtk2numpy(used_mi_uqtk)
+            # One run of BCS to obtain an array of coefficients and a new multiindex
+            c_k, used_mi_np = UQTkEvalBCS(pc_model, y_split, x_split, sigma, eta_opt, regparams, 0)
 
             # Custom 'cuts' by number of PC terms or by value of PC coefficients
             npcall = c_k.shape[0] # number of PC terms
@@ -496,7 +477,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             indhigh = np.arange(npcall)[np.abs(c_k) > pcf_thr] # indices of coefficients above the pcf_thr threshold
             if verbose>0:
                 if indhigh.shape[0]<npcall:
-                    print(npcall-indhigh.shape[0],"coefficients below the magnitude threshold have been cut.")
+                    print(npcall-indhigh.shape[0],"coefficients equal to zero or below the magnitude threshold have been cut.")
             indsort_ = np.abs(c_k[indhigh]).argsort()[::-1] # indices of largest to smallest coefficients
             if npccut==None:
                 npccut=100000
@@ -545,7 +526,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     mindex_final = reduce(multidim_intersect, mi_selected)
     # If no intersection, add the constant term [not sure why]
     if mindex_final.shape[0] == 0:
-        mindex_final = np.zeros((1, dim), dtype=int)
+        mindex_final = np.zeros((1, xdata.shape[1]), dtype=int)
 
     # create a pc object with the final multiindex
     mindex_final_uq=uqtkarray.intArray2D(mindex_final.shape[0], mindex_final.shape[1])
@@ -606,7 +587,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
         for eta in etas:
 
             # Obtain coefficients through BCS
-            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, y_tr, niter, eta)
+            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta)
             # Evaluate the PCE at the validation points
             pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val)
 
@@ -623,16 +604,16 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     eta_opt = np.array(e_k).mean()
     return eta_opt
 ################################################################################
-def UQTkEvalBCS(pc_model, y, sam_uqtk, sigma, eta, regparams, verbose):
+def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbose):
     """
     Perform one iteration of Bayesian compressive sensing
     Helper function for UQTkBCS
 
     Input:
         pc_model:  PC object with information about the basis
-        y:         1D UQTk array of function evaluations [#samples,]
-        sam_uqtk:  N-dimensional UQTk of array of samples [#samples, #dimensions]
-        sigma:  Inital noise variance we assume is in the data
+        f_evaluations: 1D NumPy array of function evaluations [#samples,]
+        sam_uqtk:  N-dimensional NumPy array of samples [#samples, #dimensions]
+        sigma:     Inital noise variance we assume is in the data
         eta:       Threshold for stopping the algorithm. Smaller values
                         retain more nonzero coefficients.
         regparams: Regularization weights
@@ -644,8 +625,8 @@ def UQTkEvalBCS(pc_model, y, sam_uqtk, sigma, eta, regparams, verbose):
         verbose:   Flag for optional print statements
 
     Output:
-        weights: 1D UQTk array with PC coefficients at indices in used [#used,]
-        used:    1D UQTk array with inidices of the sparse weights
+        c_k:        1D NumPy array of coefficients
+        used_mi_np: Multiindex with only terms selected by BCS
     """
     # Configure BCS parameters to defaults
     adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
@@ -654,6 +635,11 @@ def UQTkEvalBCS(pc_model, y, sam_uqtk, sigma, eta, regparams, verbose):
                     # non-optimal implementation
 
     bcs_verbose = 0 # silence print statements
+
+    #UQTk array for samples - [#samples, #dimensions]
+    sam_uqtk=uqtkarray.numpy2uqtk(np.asfortranarray(samplepts))
+    # UQTk array for function f_evaluations - [#evaluations,]
+    y = uqtkarray.numpy2uqtk(np.asfortranarray(f_evaluations))
 
     # UQTk array for lambda_init
     lambda_init = regparams    # Initial regularization weights, which will be updated through BCS.
@@ -685,8 +671,20 @@ def UQTkEvalBCS(pc_model, y, sam_uqtk, sigma, eta, regparams, verbose):
         print("BCS has selected", used.XSize(), "basis terms out of",\
             pc_model.GetNumberPCTerms())
 
+    # Coefficients in a numpy array
+    c_k = np.zeros(pc_model.GetNumberPCTerms())
+    for i in range(used.XSize()):
+        c_k[i]=weights[i]
+
+    # Obtain new multiindex with only terms selected by BCS
+    mi_uqtk = uqtkarray.intArray2D(pc_model.GetNumberPCTerms(), sam_uqtk.YSize())
+    pc_model.GetMultiIndex(mi_uqtk)
+    used_mi_uqtk=uqtkarray.intArray2D()
+    uqtkarray.subMatrix_row_int(mi_uqtk, used, used_mi_uqtk)
+    used_mi_np=uqtkarray.uqtk2numpy(used_mi_uqtk)
+
     # Return coefficients and their locations with respect to the basis terms
-    return weights, used
+    return c_k, used_mi_np
 
 ################################################################################
 def multidim_intersect(arr1, arr2):
