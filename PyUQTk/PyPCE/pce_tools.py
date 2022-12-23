@@ -618,9 +618,9 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
                         retain more nonzero coefficients.
         regparams: Regularization weights
                         To set a fixed scalar, provide a fixed nonnegative value.
-                        To autopopulate a scalar, set lambda_init = 0.
+                        To autopopulate a scalar, set regparams = 0.
                         To set a fixed vector of weights, provide an array [#PC terms,].
-                        To autopopulate a vector, set lambda_init = [], which is the suggested method.
+                        To autopopulate a vector, set regparams = [], which is the suggested method.
 
         verbose:   Flag for optional print statements
 
@@ -697,11 +697,11 @@ def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verb
         sigma:     Inital noise variance we assume is in the data
         eta:       Threshold for stopping the algorithm. Smaller values
                         retain more nonzero coefficients; float
-        regparams: Regularization weights; float or 1D numpy array
+        regparams_np: Regularization weights; float or 1D numpy array
                         To set a fixed scalar, provide a fixed nonnegative value.
-                        To autopopulate a scalar, set lambda_init = 0.
+                        To autopopulate a scalar, set regparams_np = 0.
                         To set a fixed vector of weights, provide an array [n_basis_terms,].
-                        To autopopulate a vector, set lambda_init = [], which is the suggested method.
+                        To autopopulate a vector, set regparams_np = [], which is the suggested method.
 
         verbose:   Flag for optional print statements
 
