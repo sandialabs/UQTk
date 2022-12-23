@@ -626,7 +626,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
 
     Output:
         c_k:        1D NumPy array of coefficients
-        used_mi_np: Multiindex with only terms selected by BCS
+        used_mi_np: NumPy array with the multiindex containing only terms selected by BCS
     """
     # Configure BCS parameters to defaults
     adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
