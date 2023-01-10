@@ -10,8 +10,6 @@ target_link_libraries (ArrayReadAndWrite sundials_nvecserial)
 target_link_libraries (ArrayReadAndWrite sundials_sunlinsoldense)
 target_link_libraries (ArrayReadAndWrite sundials_sunmatrixdense)
 target_link_libraries (ArrayReadAndWrite depslatec)
-target_link_libraries(ArrayReadAndWrite m lapack ${LAPACK_LIBRARIES})
-target_link_libraries(ArrayReadAndWrite m blas ${BLAS_LIBRARIES})
 target_link_libraries (ArrayReadAndWrite deplbfgs  )
 
 # Link fortran libraries
@@ -34,6 +32,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
+target_link_libraries(ArrayReadAndWrite m lapack ${LAPACK_LIBRARIES})
+target_link_libraries(ArrayReadAndWrite m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

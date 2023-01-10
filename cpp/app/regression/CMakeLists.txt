@@ -16,8 +16,6 @@ target_link_libraries (regression sundials_nvecserial)
 target_link_libraries (regression sundials_sunlinsoldense)
 target_link_libraries (regression sundials_sunmatrixdense)
 target_link_libraries (regression depslatec)
-target_link_libraries (regression m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (regression m blas ${BLAS_LIBRARIES})
 target_link_libraries (regression depfigtree )
 target_link_libraries (regression depann   )
 
@@ -47,6 +45,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (regression ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (regression m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (regression m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

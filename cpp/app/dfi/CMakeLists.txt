@@ -17,8 +17,6 @@ target_link_libraries (dfi sundials_nvecserial)
 target_link_libraries (dfi sundials_sunlinsoldense)
 target_link_libraries (dfi sundials_sunmatrixdense)
 target_link_libraries (dfi depslatec)
-target_link_libraries (dfi m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (dfi m blas ${BLAS_LIBRARIES})
 target_link_libraries (dfi depfigtree )
 target_link_libraries (dfi depann   )
 
@@ -46,6 +44,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (dfi ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (dfi m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (dfi m blas ${BLAS_LIBRARIES})
 
 # link_directories(${PROJECT_BINARY_DIR}/../../../dep/cvode-2.7.0/src/cvode)
 

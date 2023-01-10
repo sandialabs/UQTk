@@ -17,8 +17,6 @@ add_executable (tmcmc_bimodal.x tmcmc_bimodal.cpp)
 target_link_libraries (tmcmc_bimodal.x uqtk  )
 target_link_libraries (tmcmc_bimodal.x depdsfmt )
 target_link_libraries (tmcmc_bimodal.x depslatec)
-target_link_libraries (tmcmc_bimodal.x m lapack)
-target_link_libraries (tmcmc_bimodal.x m blas)
 target_link_libraries (tmcmc_bimodal.x deplbfgs  )
 
 
@@ -42,6 +40,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (tmcmc_bimodal.x ${ClangLibPath}/libgfortran.dylib  ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (tmcmc_bimodal.x m lapack)
+target_link_libraries (tmcmc_bimodal.x m blas)
 
 include_directories(../../examples/tmcmc_bimodal)
 
