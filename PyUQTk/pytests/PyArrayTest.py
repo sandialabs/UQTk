@@ -40,9 +40,12 @@ sys.path.append('../')
 # try to import numpy and matplotlib
 try:
 	from numpy import *
+except ImportError:
+	print("Need numpy to test PyUQTk")
+try:
 	from matplotlib.pyplot import *
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need matplotlib to test PyUQTk")
 
 # try to import uqtk array library and
 # functions to convert between uqtk and numpy arrays
@@ -53,7 +56,10 @@ except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
 
-import unittest
+try:
+	import unittest
+except ImportError:
+	print("unittest needed to test PyUQTk")
 
 ''' Test converting 1d numpy array to 1d uqtk array '''
 # create 1d array

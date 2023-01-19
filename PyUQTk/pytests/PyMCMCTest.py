@@ -33,17 +33,29 @@ sys.path.append('../../')
 
 try:
 	from numpy import *
+except ImportError:
+	print('NumPy needed to test PyUQTk')
+try:
 	from matplotlib.pyplot import *
+	print('Matplotlib needed to test PyUQTk')
+except ImportError:
+try:
 	import time
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Time module needed to test PyUQTk")
 
 try:
 	import PyUQTk.array as uqtkarray
+except ImportError:
+	print("PyUQTk array module not found")
+try:
 	import PyUQTk.quad as uqtkquad
+except ImportError:
+	print("PyUQTk quad module not found")
+try:
 	import PyUQTk.mcmc as uqtkmcmc
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk mcmc module not found")
 
 # class pyLikelihood(uqtkmcmc.LikelihoodBase):
 # 	def eval(self,x):

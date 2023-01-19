@@ -33,18 +33,28 @@ sys.path.append('../../')
 
 try:
 	from numpy import *
+except ImportError:
+	print("Need NumPy to test PyUQTk")
+try:
 	from matplotlib.pyplot import *
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need matplotlib to test PyUQTk")
 
 try:
 	import PyUQTk.array as uqtkarray
-	import PyUQTk.mcmc as uqtkmcmc
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+try:
+	import PyUQTk.mcmc as uqtkmcmc
+except ImportError:
+	print("PyUQTk mcmc module not found")
+	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
 
-import time
+try:
+	import time
+except ImportError:
+	print("Time module needed to test PyUQTk")
 
 # temp = random.randn(1000.)
 # a = uqtkarray.dblArray1D(1000,101.0)

@@ -33,16 +33,25 @@ sys.path.append('../../')
 
 try:
 	from numpy import *
+except ImportError:
+	print("NumPy needed to test PyUQTk.")
+try:
 	from matplotlib.pyplot import *
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Matplotlib needed to test PyUQTk")
 
 try:
 	import PyUQTk.array as uqtkarray
+except ImportError:
+	print("PyUQTk array module not found")
+try:
 	import PyUQTk.quad as uqtkquad
+except ImportError:
+	print("PyUQTk quad module not found")
+try:
 	import PyUQTk.pce as uqtkpce
 except ImportError:
-	print("PyUQTk array and quad module not found")
+	print("PyUQTk pce module not found")
 
 
 # get quad points and weights

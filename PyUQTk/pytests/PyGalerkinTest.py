@@ -31,7 +31,7 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 import sys
 sys.path.append('../pce/')
 sys.path.append('../')
-sys.path.append('../PyPCE')
+sys.path.append('../PyPCE/')
 
 try:
     import _pce as uqtkpce
@@ -39,7 +39,7 @@ except:
 	print('PyUQTk pce module not found')
 
 try:
-    import PyPCE.pce_tools as pce_tools
+    import pce_tools
 except ImportError:
     print("PyUQTk pce_tools module not found")
 

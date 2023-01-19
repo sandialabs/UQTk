@@ -31,7 +31,7 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 import sys
 sys.path.append('../pce/')
 sys.path.append('../')
-sys.path.append('../PyPCE')
+sys.path.append('../PyPCE/')
 
 try:
     import _pce as uqtkpce
@@ -39,7 +39,7 @@ except:
 	print('PyUQTk pce module not found')
 
 try:
-    import PyPCE.pce_tools as pce_tools
+    import pce_tools
 except ImportError:
     print("PyUQTk pce_tools module not found")
 
@@ -49,9 +49,9 @@ except ImportError:
 	print("Need numpy to test PyUQTk")
 
 try:
-	from scipy.stats import qmc
+    from numpy.random import rand
 except ImportError:
-	print("Need Scipy.stats to test PyUQTk")
+	print("Need random module to test PyUQTk")
 
 '''
 This file tests the regression pyqutk routine
@@ -70,8 +70,7 @@ coef=np.array([i+1 for i in range(npce)])
 
 # get random samples at which to evaluate
 print('Draw random samples')
-rng = qmc.LatinHypercube(d=ndim)
-rand=2*rng.random(n=npce)-1
+rand=2*rand(npce,ndim)-1
 
 # create b, the evaluated polynomial
 print('Evaluate the polynomial at the sample points')

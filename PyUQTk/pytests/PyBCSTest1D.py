@@ -46,16 +46,25 @@ print(dir_path)
 
 try:
 	import numpy as np
+except ImportError:
+	print("Need numpy to test PyUQTk")
+try:
 	import matplotlib.pyplot as mpl
+except ImportError:
+	print("Need matplotlib to test PyUQTk")
+try:
 	import pdb
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need pdb module to test PyUQTk")
 
 try:
     import _uqtkarray as uqtkarray
-    import pyuqtkarray_tools
 except ImportError:
 	print("PyUQTk array module not found")
+try:
+    import pyuqtkarray_tools
+except ImportError:
+	print("pyuqtkarray_tools module not found")
 
 try:
     import _quad as quad
@@ -64,9 +73,12 @@ except ImportError:
 
 try:
     import _pce as uqtkpce
-    import _tools as uqtktools
 except ImportError:
     print("PyUQTk PCE module not found")
+try:
+    import _tools as uqtktools
+except ImportError:
+    print("PyUQTk tools module not found")
 
 try:
 	import _bcs as bcs

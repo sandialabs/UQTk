@@ -33,47 +33,53 @@ sys.path.append('../pce/')
 sys.path.append('../quad/')
 sys.path.append('../tools/')
 sys.path.append('../..')
-
+sys.path.append('../utils/')
 
 # Import Modules
 try:
     import uqtkarray
+except ImportError:
+    print('PyUQTk array module not found')
+try:
     import quad as uqtkquad
+except ImportError:
+    print('PyUQTk quad module not found')
+try:
     import pce as uqtkpce
+except ImportError:
+    print('PyUQTk pce module not found')
+try:
     import tools as uqtktools
+except ImportError:
+    print('PyUQTk tools module not found')
+try:
     import bcs as bcs
-    import PyUQTk.utils.multiindex as uqtkmi
 except ImportError:
-    import PyUQTk.uqtkarray as uqtkarray
-    import PyUQTk.quad as uqtkquad
-    import PyUQTk.pce as uqtkpce
-    import PyUQTk.tools as uqtktools
+    print('PyUQTk bcs module not found')
+try:
+    import utils.multiindex as uqtkmi
 except ImportError:
-    print("PyUQTk array, quad, pce, tools, or bcs modules not found")
-
+    print('PyUQTk utils.multiindex module not found')
 try:
     import numpy as np
 except ImportError:
     print("Numpy module could not be found")
-
 try:
     from scipy import stats
     import math
 except ImportError:
     print("Scipy stats or math module could not be found")
-
 try:
     import matplotlib.pyplot as plt
     from matplotlib import rc
     rc('mathtext', default='regular')
 except ImportError:
     print("Matplotlib not found")
+try:
+    from functools import reduce
+except ImportError:
+    print('functools module could not be found')
 
-from functools import reduce
-
-from PyUQTk.utils.multiindex import *
-
-from utils import *
 ################################################################################
 def UQTkMap2PCE(pc_model,rvs_in,verbose=0):
     """Obtain PC representation for the random variables that are described by samples.
@@ -493,11 +499,11 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             if j < niter - 1:
 
                 if mindex_growth=='nonconservative': # nonconservative growth
-                    mindex_new, mindex_add, mindex_f = mi_addfront(mindex)
+                    mindex_new, mindex_add, mindex_f = uqtkmi.mi_addfront(mindex)
                     mindex = mindex_new.copy()
 
                 if mindex_growth=='conservative': # conservative growth
-                    mindex_new, mindex_add, mindex_f = mi_addfront_cons(mindex)
+                    mindex_new, mindex_add, mindex_f = uqtkmi.mi_addfront_cons(mindex)
                     mindex = mindex_new.copy()
 
                 # update weights
