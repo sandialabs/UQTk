@@ -13,6 +13,7 @@ add_subdirectory (gp_regr)
 add_subdirectory (gkpSparse)
 add_subdirectory (lr_regr)
 add_subdirectory (lr_eval)
+add_subdirectory (dfi)
 
 INSTALL(FILES README
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

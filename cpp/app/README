@@ -2,6 +2,7 @@ app
 
 For more information, see Chapter 4, Source Code description in the UQTk Manual
 
+- dfi: Data-free inference
 - generate_quad: Quadrature point/weight generation 􏰠
 - gen_mi: Polynomial multiindex generation
 - gp_regr: Gaussian process regression
