@@ -692,7 +692,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np
 ################################################################################
-def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verbose=False):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma, eta, regparams_np, verbose=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
     Side (Rather than relying on a PCE Model to provide the basis)
