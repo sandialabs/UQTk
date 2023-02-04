@@ -692,7 +692,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np
 ################################################################################
-def UQTkCallBCSDirect(vdm_np, rhs_np, sigma, eta, regparams_np=None, verbose=False):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta, regparams_np=None, verbose=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
     Side (Rather than relying on a PCE Model to provide the basis) to solve
@@ -701,7 +701,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma, eta, regparams_np=None, verbose=Fal
         vdm_np:    VanderMonde Matrix, evaluated at sample points;
                         numpy array [n_samples, n_basis_terms]
         rhs_np:    right hand side for regression; 1D numpy array [n_samples,]
-        sigma:     Inital noise variance we assume is in the data
+        sigma2:    Inital noise variance we assume is in the data
         eta:       Threshold for stopping the algorithm. Smaller values
                         retain more nonzero coefficients; float
         regparams_np: Regularization weights; float or 1D numpy array
@@ -760,7 +760,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma, eta, regparams_np=None, verbose=Fal
     Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
 
     # Run BCS through the c++ implementation
-    bcs.WBCS(psi_uqtk, rhs_uqtk, sigma, eta, lam_uqtk, adaptive, optimal, scale,\
+    bcs.WBCS(psi_uqtk, rhs_uqtk, sigma2, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
 
     # Print result of the BCS iteration
