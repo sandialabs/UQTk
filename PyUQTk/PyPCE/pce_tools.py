@@ -702,7 +702,10 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta, regparams_np=None, verbose=Fa
                         numpy array [n_samples, n_basis_terms]
         rhs_np:    right hand side for regression; 1D numpy array [n_samples,]
         sigma2:    Inital noise variance we assume is in the data
-        eta:       Threshold for stopping the algorithm. Smaller values
+        eta:       Threshold for stopping the algorithm. The algorithm stops
+                        if the change in the marginal likelhood over the last iteration 
+                        is smaller than eta times the overall change in marginal likelihood so far.
+                        Note: Smaller values of eta tend to
                         retain more nonzero coefficients; float
         regparams_np: Regularization weights; float or 1D numpy array
                         To set a fixed scalar, provide a fixed nonnegative value.
