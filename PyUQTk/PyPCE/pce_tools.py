@@ -692,7 +692,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np
 ################################################################################
-def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta, regparams_np=None, verbose=False):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
     Side (Rather than relying on a PCE Model to provide the basis) to solve
@@ -706,12 +706,12 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta, regparams_np=None, verbose=Fa
                         if the change in the marginal likelhood over the last iteration 
                         is smaller than eta times the overall change in marginal likelihood so far.
                         Note: Smaller values of eta tend to
-                        retain more nonzero coefficients; float
+                        retain more nonzero coefficients; float [default 1.e-8]
         regparams_np: Regularization weights; float or 1D numpy array
                         To set a fixed scalar, provide a fixed nonnegative value.
                         To autopopulate a scalar, set regparams_np = 0.
                         To set a fixed vector of weights, provide an array [n_basis_terms,].
-                        To autopopulate a vector, set regparams_np = [], which is the suggested method.
+                        To autopopulate a vector, set regparams_np = None, which is the suggested method.
 
         verbose:   Flag for optional print statements (defaults to False)
 
