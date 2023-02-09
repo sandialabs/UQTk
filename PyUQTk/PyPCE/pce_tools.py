@@ -372,7 +372,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     return c_k
 ################################################################################
 def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
-            mindex_growth='nonconservative', regparams=None, sigma=1e-8, trval_frac=None,\
+            mindex_growth='nonconservative', regparams=None, sigma2=1e-8, trval_frac=None,\
             npccut=None, pcf_thr=None, verbose=0):
     """
     Obtain PC coefficients by Bayesian compressive sensing
@@ -402,7 +402,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                             To autopopulate a scalar, set regparams = 0.
                             To set a fixed vector of weights, provide an array [#PC terms,].
                             To autopopulate a vector, set lambda_init = None, which is the suggested method.
-        sigma:      Inital noise variance we assume is in the data; default is 1e-8
+        sigma2:      Inital noise variance we assume is in the data; default is 1e-8
         trval_frac: Fraction of the total input data to use in each split;
                             if None (default), 1/ntry is used
         npccut:     Maximum number of PC terms to retain, for pruning 'by hand';
@@ -474,7 +474,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                     print(mindex)
 
             # One run of BCS to obtain an array of coefficients and a new multiindex
-            c_k, used_mi_np = UQTkEvalBCS(pc_model, y_split, x_split, sigma, eta_opt, regparams, 0)
+            c_k, used_mi_np = UQTkEvalBCS(pc_model, y_split, x_split, sigma2, eta_opt, regparams, 0)
 
             # Custom 'cuts' by number of PC terms or by value of PC coefficients
             npcall = c_k.shape[0] # number of PC terms
@@ -610,7 +610,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     eta_opt = np.array(e_k).mean()
     return eta_opt
 ################################################################################
-def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbose):
+def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verbose):
     """
     Perform one iteration of Bayesian compressive sensing
     Helper function for UQTkBCS
@@ -619,7 +619,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
         pc_model:  PC object with information about the basis
         f_evaluations: 1D NumPy array of function evaluations [#samples,]
         sam_uqtk:  N-dimensional NumPy array of samples [#samples, #dimensions]
-        sigma:     Inital noise variance we assume is in the data
+        sigma2:     Inital noise variance we assume is in the data
         eta:       Threshold for stopping the algorithm. Smaller values
                         retain more nonzero coefficients.
         regparams: Regularization weights
@@ -669,7 +669,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
     Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
 
     # Run BCS through the c++ implementation
-    bcs.WBCS(psi_uqtk, y, sigma, eta, lam_uqtk, adaptive, optimal, scale,\
+    bcs.WBCS(psi_uqtk, y, sigma2, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
 
     # Print result of the BCS iteration
