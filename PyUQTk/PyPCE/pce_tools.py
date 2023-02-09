@@ -631,7 +631,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
         verbose:   Flag for optional print statements
 
     Output:
-        c_k:        1D NumPy array of coefficients
+        c_k:        1D NumPy array of nonzero coefficients
         used_mi_np: NumPy array with the multiindex containing only terms selected by BCS
     """
     # Configure BCS parameters to defaults
@@ -677,8 +677,8 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma, eta, regparams, verbo
         print("BCS has selected", used.XSize(), "basis terms out of",\
             pc_model.GetNumberPCTerms())
 
-    # Coefficients in a numpy array
-    c_k = np.zeros(pc_model.GetNumberPCTerms())
+    # Nonzero coefficients in a numpy array
+    c_k = np.zeros(used.XSize())
     for i in range(used.XSize()):
         c_k[i]=weights[i]
 
