@@ -7,8 +7,6 @@ target_link_libraries (gkpSparse uqtktools)
 target_link_libraries (gkpSparse uqtkarray)
 
 target_link_libraries (gkpSparse depdsfmt )
-target_link_libraries (gkpSparse m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
 target_link_libraries (gkpSparse depfigtree )
 target_link_libraries (gkpSparse depann   )
 
@@ -35,6 +33,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries (gkpSparse ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (gkpSparse m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (gkpSparse m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/include)
 include_directories(../../lib/tools  )

@@ -6,8 +6,6 @@ target_link_libraries (gen_mi uqtkarray)
 target_link_libraries (gen_mi uqtktools)
 
 target_link_libraries (gen_mi depdsfmt )
-target_link_libraries(gen_mi m lapack ${LAPACK_LIBRARIES})
-target_link_libraries(gen_mi m blas ${BLAS_LIBRARIES})
 target_link_libraries (gen_mi depfigtree )
 target_link_libraries (gen_mi depann   )
 
@@ -34,6 +32,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries (gen_mi ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries(gen_mi m lapack ${LAPACK_LIBRARIES})
+target_link_libraries(gen_mi m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/include)
 include_directories(../../lib/array  )

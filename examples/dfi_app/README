@@ -1,0 +1,42 @@
+A collection of Jupyter notebooks that illustrate how to use the dfi app for
+data-free inference.
+
+This example uses a special form of data-free inference to calibrate an example
+quadratic model given summary statistics (a measurement value and an associated
+measurement error). This example contains 5 different Jupyter notebooks that
+each highlight a different aspect of the problem, as per the descriptions below.
+The Jupyter notebooks call the dfi app in UQTk using the Python `subprocess`
+module.
+
+================================================================================
+Requirements
+
+Please make sure the environment variable "UQTK_INS" is set, e.g.,
+
+export UQTK_INS=/path/to/uqtk/install/dir
+
+================================================================================
+Files
+
+- utils.py: helper file to specify the location of the different programs, adapt
+  as needed
+
+- 1_quadratic_one_data_set.ipynb: a first simple example illustrating the use of
+  the dfi app
+
+- 2_quadratic_two_data_sets.ipynb: a second example illustrating how to use the
+  dfi app with two different data sets
+
+- 3_quadratic_two_data_sets_disagree: a third example illustrating how to use
+  the dfi app with two disagreeing data sets, and showing the effect of using
+  a weighted likelihood
+
+- 4_quadratic_two_data_sets_different_nb_of_points.ipynb: a fourth example
+  illustrating how to use the dfi app with two data sets with a different
+  number of measurements each, and showing the effect of using a weighting
+  factor for each data set proportional to the number of measurements in each
+  data set
+
+- 5_quadratic_with_optimal_beta.ipynb: a final example illustrating how to use
+  the dfi app when calibrating the model against both the measurement values
+  and associated error bars

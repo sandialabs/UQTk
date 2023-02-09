@@ -28,8 +28,6 @@ target_link_libraries (TMCMC2dTest sundials_nvecserial)
 target_link_libraries (TMCMC2dTest sundials_sunlinsoldense)
 target_link_libraries (TMCMC2dTest sundials_sunmatrixdense)
 target_link_libraries (TMCMC2dTest depslatec)
-target_link_libraries (TMCMC2dTest m lapack)
-target_link_libraries (TMCMC2dTest m  blas)
 target_link_libraries (TMCMC2dTest deplbfgs  )
 
 # Link fortran libraries
@@ -52,6 +50,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (TMCMC2dTest ${ClangLibPath}/libgfortran.dylib  ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (TMCMC2dTest m lapack)
+target_link_libraries (TMCMC2dTest m  blas)
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

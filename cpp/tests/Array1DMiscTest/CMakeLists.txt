@@ -10,8 +10,6 @@ target_link_libraries (Array1DMiscTest sundials_nvecserial)
 target_link_libraries (Array1DMiscTest sundials_sunlinsoldense)
 target_link_libraries (Array1DMiscTest sundials_sunmatrixdense)
 target_link_libraries (Array1DMiscTest depslatec)
-target_link_libraries (Array1DMiscTest m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (Array1DMiscTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (Array1DMiscTest deplbfgs  )
 
 # Link fortran libraries
@@ -35,6 +33,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
+target_link_libraries (Array1DMiscTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (Array1DMiscTest m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )
