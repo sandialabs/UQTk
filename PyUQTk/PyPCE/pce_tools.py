@@ -603,7 +603,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
 
         RMSE_list_per_fold.append(RMSE_per_eta)
 
-    # Compute the average and standard deviation of the RMSEs over the folds
+    # Compute the average of the RMSEs over the folds
     avg = np.array(RMSE_list_per_fold).mean(axis=0)
 
     # Choose eta with lowest RMSE
