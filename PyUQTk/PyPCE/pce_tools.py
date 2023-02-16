@@ -554,9 +554,9 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     """
     Choose the opimum eta for Bayesian compressive sensing with nonconservative
-        basis growth and five splits for basis crossvalidation. Selects the eta
-        with the lowest RMSE for each fold, then returns the average of these
-        selections.
+        basis growth, splitting for basis crossvalidation. Calculates the RMSE
+        for each eta for a specified number of folds. Selects the eta with the lowest
+        RMSE after averaging the RMSEs over the folds.
     Helper function for UQTkBCS
 
     Input:
@@ -577,8 +577,8 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     """
     # split data in k folds
     k=bcs.kfoldCV(x, y, nfolds)
-    error=np.zeros(nfolds) # minimum error per fold
-    e_k=[] # list of optimum etas per fold
+
+    RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
 
     # loop through each fold
     for i in range(nfolds):
@@ -587,7 +587,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
         y_tr=k[i]['ytrain']
         x_val=k[i]['xval']
         y_val=k[i]['yval']
-        RMSE_per_eta=[]
+        RMSE_per_eta=[] # array of RMS errors, one per eta
 
         # loop through each eta
         for eta in etas:
@@ -602,12 +602,14 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
             RMSE = math.sqrt(MSE)
             RMSE_per_eta.append(RMSE)
 
-        # pick the lowest error and the corresponding eta
-        min_error = min(RMSE_per_eta)
-        e_k.append(etas[RMSE_per_eta.index(min_error)])
+        RMSE_list_per_fold.append(RMSE_per_eta)
 
-    # return the mean of the optimum etas for each fold
-    eta_opt = np.array(e_k).mean()
+    # Compute the average and standard deviation of the RMSEs over the folds
+    avg = np.array(RMSE_list_per_fold).mean(axis=0)
+
+    # Choose eta with lowest RMSE
+    eta_opt = etas[np.argmin(avg)]
+
     return eta_opt
 ################################################################################
 def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verbose):
