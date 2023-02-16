@@ -427,8 +427,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     if (type(eta)==np.float64 or type(eta)==float):
         eta_opt = eta
     elif (type(eta)==np.ndarray or type(eta)==list):
-        # the eta with the lowest RMSE is selected from etas for each fold
-        # the average of these selections is returned in eta_opt
+        # the eta with the lowest RMSE is selected from etas
         eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds)
         if verbose:
             print("Optimal eta is", eta_opt)
