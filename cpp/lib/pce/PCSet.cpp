@@ -2046,8 +2046,10 @@ void PCSet::LogInt(const double* p1, double* p2) const
   // Computes natural logarithm of PC expansion p1 using numerical integration
 
   // initial condition array
+  SUNContext sunctx;
+  SUNContext_Create(NULL, &sunctx);
   N_Vector u ;
-  u = N_VNew_Serial( this->nPCTerms_ ) ;
+  u = N_VNew_Serial( this->nPCTerms_ , sunctx) ;
   double p1Mean = p1[0];
   NV_Ith_S(u,0) = log( p1Mean ) ;
   for(int k=1; k < (this->nPCTerms_); k++)
@@ -2057,7 +2059,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
   realtype relT ;
   N_Vector absT ;
   relT = CVrelt_ ;
-  absT = N_VNew_Serial( this->nPCTerms_ ) ;
+  absT = N_VNew_Serial( this->nPCTerms_ , sunctx) ;
   for ( int k = 0 ; k < ( this->nPCTerms_ ) ; k++ )
     NV_Ith_S(absT,k) = CVabst_ ;
 
@@ -2096,7 +2098,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
 
   // Create cvode solver
   void *cvode_mem = NULL;
-  cvode_mem = CVodeCreate(CV_ADAMS);
+  cvode_mem = CVodeCreate(CV_ADAMS, sunctx);
   this->Check_CVflag(cvode_mem, "PCSet::LogInt : CVodeCreate", 0) ;
 
   /* Allocate memory */
@@ -2107,12 +2109,14 @@ void PCSet::LogInt(const double* p1, double* p2) const
 
   /* Create dense SUNMatrix for use in linear solves */
   SUNMatrix denseMat = NULL;
-  denseMat = SUNDenseMatrix( (this->nPCTerms_) ,  (this->nPCTerms_) );
+  denseMat = SUNDenseMatrix( (this->nPCTerms_) ,  (this->nPCTerms_) , sunctx);
   this->Check_CVflag((void *)denseMat, "SUNDenseMatrix", 0);
 
   /* Create dense SUNLinearSolver object for use by CVode */
   SUNLinearSolver linsolve=NULL;
-  linsolve = SUNDenseLinearSolver(u, denseMat);
+  // linsolve = SUNDenseLinearSolver(u, denseMat); // Deprecated
+  linsolve = SUNLinSol_Dense(u, denseMat, sunctx);
+
   this->Check_CVflag((void *)linsolve, "SUNDenseLinearSolver", 0);
 
    /* Call CVDlsSetLinearSolver to attach the matrix and linear solver to CVode */
