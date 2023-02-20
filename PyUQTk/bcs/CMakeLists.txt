@@ -14,14 +14,14 @@ TARGET_LINK_LIBRARIES(_bcs PUBLIC uqtk depuqtk lapack blas)
 
 #INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk)
 
-SET(copy_FILES
-  bcs_ext.py
-  )
+# SET(copy_FILES
+#   bcs_ext.py
+#   )
 
-INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/)
+# INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bcs_ext.py
-               ${CMAKE_CURRENT_BINARY_DIR}/bcs_ext.py COPYONLY)
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bcs_ext.py
+#                ${CMAKE_CURRENT_BINARY_DIR}/bcs_ext.py COPYONLY)
 
 
 
