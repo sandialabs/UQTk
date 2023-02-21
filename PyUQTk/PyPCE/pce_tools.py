@@ -575,7 +575,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
 
     """
     # split data in k folds
-    k=bcs.kfoldCV(x, y, nfolds)
+    k=kfoldCV(x, y, nfolds)
 
     RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
 
@@ -1054,3 +1054,71 @@ def UQTkPlotMiDims(pc_model,c_k,ndim, nord, type):
     #plt.savefig(fig_name)
     #print("\n"+fig_name+" has been saved.")
     plt.show()
+
+################################################################################
+def kfold_split(nsamples,nfolds,seed=13):
+    '''
+    return dictionary of training and testing pairs using k-fold cross-validation
+    '''
+    # returns split data where each data is one fold left out
+    KK=nfolds
+    rn = np.random.RandomState(seed)
+
+    indp=rn.permutation(nsamples)
+    split_index=np.array_split(indp,KK)
+
+
+    cvindices = {}
+    # create testing and training folds
+    for j in range(KK):
+        fold = j
+        newindex = [split_index[i] for i in range(len(split_index)) if i != (fold)]
+        train_ind = np.array([],dtype='int64')
+        for i in range(len(newindex)): train_ind = np.concatenate((train_ind,newindex[i]))
+        test_ind = split_index[fold]
+        cvindices[j] = {'train index': train_ind, 'val index': test_ind}
+
+    return cvindices
+################################################################################
+def kfoldCV(x,y,nfolds=3,seed=13):
+    '''
+     Splits data into training/testing pairs for kfold cross-val
+    x is a data matrix of size n x d1, d1 is dim of input
+    y is a data matrix of size n x d2, d2 is dim of output
+
+    Test:
+    xtest = array([i*ones(6) for i in range(1,501)])
+    xtest = np.array([i*np.ones(6) for i in range(1,501)])
+    ytest = xtest[:,:2]
+    K,ci = kfoldCV(xtest,ytest)
+
+    for k in K.keys():
+        a = K[k]['xtrain'][:,0]
+        b = K[k]['xval'][:,0]
+        test = sum(np.in1d(a,b)) + sum(np.in1d(b,a))
+        print test
+     '''
+    if len(x.shape)>1:
+        n,d1 = x.shape
+    else:
+        n=x.shape
+    ynew = np.atleast_2d(y)
+    if len(ynew) == 1: ynew = ynew.T # change to shape (n,1)
+    _,d2 = ynew.shape
+    cv_idx = kfold_split(n,nfolds,seed)
+
+    kfold_data = {}
+    for k in cv_idx.keys():
+        kfold_data[k] = {
+        'xtrain': x[cv_idx[k]['train index']],
+        'xval': x[cv_idx[k]['val index']],
+        'ytrain': np.squeeze(ynew[cv_idx[k]['train index']]),
+        'yval': np.squeeze(ynew[cv_idx[k]['val index']])
+        } # use squeeze to return 1d array
+
+        # set train and test to the same if 1 fold
+        if nfolds == 1:
+            kfold_data[k]['xtrain'] = kfold_data[k]['xval']
+            kfold_data[k]['ytrain'] = kfold_data[k]['yval']
+
+    return kfold_data
