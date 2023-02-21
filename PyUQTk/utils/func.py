@@ -39,7 +39,6 @@ except ImportError:
 
 import sys,os
 from math import *
-import random as rnd
 import itertools
 
 

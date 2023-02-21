@@ -37,7 +37,7 @@ import numpy as np
 import getopt
 import math
 import matplotlib.pyplot as plt
-from scipy import stats, mgrid, c_, reshape, random, rot90
+from scipy import stats, mgrid, c_, reshape
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 try:

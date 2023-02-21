@@ -46,7 +46,7 @@ except ImportError:
     print("Matplotlib was not found. ")
 
 try:
-    from scipy import stats, mgrid, reshape, random
+    from scipy import stats
 except ImportError:
     print("Scipy was not found. ")
 
