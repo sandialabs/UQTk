@@ -59,7 +59,12 @@ from pylab import *
 # sys.path.append(os.environ['UQTK_INS'])
 import PyUQTk.utils.colors as ut
 
-uqtkbin = os.environ['UQTK_INS'] + "/bin/"
+# if 'UQTK_INS' in os.environ:
+try:
+    uqtkbin = os.environ['UQTK_INS'] + "/bin/"
+except KeyError:
+    print("surrogate.py: Please set the UQTK_INS environment variable to the UQTk install folder.")
+    print("Will continue to load, but the plot_pcpdf function in surrogate.py will fail!")
 
 
 rc('legend',loc='upper left', fontsize=12)
