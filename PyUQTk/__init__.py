@@ -25,21 +25,28 @@
 #     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
+# Set up paths
+import sys
+import os
+# Append the folder where this init script is located to the search path
+# sys.path.append(os.environ['UQTK_INS'] + '/PyUQTk')
+sys.path.append(os.path.realpath(os.path.dirname(__file__)))
+
 # pure python tools (always included)
 try:
     from . import plotting
 except ImportError as ie:
-    print('Scipy and/or matplotlib may need to be installed')
+    print('Some modules in the plotting package did not load')
 
 try:
     from . import sens
 except ImportError as ie:
-    print('Scipy and/or matplotlib may need to be installed')
+    print('Some modules in the sensitivity package did not load')
 
 try:
     from . import inference
 except ImportError as ie:
-    print('Scipy and/or matplotlib may need to be installed')
+    print('Some modules in the inference package did not load')
 
 from . import utils
 from . import multirun

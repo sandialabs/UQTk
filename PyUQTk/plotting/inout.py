@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 
 from pylab import *
 
-sys.path.append(os.environ['UQTK_INS'])
+# sys.path.append(os.environ['UQTK_INS'])
 import PyUQTk.utils.colors as ut
 
 rc('legend', loc='upper left', fontsize=12)
