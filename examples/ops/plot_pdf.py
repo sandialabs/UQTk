@@ -74,7 +74,7 @@ if version_cmp(min_version,spver) == 1:
 #
 samples=np.genfromtxt(sample_file_name)
 xS=np.linspace(samples.min(),samples.max(),200)
-kernsS=stats.kde.gaussian_kde(samples)
+kernsS=stats.gaussian_kde(samples)
 pdf1=kernsS(xS)
 
 if bandwidth_present:

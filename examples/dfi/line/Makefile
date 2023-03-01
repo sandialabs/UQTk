@@ -6,7 +6,7 @@ UQTK_LIBS= -L$(UQTK_INS)/lib \
 UQTK_INCL= -I$(UQTK_INS)/include/uqtk -I$(UQTK_INS)/include/dep -I$(UQTK_INS)/include
 
 CXX = g++
-CFLAGS= -std=c++11
+CFLAGS= -std=c++14
 all: $(TARGET)
 
 userFunctions_line.o: userFunctions_line.cpp

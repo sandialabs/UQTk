@@ -50,17 +50,17 @@ from   scipy import stats
 #
 a_samples=np.genfromtxt("samples.a.dat")
 xa=np.linspace(a_samples.min(),a_samples.max(),200)
-kernsa=stats.kde.gaussian_kde(a_samples)
+kernsa=stats.gaussian_kde(a_samples)
 pdfa=kernsa(xa)
 
 lai_samples=np.genfromtxt("samples.loga_int.dat")
 xlai=np.linspace(lai_samples.min(),lai_samples.max(),200)
-kernslai=stats.kde.gaussian_kde(lai_samples)
+kernslai=stats.gaussian_kde(lai_samples)
 pdflai=kernslai(xlai)
 
 lat_samples=np.genfromtxt("samples.loga_tay.dat")
 xlat=np.linspace(lat_samples.min(),lat_samples.max(),200)
-kernslat=stats.kde.gaussian_kde(lat_samples)
+kernslat=stats.gaussian_kde(lat_samples)
 pdflat=kernslat(xlat)
 
 #

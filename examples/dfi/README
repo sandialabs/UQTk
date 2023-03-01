@@ -1,11 +1,18 @@
 ==============================
 dfi
 ==============================
-use data-free inference to recover an approximate correlated posterior distribution for parameters of a line model
+use data-free inference to recover an approximate correlated posterior 
+distribution for parameters of a line model
 given summary statistics on marginals
 
-To run this example, compile it via "make" in the line directory, then run it using: "./dfi_line.exe datainference"
+To run this example, compile it via "make" in the line directory, then 
+run it using: "./dfi_line.exe datainference"
 
-Note, if your UQTk build links against external libraries (e.g. SUNDIALS), you will have to make sure that your Makefile
-can find both those libraries and their include files. If the make fails, you may need to add the path to the cvode.h include
-files using a -I path_to_include_folder and the path to the external library through a -L path_to_external_library statement.
+Notes:
+1) this example takes about 1 hour to run, and sends a lot of data to the screen. 
+2) if your UQTk build links against external libraries (e.g. SUNDIALS), you will 
+have to make sure that your Makefile
+can find both those libraries and their include files. If the make fails, 
+you may need to add the path to the cvode.h include
+files using a -I path_to_include_folder and the path to the external library 
+through a -L path_to_external_library statement.

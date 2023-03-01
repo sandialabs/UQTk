@@ -513,7 +513,7 @@ def plot_all_posteriors(d0,vnames,np_kde,out_file_base,debug=0,dense=False,truth
     kde_idx = np_kde*1j # complex number to include end points
     xmesh=[]; ymesh=[]; zmesh=[];
     icount=0
-    cov_idx = np.zeros((nvars,nvars),dtype=np.int) # 2D array to keep track of which index in xmesh etc. the
+    cov_idx = np.zeros((nvars,nvars),dtype=np.int32) # 2D array to keep track of which index in xmesh etc. the
                                                        # the plots corresponding to vars i,j belong to
     for j in range(istart+1,istart+nvars):
         for i in range(istart,j):
