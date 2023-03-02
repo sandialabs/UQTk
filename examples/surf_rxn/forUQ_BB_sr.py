@@ -33,7 +33,6 @@ import os
 import shutil
 import optparse
 import matplotlib.pyplot as plt
-from scipy import stats, mgrid, c_, reshape, random, rot90
 
 # local definitions
 from utils          import get_npc, compute_err

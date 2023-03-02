@@ -29,7 +29,7 @@
 
 import numpy as npy
 import scipy as spy
-from scipy import stats, mgrid, c_, reshape, random, rot90
+from scipy import stats
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -88,7 +88,7 @@ def plotKdeBin(splfile,figout,**kwargs):
     for i in range(nbins):
         bc.append(0.5*(be[i]+be[i+1]))
     xlin=npy.linspace(spls.min(),spls.max(),npdf) ;
-    kernlin=stats.kde.gaussian_kde(spls);
+    kernlin=stats.gaussian_kde(spls);
     pdflin1=kernlin(xlin);
     # check for scipy version; if 11 or above then play with bandwidths
     spv=[]
