@@ -44,7 +44,7 @@ done
 
 # Adjust the UQTK_SRC_DIR to point to where the UQTk source directory is. Feel free
 # to update the desired installation directory as you prefer.
-UQTK_SRC_DIR=../UQTk-SNL
+UQTK_SRC_DIR=../UQTk
 #../UQTk-SNL
 UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
 
