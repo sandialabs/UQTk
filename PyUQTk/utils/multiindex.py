@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -107,7 +107,7 @@ def mi_addfront_cons(mindex):
     a multiindex is added only if *all* parents are in the current set
     """
 
-    print('Adding multiindex front (conservative)')
+    #print('Adding multiindex front (conservative)')
 
     npc=mindex.shape[0]
     ndim=mindex.shape[1]
@@ -151,7 +151,7 @@ def mi_addfront_cons(mindex):
     mindex_add=mindex_add[1:]
     mindex_new=np.vstack((mindex,mindex_add))
 
-    print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
+    #print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
 
     # Returns the new muliindex, the added new multiindices,
     # and the 'front', i.e. multiindices whose children are added
@@ -167,7 +167,7 @@ def mi_addfront(mindex):
     a multiindex is added only if *any* of the parents is in the current set
     """
 
-    print('Adding multiindex front (non-conservative)')
+    #print('Adding multiindex front (non-conservative)')
 
     npc=mindex.shape[0]
     ndim=mindex.shape[1]
@@ -194,7 +194,7 @@ def mi_addfront(mindex):
     mindex_new=np.vstack((mindex,mindex_add))
 
 
-    print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
+    #print('Multiindex resized from %d to %d.'%(mindex.shape[0],mindex_new.shape[0]))
 
     # Returns the new muliindex, the added new multiindices,
     # and the 'front', i.e. multiindices whose children are added

@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -46,16 +46,25 @@ print(dir_path)
 
 try:
 	import numpy as np
+except ImportError:
+	print("Need numpy to test PyUQTk")
+try:
 	import matplotlib.pyplot as mpl
+except ImportError:
+	print("Need matplotlib to test PyUQTk")
+try:
 	import pdb
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need pdb module to test PyUQTk")
 
 try:
     import _uqtkarray as uqtkarray
-    import pyuqtkarray_tools
 except ImportError:
 	print("PyUQTk array module not found")
+try:
+    import pyuqtkarray_tools
+except ImportError:
+	print("pyuqtkarray_tools module not found")
 
 try:
     import _quad as quad
@@ -64,9 +73,12 @@ except ImportError:
 
 try:
     import _pce as uqtkpce
-    import _tools as uqtktools
 except ImportError:
     print("PyUQTk PCE module not found")
+try:
+    import _tools as uqtktools
+except ImportError:
+    print("PyUQTk tools module not found")
 
 try:
 	import _bcs as bcs
@@ -96,7 +108,8 @@ for i in range(x.XSize()):
 	value = 1.0/(1.0 + x.at(i,0)*x.at(i,0));
 	y.assign(i,value)
 
-sigma = uqtkarray.dblArray1D(1,1e-8)
+#sigma = uqtkarray.dblArray1D(1,1e-8)
+sigma = 1e-8
 eta = 1e-8
 lambda_init = uqtkarray.dblArray1D()
 scale = 0.1
@@ -106,7 +119,8 @@ errbars = uqtkarray.dblArray1D()
 basis = uqtkarray.dblArray1D()
 alpha = uqtkarray.dblArray1D()
 used = uqtkarray.intArray1D()
-_lambda = uqtkarray.dblArray1D(1,0.0)
+#_lambda = uqtkarray.dblArray1D(1,0.0)
+_lambda=0.0
 
 adaptive = 1
 optimal = 1

@@ -13,8 +13,6 @@ target_link_libraries (pce_sens sundials_nvecserial)
 target_link_libraries (pce_sens sundials_sunlinsoldense)
 target_link_libraries (pce_sens sundials_sunmatrixdense)
 target_link_libraries (pce_sens depslatec)
-target_link_libraries (pce_sens m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (pce_sens m blas ${BLAS_LIBRARIES})
 target_link_libraries (pce_sens depfigtree )
 target_link_libraries (pce_sens depann   )
 
@@ -42,6 +40,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (pce_sens ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (pce_sens m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (pce_sens m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

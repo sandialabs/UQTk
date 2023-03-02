@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -29,21 +29,42 @@ from __future__ import print_function # To make print() in Python 2 behave like 
 
 try:
 	from numpy import *
+except ImportError:
+	print("Need numpy to test PyUQTk")
+try:
 	from matplotlib.pyplot import *
+except ImportError:
+	print("Need matplotlib to test PyUQTk")
+try:
 	from acor import *
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need acor to test PyUQTk")
 
 try:
 	import PyUQTk.array as uqtkarray
-	import PyUQTk.mcmc as uqtkmcmc
-	from PyUQTk.inference.mcmc import *
-	from PyUQTk.inference.postproc import *
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+try:
+	import PyUQTk.mcmc as uqtkmcmc
+except ImportError:
+	print("PyUQTk mcmc module not found")
+	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+try:
+	from PyUQTk.inference.mcmc import *
+except ImportError:
+	print("PyUQTk inference.mcmc module not found")
+	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+try:
+	from PyUQTk.inference.postproc import *
+except ImportError:
+	print("PyUQTk inference.postproc module not found")
+	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
 
-import time
+try:
+	import time
+except ImportError:
+	print("Time module needed to test PyUQTk")
 
 '''
 Use HMCMC to get samples from banana shaped function

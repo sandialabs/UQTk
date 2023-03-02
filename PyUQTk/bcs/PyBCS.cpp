@@ -1,11 +1,11 @@
 //=====================================================================================
 //
-//                      The UQ Toolkit (UQTk) version 3.1.2
-//                          Copyright (2022) NTESS
+//                      The UQ Toolkit (UQTk) version 3.1.3
+//                          Copyright (2023) NTESS
 //                        https://www.sandia.gov/UQToolkit/
 //                        https://github.com/sandialabs/UQTk
 //
-//     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+//     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 //     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 //     retains certain rights in this software.
 //
@@ -33,5 +33,6 @@
 
 PYBIND11_MODULE(_bcs,m){
   m.def("WBCS",&WBCS);
-  m.def("BCS",static_cast<void (*)(Array2D<double> &, Array1D<double> &, Array1D<double> &, double, Array1D<double> &, int, int, double, int, Array1D<double> &, Array1D<int> &, Array1D<double> &, Array1D<double> &, Array1D<double> &, Array1D<double> &)>(&BCS));
+  //m.def("BCS",static_cast<void (*)(Array2D<double> &, Array1D<double> &, Array1D<double> &, double, Array1D<double> &, int, int, double, int, Array1D<double> &, Array1D<int> &, Array1D<double> &, Array1D<double> &, Array1D<double> &, Array1D<double> &)>(&BCS));
+  m.def("BCS",static_cast<void (*)(Array2D<double> &, Array1D<double> &, double &, double, Array1D<double> &, int, int, double, int, Array1D<double> &, Array1D<int> &, Array1D<double> &, Array1D<double> &, Array1D<double> &, double &)>(&BCS));
 }

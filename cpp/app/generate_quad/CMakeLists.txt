@@ -6,8 +6,6 @@ target_link_libraries (generate_quad uqtktools)
 target_link_libraries (generate_quad uqtkarray)
 
 target_link_libraries (generate_quad depdsfmt )
-target_link_libraries (generate_quad m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (generate_quad m blas ${BLAS_LIBRARIES})
 target_link_libraries (generate_quad depfigtree )
 target_link_libraries (generate_quad depann   )
 
@@ -34,6 +32,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries (generate_quad ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (generate_quad m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (generate_quad m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/include)
 include_directories(../../lib/tools  )

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -50,17 +50,17 @@ from   scipy import stats
 #
 a_samples=np.genfromtxt("samples.a.dat")
 xa=np.linspace(a_samples.min(),a_samples.max(),200)
-kernsa=stats.kde.gaussian_kde(a_samples)
+kernsa=stats.gaussian_kde(a_samples)
 pdfa=kernsa(xa)
 
 lai_samples=np.genfromtxt("samples.loga_int.dat")
 xlai=np.linspace(lai_samples.min(),lai_samples.max(),200)
-kernslai=stats.kde.gaussian_kde(lai_samples)
+kernslai=stats.gaussian_kde(lai_samples)
 pdflai=kernslai(xlai)
 
 lat_samples=np.genfromtxt("samples.loga_tay.dat")
 xlat=np.linspace(lat_samples.min(),lat_samples.max(),200)
-kernslat=stats.kde.gaussian_kde(lat_samples)
+kernslat=stats.gaussian_kde(lat_samples)
 pdflat=kernslat(xlat)
 
 #

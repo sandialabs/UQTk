@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -32,21 +32,39 @@ import sys
 sys.path.append('../pyuqtkarray/')
 sys.path.append('../quad/')
 sys.path.append('../pce/')
-sys.path.append('../tools')
-sys.path.append('../pce_tools')
-sys.path.append('../adaptation_tools')
+sys.path.append('../tools/')
 sys.path.append('../')
-sys.path.append('../PyPCE')
+sys.path.append('../PyPCE/')
 
 try:
     import _uqtkarray as uqtkarray
-    import _quad as uqtkquad
-    import _pce as uqtkpce
-    import _tools as uqtktools
-    import PyPCE.pce_tools as pce_tools
-    import PyPCE.adaptation_tools as adaptation_tools
 except ImportError:
-    print("PyUQTk array, quad, pce, tools, pce_tools or adaptation_tools modules not found")
+    print("PyUQTk array module not found")
+
+try:
+    import _quad as uqtkquad
+except ImportError:
+    print("PyUQTk quad module not found")
+
+try:
+    import _pce as uqtkpce
+except ImportError:
+    print("PyUQTk PCE module not found")
+
+try:
+    import _tools as uqtktools
+except ImportError:
+    print("PyUQTk Tools module not found")
+
+try:
+    import pce_tools
+except ImportError:
+    print('PyUQTk pce_tools module not found')
+
+try:
+    import adaptation_tools
+except ImportError:
+    print("PyUQTk adaptation_tools module not found")
 
 try:
 	import numpy as np

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -33,7 +33,7 @@ import sys
 import numpy as np
 import math
 import random as rnd
-from scipy import stats, mgrid, c_, reshape, random, rot90
+from scipy import stats
 import matplotlib.pyplot as plt
 from utils import get_npc
 
@@ -113,7 +113,7 @@ for method in methlist:
     spls=np.genfromtxt("rvar.dat")
     #xlin=np.linspace(spls.min(),spls.max(),npts) ;
     xlin=np.linspace(lims[0],lims[1],npts) ;
-    kernlin=stats.kde.gaussian_kde(spls);
+    kernlin=stats.gaussian_kde(spls);
     pdflin1=kernlin(xlin);
 
     plt.plot(xlin,pdflin1,linewidth=2,label=method)

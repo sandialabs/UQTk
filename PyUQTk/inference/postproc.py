@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -37,7 +37,7 @@ import numpy as np
 import getopt
 import math
 import matplotlib.pyplot as plt
-from scipy import stats, mgrid, c_, reshape, random, rot90
+from scipy import stats, mgrid, c_, reshape
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 try:
@@ -513,7 +513,7 @@ def plot_all_posteriors(d0,vnames,np_kde,out_file_base,debug=0,dense=False,truth
     kde_idx = np_kde*1j # complex number to include end points
     xmesh=[]; ymesh=[]; zmesh=[];
     icount=0
-    cov_idx = np.zeros((nvars,nvars),dtype=np.int) # 2D array to keep track of which index in xmesh etc. the
+    cov_idx = np.zeros((nvars,nvars),dtype=np.int32) # 2D array to keep track of which index in xmesh etc. the
                                                        # the plots corresponding to vars i,j belong to
     for j in range(istart+1,istart+nvars):
         for i in range(istart,j):

@@ -15,8 +15,6 @@ target_link_libraries (pce_quad sundials_nvecserial)
 target_link_libraries (pce_quad sundials_sunlinsoldense)
 target_link_libraries (pce_quad sundials_sunmatrixdense)
 target_link_libraries (pce_quad depslatec)
-target_link_libraries (pce_quad m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (pce_quad m blas ${BLAS_LIBRARIES})
 target_link_libraries (pce_quad depfigtree )
 target_link_libraries (pce_quad depann   )
 
@@ -43,6 +41,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (pce_quad ${ClangLibPath}/libgfortran.dylib ${ClangLibPath}/libquadmath.dylib ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (pce_quad m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (pce_quad m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

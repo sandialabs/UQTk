@@ -12,8 +12,6 @@ target_link_libraries (MCMCRandomTest sundials_nvecserial)
 target_link_libraries (MCMCRandomTest sundials_sunlinsoldense)
 target_link_libraries (MCMCRandomTest sundials_sunmatrixdense)
 target_link_libraries (MCMCRandomTest depslatec)
-target_link_libraries (MCMCRandomTest m lapack ${LAPACK_LIBRARIES})
-target_link_libraries (MCMCRandomTest m blas ${BLAS_LIBRARIES})
 target_link_libraries (MCMCRandomTest deplbfgs  )
 
 # Link fortran libraries
@@ -36,6 +34,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries (MCMCRandomTest ${ClangLibPath}/libgfortran.dylib  ${ClangLibPath}/libstdc++.dylib)
   endif()
 endif()
+
+target_link_libraries (MCMCRandomTest m lapack ${LAPACK_LIBRARIES})
+target_link_libraries (MCMCRandomTest m blas ${BLAS_LIBRARIES})
 
 include_directories(../../lib/pce    )
 include_directories(../../lib/array  )

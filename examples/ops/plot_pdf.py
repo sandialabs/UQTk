@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -74,7 +74,7 @@ if version_cmp(min_version,spver) == 1:
 #
 samples=np.genfromtxt(sample_file_name)
 xS=np.linspace(samples.min(),samples.max(),200)
-kernsS=stats.kde.gaussian_kde(samples)
+kernsS=stats.gaussian_kde(samples)
 pdf1=kernsS(xS)
 
 if bandwidth_present:

@@ -5,6 +5,7 @@
 *.swp
 *.out
 *.pyc
+*.ipynb_checkpoints/
 
 ## Doxygen specific
 *latex/

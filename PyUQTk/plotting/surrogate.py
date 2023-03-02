@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -46,7 +46,7 @@ except ImportError:
     print("Matplotlib was not found. ")
 
 try:
-    from scipy import stats, mgrid, reshape, random
+    from scipy import stats
 except ImportError:
     print("Scipy was not found. ")
 
@@ -56,10 +56,13 @@ from itertools import combinations
 
 from pylab import *
 
-sys.path.append(os.environ['UQTK_INS'])
 import PyUQTk.utils.colors as ut
 
-uqtkbin = os.environ['UQTK_INS'] + "/bin/"
+try:
+    uqtkbin = os.environ['UQTK_INS'] + "/bin/"
+except KeyError:
+    print("surrogate.py: Please set the UQTK_INS environment variable to the UQTk install folder.")
+    print("Will continue to load, but the plot_pcpdf function in surrogate.py will fail!")
 
 
 rc('legend',loc='upper left', fontsize=12)

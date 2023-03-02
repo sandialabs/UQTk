@@ -1,11 +1,11 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.2
-#                          Copyright (2022) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.3
+#                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2022 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -33,18 +33,28 @@ sys.path.append('../../')
 
 try:
 	from numpy import *
+except ImportError:
+	print("Need NumPy to test PyUQTk")
+try:
 	from matplotlib.pyplot import *
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need matplotlib to test PyUQTk")
 
 try:
 	import PyUQTk.array as uqtkarray
-	import PyUQTk.mcmc as uqtkmcmc
 except ImportError:
 	print("PyUQTk array module not found")
 	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
+try:
+	import PyUQTk.mcmc as uqtkmcmc
+except ImportError:
+	print("PyUQTk mcmc module not found")
+	print("If installing in a directory other than the build directory, make sure PYTHONPATH includes the install directory")
 
-import time
+try:
+	import time
+except ImportError:
+	print("Time module needed to test PyUQTk")
 
 # temp = random.randn(1000.)
 # a = uqtkarray.dblArray1D(1000,101.0)
