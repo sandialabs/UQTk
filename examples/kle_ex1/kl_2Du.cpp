@@ -33,6 +33,8 @@
 #define SIG   5.0
 
 #define COVTYPE "SqExp"
+//#define XFILE   "data/cali_grid_512.dat"
+//#define TFILE   "data/cali_tria_512.dat"
 #define XFILE   "data/cali_grid.dat"
 #define TFILE   "data/cali_tria.dat"
 
@@ -146,24 +148,31 @@ int main(int argc, char *argv[])
   cov.Resize(nxy,nxy,0.e0);
   if ( cflag ) {
     for ( int i = 0; i < nxy; i++)
-      for ( int j = 0; j < nxy; j++)
-        cov(i,j)=genCovAnl2D(xgrid,i,j,clen,sigma,cov_type);
+      for ( int j = 0; j <= i; j++) {
+        cov(i,j) = genCovAnl2D(xgrid,i,j,clen,sigma,cov_type);
+        cov(j,i) = cov(i,j);
+      }
   }
   else {
 
-    double dfac=1.0e-12;
+    double dfac = 1.0e-12;
     bool   tryagain = true;
 
     while ( ( tryagain ) && ( dfac < 1.e-6 ) ) {
 
       tryagain = false ;
+      cout << " --> Covariance matrix " << endl << flush;
       for ( int i = 0; i < nxy; i++)
-        for ( int j = 0; j < nxy; j++)
-          cov(i,j)=genCovAnl2D(xgrid,i,j,clen,sigma,string("SqExp"));
+        for ( int j = 0; j <= i; j++) {
+          cov(i,j) = genCovAnl2D(xgrid,i,j,clen,sigma,string("SqExp"));
+          cov(j,i) = cov(i,j);
+        }
+
       for ( int i = 0; i < nxy; i++) cov(i,i) += dfac;
       //write_datafile( cov, "cov.dat" );
 
-      /* Generate samples */
+      /* Cholesky decomposition */
+      cout << " --> Cholesky decomposition " << endl << flush;
       char *lu = (char *) "L";
       int info ;
       FTN_NAME(dpotrf)( lu, &nxy, cov.GetArrayPointer(), &nxy, &info );
@@ -178,6 +187,8 @@ int main(int argc, char *argv[])
 
       } /* done if Cholesky factorization fails */
     }
+
+    cout << " --> Generate samples " << endl;
     dsfmt_t  rnstate ;
     int rseed=20120828;
     dsfmt_init_gen_rand(&rnstate, (uint32_t) rseed );
@@ -190,7 +201,7 @@ int main(int argc, char *argv[])
       for ( int i = 0; i < nxy; i++ ) {
         ySamples(i,j)=0.0;
         for ( int k = 0; k < i+1; k++)
-          ySamples(i,j) += (cov.GetArrayPointer())[i+k*nxy]*randSamples(k);
+          ySamples(i,j) += (cov.GetArrayPointer())[i+k*nxy] * randSamples(k);
       }
     }
     if (sflag) write_datafile( ySamples, "samples.dat" );
@@ -214,7 +225,7 @@ int main(int argc, char *argv[])
 
         double dsum=0.0;
         for(int k = 0; k < nspl; k++ )
-          dsum += ySamples(i,k)*ySamples(j,k);
+          dsum += ySamples(i,k) * ySamples(j,k);
 
         cov(i,j) = dsum/( (double) nspl );
       }

@@ -41,7 +41,7 @@ usage ()
   echo "               the MVN is based on a covariance matrix                                    "
   echo "                        cov(x1,x2)=exp(-(x1-x2)^2/cl^2)                                   "
   echo "               where cl is the second parameter, \"corr_len\". Each RF sample consist     "
-  echo "               of values on a structured spatial grid over [0,1]x[0,1]. Currently 65x65   "
+  echo "               of values on a structured spatial grid over [0,1]x[0,1]. Currently 33x33   "
   echo "               grid points, are used and the grid is clustered near the boundary.         "
   echo "               Some grid options can be changed from command line and some from inside the"
   echo "               code                                                                       "
@@ -90,8 +90,9 @@ sLen=${#slist[@]}
 sigma=5.0
 ctype="SqExp"
 
-if [ ${run} == "cov-spl" ]
-then
+if [ ${run} == "cov-spl" ]; then
+  declare -a slist=(128 1024 4096)
+  sLen=${#slist[@]}
   for (( i=0; i<${sLen}; i++ ));
   do
     echo "-----------------------------------------------"
@@ -128,7 +129,10 @@ fi
 
 if [ ${run} == "cov-spl-u" ]
 then
-  declare -a slist=(4096 65536)
+  # declare -a slist=(4096 65536)
+  # declare -a slist=(128 256)
+  cd data; python ./kl_prep_grid.py -r cali -n 256; cd ..
+  declare -a slist=(1024 4096)
   sLen=${#slist[@]}
   for (( i=0; i<${sLen}; i++ ));
   do
@@ -151,11 +155,12 @@ fi
 
 if [ ${run} == "cov-anl-u" ]
 then
+  cd data; python ./kl_prep_grid.py -r cali -n 256; cd ..
   rsuff="2Du_${ctype}_${clen}"
   ./kl_2Du.x -c ${ctype} -s ${sigma} -l ${clen} -e ${nkl}
-  mv eig.dat       eig${rsuff}.dat
-  mv KLmodes.dat   KLmodes${rsuff}.dat
-  mv cov.dat       cov${rsuff}.dat
+  mv eig.dat      eig${rsuff}.dat
+  mv KLmodes.dat  KLmodes${rsuff}.dat
+  mv cov.dat      cov${rsuff}.dat
   rdir=cvanl${rsuff}
   if [ ! -d "${rdir}" ]; then
     mkdir ${rdir}
