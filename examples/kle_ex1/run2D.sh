@@ -91,7 +91,9 @@ sigma=5.0
 ctype="SqExp"
 
 if [ ${run} == "cov-spl" ]; then
-  declare -a slist=(128 1024 4096)
+  numspl=12
+  # declare -a slist=(128 1024 4096)
+  declare -a slist=(128 1024)
   sLen=${#slist[@]}
   for (( i=0; i<${sLen}; i++ ));
   do
@@ -110,6 +112,16 @@ if [ ${run} == "cov-spl" ]; then
     fi
     mv xgrid.dat ygrid.dat xg1d.dat ${resdir}
     /bin/mv *${rsuff}.dat ${resdir}
+    # make plots
+    # samples
+    python ./mkplots.py samples2D ${clen} ${slist[$i]} ${numspl}
+    # covariance
+    python ./mkplots.py numcov2D ${clen} ${slist[$i]}
+    # KL basis
+    python ./mkplots.py numKLevec2D ${clen} ${slist[$i]}
+    mv samples2D_* ${resdir}
+    mv KLmodes2D_* ${resdir}
+    mv cov2D_* ${resdir}
   done
 fi
 
@@ -124,13 +136,20 @@ then
     mkdir ${resdir}
   fi
   mv *${clen}_${ctype}_anl.dat ${resdir}/.
-
+  # make plots
+  # covariance
+  python ./mkplots.py anlcov2D ${ctype} ${clen}
+  # KL basis
+  python ./mkplots.py anlKLevec2D ${ctype} ${clen}
+  mv KLmodes2D_* ${resdir}
+  mv cov2D_* ${resdir}
 fi
 
 if [ ${run} == "cov-spl-u" ]
 then
   # declare -a slist=(4096 65536)
   # declare -a slist=(128 256)
+  numspl=12
   cd data; python ./kl_prep_grid.py -r cali -n 256; cd ..
   declare -a slist=(1024 4096)
   sLen=${#slist[@]}
@@ -150,6 +169,16 @@ then
       mkdir ${resdir}
     fi
     /bin/mv *${rsuff}.dat ${resdir}
+    # make plots
+    # samples
+    python ./mkplots.py samples2Du ${clen} ${slist[$i]} ${numspl}
+    # covariance
+    python ./mkplots.py numcov2Du ${clen} ${slist[$i]}
+    # KL basis
+    python ./mkplots.py numKLevec2Du ${clen} ${slist[$i]}
+    mv samples2Du_* ${resdir}
+    mv KLmodes2Du_* ${resdir}
+    mv cov2Du_* ${resdir}
   done
 fi
 
@@ -166,5 +195,12 @@ then
     mkdir ${rdir}
   fi
   mv *${rsuff}.dat ${rdir}/.
+  # make plots
+  # covariance
+  python ./mkplots.py anlcov2Du ${ctype} ${clen}
+  # KL basis
+  python ./mkplots.py anlKLevec2Du ${ctype} ${clen}
+  mv KLmodes2Du_* ${rdir}
+  mv cov2Du_* ${rdir}
 
 fi

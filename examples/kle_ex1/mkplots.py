@@ -44,11 +44,12 @@ from pyutils import readfile, column, checkPtInside
 
 sigma = 5.0
 Npl   = 5
+figtype = "pdf"
 
 rtype="anlcov"
 if (len(sys.argv) > 1):
     rtype  = sys.argv[1]
-    if rtype == "samples":
+    if rtype == "samples1D":
         clen  = sys.argv[2]
     if (rtype == "pltKLrecon1D") | (rtype == "pltKLrecon2D"):
         clen  = sys.argv[2]
@@ -59,22 +60,14 @@ if (len(sys.argv) > 1):
         nspl  = sys.argv[2]
         if (len(sys.argv) > 3):
             nspl1  = sys.argv[3]
-    if rtype == "anlcov":
+    if rtype == "anlcov" or "anlKLevec":
         ctype = sys.argv[2]
         clen  = sys.argv[3]
-    if rtype == "numcov":
+    if rtype == "numcov" or "numKLevec" or "xidata1D":
         clen  = sys.argv[2]
         nreal = sys.argv[3]
-    if rtype == "anlKLevec":
-        ctype = sys.argv[2]
-        clen  = sys.argv[3]
-    if rtype == "numKLevec":
-        clen  = sys.argv[2]
-        nreal = sys.argv[3]
-        dolg  = sys.argv[4]
-    if rtype == "xidata1D":
-        clen  = sys.argv[2]
-        nreal = sys.argv[3]
+        if rtype == "numKLevec":
+           dolg  = sys.argv[4]
     if (rtype == "samples2D") | (rtype == "samples2Du"):
         clen  = sys.argv[2]
         nreal = sys.argv[3]
@@ -92,7 +85,7 @@ if (len(sys.argv) > 1):
         clen  = sys.argv[2]
         nreal = sys.argv[3]
 
-if rtype == "samples":
+if rtype == "samples1D":
     fname = "cvspl_"+clen+"_512/samples_"+clen+"_512.dat"
     print("Processing file ",fname)
     din,nliles=readfile(fname);
@@ -108,7 +101,7 @@ if rtype == "samples":
     plt.ylabel(r'$F(x,\theta)$',fontsize=fs1)
     ax.set_ylim([-4*sigma,4*sigma])
     ax.set_yticks([-4*sigma,-2*sigma,0,2*sigma,4*sigma])
-    plt.savefig("rf1D_"+clen+".pdf")
+    plt.savefig("rf1D_"+clen+"."+figtype)
 
 if rtype == "pltKLeig1D":
     #parameters
@@ -153,7 +146,7 @@ if rtype == "pltKLeig1D":
     ax.set_yticks([1.e-6,1.e-4,1.e-2,1.,1.e2])
     ax.set_xlim([0,50])
     ax.set_xticks([0,10,20,30,40,50])
-    plt.savefig("eig_lc_"+nspl+".pdf")
+    plt.savefig("eig_lc_"+nspl+"."+figtype)
     #plt.show()
 
 if rtype == "pltKLeig2D":
@@ -181,7 +174,7 @@ if rtype == "pltKLeig2D":
                     (r"$c_l="+corl[0]+"$",
                      r"$c_l="+corl[1]+"$",
                      r"$c_l="+corl[2]+"$"),'upper right' )
-    plt.savefig("eig_lc2D_"+nspl+".pdf")
+    plt.savefig("eig_lc2D_"+nspl+"."+figtype)
     #plt.show()
 
 if rtype == "pltKLrecon1D":
@@ -220,7 +213,7 @@ if rtype == "pltKLrecon1D":
         ax.set_xlim([0,1])
         #ax.set_xticks([0,10,20,30,40])
         plt.text(0.72,17,str(n)+" terms",fontsize=18)
-        plt.savefig("KLrecon_"+clen+"_"+str(n)+".pdf")
+        plt.savefig("KLrecon_"+clen+"_"+str(n)+"."+figtype)
 
 if rtype == "pltKLrecon2D":
     lw1 = 3
@@ -259,7 +252,7 @@ if rtype == "pltKLrecon2D":
         ax.set_xlim([0.0,1.0])
         ax.set_ylim([0.0,1.0])
         ax.set_aspect('equal')
-        plt.savefig("KLrecon2D_"+clen+"_"+str(n)+".pdf")
+        plt.savefig("KLrecon2D_"+clen+"_"+str(n)+"."+figtype)
 
 if rtype == "anlcov":
     fname = "klcov_"+ctype+"_"+clen+"/cov_"+clen+"_"+ctype+"_anl.dat"
@@ -273,7 +266,7 @@ if rtype == "anlcov":
     plt.xticks(())
     plt.yticks(())
     plt.title("$c_l=$"+clen)
-    plt.savefig("cov_"+ctype+"_"+clen+"_anl.eps")
+    plt.savefig("cov_"+ctype+"_"+clen+"_anl."+figtype)
 
 if rtype == "numcov":
     fname = "cvspl_"+clen+"_"+nreal+"/cov_"+clen+"_"+nreal+".dat"
@@ -287,7 +280,7 @@ if rtype == "numcov":
     plt.xticks(())
     plt.yticks(())
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("cov_"+clen+"_"+nreal+"_num.pdf")
+    plt.savefig("cov_"+clen+"_"+nreal+"_num."+figtype)
 
 if rtype == "anlKLevec":
     # plot KL modes
@@ -319,7 +312,7 @@ if rtype == "anlKLevec":
     leg=plt.legend( (pleg[0][0], pleg[1][0], pleg[2][0], pleg[3][0]),
                     (r"$f_1$", r"$f_2$", r"$f_3$", r"$f_4$"),'lower right' )
     plt.title("$c_l=$"+clen)
-    plt.savefig("KLmodes_"+ctype+"_"+clen+"_anl.eps")
+    plt.savefig("KLmodes_"+ctype+"_"+clen+"_anl."+figtype)
 
 if rtype == "numKLevec":
     # plot KL modes
@@ -370,7 +363,7 @@ if rtype == "numKLevec":
         leg=plt.legend( (pleg[0][0], pleg[1][0], pleg[2][0], pleg[3][0]),
                         (r"$f_1$", r"$f_2$", r"$f_3$", r"$f_4$"),'lower right' )
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("KLmodes_"+clen+"_"+nreal+".pdf")
+    plt.savefig("KLmodes_"+clen+"_"+nreal+"."+figtype)
 
 if rtype == "xidata1D":
     fname = "cvspl_"+clen+"_"+nreal+"/xidata_"+clen+"_"+nreal+".dat"
@@ -396,13 +389,21 @@ if rtype == "xidata1D":
     leg=plt.legend( (pleg[0][0], pleg[1][0], pleg[2][0], pleg[3][0]),
                     (r"$\xi_1$", r"$\xi_2$", r"$\xi_3$", r"$\xi_4$"),'upper right' )
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("xidata1D_"+clen+"_"+nreal+".pdf")
+    plt.savefig("xidata1D_"+clen+"_"+nreal+"."+figtype)
 
-
+#########################################################################################
+#           ___  _____    _____  _       _       
+#          |__ \|  __ \   |  __ \| |     | |      
+#             ) | |  | |  | |__) | | ___ | |_ ___ 
+#            / /| |  | |  |  ___/| |/ _ \| __/ __|
+#           / /_| |__| |  | |    | | (_) | |_\__ \
+#          |____|_____/   |_|    |_|\___/ \__|___/
+#          
+##########################################################################################
 if rtype == "samples2D":
     #parameters
-    fs1   = 22
-    fs2   = 16
+    fs1   = 16
+    fs2   = 14
     fsize = 4
     #fs1   = 11
     #fs2   = 6
@@ -428,10 +429,10 @@ if rtype == "samples2D":
         for tick in ax.xaxis.get_major_ticks()+ax.yaxis.get_major_ticks():
             tick.label.set_fontsize(fs2)
         #ax.set_aspect('equal')
-        plt.savefig("samples2D_"+clen+"_"+nreal+"_s"+str(i+1)+".pdf")
+        plt.savefig("samples2D_"+clen+"_"+nreal+"_s"+str(i+1)+"."+figtype)
 
 if rtype == "anlcov2D":
-    fname = "klcov2D_"+ctype+"_"+clen+"/cov2D_"+clen+"_"+ctype+"_anl.dat"
+    fname = "cvanl2D_"+ctype+"_"+clen+"/cov2D_"+clen+"_"+ctype+"_anl.dat"
     print("Processing file ",fname)
     cov,nlines=readfile(fname);
     vmax = np.array(cov).max()
@@ -442,10 +443,10 @@ if rtype == "anlcov2D":
     plt.xticks(())
     plt.yticks(())
     plt.title("$c_l=$"+clen)
-    plt.savefig("cov2D_"+ctype+"_"+clen+"_anl.eps")
+    plt.savefig("cov2D_"+ctype+"_"+clen+"_anl."+figtype)
 
 if rtype == "numcov2D":
-    fname = "klsampl2D_"+clen+"_"+nreal+"/cov2D_"+clen+"_"+nreal+".dat"
+    fname = "cvspl2D_"+clen+"_"+nreal+"/cov2D_"+clen+"_"+nreal+".dat"
     print("Processing file ",fname)
     cov,nlines=readfile(fname);
     vmax = np.array(cov).max()
@@ -456,7 +457,7 @@ if rtype == "numcov2D":
     plt.xticks(())
     plt.yticks(())
     plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("cov2D_"+clen+"_"+nreal+"_num.eps")
+    plt.savefig("cov2D_"+clen+"_"+nreal+"_num."+figtype)
 
 if rtype == "anlKLevec2D":
     #parameters
@@ -464,14 +465,15 @@ if rtype == "anlKLevec2D":
     fs=16
     # plot KL modes
     Nkl=6
-    fname = "klcov2D_"+ctype+"_"+clen+"/KLmodes2D_"+clen+"_"+ctype+"_anl.dat"
-    din,nlines=readfile(fname);
-    x=[din[i][0] for i in range(65)];
-    y=[din[65*i][1] for i in range(65)];
+    fname = "cvanl2D_"+ctype+"_"+clen+"/KLmodes2D_"+clen+"_"+ctype+"_anl.dat"
+    din,nlines=readfile(fname)
+    nx = ny = int(np.sqrt(nlines))
+    x=[din[i][0] for i in range(nx)];
+    y=[din[nx*i][1] for i in range(ny)];
     X,Y=np.meshgrid(x,y)
     for i in range(2,Nkl+2):
         z=column(din,i);
-        Z=[[z[k*65+j] for j in range(65)] for k in range(65)]
+        Z=[[z[k*nx+j] for j in range(nx)] for k in range(ny)]
         fig = plt.figure(figsize=(4,4))
         ax=fig.add_axes([0.15, 0.15, 0.75, 0.75]) 
         plt.contourf(X,Y,Z,101)
@@ -481,7 +483,7 @@ if rtype == "anlKLevec2D":
         ax.set_ylim([0.0,1.0])
         ax.set_aspect('equal')
         plt.title("$c_l=$"+clen+", Mode "+str(i-1))
-        plt.savefig("KLmodes2D_"+ctype+"_"+clen+"_m"+str(i-1)+".eps")
+        plt.savefig("KLmodes2D_"+ctype+"_"+clen+"_m"+str(i-1)+"."+figtype)
 
 if rtype == "numKLevec2D":
     #parameters
@@ -507,7 +509,7 @@ if rtype == "numKLevec2D":
         ax.set_ylim([0.0,1.0])
         ax.set_aspect('equal')
         #plt.title("$c_l=$"+clen+", Mode "+str(i-1))
-        plt.savefig("KLmodes2D_"+clen+"_"+nreal+"_m"+str(i-1)+".pdf")
+        plt.savefig("KLmodes2D_"+clen+"_"+nreal+"_m"+str(i-1)+"."+figtype)
 
 if rtype == "samples2Du":
     #parameters
@@ -534,7 +536,7 @@ if rtype == "samples2Du":
         fig = plt.figure(figsize=(4,4))
         ax=fig.add_axes([0.08, 0.08, 0.9, 0.9]) 
         ax.set_aspect('equal')
-        plt.tricontour(triGrid,column(din,i),21)
+        plt.tricontourf(triGrid,column(din,i),21)
         ax.set_xlabel("lon",fontsize=fs1)
         ax.set_ylabel("lat",fontsize=fs1)
         ax.set_xlim([x.min(),x.max()])
@@ -543,7 +545,7 @@ if rtype == "samples2Du":
         ax.set_yticks([])
         #plt.colorbar()
         #plt.title("$c_l=$"+clen)
-        plt.savefig("samples2Du_"+clen+"_"+nreal+"_s"+str(i+1)+".pdf")
+        plt.savefig("samples2Du_"+clen+"_"+nreal+"_s"+str(i+1)+"."+figtype)
 
 if rtype == "anlcov2Du":
     fname = "cvanl2Du_"+ctype+"_"+clen+"/cov2Du_"+ctype+"_"+clen+".dat"
@@ -571,7 +573,7 @@ if rtype == "numcov2Du":
     plt.xticks(())
     plt.yticks(())
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("cov2Du_"+clen+"_"+nreal+"_num.pdf")
+    plt.savefig("cov2Du_"+clen+"_"+nreal+"_num."+figtype)
 
 if rtype == "anlKLevec2Du":
     #parameters
@@ -606,7 +608,7 @@ if rtype == "anlKLevec2Du":
         ax.set_yticks([])
         #plt.colorbar()
         #plt.title("$c_l=$"+clen+", Mode "+str(i-1))
-        plt.savefig("KLmodes2Du_"+ctype+"_"+clen+"_m"+str(i-1)+".pdf")
+        plt.savefig("KLmodes2Du_"+ctype+"_"+clen+"_m"+str(i-1)+"."+figtype)
 
 
 if rtype == "numKLevec2Du":
@@ -642,7 +644,7 @@ if rtype == "numKLevec2Du":
         ax.set_yticks([])
         #plt.colorbar()
         #plt.title("$c_l=$"+clen+", Mode "+str(i-1))
-        plt.savefig("KLmodes2Du_"+clen+"_"+nreal+"_m"+str(i-1)+".pdf")
+        plt.savefig("KLmodes2Du_"+clen+"_"+nreal+"_m"+str(i-1)+"."+figtype)
 
 
 

@@ -28,9 +28,11 @@
 import numpy as np
 
 def readfile(filename):
+    file1 = open(filename, 'r')
+    Lines = file1.readlines()
     d0  = []
     nlines = 0
-    for line in file(filename):
+    for line in Lines:
         line = line.rstrip('\n')
         line_list = [float(x) for x in line.split()]
         d0.append(line_list)
