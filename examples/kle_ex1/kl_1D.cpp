@@ -206,9 +206,27 @@ int main(int argc, char *argv[])
     int rseed = 20120828;
     dsfmt_init_gen_rand(&rnstate, (uint32_t) rseed );
 
+    float progress = 0.0;
+    int barWidth = 70;
+    cout << " - Generate samples" << endl<<flush;
     Array1D<double> randSamples(npts,0.0);
     ySamples.Resize(npts,nspl,0.0);
     for ( int j = 0; j < nspl; j++) {
+
+      if (float(j) / nspl > progress+0.01) {
+
+        cout << "   [";
+        int pos = barWidth * progress;
+        for (int ii = 0; ii< barWidth; ++ii) {
+            if (ii < pos) cout << "=";
+            else if (ii == pos) cout << ">";
+            else cout << " ";
+        }
+        cout << "] " << int(progress * 100.0) << " %\r";
+        cout << flush;
+        progress += 0.01;
+      }
+
       for (int i = 0 ; i < npts ; i++ )
         randSamples(i) = dsfmt_genrand_nrv(&rnstate);
       for ( int i = 0; i < npts; i++ ) {

@@ -51,22 +51,24 @@ if (len(sys.argv) > 1):
     rtype  = sys.argv[1]
     if rtype == "samples1D":
         clen  = sys.argv[2]
+        nspl  = sys.argv[3]
     if (rtype == "pltKLrecon1D") | (rtype == "pltKLrecon2D"):
         clen  = sys.argv[2]
-        ids   = int(sys.argv[3])
-        Nkl   = int(sys.argv[4])
-        step  = int(sys.argv[5])
+        nspl  = sys.argv[3]
+        ids   = int(sys.argv[4])
+        Nkl   = int(sys.argv[5])
+        step  = int(sys.argv[6])
     if (rtype == "pltKLeig1D") | (rtype == "pltKLeig2D"):
         nspl  = sys.argv[2]
         if (len(sys.argv) > 3):
             nspl1  = sys.argv[3]
-    if rtype == "anlcov" or "anlKLevec":
+    if rtype == "anlcov1D" or rtype == "anlKLevec1D":
         ctype = sys.argv[2]
         clen  = sys.argv[3]
-    if rtype == "numcov" or "numKLevec" or "xidata1D":
+    if rtype == "numcov1D" or rtype == "numKLevec1D" or rtype == "xidata1D":
         clen  = sys.argv[2]
         nreal = sys.argv[3]
-        if rtype == "numKLevec":
+        if rtype == "numKLevec1D":
            dolg  = sys.argv[4]
     if (rtype == "samples2D") | (rtype == "samples2Du"):
         clen  = sys.argv[2]
@@ -86,7 +88,7 @@ if (len(sys.argv) > 1):
         nreal = sys.argv[3]
 
 if rtype == "samples1D":
-    fname = "cvspl_"+clen+"_512/samples_"+clen+"_512.dat"
+    fname = "cvspl1D_"+clen+"_"+nspl+"/samples_"+clen+"_"+nspl+".dat"
     print("Processing file ",fname)
     din,nliles=readfile(fname);
     # Plot samples
@@ -113,15 +115,15 @@ if rtype == "pltKLeig1D":
     fig = plt.figure(figsize=(6,4))
     ax=fig.add_axes([0.15, 0.15, 0.80, 0.80]) 
     pleg=[]
-    corl=["0.05","0.10","0.20"];
+    corl=["0.05","0.1","0.2"];
     i=-1
     for clen in corl:
         i = i+1
-        fname = "cvspl_"+clen+"_"+nspl+"/eig_"+str(clen)+"_"+nspl+".dat"
+        fname = "cvspl1D_"+clen+"_"+nspl+"/eig_"+str(clen)+"_"+nspl+".dat"
         din,nliles=readfile(fname);
         eig=column(din,0);
         if nspl1 > 0:
-            fname = "cvspl_"+clen+"_"+nspl1+"/eig_"+str(clen)+"_"+nspl1+".dat"
+            fname = "cvspl1D_"+clen+"_"+nspl1+"/eig_"+str(clen)+"_"+nspl1+".dat"
             din,nliles=readfile(fname);
             eig1=column(din,0);
             pleg.append(plt.plot(eig, linestyle='--',linewidth=lw1,color=clrs[i]))
@@ -178,15 +180,15 @@ if rtype == "pltKLeig2D":
     #plt.show()
 
 if rtype == "pltKLrecon1D":
-    fspls = "cvspl_"+clen+"_512/samples_"+clen+"_512.dat"
+    fspls = "cvspl1D_"+clen+"_"+nspl+"/samples_"+clen+"_"+nspl+".dat"
     print("Processing file ",fspls)
-    spls,nliles=readfile(fspls);
-    feig = "cvspl_"+clen+"_512/eig_"+clen+"_512.dat"
-    eig,nliles=readfile(feig)
-    fKLm = "cvspl_"+clen+"_512/KLmodes_"+clen+"_512.dat"
-    KLmodes,nliles=readfile(fKLm);
-    fxi = "cvspl_"+clen+"_512/xidata_"+clen+"_512.dat"
-    xi,nlines=readfile(fxi);
+    spls, nlines = readfile(fspls);
+    feig = "cvspl1D_"+clen+"_"+nspl+"/eig_"+clen+"_"+nspl+".dat"
+    eig, nlines = readfile(feig)
+    fKLm = "cvspl1D_"+clen+"_"+nspl+"/KLmodes_"+clen+"_"+nspl+".dat"
+    KLmodes, nlines=readfile(fKLm);
+    fxi = "cvspl1D_"+clen+"_"+nspl+"/xidata_"+clen+"_"+nspl+".dat"
+    xi,nlines = readfile(fxi);
     #parameters
     lw1 = 2
     fs1 = 18
@@ -201,7 +203,7 @@ if rtype == "pltKLrecon1D":
                 fn[n][i] = savg[i]
             else:
                 fn[n][i] = fn[n-1][i]+KLmodes[i][n]*xi[ids][n-1] 
-    for n in range(0,Nkl,step):
+    for n in range(0, Nkl, step):
         fig = plt.figure(figsize=(6,4))
         ax=fig.add_axes([0.15, 0.15, 0.80, 0.80]) 
         plt.plot(xp,column(spls,ids+1),color='black',linewidth=lw1)
@@ -254,7 +256,7 @@ if rtype == "pltKLrecon2D":
         ax.set_aspect('equal')
         plt.savefig("KLrecon2D_"+clen+"_"+str(n)+"."+figtype)
 
-if rtype == "anlcov":
+if rtype == "anlcov1D":
     fname = "klcov_"+ctype+"_"+clen+"/cov_"+clen+"_"+ctype+"_anl.dat"
     print("Processing file ",fname)
     cov,nlines=readfile(fname);
@@ -266,10 +268,10 @@ if rtype == "anlcov":
     plt.xticks(())
     plt.yticks(())
     plt.title("$c_l=$"+clen)
-    plt.savefig("cov_"+ctype+"_"+clen+"_anl."+figtype)
+    plt.savefig("cov1D_"+ctype+"_"+clen+"_anl."+figtype)
 
-if rtype == "numcov":
-    fname = "cvspl_"+clen+"_"+nreal+"/cov_"+clen+"_"+nreal+".dat"
+if rtype == "numcov1D":
+    fname = "cvspl1D_"+clen+"_"+nreal+"/cov_"+clen+"_"+nreal+".dat"
     print("Processing file ",fname)
     cov,nlines=readfile(fname);
     vmax = np.array(cov).max()
@@ -280,9 +282,9 @@ if rtype == "numcov":
     plt.xticks(())
     plt.yticks(())
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("cov_"+clen+"_"+nreal+"_num."+figtype)
+    plt.savefig("cov1D_"+clen+"_"+nreal+"_num."+figtype)
 
-if rtype == "anlKLevec":
+if rtype == "anlKLevec1D":
     # plot KL modes
     fname = "klcov_"+ctype+"_"+clen+"/KLmodes_"+clen+"_"+ctype+"_anl.dat"
     din,nliles=readfile(fname);
@@ -312,11 +314,11 @@ if rtype == "anlKLevec":
     leg=plt.legend( (pleg[0][0], pleg[1][0], pleg[2][0], pleg[3][0]),
                     (r"$f_1$", r"$f_2$", r"$f_3$", r"$f_4$"),'lower right' )
     plt.title("$c_l=$"+clen)
-    plt.savefig("KLmodes_"+ctype+"_"+clen+"_anl."+figtype)
+    plt.savefig("KLmodes1D_"+ctype+"_"+clen+"_anl."+figtype)
 
-if rtype == "numKLevec":
+if rtype == "numKLevec1D":
     # plot KL modes
-    fname = "cvspl_"+clen+"_"+nreal+"/KLmodes_"+clen+"_"+nreal+".dat"
+    fname = "cvspl1D_"+clen+"_"+nreal+"/KLmodes_"+clen+"_"+nreal+".dat"
     din,nliles=readfile(fname);
     #parameters
     lw1 = 3
@@ -363,10 +365,10 @@ if rtype == "numKLevec":
         leg=plt.legend( (pleg[0][0], pleg[1][0], pleg[2][0], pleg[3][0]),
                         (r"$f_1$", r"$f_2$", r"$f_3$", r"$f_4$"),'lower right' )
     #plt.title(r"$c_l="+clen+", N_{\Theta}="+nreal+"$")
-    plt.savefig("KLmodes_"+clen+"_"+nreal+"."+figtype)
+    plt.savefig("KLmodes1D_"+clen+"_"+nreal+"."+figtype)
 
 if rtype == "xidata1D":
-    fname = "cvspl_"+clen+"_"+nreal+"/xidata_"+clen+"_"+nreal+".dat"
+    fname = "cvspl1D_"+clen+"_"+nreal+"/xidata_"+clen+"_"+nreal+".dat"
     din,nliles=readfile(fname);
     #parameters
     lw1 = 3
