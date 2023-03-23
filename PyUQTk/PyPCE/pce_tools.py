@@ -401,7 +401,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                             To set a fixed scalar, provide a fixed nonnegative value.
                             To autopopulate a scalar, set regparams = 0.
                             To set a fixed vector of weights, provide an array [#PC terms,].
-                            To autopopulate a vector, set lambda_init = None, which is the suggested method.
+                            To autopopulate a vector, set reg_params = None, which is the suggested method.
         sigma2:      Inital noise variance we assume is in the data; default is 1e-8
         trval_frac: Fraction of the total input data to use in each split;
                             if None (default), 1/ntry is used
@@ -611,7 +611,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
 
         RMSE_list_per_fold.append(RMSE_per_eta)
 
-    # Compute the average and standard deviation of the RMSEs over the folds
+    # Compute the average of the RMSEs over the folds
     avg = np.array(RMSE_list_per_fold).mean(axis=0)
 
     # Choose eta with lowest RMSE
@@ -701,24 +701,28 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np
 ################################################################################
-def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verbose):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
-    Side (Rather than relying on a PCE Model to provide the basis)
+    Side (Rather than relying on a PCE Model to provide the basis) to solve
+    system vdm_np * c_k = rhs_np and return the sparse vector c_k
     Input:
         vdm_np:    VanderMonde Matrix, evaluated at sample points;
                         numpy array [n_samples, n_basis_terms]
         rhs_np:    right hand side for regression; 1D numpy array [n_samples,]
-        sigma:     Inital noise variance we assume is in the data
-        eta:       Threshold for stopping the algorithm. Smaller values
-                        retain more nonzero coefficients; float
+        sigma2:    Inital noise variance we assume is in the data
+        eta:       Threshold for stopping the algorithm. The algorithm stops
+                        if the change in the marginal likelhood over the last iteration 
+                        is smaller than eta times the overall change in marginal likelihood so far.
+                        Note: Smaller values of eta tend to
+                        retain more nonzero coefficients; float [default 1.e-8]
         regparams_np: Regularization weights; float or 1D numpy array
                         To set a fixed scalar, provide a fixed nonnegative value.
                         To autopopulate a scalar, set regparams_np = 0.
                         To set a fixed vector of weights, provide an array [n_basis_terms,].
-                        To autopopulate a vector, set regparams_np = [], which is the suggested method.
+                        To autopopulate a vector, set regparams_np = None, which is the suggested method.
 
-        verbose:   Flag for optional print statements
+        verbose:   Flag for optional print statements (defaults to False)
 
     Output:
         c_k:    1D numpy array with regression coefficients. The only non-zero
@@ -726,14 +730,14 @@ def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verb
                         [n_basis_terms,]
     """
     # Set dimensions
-    n_samples = vdm.shape[0]
-    n_basis_terms = vdm.shape[1]
+    n_samples = vdm_np.shape[0]
+    n_basis_terms = vdm_np.shape[1]
 
     # Configure BCS parameters to defaults
     adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
     optimal = 1  # Flag for optimal implementation of adaptive CS, set to 0 or 1
     scale = 0.1  # Diagonal loading parameter; relevant only in adaptive,
-                    # non-optimal implementation
+                 # non-optimal implementation
 
     bcs_verbose = 0 # silence print statements
 
@@ -745,6 +749,12 @@ def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verb
     rhs_uqtk = uqtkarray.numpy2uqtk(np.asfortranarray(rhs_np))
 
     # UQTk array for regparams, the initial regularization weights, which will be updated through BCS.
+    # First properly set up numpy array.
+    if regparams_np is None:
+        regparams_np = np.array([])
+    elif type(regparams_np)==int or type(regparams_np)==float:
+        regparams_np = regparams_np*np.ones((n_basis_terms,))
+    # Convert to UQTk array
     lam_uqtk=uqtkarray.dblArray1D(regparams_np.shape[0])
     for i2 in range(regparams_np.shape[0]):
         lam_uqtk.assign(i2, regparams_np[i2])
@@ -762,7 +772,7 @@ def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verb
     Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
 
     # Run BCS through the c++ implementation
-    bcs.WBCS(psi_uqtk, rhs_np, sigma, eta, lam_uqtk, adaptive, optimal, scale,\
+    bcs.WBCS(psi_uqtk, rhs_uqtk, sigma2, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
 
     # Print result of the BCS iteration
@@ -772,7 +782,7 @@ def UQTkCallBCSDirectNOTTESTEDYET(vdm_np, rhs_np, sigma, eta, regparams_np, verb
     # Coefficients in a numpy array
     c_k=np.zeros(n_basis_terms)
     for i in range(used.XSize()):
-        c_k[i]=weights[i]
+        c_k[used[i]]=weights[i]
 
     return c_k
 ################################################################################
