@@ -426,6 +426,8 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     # Choose whether to optimize eta
     if (type(eta)==np.float64 or type(eta)==float):
         eta_opt = eta
+        RMSE_eta=[]
+        RMSE_eta_tr=[]
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
         eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds)
@@ -527,7 +529,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         # Save for this trial
         mi_selected.append(mindex)
 
-    #Intersect across trials
+    # Intersect across trials
     mindex_final = reduce(multidim_intersect, mi_selected)
     # If no intersection, add the constant term [not sure why]
     if mindex_final.shape[0] == 0:
@@ -541,14 +543,17 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     pc_model_final=uqtkpce.PCSet("NISPnoq", mindex_final_uq, pc_model.GetPCType(),\
             pc_model.GetAlpha(), pc_model.GetBeta())
 
+    # Determine coefficients corresponding to final multiindex with regression
+    cfs_final = UQTkRegression(pc_model_final, ydata, xdata)
+
     if verbose>0:
         if verbose>1:
             print("Final Multiindex:")
             print(mindex_final)
         print("Coefficients:")
-        print(cfs)
+        print(cfs_final)
 
-    return pc_model_final, cfs
+    return pc_model_final, cfs_final
 ################################################################################
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     """
@@ -578,6 +583,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     k=bcs.kfoldCV(x, y, nfolds)
 
     RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
+    RMSE_tr_list_per_fold=[]
 
     # loop through each fold
     for i in range(nfolds):
@@ -587,6 +593,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
         x_val=k[i]['xval']
         y_val=k[i]['yval']
         RMSE_per_eta=[] # array of RMS errors, one per eta
+        RMSE_tr_per_eta=[]
 
         # loop through each eta
         for eta in etas:
@@ -594,9 +601,10 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
             # Obtain coefficients through BCS
             pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta)
             # Evaluate the PCE at the validation points
-            pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val)
+            pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val) #testing error
+            pce_evals_tr = UQTkEvaluatePCE(pc_final, c_k, x_tr) #training error
 
-            # Calculate error metric
+            # Calculate error metric: testing
             MSE = np.square(np.subtract(y_val, pce_evals)).mean()
             RMSE = math.sqrt(MSE)
             RMSE_per_eta.append(RMSE)
