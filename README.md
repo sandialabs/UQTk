@@ -85,7 +85,7 @@ To cite UQTk, please use the following publications:
   year     =  {2004},
   volume   =  {26},
   pages    =  {698-719},
-  number   =  {2}
+  number   =  {2},
   url      =  {http://dx.doi.org/10.1137/S1064827503427741}
 }
 
@@ -96,7 +96,7 @@ To cite UQTk, please use the following publications:
   editor    = {R. Ghanem and D. Higdon and H. Owhadi},
   year      = {2017},
   pages     = {1807--1827},
-  publisher = {Springer}
+  publisher = {Springer},
   url       = {http://www.springer.com/us/book/9783319123844}
 }
 ```
