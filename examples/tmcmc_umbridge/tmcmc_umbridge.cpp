@@ -46,7 +46,7 @@ int main(int argc, char ** argv){
 /*************************************************
 	Dimensionality and number of samples requested
 	*************************************************/
-	int dim = 2;
+	int dim = 3;
 	int nCalls = 5000;
 
 	/*************************************************

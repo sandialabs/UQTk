@@ -5,14 +5,15 @@ SET(copy_FILES
   tmcmc_getLP.sh
   tmcmc_moveIntermediateFiles.sh
   tmcmc_prior_samples.dat
-  tmcmc_bimodal.py
+  tmcmc_umbridge.py
+  minimal-umbridge-model.py
   README
   )
 
 link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 
 add_executable (umbridge_model.x umbridge_model.cpp)
-add_executable (tmcmc_umbridge.x tmcmc_bimodal.cpp)
+add_executable (tmcmc_umbridge.x tmcmc_umbridge.cpp)
 
 target_link_libraries (tmcmc_umbridge.x uqtk  )
 target_link_libraries (tmcmc_umbridge.x depdsfmt )

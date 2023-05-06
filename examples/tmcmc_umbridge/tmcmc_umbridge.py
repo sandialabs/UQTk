@@ -116,7 +116,7 @@ chainfile       = 'tmcmc_chain.dat'      # Name of the chain file
 ## Run the inference code #####################################################
 
 print("Running TMCMC on bimodal posterior")
-os.system('./tmcmc_bimodal.x')# > logTMCMC.dat')
+os.system('./tmcmc_umbridge.x')# > logTMCMC.dat')
 
 ## Import data from MCMC file ###################################################
 print("Loading in chain file ",chainfile )
