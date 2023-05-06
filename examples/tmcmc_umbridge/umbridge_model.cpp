@@ -54,8 +54,6 @@ private:
 // 3d bimodal likelihood
 double Likelihood::eval(RealVector& x){
   std::vector<RealVector> out = client.Evaluate({x});
-  if (out[0][0] == -1e100)
-    out[0][0] = -std::numeric_limits<double>::infinity();
   return out[0][0];
 }
 
