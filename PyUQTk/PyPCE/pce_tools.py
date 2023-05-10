@@ -412,10 +412,9 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         verbose:    Flag for optional print statements
 
     Output:
-        cfs:      1D Numpy array with PC coefficients for each term of the final
-                       model [#terms_in_final_basis,]
         pc_model_final: PC object with basis expanded by the iterations
-
+        cfs_final:      1D Numpy array with PC coefficients for each term of the final
+                        model [#terms_in_final_basis,]
     """
 
     # Sends error message if y-values are multi-dimensional
