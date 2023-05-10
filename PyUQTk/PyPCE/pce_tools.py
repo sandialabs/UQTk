@@ -555,7 +555,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
 
     return pc_model_final, cfs_final
 ################################################################################
-def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
+def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
     """
     Choose the opimum eta for Bayesian compressive sensing with nonconservative
         basis growth, splitting for basis crossvalidation. Calculates the RMSE
@@ -574,6 +574,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
                             coefficients
         niter:         Number of iterations for basis growth
         nfolds:        Number of folds to use for eta cross-validation
+        plot:          Flag for whether to generate a plot for eta optimization
 
     Output:
         eta_opt:      Optimum eta
@@ -583,7 +584,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
     k=kfoldCV(x, y, nfolds)
 
     RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
-    RMSE_tr_list_per_fold=[]
+    RMSE_list_per_fold_tr=[]
 
     # loop through each fold
     for i in range(nfolds):
@@ -593,7 +594,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
         x_val=k[i]['xval']
         y_val=k[i]['yval']
         RMSE_per_eta=[] # array of RMS errors, one per eta
-        RMSE_tr_per_eta=[]
+        RMSE_per_eta_tr=[]
 
         # loop through each eta
         for eta in etas:
@@ -609,13 +610,46 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds):
             RMSE = math.sqrt(MSE)
             RMSE_per_eta.append(RMSE)
 
-        RMSE_list_per_fold.append(RMSE_per_eta)
+            # Calculate error metric: training
+            MSE_tr = np.square(np.subtract(y_tr, pce_evals_tr)).mean()
+            RMSE_tr = math.sqrt(MSE_tr)
+            RMSE_per_eta_tr.append(RMSE_tr)
 
-    # Compute the average of the RMSEs over the folds
+        RMSE_list_per_fold.append(RMSE_per_eta)
+        RMSE_list_per_fold_tr.append(RMSE_per_eta_tr)
+
+    # Compute the average and standard deviation of the RMSEs over the folds for testing error
     avg = np.array(RMSE_list_per_fold).mean(axis=0)
+    avg_tr = np.array(RMSE_list_per_fold_tr).mean(axis=0)
+
+    std = np.std(np.array(RMSE_list_per_fold), axis=0)
+    std_tr = np.std(np.array(RMSE_list_per_fold_tr), axis=0)
 
     # Choose eta with lowest RMSE
     eta_opt = etas[np.argmin(avg)]
+
+    # Plot RMSE vs. eta for training and testing RMSE
+    if plot:
+        fig, ax = plt.subplots(figsize=(10,10))
+
+        plt.errorbar(etas, avg, xerr=None, yerr=std, linewidth=2, markersize=8, capsize=8, label=('Testing'))
+        plt.errorbar(etas, avg_tr, xerr=None, yerr=std_tr, linewidth=2, markersize=8, capsize=8, label=('Training'))
+
+        plt.plot(eta_opt, np.min(avg), marker="o", markersize=15, color='black', label=("Optimum"))
+
+        plt.xlabel("Eta",fontsize=20)
+        plt.ylabel('RMSE',fontsize=20)
+
+        #Change size of tick labels
+        plt.tick_params(axis='both', labelsize=16)
+
+        plt.xscale('log')
+
+        # Create legend
+        plt.legend(loc='upper left')
+
+        #Save
+        plt.savefig('eta_opt.pdf', format='pdf', dpi=1200)
 
     return eta_opt
 ################################################################################
@@ -712,7 +746,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
         rhs_np:    right hand side for regression; 1D numpy array [n_samples,]
         sigma2:    Inital noise variance we assume is in the data
         eta:       Threshold for stopping the algorithm. The algorithm stops
-                        if the change in the marginal likelhood over the last iteration 
+                        if the change in the marginal likelhood over the last iteration
                         is smaller than eta times the overall change in marginal likelihood so far.
                         Note: Smaller values of eta tend to
                         retain more nonzero coefficients; float [default 1.e-8]
