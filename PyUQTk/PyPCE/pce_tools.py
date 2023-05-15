@@ -373,7 +373,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
 ################################################################################
 def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             mindex_growth='nonconservative', regparams=None, sigma2=1e-8, trval_frac=None,\
-            npccut=None, pcf_thr=None, verbose=0):
+            npccut=None, pcf_thr=None, verbose=0, eta_plot=False):
     """
     Obtain PC coefficients by Bayesian compressive sensing
 
@@ -410,6 +410,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         pcf_thr:    Minimum value (magnitude) for PC coefficients, for pruning low PC coefficients 'by hand'
                             default is None
         verbose:    Flag for optional print statements
+        eta_plot  Flag for saving a plot of etas vs. RMSE
 
     Output:
         pc_model_final: PC object with basis expanded by the iterations
@@ -429,7 +430,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         RMSE_eta_tr=[]
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
-        eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds)
+        eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)
     else:
