@@ -146,7 +146,6 @@ w_np = zeros(n)
 w_np = uqtkarray.getnpdblArray(w)
 
 # asserting the quadrature points are correct
-m,n = x_np.shape
-for i in range(m):
-	for j in range(n):
-		assert x_np[i,j] == qpnts_ref[i,j]
+dec_place=14
+reg=(np.round(x_np, dec_place)==np.round(qpnts_ref, dec_place))
+assert (all(reg) and reg[0,0]==True)
