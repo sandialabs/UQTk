@@ -100,7 +100,7 @@ def numpy2uqtk(y):
             for i in range(n):
                 for j in range(m):
                     x.assign(i, j, y[i][j])
-            pyuqtkarray.setnpintArray(x,np.asfortranarray(y.copy()))
+            # pyuqtkarray.setnpintArray(x,np.asfortranarray(y.copy()))
     elif (y.dtype.name).find('float')>=0:
         s = np.shape(y)
         if len(s) == 1:
