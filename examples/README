@@ -63,6 +63,12 @@ uqpc
 ==============================
 construct Polynomial Chaos surrogates for multiple outputs/functions
 
+==============================
+um_bridge
+==============================
+Uses C++ TMCMC to sample from multimodal posterior, and um-bridge
+to evaluate samples from a python function
+
 
 ==============================
 iuq
