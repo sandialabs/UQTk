@@ -1,0 +1,48 @@
+tmcmc_bimodal example using umbridge to evaluate samples.
+
+Example contributed by Linus Seelinger - Spring 2023
+
+This is a basic example for how to use UM-Bridge supporting models from UQTk, based on tmcmc_bimodal.
+
+Since tmcmc_bimodal appears to be hard-coded for 3D parameters, we can't use pre-defined UM-Bridge benchmark problems like https://um-bridge-benchmarks.readthedocs.io/en/docs/inverse-benchmarks/analytic-gaussian-mixture.html. Instead, I have added a minimal 3D trimodal example named minimal-umbridge-model.py.
+
+The minimal model uses Python, while the UQTk integration is in C++. I have therefore pulled in copies of the header-only umbridge c++ library (umbridge.h) and its two dependencies (json, http). For a better umbridge integration, UQTk's cmake could alternatively pull those c++ headers from the umbridge repo during build.
+
+How to run:
+
+* Build and install UQTk with Python support (as usual)
+* Install umbridge package for Python from pip pip install umbridge, needed for the test model
+* Navigate to tmcmc_umbridge example in the install directory
+* Run model server python minimal-umbridge-model.py
+* While (!) the model server is running, run tmcmc_umbridge example: PYTHONPATH=... UQTK_INS=... python tmcmc_umbridge.py. 
+
+Outputs appear as PDFs as in tmcmc_bimodal. Minor overhead due to umbridge is expected, but should be negligible for more compute intensive models.
+The same tmcmc_umbridge example could be pointed to any UM-Bridge model running locally (except for the fixed input dimension issue above). Setting another address than localhost in umbridge_model.cpp would allow it to connect to a remote server or cluster instead. A parallel run of the tmcmc_umbridge example on a laptop could then connect to a large number of model instances on a powerful cluster (see https://arxiv.org/abs/2304.14087 ).
+
+
+================================================================================
+Files
+
+tmcmc_bimodal.py: main scripts
+
+tmcmc_bimodal.cpp: C++ code that produces some of the needed functions - 
+							sets up the MCMC class object, specifying the
+							dimensionality of the problem, number of
+							samples required, number of processes for
+							parallel evaluation of likelihood and prior
+
+bimodal.cpp: C++ code for evaluating the likelihood and prior pdfs - 
+							the corresponding executable is invoked
+							multiple times for parallel evaluation
+							of likelihood and prior pdfs
+
+tmcmc_prior_samples.dat: samples from prior pdf (as required by TMCMC) - 
+							3D Normal prior for this example with 5000
+							samples
+
+tmcmc_getLL.sh: Shell script that spawns multiple processes for parallel
+							evaluation of likelihood function
+tmcmc_getLP.sh Shell script that spawns multiple processes for parallel
+							evaluation of prior PDF
+tmcmc_moveIntermediateFiles.sh: Shell script used for moving all
+							artifacts of TMCMC into a subdirectory
