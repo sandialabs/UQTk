@@ -1,6 +1,10 @@
 import umbridge
 import math
 
+"""
+Server side of the equation to evaluate likelihood
+"""
+
 class TestModel(umbridge.Model):
 
     def __init__(self):
