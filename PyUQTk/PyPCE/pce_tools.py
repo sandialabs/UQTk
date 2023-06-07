@@ -371,7 +371,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
+def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=1, eta_folds=5,\
             mindex_growth='nonconservative', regparams=None, sigma2=1e-8, trval_frac=None,\
             npccut=None, pcf_thr=None, verbose=0, eta_plot=False):
     """
@@ -393,7 +393,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                             the optimum value of the array is chosen. If a float,
                             the given value is used.
         ntry:       Number of splits for cross-validation of the retained basis
-                            through bcs; default is 5
+                            through bcs; default is 1
         eta_folds:  Number of folds to use for eta cross-valiation; default is 5
         mindex_growth: Method for basis growth; options are None,
                             'nonconservative', 'conservative'; default is 'nonconservative'
@@ -410,7 +410,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
         pcf_thr:    Minimum value (magnitude) for PC coefficients, for pruning low PC coefficients 'by hand'
                             default is None
         verbose:    Flag for optional print statements
-        eta_plot  Flag for saving a plot of etas vs. NRMSE
+        eta_plot  Flag for saving a plot of etas vs. RMSE
 
     Output:
         pc_model_final: PC object with basis expanded by the iterations
@@ -426,10 +426,8 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     # Choose whether to optimize eta
     if (type(eta)==np.float64 or type(eta)==float):
         eta_opt = eta
-        NRMSE_eta=[]
-        NRMSE_eta_tr=[]
     elif (type(eta)==np.ndarray or type(eta)==list):
-        # the eta with the lowest NRMSE is selected from etas
+        # the eta with the lowest RMSE is selected from etas
         eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)
@@ -499,7 +497,6 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             mindex = used_mi_np[indhigh][indsort] # indices of the selected coefficients
             cfs = c_k[indhigh][indsort] # selected coefficients
             npc = cfs.shape[0] # number of coefficients
-
             # Multiindex growth with optional update of weights
             if j < niter - 1:
 
@@ -537,6 +534,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     mindex_final = reduce(multidim_intersect, mi_selected)
     # If no intersection, add the constant term [not sure why]
     if mindex_final.shape[0] == 0:
+        print("No intersection found between the splits. Adding back the constant term.")
         mindex_final = np.zeros((1, xdata.shape[1]), dtype=int)
 
     # create a pc object with the final multiindex
@@ -563,9 +561,9 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose, plot=False):
     """
     Choose the opimum eta for Bayesian compressive sensing with nonconservative
-        basis growth, splitting for basis crossvalidation. Calculates the NRMSE
+        basis growth, splitting for basis crossvalidation. Calculates the RMSE
         for each eta for a specified number of folds. Selects the eta with the lowest
-        NRMSE after averaging the NRMSEs over the folds.
+        RMSE after averaging the RMSEs over the folds.
     Helper function for UQTkBCS
 
     Input:
@@ -579,6 +577,8 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
                             coefficients
         niter:         Number of iterations for basis growth
         nfolds:        Number of folds to use for eta cross-validation
+        mindex_growth: Type of multiindex growth to use
+        verbose:       Flag for print statements
         plot:          Flag for whether to generate a plot for eta optimization
 
     Output:
@@ -588,8 +588,8 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
     # split data in k folds
     k=kfoldCV(x, y, nfolds)
 
-    NRMSE_list_per_fold=[] # list to whole eta NRMSEs, organized by fold
-    NRMSE_list_per_fold_tr=[]
+    RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
+    RMSE_list_per_fold_tr=[]
 
     if mindex_growth == None:
         full_basis_size = pc_start.GetNumberPCTerms()
@@ -603,16 +603,16 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
         y_tr=k[i]['ytrain']
         x_val=k[i]['xval']
         y_val=k[i]['yval']
-        NRMSE_per_eta=[] # array of RMS errors, one per eta
-        NRMSE_per_eta_tr=[]
+        RMSE_per_eta=[] # array of RMS errors, one per eta
+        RMSE_per_eta_tr=[]
 
         # loop through each eta
         for eta in etas:
 
             # Obtain coefficients through BCS
-            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta, mindex_growth=mindex_growth)
+            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta, ntry=1, mindex_growth=mindex_growth)
 
-            if verbose > 0:
+            if verbose > 1:
                 print("Fold ", i+1, ", eta ", eta, ", ", len(c_k), " terms retained out of a full basis of size", full_basis_size)
 
 
@@ -622,32 +622,32 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
 
             # Calculate error metric: testing
             MSE = np.square(np.subtract(y_val, pce_evals)).mean()
-            NRMSE = math.sqrt(MSE)/np.linalg.norm(y_val)
-            NRMSE_per_eta.append(NRMSE)
+            RMSE = math.sqrt(MSE)
+            RMSE_per_eta.append(RMSE)
 
             # Calculate error metric: training
             MSE_tr = np.square(np.subtract(y_tr, pce_evals_tr)).mean()
-            NRMSE_tr = math.sqrt(MSE_tr)/np.linalg.norm(y_tr)
-            NRMSE_per_eta_tr.append(NRMSE_tr)
+            RMSE_tr = math.sqrt(MSE_tr)
+            RMSE_per_eta_tr.append(RMSE_tr)
 
-        NRMSE_list_per_fold.append(NRMSE_per_eta)
-        NRMSE_list_per_fold_tr.append(NRMSE_per_eta_tr)
+        RMSE_list_per_fold.append(RMSE_per_eta)
+        RMSE_list_per_fold_tr.append(RMSE_per_eta_tr)
 
-    # Compute the average and standard deviation of the NRMSEs over the folds for testing error
-    avg = np.array(NRMSE_list_per_fold).mean(axis=0)
-    avg_tr = np.array(NRMSE_list_per_fold_tr).mean(axis=0)
+    # Compute the average and standard deviation of the RMSEs over the folds for testing error
+    avg = np.array(RMSE_list_per_fold).mean(axis=0)
+    avg_tr = np.array(RMSE_list_per_fold_tr).mean(axis=0)
 
-    std = np.std(np.array(NRMSE_list_per_fold), axis=0)
-    std_tr = np.std(np.array(NRMSE_list_per_fold_tr), axis=0)
+    std = np.std(np.array(RMSE_list_per_fold), axis=0)
+    std_tr = np.std(np.array(RMSE_list_per_fold_tr), axis=0)
 
     # standard deviation of the mean
     std_m = std/math.sqrt(nfolds)
     std_m_tr = std/math.sqrt(nfolds)
 
-    # Choose eta with lowest NRMSE
+    # Choose eta with lowest RMSE
     eta_opt = etas[np.argmin(avg)]
 
-    # Plot NRMSE vs. eta for training and testing NRMSE
+    # Plot RMSE vs. eta for training and testing RMSE
     if plot:
         fig, ax = plt.subplots(figsize=(10,10))
 
@@ -657,7 +657,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
         plt.plot(eta_opt, np.min(avg), marker="o", markersize=15, color='black', label=("Optimum"))
 
         plt.xlabel("Eta",fontsize=20)
-        plt.ylabel('NRMSE',fontsize=20)
+        plt.ylabel('RMSE',fontsize=20)
 
         #Change size of tick labels
         plt.tick_params(axis='both', labelsize=16)
