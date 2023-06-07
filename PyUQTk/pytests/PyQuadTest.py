@@ -40,10 +40,11 @@ src = os.getenv('UQTK_SRC')
 sys.path.append('../pyuqtkarray_tools')
 
 try:
-	from numpy import *
-	from matplotlib.pyplot import *
+	import numpy as np
 except ImportError:
-	print("Need numpy and matplotlib to test PyUQTk")
+	print("Need numpy to test PyUQTk")
+
+# import numpy as np
 
 try:
 	import _uqtkarray as uqtkarray
@@ -61,7 +62,7 @@ This file tests the quadrature pyqutk routine
 '''
 
 # true quad points for sparse LU with ndim = 2 and level = 3
-qpnts_ref = array([[-9.681602395076263079e-01, 0.000000000000000000e+00],
+qpnts_ref = np.array([[-9.681602395076263079e-01, 0.000000000000000000e+00],
 [-9.061798459386638527e-01, -7.745966692414832933e-01],
 [-9.061798459386638527e-01, 0.000000000000000000e+00],
 [-9.061798459386638527e-01, 7.745966692414834043e-01],
@@ -133,19 +134,20 @@ n = x.XSize()
 print('Number of quad points is ', n, '\n')
 
 # plot the quadrature points
-print('Plotting the points (get points in column major order as a flattened vector)')
-print('need to use reshape with fortran ordering')
-xpnts = zeros((n,ndim))
+# print('Plotting the points (get points in column major order as a flattened vector)')
+# print('need to use reshape with fortran ordering')
+xpnts = np.zeros((n,ndim))
 xpnts = uqtkarray.getnpdblArray(x)
 # plot(xpnts[:,0], xpnts[:,1],'ob',ms=10,alpha=.25)
 # show()
 
 # convert the quad weights to numpy arrays
-w_np = zeros(n)
+w_np = np.zeros(n)
 #w.getnpdblArray(w_np,n)
 w_np = uqtkarray.getnpdblArray(w)
 
 # asserting the quadrature points are correct
 dec_place=14
 reg=(np.round(x_np, dec_place)==np.round(qpnts_ref, dec_place))
-assert (all(reg) and reg[0,0]==True)
+assert (np.all(reg) and reg[0,0]==True)
+print("The quadrature points agree to within %d decimal places."%(dec_place))
