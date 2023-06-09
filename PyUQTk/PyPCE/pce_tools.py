@@ -371,7 +371,7 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_begin, xdata, ydata, eta, niter, mindex_growth='nonconservative', ntry=1,\
+def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconservative', ntry=1,\
             eta_folds=5, eta_growth = False, eta_plot = False,\
             regparams=None, sigma2=1e-8, trval_frac=None, npccut=None, pcf_thr=None,\
             verbose=0):
