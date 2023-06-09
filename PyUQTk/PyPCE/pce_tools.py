@@ -371,9 +371,10 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_begin, xdata, ydata, niter, eta, ntry=1, eta_folds=5,\
-            mindex_growth='nonconservative', regparams=None, sigma2=1e-8, trval_frac=None,\
-            npccut=None, pcf_thr=None, verbose=0, eta_plot=False):
+def UQTkBCS(pc_begin, xdata, ydata, eta, niter, mindex_growth='nonconservative', ntry=1,\
+            eta_folds=5, eta_growth = False, eta_plot = False,\
+            regparams=None, sigma2=1e-8, trval_frac=None, npccut=None, pcf_thr=None,\
+            verbose=0):
     """
     Obtain PC coefficients by Bayesian compressive sensing
 
@@ -386,23 +387,25 @@ def UQTkBCS(pc_begin, xdata, ydata, niter, eta, ntry=1, eta_folds=5,\
                             #dimensions]
         ydata:      1D numpy array (vector) with function, evaluated at the
                             sample points [#samples,]
-        niter:      Number of iterations for order growth
         eta:        NumPy array, list, or float with the threshold for
                             stopping the algorithm. Smaller values
                             retain more nonzero coefficients. If eta is an array/list,
                             the optimum value of the array is chosen. If a float,
                             the given value is used.
+        niter:      Number of iterations for order growth
+        mindex_growth: Method for basis growth; options are None,
+                            'nonconservative', 'conservative'; default is 'nonconservative'
         ntry:       Number of splits for cross-validation of the retained basis
                             through bcs; default is 1
         eta_folds:  Number of folds to use for eta cross-valiation; default is 5
-        mindex_growth: Method for basis growth; options are None,
-                            'nonconservative', 'conservative'; default is 'nonconservative'
+        eta_growth: Flag for using basis growth in eta optimization
+        eta_plot    Flag for saving a plot of etas vs. RMSE
         regparams:  Regularization weights
                             To set a fixed scalar, provide a fixed nonnegative value.
                             To autopopulate a scalar, set regparams = 0.
                             To set a fixed vector of weights, provide an array [#PC terms,].
                             To autopopulate a vector, set reg_params = None, which is the suggested method.
-        sigma2:      Inital noise variance we assume is in the data; default is 1e-8
+        sigma2:     Inital noise variance we assume is in the data; default is 1e-8
         trval_frac: Fraction of the total input data to use in each split;
                             if None (default), 1/ntry is used
         npccut:     Maximum number of PC terms to retain, for pruning 'by hand';
@@ -410,7 +413,7 @@ def UQTkBCS(pc_begin, xdata, ydata, niter, eta, ntry=1, eta_folds=5,\
         pcf_thr:    Minimum value (magnitude) for PC coefficients, for pruning low PC coefficients 'by hand'
                             default is None
         verbose:    Flag for optional print statements
-        eta_plot  Flag for saving a plot of etas vs. RMSE
+        
 
     Output:
         pc_model_final: PC object with basis expanded by the iterations
@@ -428,7 +431,10 @@ def UQTkBCS(pc_begin, xdata, ydata, niter, eta, ntry=1, eta_folds=5,\
         eta_opt = eta
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
-        eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
+        if eta_growth:
+            eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
+        else:
+            eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, 1, eta_folds, None, verbose, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)
     else:
@@ -610,7 +616,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
         for eta in etas:
 
             # Obtain coefficients through BCS
-            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta, ntry=1, mindex_growth=mindex_growth)
+            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, eta, niter, mindex_growth, ntry=1)
 
             if verbose > 1:
                 print("Fold ", i+1, ", eta ", eta, ", ", len(c_k), " terms retained out of a full basis of size", full_basis_size)
@@ -663,6 +669,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
         plt.tick_params(axis='both', labelsize=16)
 
         plt.xscale('log')
+        plt.yscale('log')
 
         # Create legend
         plt.legend(loc='upper left')
