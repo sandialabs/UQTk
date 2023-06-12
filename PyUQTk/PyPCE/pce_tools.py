@@ -471,11 +471,13 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconser
         if verbose>0:
             print("============  Split # %d / %d ============" % (i + 1, ntry))
 
+        pc_model = pc_begin # reinitialize pc_model for each split
+
         # Iterations of multiindex growth
         for j in range(niter):
             # Retrieve multiindex
-            mi_uqtk = uqtkarray.intArray2D(pc_begin.GetNumberPCTerms(), nsam)
-            pc_begin.GetMultiIndex(mi_uqtk)
+            mi_uqtk = uqtkarray.intArray2D(pc_model.GetNumberPCTerms(), nsam)
+            pc_model.GetMultiIndex(mi_uqtk)
             mindex=uqtkarray.uqtk2numpy(mi_uqtk)
             if verbose>0:
                 print("==== BCS with multiindex of size %d ====" % (mindex.shape[0],))
@@ -483,7 +485,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconser
                     print(mindex)
 
             # One run of BCS to obtain an array of coefficients and a new multiindex
-            c_k, used_mi_np = UQTkEvalBCS(pc_begin, y_split, x_split, sigma2, eta_opt, regparams, verbose)
+            c_k, used_mi_np = UQTkEvalBCS(pc_model, y_split, x_split, sigma2, eta_opt, regparams, verbose)
 
             # Custom 'cuts' by number of PC terms or by value of PC coefficients
             npcall = c_k.shape[0] # number of PC terms
@@ -530,8 +532,8 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconser
                     mindex_uq.assign(i2,j2, mindex[i2][j2])
 
             # create a pc object with the new multiindex
-            pc_model=uqtkpce.PCSet("NISPnoq", mindex_uq, pc_begin.GetPCType(),\
-                    pc_begin.GetAlpha(), pc_begin.GetBeta())
+            pc_model=uqtkpce.PCSet("NISPnoq", mindex_uq, pc_model.GetPCType(),\
+                    pc_model.GetAlpha(), pc_model.GetBeta())
 
         # Save for this trial
         mi_selected.append(mindex)
