@@ -371,9 +371,9 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconservative', ntry=1,\
+def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry=1,\
             eta_folds=5, eta_growth = False, eta_plot = False,\
-            regparams=None, sigma2=1e-8, trval_frac=None, npccut=None, pcf_thr=None,\
+            regparams=None, sigma2=1e-8, npccut=None, pcf_thr=None,\
             verbose=0):
     """
     Obtain PC coefficients by Bayesian compressive sensing
@@ -406,8 +406,6 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconser
                             To set a fixed vector of weights, provide an array [#PC terms,].
                             To autopopulate a vector, set reg_params = None, which is the suggested method.
         sigma2:     Inital noise variance we assume is in the data; default is 1e-8
-        trval_frac: Fraction of the total input data to use in each split;
-                            if None (default), 1/ntry is used
         npccut:     Maximum number of PC terms to retain, for pruning 'by hand';
                             default is None
         pcf_thr:    Minimum value (magnitude) for PC coefficients, for pruning low PC coefficients 'by hand'
@@ -443,8 +441,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth='nonconser
     #set up parameters
     nsam = xdata.shape[0] # Number of samples in xdata
 
-    if trval_frac==None:
-        trval_frac=1/ntry
+    trval_frac=1/ntry #Fraction of the total input data to use in each split;
     ntrain = int(trval_frac * nsam) # Number of training samples per split
 
     mi_selected = []
