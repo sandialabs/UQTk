@@ -61,7 +61,7 @@
 /// \param[out] basis:     : if adaptive==1, then this is the next projection vector, see \cite Ji:2008
 /// \param[out] alpha:     : estimated sparse hyperparameters (1/gamma), see \cite Babacan:2010
 /// \param[out] Sig        : covariance matrix of the weights
-void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
+void WBCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
                  double eta, Array1D<double> &lambda_init,
                  int adaptive, int optimal, double scale, int verbose,
                  Array1D<double> &weights, Array1D<int> &used,

@@ -90,7 +90,7 @@ int main(){
 	// printarray(Phi);
 
 	// Main inputs are Phi, ydata, sigma
-	double sigma = 1e-8;
+	Array1D<double> sigma(1,1e-8);
 
 	// params
 	double eta = 1e-12;
@@ -100,8 +100,8 @@ int main(){
 	// outputs
 	Array1D<double> weights, errbars, basis, alpha;
 	Array1D<int> used;
-	double lambda=0.0;
 
+	Array2D<double> Sig;
 
 	int adaptive=1;
 	int optimal=1;
@@ -109,7 +109,7 @@ int main(){
 
 	// run bcs
 	//bcs(Phi,y,sigma,eta,scale,weights,used,errbars);
-	BCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,lambda);
+	WBCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,Sig);
 
 
 	printarray(weights);

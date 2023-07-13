@@ -130,8 +130,8 @@ pcmodel.EvalPCAtCustPoints(y,x,ck)
 Phi = uqtkarray.dblArray2D()
 pcmodel.EvalBasisAtCustPts(x,Phi)
 
-#sigma = uqtkarray.dblArray1D(1,1e-8)
-sigma = 1e-8
+sigma = uqtkarray.dblArray1D(1,1e-8)
+
 eta = 1e-12
 lambda_init = uqtkarray.dblArray1D()
 scale = 0.1
@@ -141,14 +141,13 @@ errbars = uqtkarray.dblArray1D()
 basis = uqtkarray.dblArray1D()
 alpha = uqtkarray.dblArray1D()
 used = uqtkarray.intArray1D()
-#_lambda = uqtkarray.dblArray1D(1,0.0)
-_lambda=0.0
+Sig=uqtkarray.dblArray2D()
 
 adaptive = 1
 optimal = 1
 verbose = 0
 
-bcs.BCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
+bcs.WBCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,Sig)
 
 uqtkarray.printarray(weights)
 uqtkarray.printarray(used)

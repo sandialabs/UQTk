@@ -218,7 +218,8 @@ void Lreg::BCS_BuildRegr(Array1D<int>& used, double eta)
     double scale    = 0.1    ;
     int    verbose  = 0      ;
     // Initial variance 'rule-of-thumb'
-    sigma2_= max(1.e-12,get_var(ydata_)/1.0e6);
+    Array1D<double> sigma2_;
+    sigma2_(0) = max(1.e-12,get_var(ydata_)/1.0e6);
 
     // Compute the basis evaluation matrix
     this->EvalBases(xdata_,bdata_);
@@ -278,15 +279,16 @@ void Lreg::LSQ_BuildRegr()
         // alpha>>1, beta>>1, beta/alpha=sigma for fixed sigma
         // \todo to be implemented
 
-        sigma2_=(betta+betta_add)/(alfa+0.5*(npt_-nbas_)-1.);
-        if (sigma2_<0.0){
-            cout << "Negative (should be very small) data noise, set to zero. Sigma2=" << sigma2_ << endl;
-            sigma2_=0.0;
+        Array1D<double> sigma2_;
+        sigma2_(0)=(betta+betta_add)/(alfa+0.5*(npt_-nbas_)-1.);
+        if (sigma2_(0)<0.0){
+            cout << "Negative (should be very small) data noise, set to zero. Sigma2=" << sigma2_(0) << endl;
+            sigma2_(0)=0.0;
         }
         coef_cov_.Resize(nbas_,nbas_,0.e0);
         for(int ib=0;ib<nbas_;ib++)
           for(int jb=0;jb<nbas_;jb++)
-            coef_cov_(ib,jb)=sigma2_*A_inv_(ib,jb);//-1 due to eta/eta-2 factor in cov
+            coef_cov_(ib,jb)=sigma2_(0)*A_inv_(ib,jb);//-1 due to eta/eta-2 factor in cov
 
         coef_erb_.Resize(nbas_,0.e0);
         for ( int i = 0; i<this->nbas_; i++) coef_erb_(i) = sqrt(coef_cov_(i,i));
