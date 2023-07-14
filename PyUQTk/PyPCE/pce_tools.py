@@ -707,7 +707,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
         c_k:                1D NumPy array of nonzero coefficients
         used_mi_np:         NumPy array with the multiindex containing only terms
                                 selected by BCS
-        sigma2_reestimated: Noise variance reestimated by BCS
+        sigma2_reestimated: Noise variance reestimated by BCS returned if return_sigma2 = True
     """
     # Configure BCS parameters to defaults
     adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
@@ -773,7 +773,7 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
     # Return coefficients and their locations with respect to the basis terms
     return c_k, used_mi_np, sigma2_reestimated
 ################################################################################
-def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False, return_sigma2=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
     Side (Rather than relying on a PCE Model to provide the basis) to solve
@@ -800,6 +800,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
         c_k:    1D numpy array with regression coefficients. The only non-zero
                         terms correspond to the retained basis terms
                         [n_basis_terms,]
+        sigma2: Reestimated noise variance returned if return_sigma2 = True
     """
     # Set dimensions
     n_samples = vdm_np.shape[0]
@@ -850,6 +851,9 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
     bcs.WBCS(psi_uqtk, rhs_uqtk, sigma2_array, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
 
+    # reestimated sigma2 as a scalar
+    sigma2 = sigma2_array[0]
+
     # Print result of the BCS iteration
     if (verbose):
         print("BCS has selected", used.XSize(), "basis terms out of %d basis terms"%(n_basis_terms))
@@ -859,7 +863,10 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
     for i in range(used.XSize()):
         c_k[used[i]]=weights[i]
 
-    return c_k
+    if return_sigma2:
+        return c_k, sigma2
+    else:
+        return c_k
 ################################################################################
 def multidim_intersect(arr1, arr2):
     """
