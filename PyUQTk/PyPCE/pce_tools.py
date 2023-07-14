@@ -566,6 +566,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
     if return_sigma2:
         return pc_model_final, cfs_final, sigma2
     else:
+        print("Please note that sigma2 will be returned by default in future versions.")
         return pc_model_final, cfs_final
 ################################################################################
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose, plot=False):
@@ -866,6 +867,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
     if return_sigma2:
         return c_k, sigma2
     else:
+        print("Please note that sigma2 will be returned by default in future versions.")
         return c_k
 ################################################################################
 def multidim_intersect(arr1, arr2):
