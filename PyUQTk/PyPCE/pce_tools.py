@@ -418,6 +418,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
         pc_model_final: PC object with basis expanded by the iterations
         cfs_final:      1D Numpy array with PC coefficients for each term of the final
                         model [#terms_in_final_basis,]
+        sigma2:         data noise variance, updated by bcs algorithm (if desired), scalar
     """
 
     # Sends error message if y-values are multi-dimensional
@@ -561,12 +562,14 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
         print("Coefficients:")
         print(cfs_final)
         print(len(cfs_final), " terms retained out of a full basis of size", full_basis_size)
-        print("Reestimated sigma2:", sigma2)
+        print("Reestimated sigma2: %.3e"%sigma2)
 
     if return_sigma2:
         return pc_model_final, cfs_final, sigma2
     else:
-        print("Please note that sigma2 will be returned by default in future versions.")
+        print("\nPlease note that sigma2 will be returned by default in future versions.")
+        print("To remain compatible, set input argument return_sigma2 to True and expect")
+        print("three return arguments: pc_model, coefficients, updated noise variance\n")
         return pc_model_final, cfs_final
 ################################################################################
 def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose, plot=False):
