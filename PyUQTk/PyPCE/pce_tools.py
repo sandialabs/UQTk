@@ -624,7 +624,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose,
         for eta in etas:
 
             # Obtain coefficients through BCS
-            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, eta, niter, mindex_growth, ntry=1)
+            pc_final, c_k, _ = UQTkBCS(pc_start, x_tr, y_tr, eta, niter, mindex_growth, ntry=1, return_sigma2=True)
 
             if verbose > 1:
                 print("Fold ", i+1, ", eta ", eta, ", ", len(c_k), " terms retained out of a full basis of size", full_basis_size)
