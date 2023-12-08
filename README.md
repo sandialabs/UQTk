@@ -102,6 +102,4 @@ To cite UQTk, please use the following publications:
 ```
 
 ## Contact Us
-For more information, visit the [UQTk website at https://www.sandia.gov/UQToolkit/](https://www.sandia.gov/UQToolkit/) or
-contact the [UQTk Developers at <uqtk-developers@software.sandia.gov>](mailto:uqtk-developers@software.sandia.gov)
-Sandia National Laboratories, Livermore, CA, USA.
+For more information, visit the [UQTk website at https://www.sandia.gov/UQToolkit/](https://www.sandia.gov/UQToolkit/) or contact the UQTk developers through the [github discussions site](https://github.com/sandialabs/UQTk/discussions)
