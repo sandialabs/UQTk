@@ -22,7 +22,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 from __future__ import print_function # To make print() in Python 2 behave like in Python 3
@@ -108,8 +108,7 @@ for i in range(x.XSize()):
 	value = 1.0/(1.0 + x.at(i,0)*x.at(i,0));
 	y.assign(i,value)
 
-#sigma = uqtkarray.dblArray1D(1,1e-8)
-sigma = 1e-8
+sigma = uqtkarray.dblArray1D(1,1e-8)
 eta = 1e-8
 lambda_init = uqtkarray.dblArray1D()
 scale = 0.1
@@ -119,14 +118,13 @@ errbars = uqtkarray.dblArray1D()
 basis = uqtkarray.dblArray1D()
 alpha = uqtkarray.dblArray1D()
 used = uqtkarray.intArray1D()
-#_lambda = uqtkarray.dblArray1D(1,0.0)
-_lambda=0.0
+Sig=uqtkarray.dblArray2D()
 
 adaptive = 1
 optimal = 1
 verbose = 0
 
-bcs.BCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,_lambda)
+bcs.WBCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,Sig)
 
 uqtkarray.printarray(weights)
 uqtkarray.printarray(used)

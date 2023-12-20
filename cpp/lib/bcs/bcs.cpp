@@ -22,7 +22,7 @@
      You should have received a copy of the BSD 3 Clause License
      along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 /// \file bcs.cpp
@@ -88,9 +88,9 @@
 // %   errbars:  one standard deviation around the sparse weights
 // %   basis:    if adaptive==1, then basis = the next projection vector, see [2]
 // %   alpha:    inverse variance of the coefficient priors, updated through the algorithm, see [1]
-// %   Sig:      re-estimated noise variance
+// %   Sig:      covariance matrix of the weights
 
-void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
+void WBCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,
                  double eta, Array1D<double> &lambda_init,
 		             int adaptive, int optimal, double scale, int verbose,
                  Array1D<double> &weights, Array1D<int> &used,
@@ -121,27 +121,27 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   double maxr = maxVal(ratio,&indx) ;
   Array1D<int>index(1,indx);
   alpha.Resize(1) ;
-  alpha(0)= PHI2(index(0))/(maxr-sigma2);
+  alpha(0)= PHI2(index(0))/(maxr-sigma2(0));
 
   // Compute initial mu, Sig, S, Q
   Array2D<double> phi(n,1,0.0);
   for (int i = 0; i<n; i++ ) phi(i,0) = PHI(i,index(0));
   double Hessian=alpha(0);
-  for (int i = 0; i<n; i++ ) Hessian += phi(i,0)*phi(i,0)/sigma2;
+  for (int i = 0; i<n; i++ ) Hessian += phi(i,0)*phi(i,0)/sigma2(0);
 
     Sig.Resize(1,1,1./(Hessian+1.e-12));
-    double dtmp1=Sig(0,0)*PHIy(index(0))/sigma2;
+    double dtmp1=Sig(0,0)*PHIy(index(0))/sigma2(0);
 
   Array1D<double> mu(1,dtmp1);
   Array1D<double> left(m,0.0),phitmp(n);
   for ( int i=0; i<n; i++ )phitmp(i)=phi(i,0);
-  prodAlphaMatVec(PHIT, phitmp, 1.0/sigma2, left);
+  prodAlphaMatVec(PHIT, phitmp, 1.0/sigma2(0), left);
 
   Array1D<double> S(m), Q(m);
   for (int j=0; j<m; j++)
   {
-    S(j) = PHI2(j)/sigma2-Sig(0,0)*left(j)*left(j);
-    Q(j) = PHIy(j)/sigma2-Sig(0,0)*PHIy(index(0))*left(j)/sigma2;
+    S(j) = PHI2(j)/sigma2(0)-Sig(0,0)*left(j)*left(j);
+    Q(j) = PHIy(j)/sigma2(0)-Sig(0,0)*PHIy(index(0))*left(j)/sigma2(0);
   }
 
   // Keep track of the positions selected during the iterations
@@ -154,8 +154,8 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   int count = 0;
   for ( count=0; count<MAX_IT; count++ )
   {
-    //if ( (count%10)==0 )
-    //  cout << "Iteration # " << count << endl;
+    if (verbose > 0)
+        cout << "Iteration # " << count << endl;
     Array1D<double> s,q;
     s=S; q=Q;
     for ( int i = 0; i< (int) index.XSize(); i++){
@@ -163,6 +163,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       q(index(i)) = alpha(i)*Q(index(i))/(alpha(i)-S(index(i)));
     }
 
+    // if lambda_init is an empty array, autopopulate it
     if (lambda_init.XSize() == 0)
     {
       double suma=0.0;
@@ -170,7 +171,6 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       double lambda_ = 2*( index.XSize() - 1 ) / suma;
       lambda_init.Resize(m,lambda_);
     }
-
     Array1D<double> A(m,0.0), B(m,0.0), C(m,0.0);
     Array1D<double> theta(m,0.0), discriminant(m,0.0), nextAlphas(m,0.0) , theta_lambda(m,0.0);
     for ( int i=0; i<m; i++ ){
@@ -181,6 +181,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       discriminant(i) = pow(B(i),2) - 4.0*A(i)*C(i);
       nextAlphas(i) = (-B(i) - sqrt(discriminant(i)) ) / (2.0*A(i));
       theta_lambda(i)=theta(i)-lambda_init(i);
+
     }
 
     // Choose the next alpha that maximizes marginal likelihood
@@ -190,7 +191,6 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     find(theta_lambda, 0.0, string("gt"), ig0) ;
     if (ig0.XSize()==0)
       ig0.PushBack(0.0);
-
 
     // Indices for reestimation
     Array1D<int> ire,foo,which ;
@@ -286,7 +286,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
         Array1D<double> tmp1, comm;
 
         prodAlphaMatVec (phi,Sigi,1.0,       tmp1);
-        prodAlphaMatTVec(PHI,tmp1,1.0/sigma2,comm);
+        prodAlphaMatTVec(PHI,tmp1,1.0/sigma2(0),comm);
         addVecAlphaVecPow(S,ki,    comm,2);
         addVecAlphaVecPow(Q,ki*mui,comm,1);
         alpha(which(0)) = Alpha;
@@ -305,7 +305,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       	double mui   = Sigii*Q(idx);
       	Array1D<double> comm1,tmp1;
 
-      	prodAlphaMatTVec(phi,phii,1.0/sigma2,tmp1);
+      	prodAlphaMatTVec(phi,phii,1.0/sigma2(0),tmp1);
         prodAlphaMatVec (Sig,tmp1,1.0,       comm1);
 	      Array1D<double> ei;
 	      ei=phii;
@@ -326,7 +326,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       	mu.PushBack(mui);
 
       	Array1D<double> comm2(m,0.0);
-      	prodAlphaMatTVec(PHI,ei,1.0/sigma2,comm2);
+      	prodAlphaMatTVec(PHI,ei,1.0/sigma2(0),comm2);
 
       	addVecAlphaVecPow(S,-Sigii,comm2,2);
       	addVecAlphaVecPow(Q,-mui,comm2,1);
@@ -363,7 +363,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
       	delCol(mu,which(0));
 
       	Array1D<double> comm,tmp1 ;
-	      prodAlphaMatVec(phi,Sigi,1.0/sigma2,tmp1);
+	      prodAlphaMatVec(phi,Sigi,1.0/sigma2(0),tmp1);
         prodAlphaMatTVec(PHI,tmp1,1.0,comm);
       	addVecAlphaVecPow(S,1.0/Sigii,comm,2);
       	addVecAlphaVecPow(Q,mui/Sigii,comm,1);
@@ -404,10 +404,9 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
   }
 
 
-  sigma2 = sum1/((double) (n-index.XSize())+sum3) ;
+  sigma2(0) = sum1/((double) (n-index.XSize())+sum3) ;
   errbars.Resize(Sig.XSize()) ;
   for ( int i = 0; i<(int) errbars.XSize(); i++) errbars(i) = sqrt(Sig(i,i));
-
 
   // Generate a basis for adaptive CS
   if ( adaptive == 1 ){
@@ -437,7 +436,7 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
 
     else{
       Array2D<double> tmp1;
-      prodAlphaMatTMat(phi,phi,1.0/sigma2,tmp1);
+      prodAlphaMatTMat(phi,phi,1.0/sigma2(0),tmp1);
       double tmp1m = 0.0 ;
       for ( int i = 0; i < (int) tmp1.XSize() ; i++ )
         tmp1m += tmp1(i,i);
@@ -468,7 +467,8 @@ void WBCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
     }
 
   }
-  //printf("BCS algorithm converged, # iterations : %d \n",count);
+  if (verbose > 0)
+    printf("BCS algorithm converged, # iterations : %d \n",count);
   return ;
 
 }
@@ -518,10 +518,13 @@ void BCS(Array2D<double> &PHI, Array1D<double> &y, double &sigma2,
                  Array1D<double> &errbars, Array1D<double> &basis,
                  Array1D<double> &alpha, double &lambda)
 {
+    printf("This function is obsolete. Please rework code to use WBCS.");
     int m = (int) PHI.YSize() ;
     Array2D<double> Sig;
-    WBCS(PHI, y, sigma2, eta, lambda_init, adaptive, optimal, scale, verbose,
-        weights, used, errbars, basis, alpha, Sig);
+    Array1D<double> sigma2_array(1, sigma2);
+    WBCS(PHI, y, sigma2_array, eta, lambda_init, adaptive, optimal, scale, verbose,
+      weights, used, errbars, basis, alpha, Sig);
+
 }
 
 // void BCS(Array2D<double> &PHI, Array1D<double> &y, Array1D<double> &sigma2,

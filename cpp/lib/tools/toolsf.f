@@ -22,7 +22,7 @@ c$$$
 c$$$     You should have received a copy of the BSD 3 Clause License
 c$$$     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 c$$$
-c$$$     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+c$$$     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 c$$$     Sandia National Laboratories, Livermore, CA, USA
 c$$$=====================================================================================
       subroutine heap_ext(n,isgn,i,j,index)

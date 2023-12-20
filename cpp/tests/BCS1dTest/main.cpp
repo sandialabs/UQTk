@@ -22,7 +22,7 @@
      You should have received a copy of the BSD 3 Clause License
      along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <iostream>
@@ -70,7 +70,8 @@ y(i) = 1.0/(1.0 + x(i,0)*x(i,0));
 }
 
 // Main inputs are Phi, ydata, sigma
-double sigma = 1e-8;
+Array1D<double>sigma(1);
+sigma(0)=1e-8;
 
 // params
 double eta = 1e-8;
@@ -80,15 +81,16 @@ double scale = .1;
 // outputs
 Array1D<double> weights, errbars, basis, alpha;
 Array1D<int> used;
-double lambda = 0.0;
+Array2D<double> Sig;
 
 int adaptive=1;
 int optimal=1;
 int verbose=0;
 // run bcs
 //bcs(Phi,y,sigma,eta,scale,weights,used,errbars);
-BCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha,lambda);
+WBCS(Phi,y,sigma,eta,lambda_init,adaptive,optimal,scale,verbose,weights,used,errbars,basis,alpha, Sig);
 
+printarray(sigma);
 printarray(weights);
 printarray(used);
 printarray(errbars);

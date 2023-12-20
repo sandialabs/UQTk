@@ -22,7 +22,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
@@ -371,9 +371,10 @@ def UQTkRegression(pc_model,f_evaluations, samplepts):
     # Return numpy array of PC coefficients
     return c_k
 ################################################################################
-def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
-            mindex_growth='nonconservative', regparams=None, sigma2=1e-8, trval_frac=None,\
-            npccut=None, pcf_thr=None, verbose=0, eta_plot=False):
+def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry=1,\
+            eta_folds=5, eta_growth = False, eta_plot = False,\
+            regparams=None, sigma2=1e-8, npccut=None, pcf_thr=None,\
+            verbose=0, return_sigma2=False):
     """
     Obtain PC coefficients by Bayesian compressive sensing
 
@@ -381,41 +382,43 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     ToDo: add documentation in UQTk manual on what BCS is and the basis growth schemes
 
     Input:
-        pc_model:   PC object with information about the starting basis
+        pc_begin:   PC object with information about the starting basis
         xdata:      N-dimensional NumPy array with sample points [#samples,
                             #dimensions]
         ydata:      1D numpy array (vector) with function, evaluated at the
                             sample points [#samples,]
-        niter:      Number of iterations for order growth
         eta:        NumPy array, list, or float with the threshold for
                             stopping the algorithm. Smaller values
                             retain more nonzero coefficients. If eta is an array/list,
                             the optimum value of the array is chosen. If a float,
                             the given value is used.
-        ntry:       Number of splits for cross-validation of the retained basis
-                            through bcs; default is 5
-        eta_folds:  Number of folds to use for eta cross-valiation; default is 5
+        niter:      Number of iterations for order growth
         mindex_growth: Method for basis growth; options are None,
                             'nonconservative', 'conservative'; default is 'nonconservative'
+        ntry:       Number of splits for cross-validation of the retained basis
+                            through bcs; default is 1
+        eta_folds:  Number of folds to use for eta cross-valiation; default is 5
+        eta_growth: Flag for using basis growth in eta optimization
+        eta_plot    Flag for saving a plot of etas vs. RMSE
         regparams:  Regularization weights
                             To set a fixed scalar, provide a fixed nonnegative value.
                             To autopopulate a scalar, set regparams = 0.
                             To set a fixed vector of weights, provide an array [#PC terms,].
                             To autopopulate a vector, set reg_params = None, which is the suggested method.
-        sigma2:      Inital noise variance we assume is in the data; default is 1e-8
-        trval_frac: Fraction of the total input data to use in each split;
-                            if None (default), 1/ntry is used
+        sigma2:     Inital noise variance we assume is in the data; default is 1e-8
         npccut:     Maximum number of PC terms to retain, for pruning 'by hand';
                             default is None
         pcf_thr:    Minimum value (magnitude) for PC coefficients, for pruning low PC coefficients 'by hand'
                             default is None
         verbose:    Flag for optional print statements
-        eta_plot  Flag for saving a plot of etas vs. RMSE
+        return_sigma2:   Flag to retun reestimated sigma2
+
 
     Output:
         pc_model_final: PC object with basis expanded by the iterations
         cfs_final:      1D Numpy array with PC coefficients for each term of the final
                         model [#terms_in_final_basis,]
+        sigma2:         data noise variance, updated by bcs algorithm (if desired), scalar
     """
 
     # Sends error message if y-values are multi-dimensional
@@ -426,11 +429,12 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     # Choose whether to optimize eta
     if (type(eta)==np.float64 or type(eta)==float):
         eta_opt = eta
-        RMSE_eta=[]
-        RMSE_eta_tr=[]
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
-        eta_opt = UQTkOptimizeEta(pc_model, ydata, xdata, eta, niter, eta_folds, eta_plot)
+        if eta_growth:
+            eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
+        else:
+            eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, 1, eta_folds, None, verbose, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)
     else:
@@ -439,8 +443,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     #set up parameters
     nsam = xdata.shape[0] # Number of samples in xdata
 
-    if trval_frac==None:
-        trval_frac=1/ntry
+    trval_frac=1/ntry #Fraction of the total input data to use in each split;
     ntrain = int(trval_frac * nsam) # Number of training samples per split
 
     mi_selected = []
@@ -450,8 +453,12 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     if regparams is None:
         regparams = np.array([])
     elif type(regparams)==int or type(regparams)==float:
-        regparams = regparams*np.ones((pc_model.GetNumberPCTerms(),))
+        regparams = regparams*np.ones((pc_begin.GetNumberPCTerms(),))
 
+    if mindex_growth == None:
+        full_basis_size = pc_begin.GetNumberPCTerms()
+    else:
+        full_basis_size = uqtkpce.PCSet("NISPnoq", pc_begin.GetOrder() + niter -1, pc_begin.GetNDim(), pc_begin.GetPCType(), pc_begin.GetAlpha(), pc_begin.GetBeta()).GetNumberPCTerms()
 
     # loop through iterations with different splits of the data
     for i in range(ntry):
@@ -462,6 +469,8 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
 
         if verbose>0:
             print("============  Split # %d / %d ============" % (i + 1, ntry))
+
+        pc_model = pc_begin # reinitialize pc_model for each split
 
         # Iterations of multiindex growth
         for j in range(niter):
@@ -475,7 +484,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
                     print(mindex)
 
             # One run of BCS to obtain an array of coefficients and a new multiindex
-            c_k, used_mi_np = UQTkEvalBCS(pc_model, y_split, x_split, sigma2, eta_opt, regparams, 0)
+            c_k, used_mi_np, sigma2 = UQTkEvalBCS(pc_model, y_split, x_split, sigma2, eta_opt, regparams, verbose)
 
             # Custom 'cuts' by number of PC terms or by value of PC coefficients
             npcall = c_k.shape[0] # number of PC terms
@@ -495,7 +504,6 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             mindex = used_mi_np[indhigh][indsort] # indices of the selected coefficients
             cfs = c_k[indhigh][indsort] # selected coefficients
             npc = cfs.shape[0] # number of coefficients
-
             # Multiindex growth with optional update of weights
             if j < niter - 1:
 
@@ -533,6 +541,7 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
     mindex_final = reduce(multidim_intersect, mi_selected)
     # If no intersection, add the constant term [not sure why]
     if mindex_final.shape[0] == 0:
+        print("No intersection found between the splits. Adding back the constant term.")
         mindex_final = np.zeros((1, xdata.shape[1]), dtype=int)
 
     # create a pc object with the final multiindex
@@ -552,10 +561,18 @@ def UQTkBCS(pc_model, xdata, ydata, niter, eta, ntry=5, eta_folds=5,\
             print(mindex_final)
         print("Coefficients:")
         print(cfs_final)
+        print(len(cfs_final), " terms retained out of a full basis of size", full_basis_size)
+        print("Reestimated sigma2: %.3e"%sigma2)
 
-    return pc_model_final, cfs_final
+    if return_sigma2:
+        return pc_model_final, cfs_final, sigma2
+    else:
+        print("\nPlease note that sigma2 will be returned by default in future versions.")
+        print("To remain compatible, set input argument return_sigma2 to True and expect")
+        print("three return arguments: pc_model, coefficients, updated noise variance\n")
+        return pc_model_final, cfs_final
 ################################################################################
-def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
+def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, mindex_growth, verbose, plot=False):
     """
     Choose the opimum eta for Bayesian compressive sensing with nonconservative
         basis growth, splitting for basis crossvalidation. Calculates the RMSE
@@ -574,6 +591,8 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
                             coefficients
         niter:         Number of iterations for basis growth
         nfolds:        Number of folds to use for eta cross-validation
+        mindex_growth: Type of multiindex growth to use
+        verbose:       Flag for print statements
         plot:          Flag for whether to generate a plot for eta optimization
 
     Output:
@@ -585,6 +604,11 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
 
     RMSE_list_per_fold=[] # list to whole eta RMSEs, organized by fold
     RMSE_list_per_fold_tr=[]
+
+    if mindex_growth == None:
+        full_basis_size = pc_start.GetNumberPCTerms()
+    else:
+        full_basis_size = uqtkpce.PCSet("NISPnoq", pc_start.GetOrder() + niter -1, pc_start.GetNDim(), pc_start.GetPCType(), pc_start.GetAlpha(), pc_start.GetBeta()).GetNumberPCTerms()
 
     # loop through each fold
     for i in range(nfolds):
@@ -600,7 +624,12 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
         for eta in etas:
 
             # Obtain coefficients through BCS
-            pc_final, c_k = UQTkBCS(pc_start, x_tr, y_tr, niter, eta)
+            pc_final, c_k, _ = UQTkBCS(pc_start, x_tr, y_tr, eta, niter, mindex_growth, ntry=1, return_sigma2=True)
+
+            if verbose > 1:
+                print("Fold ", i+1, ", eta ", eta, ", ", len(c_k), " terms retained out of a full basis of size", full_basis_size)
+
+
             # Evaluate the PCE at the validation points
             pce_evals = UQTkEvaluatePCE(pc_final, c_k, x_val) #testing error
             pce_evals_tr = UQTkEvaluatePCE(pc_final, c_k, x_tr) #training error
@@ -625,6 +654,10 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
     std = np.std(np.array(RMSE_list_per_fold), axis=0)
     std_tr = np.std(np.array(RMSE_list_per_fold_tr), axis=0)
 
+    # standard deviation of the mean
+    std_m = std/math.sqrt(nfolds)
+    std_m_tr = std/math.sqrt(nfolds)
+
     # Choose eta with lowest RMSE
     eta_opt = etas[np.argmin(avg)]
 
@@ -644,6 +677,7 @@ def UQTkOptimizeEta(pc_start, y, x, etas, niter, nfolds, plot=False):
         plt.tick_params(axis='both', labelsize=16)
 
         plt.xscale('log')
+        plt.yscale('log')
 
         # Create legend
         plt.legend(loc='upper left')
@@ -674,8 +708,10 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
         verbose:   Flag for optional print statements
 
     Output:
-        c_k:        1D NumPy array of nonzero coefficients
-        used_mi_np: NumPy array with the multiindex containing only terms selected by BCS
+        c_k:                1D NumPy array of nonzero coefficients
+        used_mi_np:         NumPy array with the multiindex containing only terms
+                                selected by BCS
+        sigma2_reestimated: Noise variance reestimated by BCS returned if return_sigma2 = True
     """
     # Configure BCS parameters to defaults
     adaptive = 0 # Flag for adaptive CS, using a generative basis, set to 0 or 1
@@ -696,6 +732,9 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
     for i2 in range(lambda_init.shape[0]):
         lam_uqtk.assign(i2, lambda_init[i2])
 
+    # uqtkarray for sigma2
+    sigma2_array=uqtkarray.dblArray1D(1,sigma2)
+
     #UQTk array for the basis terms evaluated at the sample points
     psi_uqtk = uqtkarray.dblArray2D()
     pc_model.EvalBasisAtCustPts(sam_uqtk, psi_uqtk)
@@ -709,10 +748,10 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
                                           #vector
     alpha = uqtkarray.dblArray1D()    # inverse variance of the coefficient priors,
                                       # updated through the algorithm
-    Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
+    Sig = uqtkarray.dblArray2D()      # covariance matrix of the weights
 
     # Run BCS through the c++ implementation
-    bcs.WBCS(psi_uqtk, y, sigma2, eta, lam_uqtk, adaptive, optimal, scale,\
+    bcs.WBCS(psi_uqtk, y, sigma2_array, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
 
     # Print result of the BCS iteration
@@ -732,10 +771,13 @@ def UQTkEvalBCS(pc_model, f_evaluations, samplepts, sigma2, eta, regparams, verb
     uqtkarray.subMatrix_row_int(mi_uqtk, used, used_mi_uqtk)
     used_mi_np=uqtkarray.uqtk2numpy(used_mi_uqtk)
 
+    # convert the returned noise variance to a scalar
+    sigma2_reestimated=sigma2_array[0]
+
     # Return coefficients and their locations with respect to the basis terms
-    return c_k, used_mi_np
+    return c_k, used_mi_np, sigma2_reestimated
 ################################################################################
-def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False):
+def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verbose=False, return_sigma2=False):
     """
     Calls the C++ BCS routines directly with a VanderMonde Matrix and Right Hand
     Side (Rather than relying on a PCE Model to provide the basis) to solve
@@ -762,6 +804,7 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
         c_k:    1D numpy array with regression coefficients. The only non-zero
                         terms correspond to the retained basis terms
                         [n_basis_terms,]
+        sigma2: Reestimated noise variance returned if return_sigma2 = True
     """
     # Set dimensions
     n_samples = vdm_np.shape[0]
@@ -788,10 +831,13 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
         regparams_np = np.array([])
     elif type(regparams_np)==int or type(regparams_np)==float:
         regparams_np = regparams_np*np.ones((n_basis_terms,))
+
     # Convert to UQTk array
     lam_uqtk=uqtkarray.dblArray1D(regparams_np.shape[0])
     for i2 in range(regparams_np.shape[0]):
         lam_uqtk.assign(i2, regparams_np[i2])
+
+    sigma2_array = uqtkarray.dblArray1D(1,sigma2)
 
 
     # UQTk arrays for outputs
@@ -806,8 +852,11 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
     Sig = uqtkarray.dblArray2D()      # re-estimated noise variance
 
     # Run BCS through the c++ implementation
-    bcs.WBCS(psi_uqtk, rhs_uqtk, sigma2, eta, lam_uqtk, adaptive, optimal, scale,\
+    bcs.WBCS(psi_uqtk, rhs_uqtk, sigma2_array, eta, lam_uqtk, adaptive, optimal, scale,\
       bcs_verbose, weights, used, errbars, basis, alpha, Sig)
+
+    # reestimated sigma2 as a scalar
+    sigma2 = sigma2_array[0]
 
     # Print result of the BCS iteration
     if (verbose):
@@ -818,7 +867,11 @@ def UQTkCallBCSDirect(vdm_np, rhs_np, sigma2, eta=1.e-8, regparams_np=None, verb
     for i in range(used.XSize()):
         c_k[used[i]]=weights[i]
 
-    return c_k
+    if return_sigma2:
+        return c_k, sigma2
+    else:
+        print("Please note that sigma2 will be returned by default in future versions.")
+        return c_k
 ################################################################################
 def multidim_intersect(arr1, arr2):
     """
