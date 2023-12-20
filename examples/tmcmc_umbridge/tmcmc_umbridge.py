@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.3
-#                          Copyright (2023) NTESS
+#                      The UQ Toolkit (UQTk) version @UQTKVERSION@
+#                          Copyright (@UQTKYEAR@) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright 2023 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -23,7 +23,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
