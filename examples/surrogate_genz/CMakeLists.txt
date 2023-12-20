@@ -2,6 +2,7 @@ project (UQTk)
 
 SET(copy_PY_FILES
     surrogate_genz-BCS.ipynb
+    surrogate_genz-BCS_detailed.ipynb
     surrogate_genz-Galerkin.ipynb
     surrogate_genz-Regression.ipynb
     surrogate_genz.ipynb	
