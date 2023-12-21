@@ -14,10 +14,9 @@ and model uncertainties from experimental data.
 
 ## Documentation
 For documentation on how to install and use UQTk, please refer to the manual,
-which is included as a PDF file in the directory doc/UQTk_manual.pdf. For more
+which is included as a PDF file in the directory docs/UQTk_manual.pdf. For more
 detailed documentation on the actual source code for development purposes,
-please refer to the doxygen documentation in the directory doc/doxy or
-[online at https://www.sandia.gov/uqtoolkit/source-code-documentation](https://www.sandia.gov/uqtoolkit/source-code-documentation).
+please refer to the [C++ doxygen documentation](https://sandialabs.github.io/UQTk/).
 If you are familiar with UQTk and would like just a high level overview of where to find
 everything and how to install, see the sections on Directory Structure and
 Installation below.
