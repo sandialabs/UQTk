@@ -2,11 +2,12 @@
 # Uncertainty Quantification Toolkit (UQTk) version 3.1.3
 
 #### Bert Debusschere, Cosmin Safta, Katherine Johnston, Kenny Chowdhary, Khachik Sargsyan, Luke Boll, Mohammad Khalil, Prashant Rai, Tiernan Casey, Xiaoshu Zeng
+#### Bert Debusschere, Caitlin Curry, Cosmin Safta, Katherine Johnston, Kenny Chowdhary, Khachik Sargsyan, Luke Boll, Mohammad Khalil, Prashant Rai, Tiernan Casey, Xiaoshu Zeng
 
 ## Overview
 The UQ Toolkit (UQTk) is a collection of libraries and tools for the
 quantification of uncertainty in numerical model predictions. Version
-3.1.3 offers Polynomial Chaos Expansions to represent random variables,
+@UQTKVERSION@ offers Polynomial Chaos Expansions to represent random variables,
 intrusive and non-intrusive methods for propagating uncertainties through
 computational models, tools for sensitivity analysis, methods for sparse
 surrogate construction, and Bayesian inference tools for inferring parameters
@@ -85,7 +86,7 @@ To cite UQTk, please use the following publications:
   year     =  {2004},
   volume   =  {26},
   pages    =  {698-719},
-  number   =  {2}
+  number   =  {2},
   url      =  {http://dx.doi.org/10.1137/S1064827503427741}
 }
 
@@ -96,12 +97,10 @@ To cite UQTk, please use the following publications:
   editor    = {R. Ghanem and D. Higdon and H. Owhadi},
   year      = {2017},
   pages     = {1807--1827},
-  publisher = {Springer}
+  publisher = {Springer},
   url       = {http://www.springer.com/us/book/9783319123844}
 }
 ```
 
 ## Contact Us
-For more information, visit the [UQTk website at https://www.sandia.gov/UQToolkit/](https://www.sandia.gov/UQToolkit/) or
-contact the [UQTk Developers at <uqtk-developers@software.sandia.gov>](mailto:uqtk-developers@software.sandia.gov)
-Sandia National Laboratories, Livermore, CA, USA.
+For more information, visit the [UQTk website at https://www.sandia.gov/UQToolkit/](https://www.sandia.gov/UQToolkit/) or contact the UQTk developers through the [github discussions site](https://github.com/sandialabs/UQTk/discussions)
