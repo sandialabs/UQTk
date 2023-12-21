@@ -9,8 +9,8 @@ SET(copy_SRC_FILES
    )
 
 SET(copy_DAT_FILES
-    data/cali_grid.dat
-    data/cali_tria.dat
+    data/kl_prep_grid.py
+    data/cali.dat
    )
 
 SET(copy_SCRIPT_FILES
@@ -109,7 +109,6 @@ INSTALL(FILES ${copy_DAT_FILES}
         PERMISSIONS OWNER_WRITE OWNER_READ
         DESTINATION examples/kle_ex1/data
 )
-
 
 # Copy over README file too
 INSTALL(FILES README

@@ -1,7 +1,7 @@
 #!/bin/bash
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.3
+#                      The UQ Toolkit (UQTk) version 3.1.4
 #                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
@@ -23,7 +23,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
@@ -41,7 +41,7 @@ usage ()
   echo "               the MVN is based on a covariance matrix                                    "
   echo "                        cov(x1,x2)=exp(-(x1-x2)^2/cl^2)                                   "
   echo "               where cl is the second parameter, \"corr_len\". Each RF sample consist     "
-  echo "               of values on a structured spatial grid over [0,1]x[0,1]. Currently 65x65   "
+  echo "               of values on a structured spatial grid over [0,1]x[0,1]. Currently 33x33   "
   echo "               grid points, are used and the grid is clustered near the boundary.         "
   echo "               Some grid options can be changed from command line and some from inside the"
   echo "               code                                                                       "
@@ -90,8 +90,11 @@ sLen=${#slist[@]}
 sigma=5.0
 ctype="SqExp"
 
-if [ ${run} == "cov-spl" ]
-then
+if [ ${run} == "cov-spl" ]; then
+  numspl=12
+  # declare -a slist=(128 1024 4096)
+  declare -a slist=(128 1024)
+  sLen=${#slist[@]}
   for (( i=0; i<${sLen}; i++ ));
   do
     echo "-----------------------------------------------"
@@ -109,6 +112,16 @@ then
     fi
     mv xgrid.dat ygrid.dat xg1d.dat ${resdir}
     /bin/mv *${rsuff}.dat ${resdir}
+    # make plots
+    # samples
+    python ./mkplots.py samples2D ${clen} ${slist[$i]} ${numspl}
+    # covariance
+    python ./mkplots.py numcov2D ${clen} ${slist[$i]}
+    # KL basis
+    python ./mkplots.py numKLevec2D ${clen} ${slist[$i]}
+    mv samples2D_* ${resdir}
+    mv KLmodes2D_* ${resdir}
+    mv cov2D_* ${resdir}
   done
 fi
 
@@ -123,12 +136,22 @@ then
     mkdir ${resdir}
   fi
   mv *${clen}_${ctype}_anl.dat ${resdir}/.
-
+  # make plots
+  # covariance
+  python ./mkplots.py anlcov2D ${ctype} ${clen}
+  # KL basis
+  python ./mkplots.py anlKLevec2D ${ctype} ${clen}
+  mv KLmodes2D_* ${resdir}
+  mv cov2D_* ${resdir}
 fi
 
 if [ ${run} == "cov-spl-u" ]
 then
-  declare -a slist=(4096 65536)
+  # declare -a slist=(4096 65536)
+  # declare -a slist=(128 256)
+  numspl=12
+  cd data; python ./kl_prep_grid.py -r cali -n 256; cd ..
+  declare -a slist=(1024 4096)
   sLen=${#slist[@]}
   for (( i=0; i<${sLen}; i++ ));
   do
@@ -146,20 +169,38 @@ then
       mkdir ${resdir}
     fi
     /bin/mv *${rsuff}.dat ${resdir}
+    # make plots
+    # samples
+    python ./mkplots.py samples2Du ${clen} ${slist[$i]} ${numspl}
+    # covariance
+    python ./mkplots.py numcov2Du ${clen} ${slist[$i]}
+    # KL basis
+    python ./mkplots.py numKLevec2Du ${clen} ${slist[$i]}
+    mv samples2Du_* ${resdir}
+    mv KLmodes2Du_* ${resdir}
+    mv cov2Du_* ${resdir}
   done
 fi
 
 if [ ${run} == "cov-anl-u" ]
 then
+  cd data; python ./kl_prep_grid.py -r cali -n 256; cd ..
   rsuff="2Du_${ctype}_${clen}"
   ./kl_2Du.x -c ${ctype} -s ${sigma} -l ${clen} -e ${nkl}
-  mv eig.dat       eig${rsuff}.dat
-  mv KLmodes.dat   KLmodes${rsuff}.dat
-  mv cov.dat       cov${rsuff}.dat
+  mv eig.dat      eig${rsuff}.dat
+  mv KLmodes.dat  KLmodes${rsuff}.dat
+  mv cov.dat      cov${rsuff}.dat
   rdir=cvanl${rsuff}
   if [ ! -d "${rdir}" ]; then
     mkdir ${rdir}
   fi
   mv *${rsuff}.dat ${rdir}/.
+  # make plots
+  # covariance
+  python ./mkplots.py anlcov2Du ${ctype} ${clen}
+  # KL basis
+  python ./mkplots.py anlKLevec2Du ${ctype} ${clen}
+  mv KLmodes2Du_* ${rdir}
+  mv cov2Du_* ${rdir}
 
 fi

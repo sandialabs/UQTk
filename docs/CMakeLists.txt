@@ -1,0 +1,6 @@
+project (UQTk)
+
+
+INSTALL(FILES UQTk_manual.pdf
+        PERMISSIONS OWNER_WRITE OWNER_READ
+        DESTINATION docs/)

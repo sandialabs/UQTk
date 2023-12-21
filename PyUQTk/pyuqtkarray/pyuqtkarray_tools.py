@@ -1,6 +1,6 @@
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.3
+#                      The UQ Toolkit (UQTk) version 3.1.4
 #                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
@@ -22,7 +22,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
@@ -100,7 +100,7 @@ def numpy2uqtk(y):
             for i in range(n):
                 for j in range(m):
                     x.assign(i, j, y[i][j])
-            pyuqtkarray.setnpintArray(x,np.asfortranarray(y.copy()))
+            # pyuqtkarray.setnpintArray(x,np.asfortranarray(y.copy()))
     elif (y.dtype.name).find('float')>=0:
         s = np.shape(y)
         if len(s) == 1:

@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.3
+#                      The UQ Toolkit (UQTk) version 3.1.4
 #                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk

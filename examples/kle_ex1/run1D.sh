@@ -1,7 +1,7 @@
 #!/bin/bash
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version 3.1.3
+#                      The UQ Toolkit (UQTk) version 3.1.4
 #                          Copyright (2023) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
@@ -23,7 +23,7 @@
 #     You should have received a copy of the BSD 3 Clause License
 #     along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 #
-#     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+#     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
 #     Sandia National Laboratories, Livermore, CA, USA
 #=====================================================================================
 
@@ -70,7 +70,8 @@ run=$1
 clen=$2
 
 #declare -a slist=(512 1024 2048 4096 8192 16384 32768 65536 131072)
-declare -a slist=(512 8192 131072)
+#declare -a slist=(512 8192 131072)
+declare -a slist=(512 4096 32768)
 sLen=${#slist[@]}
 
 sigma=5.0
@@ -89,12 +90,25 @@ then
     mv KLmodes.dat  KLmodes_${rsuff}.dat
     mv xi_data.dat  xidata_${rsuff}.dat
     mv cov.dat      cov_${rsuff}.dat
-    soldir="cvspl_${rsuff}"
+    soldir="cvspl1D_${rsuff}"
     if [ ! -d "${soldir}" ]; then
       mkdir ${soldir}
     fi
     /bin/mv *${rsuff}.dat ${soldir}
     /bin/rm -rf samples.dat relVar.dat xgrid.dat
+    # make plots
+    # samples
+    python ./mkplots.py samples1D ${clen} ${slist[$i]} 
+    # KL reconstruction
+    python ./mkplots.py pltKLrecon1D ${clen} ${slist[$i]} 0 16 1
+    # KL basis
+    python ./mkplots.py numKLevec1D ${clen} ${slist[$i]} off
+    # covariance
+    python ./mkplots.py numcov1D ${clen} ${slist[$i]}
+    mv rf1D_* ${soldir}
+    mv KLrecon_* ${soldir}
+    mv KLmodes1D_* ${soldir}
+    mv cov1D_* ${soldir}
   done
 fi
 

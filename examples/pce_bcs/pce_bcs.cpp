@@ -1,6 +1,6 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.3
+                      The UQ Toolkit (UQTk) version 3.1.4
                           Copyright (2023) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
@@ -22,7 +22,7 @@
      You should have received a copy of the BSD 3 Clause License
      along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include <cstdio>
@@ -68,39 +68,38 @@ int main(int argc, char *argv[])
     // Generate input points
     Array2D<double> xdata(ntot,ndim,0.e0);
     generate_uniform(xdata,seed);
-    
+
     // Evaluate a black-box forward function
     Array1D<double> ydata(ntot,0.e0);
-    func(xdata,ydata);  
+    func(xdata,ydata);
 
     // Compute the initial multiindex, i.e. the basis set up to given order for a given dimensionality
     Array2D<int> mindex;
     int npc=computeMultiIndex(ndim,nord,mindex);
-  
+
     // Work variables
-    Array1D<double> lambda_init ;                    // Parameter of the Laplace distribution, controlling the sparsity; 
+    Array1D<double> lambda_init ;                    // Parameter of the Laplace distribution, controlling the sparsity;
                                                      // if empty, then lambda will be computed, otherwise lambda will be fixed to the given value
-    double lambda ;                                  // Sparsity-controlling parameter on output
-    Array1D<double> weights, errbars, basis, alpha ; // 
+    Array1D<double> weights, errbars, basis, alpha ; //
     Array1D<int> used ;                              // The indices of the selected basis terms
     Array2D<int> newmindex;                          // The new multiindex
 
     int    adaptive = 0      ;                       // Flag for adaptive implementation
     int    optimal  = 1      ;                       // Flag for optimal implementation
     double scale    = 0.1    ;                       // Diagonal loading parameter, relevant only in adaptive, non-optimal implementation
-    int    verbose  = 0      ;                        // Verbosity
-    double sigma2= (double) pow(get_std(ydata),2)/1.0e6;  // 'Data' noise variance, will be re-estimated on output
-
+    int    verbose  = 0      ;                       // Verbosity
+    Array1D<double> sigma2 = (double) pow(get_std(ydata),2)/1.0e6;  // 'Data' noise variance, will be re-estimated on output
+    Array2D<double> Sig;                             // covariance matrix of the weights
 
     // Declare a PC object with Non-intrusive, non-quadrature implementation
     PCSet PCCurrModel("NISPnoq",mindex,which_chaos,0.0,1.0);
 
-    
+
     // Compute the projection matrix
     Array2D<double> Phi;
-    PCCurrModel.EvalBasisAtCustPts(xdata, Phi); 
-  
-            
+    PCCurrModel.EvalBasisAtCustPts(xdata, Phi);
+
+
     // Clear the work variables
     lambda_init.Clear();
     weights.Clear();
@@ -109,16 +108,16 @@ int main(int argc, char *argv[])
     alpha.Clear();
     used.Clear();
     newmindex.Clear();
- 
+
     // Run the BCS algorithm
-    BCS(Phi,ydata,sigma2,eta,lambda_init,adaptive, optimal,scale,
-		verbose,weights,used,errbars,basis,alpha,lambda);
-    
+    WBCS(Phi,ydata,sigma2,eta,lambda_init,adaptive, optimal,scale,
+		verbose,weights,used,errbars,basis,alpha,Sig);
+
     // Pick the selected subset of the multiindices (bases)
     subMatrix_row(mindex,used,newmindex);
 
     cout << "BCS algorithm selected " << used.Length() << " out of " << npc << " terms" << endl;
-    
+
 
     // Declare a new PC object with the sparse basis
     PCSet PCModel("NISPnoq",newmindex,which_chaos,0.0,1.0);
@@ -126,7 +125,7 @@ int main(int argc, char *argv[])
     Array1D<double> ypc;
     PCModel.EvalPCAtCustPoints(ypc,xdata,weights);
 
-    
+
     // Compute the relative L2 distance between values and the approximation
     double num=0.0, den=0.0;
     for(int i=0;i<ntot;i++){
@@ -134,7 +133,7 @@ int main(int argc, char *argv[])
       den+=pow(ydata(i),2.0);
     }
     cout << "L2 relative error at the training points is " << sqrt(num/den) << endl;
-    
+
 
     // Write out the sampled points
     write_datafile(xdata,"xdata.dat");
@@ -142,7 +141,7 @@ int main(int argc, char *argv[])
     write_datafile_1d(ydata,"ydata.dat");
     // Write out the initial multiindex
     write_datafile(mindex,"mindex.dat");
-    // Write out PC coefficients 
+    // Write out PC coefficients
     write_datafile_1d(weights,"PCcoeff.dat");
     // Write out the sparse multiindex
     write_datafile(newmindex,"mindex_new.dat");
@@ -150,12 +149,12 @@ int main(int argc, char *argv[])
     write_datafile_1d(used,"used.dat");
     // Write out the sparse PC expansion values at the sampled points
     write_datafile_1d(ypc,"ypc.dat");
-	  
 
-   
-    
-  
-    
+
+
+
+
+
   return 0;
 }
 

@@ -65,7 +65,7 @@ add_subdirectory (dep     )
 add_subdirectory (cpp     )
 add_subdirectory (examples)
 add_subdirectory (PyUQTk  )
-add_subdirectory (doc  )
+add_subdirectory (docs  )
 
 find_package(BLAS)
 find_package(LAPACK)

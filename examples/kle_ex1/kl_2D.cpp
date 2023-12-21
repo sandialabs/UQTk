@@ -1,6 +1,6 @@
 /* =====================================================================================
 
-                      The UQ Toolkit (UQTk) version 3.1.3
+                      The UQ Toolkit (UQTk) version 3.1.4
                           Copyright (2023) NTESS
                         https://www.sandia.gov/UQToolkit/
                         https://github.com/sandialabs/UQTk
@@ -22,7 +22,7 @@
      You should have received a copy of the BSD 3 Clause License
      along with UQTk. If not, see https://choosealicense.com/licenses/bsd-3-clause/.
 
-     Questions? Contact the UQTk Developers at <uqtk-developers@software.sandia.gov>
+     Questions? Contact the UQTk Developers at https://github.com/sandialabs/UQTk/discussions
      Sandia National Laboratories, Livermore, CA, USA
 ===================================================================================== */
 #include "kl_utils.h"
@@ -32,8 +32,8 @@
 #define GTYPE "cl0L"
 #define AFAC   0.5
 #define BFAC   1.1
-#define NX     65
-#define NY     65
+#define NX     33
+#define NY     33
 #define DLEN   1.0
 
 #define COVTYPE "SqExp"
@@ -163,13 +163,13 @@ int main(int argc, char *argv[])
   cout << " - Standard deviation:    " << sigma<< endl<<flush;
   cout << " - Number of KL modes:    " << nkl  << endl<<flush;
   if ( cflag )
-    cout<<" - Will generate covariance of type "<<cov_type<<endl<<flush;
+    cout<<" - Generate covariance of type "<<cov_type<<endl<<flush;
   else
-    cout << " - Will generate covariance from "<<nspl<<" samples" << endl<<flush;
-  if ( xflag )
-    cout<<" - Will read grid from file: "<<xfile<<endl<<flush;
+    cout << " - Generate covariance from "<<nspl<<" samples" << endl<<flush;
+  if ( xflag )  
+    cout<<" - Read grid from file: "<<xfile<<endl<<flush;
   else
-    cout << " - Will create grid with "<<nx<<"x"<<ny<<" points" << endl<<flush;
+    cout << " - Create grid with "<<nx<<"x"<<ny<<" points" << endl<<flush;
 
   /* read grid from file or generate uniform grid on [0,1] */
   if ( xflag ) {
@@ -198,9 +198,6 @@ int main(int argc, char *argv[])
       for ( int j = 0; j < nxy; j++)
         cov(i,j)=genCovAnl2D(xygrid,i,j,clen,sigma,cov_type);
   }
-  // else {
-  //   read_datafile(cov,"cov.dat");
-  // }
   else {
 
     double dfac=1.0e-11;
@@ -209,13 +206,17 @@ int main(int argc, char *argv[])
     while ( ( tryagain ) && ( dfac < 1.e-6 ) ) {
       tryagain = false ;
       for ( int i = 0; i < nxy; i++)
-        for ( int j = 0; j < nxy; j++)
-          cov(i,j)=genCovAnl2D(xygrid,i,j,clen,sigma,string("SqExp"));
+        for ( int j = 0; j < nxy; j++) {
+          cov(i,j) = genCovAnl2D(xygrid,i,j,clen,sigma,string("SqExp"));
+          //cov(j,i) = cov(i,j);
+        }
       for ( int i = 0; i < nxy; i++)
         cov(i,i) += dfac;
       //write_datafile( cov, "cov.dat" );
 
       /* Generate samples */
+      cout << " - Cholesky decomposition" << endl<<flush;
+
       char *lu = (char *) "L";
       int info ;
       FTN_NAME(dpotrf)( lu, &nxy, cov.GetArrayPointer(), &nxy, &info );
@@ -223,10 +224,10 @@ int main(int argc, char *argv[])
       /* Check the success in Cholesky factorization */
       if ( info != 0 ) {
 
-        cout<<"Error in Cholesky factorization, info=" << info << endl << flush ;;
+        cout << "Error in Cholesky factorization, info=" << info << endl << flush ;;
         dfac = dfac * 10.0 ;
         tryagain = true ;
-        cout<<"  will try again with diagonal factor" << dfac << endl << flush ;;
+        cout << "  will try again with diagonal factor" << dfac << endl << flush ;;
 
       } /* done if Cholesky factorization fails */
     }
@@ -234,17 +235,36 @@ int main(int argc, char *argv[])
     int rseed=20120828;
     dsfmt_init_gen_rand(&rnstate, (uint32_t) rseed );
 
+    float progress = 0.0;
+    int barWidth = 70;
+    cout << " - Generate samples" << endl<<flush;
     Array1D<double> randSamples(nxy,0.0);
-    ySamples.Resize(nxy,nspl,0.0);
+    ySamples.Resize(nxy, nspl, 0.0);
     for ( int j = 0; j < nspl; j++) {
+
+        if (float(j) / nspl > progress+0.01) {
+
+        cout << "   [";
+        int pos = barWidth * progress;
+        for (int ii = 0; ii< barWidth; ++ii) {
+            if (ii < pos) cout << "=";
+            else if (ii == pos) cout << ">";
+            else cout << " ";
+        }
+        cout << "] " << int(progress * 100.0) << " %\r";
+        cout << flush;
+        progress += 0.01;
+      }
+
       for (int i = 0 ; i < nxy ; i++ )
         randSamples(i) = dsfmt_genrand_nrv(&rnstate);
       for ( int i = 0; i < nxy; i++ ) {
         ySamples(i,j)=0.0;
         for ( int k = 0; k < i+1; k++)
-          ySamples(i,j) += (cov.GetArrayPointer())[i+k*nxy]*randSamples(k);
+          ySamples(i,j) += (cov.GetArrayPointer())[i+k*nxy] * randSamples(k);
       }
     }
+    cout << endl << flush;
     if (sflag) write_datafile( ySamples, "samples.dat" );
 
     /* Compute samples mean */
@@ -254,6 +274,7 @@ int main(int argc, char *argv[])
     write_datafile_1d( mean, "mean.dat" );
 
     /* Compute covariance matrix */
+    cout << " --> Compute covariance matrix from samples " << endl;
 
     /* 1. subtract the mean from samples */
     for ( int j = 0 ; j < nspl ; j++)
@@ -265,8 +286,8 @@ int main(int argc, char *argv[])
       for ( int j = i; j < nxy; j++ ) {
 
         double dsum=0.0;
-        for(int k = 0; k < nspl; k++ )
-          dsum += ySamples(i,k)*ySamples(j,k);
+        for (int k = 0; k < nspl; k++ )
+          dsum += ySamples(i,k) * ySamples(j,k);
 
         cov(i,j) = dsum/( (double) nspl );
       }

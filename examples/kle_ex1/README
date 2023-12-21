@@ -4,5 +4,9 @@ contains some examples of the construction of 1D and 2D Karhunen-Lo`eve (KL)
 expansions of a Gaussian stochastic process, based on sample realizations
 of this stochastic process.
 
+To run the examples, run the commands ./run1D.sh or ./run2D.sh A help menu will display
+the command line options. After you specify the proper options from the help menu, the
+scripts will run the 1D or 2D examples and created subdirectories with results and plots
+
 For more information, look in UQTk manual under
 Karhunen-Loéve Expansion of a Stochastic Process
