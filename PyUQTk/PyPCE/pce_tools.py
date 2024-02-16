@@ -432,8 +432,10 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
         if eta_growth:
+            # Get optimal eta through CV and grow the basis to full order in each fold
             eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
         else:
+            # Get optimal eta through CV, but stick to initial basis in each fold for efficiency
             eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, 1, eta_folds, None, verbose, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)
