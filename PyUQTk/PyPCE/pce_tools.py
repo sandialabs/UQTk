@@ -394,7 +394,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
                             the given value is used.
         niter:      Number of iterations for order growth
         mindex_growth: Method for basis growth; options are None,
-                            'nonconservative', 'conservative'; default is 'nonconservative'
+                            'nonconservative', 'conservative'; default is 'None'
         ntry:       Number of splits for cross-validation of the retained basis
                             through bcs; default is 1
         eta_folds:  Number of folds to use for eta cross-valiation; default is 5
