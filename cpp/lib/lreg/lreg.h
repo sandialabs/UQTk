@@ -42,7 +42,7 @@ class Lreg {
 public:
 
     /// \brief Constructor
-    Lreg() {residFlag_=false; diagPFlag_=false; return;};
+    Lreg() {residFlag_=false; diagPFlag_=false; sigma2_.Resize(1,0.e0); return;};
     /// \brief Destrcutor
     ~Lreg() {};
     //void testing();
@@ -85,8 +85,8 @@ public:
     int GetNdim() const {return ndim_;}
     /// \brief Get the number of bases
     int GetNbas() const {return nbas_;}
-    /// \brief Get the variance
-    double GetSigma2() const {return sigma2_;}
+    /// \brief Get the variance of the data
+    double GetSigma2() const {return sigma2_(0);}
     /// \brief Get coefficient covariance
     void GetCoefCov(Array2D<double>& coef_cov)  {coef_cov=coef_cov_; return;}
     /// \brief Get coefficients
@@ -121,7 +121,8 @@ public:
     /// \brief Dimensionality
     int ndim_;
     /// \brief Variance
-    double sigma2_;
+    Array1D<double> sigma2_; // Defined as an array of length one for ease of passing it through Pybind
+    // double sigma2_;
     /// \brief Weights
     Array1D<double> weights_;
     /// \brief Residuals
