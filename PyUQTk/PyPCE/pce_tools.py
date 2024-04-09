@@ -394,7 +394,7 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
                             the given value is used.
         niter:      Number of iterations for order growth
         mindex_growth: Method for basis growth; options are None,
-                            'nonconservative', 'conservative'; default is 'nonconservative'
+                            'nonconservative', 'conservative'; default is 'None'
         ntry:       Number of splits for cross-validation of the retained basis
                             through bcs; default is 1
         eta_folds:  Number of folds to use for eta cross-valiation; default is 5
@@ -432,8 +432,10 @@ def UQTkBCS(pc_begin, xdata, ydata, eta=1.e-3, niter=1, mindex_growth=None, ntry
     elif (type(eta)==np.ndarray or type(eta)==list):
         # the eta with the lowest RMSE is selected from etas
         if eta_growth:
+            # Get optimal eta through CV and grow the basis to full order in each fold
             eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, niter, eta_folds, mindex_growth, verbose, eta_plot)
         else:
+            # Get optimal eta through CV, but stick to initial basis in each fold for efficiency
             eta_opt = UQTkOptimizeEta(pc_begin, ydata, xdata, eta, 1, eta_folds, None, verbose, eta_plot)
         if verbose:
             print("Optimal eta is", eta_opt)

@@ -218,7 +218,6 @@ void Lreg::BCS_BuildRegr(Array1D<int>& used, double eta)
     double scale    = 0.1    ;
     int    verbose  = 0      ;
     // Initial variance 'rule-of-thumb'
-    Array1D<double> sigma2_;
     sigma2_(0) = max(1.e-12,get_var(ydata_)/1.0e6);
 
     // Compute the basis evaluation matrix
@@ -279,7 +278,6 @@ void Lreg::LSQ_BuildRegr()
         // alpha>>1, beta>>1, beta/alpha=sigma for fixed sigma
         // \todo to be implemented
 
-        Array1D<double> sigma2_;
         sigma2_(0)=(betta+betta_add)/(alfa+0.5*(npt_-nbas_)-1.);
         if (sigma2_(0)<0.0){
             cout << "Negative (should be very small) data noise, set to zero. Sigma2=" << sigma2_(0) << endl;
@@ -311,7 +309,7 @@ void Lreg::EvalRegr(Array2D<double>& xcheck, Array1D<double>& ycheck,Array1D<dou
 
     // If more than the the means are requested
     if (this->regMode_=="ms" or this->regMode_=="msc"){
-        if (sigma2_==0.0){
+        if (sigma2_(0)==0.0){
             yvar.Resize(ncheck,0.0);
             ycov.Resize(ncheck,ncheck,0.0);
             return;
