@@ -12,6 +12,7 @@ target_link_libraries (dfi uqtkarray)
 
 target_link_libraries (dfi depdsfmt )
 target_link_libraries (dfi deplbfgs )
+target_link_libraries (dfi sundials_core)
 target_link_libraries (dfi sundials_cvode)
 target_link_libraries (dfi sundials_nvecserial)
 target_link_libraries (dfi sundials_sunlinsoldense)

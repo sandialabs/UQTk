@@ -5,6 +5,7 @@ add_executable (GradHessianTest main.cpp)
 target_link_libraries (GradHessianTest uqtk )
 
 target_link_libraries (GradHessianTest depdsfmt )
+target_link_libraries (GradHessianTest sundials_core)
 target_link_libraries (GradHessianTest sundials_cvode)
 target_link_libraries (GradHessianTest sundials_nvecserial)
 target_link_libraries (GradHessianTest sundials_sunlinsoldense)

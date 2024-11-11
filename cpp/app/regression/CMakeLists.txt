@@ -11,6 +11,7 @@ target_link_libraries (regression uqtkarray)
 
 target_link_libraries (regression depdsfmt )
 target_link_libraries (regression deplbfgs )
+target_link_libraries (regression sundials_core)
 target_link_libraries (regression sundials_cvode)
 target_link_libraries (regression sundials_nvecserial)
 target_link_libraries (regression sundials_sunlinsoldense)

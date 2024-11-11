@@ -12,6 +12,7 @@ target_link_libraries (lr_eval uqtkarray)
 
 target_link_libraries (lr_eval depdsfmt )
 target_link_libraries (lr_eval deplbfgs )
+target_link_libraries (lr_eval sundials_core)
 target_link_libraries (lr_eval sundials_cvode)
 target_link_libraries (lr_eval sundials_nvecserial)
 target_link_libraries (lr_eval sundials_sunlinsoldense)

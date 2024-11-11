@@ -5,6 +5,7 @@ add_executable (ArrayReadAndWrite main.cpp)
 target_link_libraries (ArrayReadAndWrite uqtk  )
 
 target_link_libraries (ArrayReadAndWrite depdsfmt )
+target_link_libraries (ArrayReadAndWrite sundials_core)
 target_link_libraries (ArrayReadAndWrite sundials_cvode)
 target_link_libraries (ArrayReadAndWrite sundials_nvecserial)
 target_link_libraries (ArrayReadAndWrite sundials_sunlinsoldense)
