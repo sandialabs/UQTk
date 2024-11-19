@@ -1,27 +1,20 @@
-IF (NUMPY_INCLUDE_DIR)
-  SET(NUMPY_FIND_QUIETLY TRUE)
-endif (NUMPY_INCLUDE_DIR)
+# Use modern Python detection (requires CMake 3.12+)
+find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 
-# To set the variables PYTHON_EXECUTABLE
-FIND_PACKAGE(PythonInterp QUIET REQUIRED)
-FIND_PACKAGE(PythonLibs QUIET REQUIRED)
+# Check if NumPy was found
+if (Python3_NumPy_FOUND)
+    # Extract NumPy include directory and version
+    set(NUMPY_INCLUDE_DIR ${Python3_NumPy_INCLUDE_DIRS})
+    set(NUMPY_VERSION ${Python3_NumPy_VERSION})
 
-# Look for the include path
-# WARNING: The variable PYTHON_EXECUTABLE is defined by the script FindPythonInterp.cmake
-EXECUTE_PROCESS(COMMAND "${PYTHON_EXECUTABLE}" -c "import numpy; print (numpy.get_include()); print (numpy.version.version)"
-                 OUTPUT_VARIABLE NUMPY_OUTPUT
-                 ERROR_VARIABLE NUMPY_ERROR)
-                 
-IF(NOT NUMPY_ERROR)
-  STRING(REPLACE "\n" ";" NUMPY_OUTPUT ${NUMPY_OUTPUT})
-  LIST(GET NUMPY_OUTPUT 0 NUMPY_INCLUDE_DIR)
-  LIST(GET NUMPY_OUTPUT 1 NUMPY_VERSION)
-ENDIF(NOT NUMPY_ERROR)
+    # Debugging output
+    message(STATUS "Found NumPy:")
+    message(STATUS "  Include Directory: ${NUMPY_INCLUDE_DIR}")
+    message(STATUS "  Version: ${NUMPY_VERSION}")
+else()
+    # Handle error if NumPy is not found
+    message(FATAL_ERROR "NumPy not found. Please ensure NumPy is installed in your Python3 environment.")
+endif()
 
-INCLUDE(FindPackageHandleStandardArgs)
-
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(NumPy DEFAULT_MSG NUMPY_VERSION NUMPY_INCLUDE_DIR)
-
-MARK_AS_ADVANCED(NUMPY_INCLUDE_DIR)
-
-INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIR})
+# Include NumPy headers
+include_directories(${NUMPY_INCLUDE_DIR})

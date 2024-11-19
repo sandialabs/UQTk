@@ -1,27 +1,34 @@
-# Using Pybind to build the python module
+# Enable support for modern IN_LIST operator
+if (POLICY CMP0057)
+  cmake_policy(SET CMP0057 NEW)
+endif()
 
+# Using Pybind to build the Python module
 find_package(pybind11 REQUIRED)
 
-include_directories(../../cpp/lib/array) #array directory
-include_directories(../../cpp/lib/include) # include directory
+# Include directories for UQTk headers
+include_directories(../../cpp/lib/array) # Array directory
+include_directories(../../cpp/lib/include) # Include directory
+
+# Add the Pybind11 module
 pybind11_add_module(_uqtkarray pyuqtkarray.cpp)
-TARGET_LINK_LIBRARIES(_uqtkarray PUBLIC uqtk blas lapack)
 
-#SET(copy_FILES
-#  __init__.py
-#  )
+# Link required libraries
+target_link_libraries(_uqtkarray PUBLIC uqtk blas lapack)
 
-SET(copy_FILES
+# Files to be copied
+set(copy_FILES
   pyuqtkarray_tools.py
-  )
+)
 
-INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/)
+# Install Python files
+install(FILES ${copy_FILES} DESTINATION PyUQTk/)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyuqtkarray_tools.py
-               ${CMAKE_CURRENT_BINARY_DIR}/pyuqtkarray_tools.py COPYONLY)
+# Ensure Python tools script is available in the build directory
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/pyuqtkarray_tools.py
+  ${CMAKE_CURRENT_BINARY_DIR}/pyuqtkarray_tools.py COPYONLY
+)
 
-#INSTALL(FILES ${copy_FILES} DESTINATION PyUQTk/pyuqtkarray)
-
-INSTALL(TARGETS _uqtkarray DESTINATION PyUQTk/)
-#INSTALL(FILES ${CMAKE_BINARY_DIR}/${outdir}PyUQTk/pyuqtkarray/_uqtkarray
-#	      DESTINATION PyUQTk/)
+# Install the compiled Python module (_uqtkarray)
+install(TARGETS _uqtkarray DESTINATION PyUQTk/)
