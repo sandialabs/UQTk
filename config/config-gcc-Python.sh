@@ -1,12 +1,12 @@
 #!/bin/bash
 #=====================================================================================
 #
-#                      The UQ Toolkit (UQTk) version @UQTKVERSION@
-#                          Copyright (@UQTKYEAR@) NTESS
+#                      The UQ Toolkit (UQTk) version 3.1.5
+#                          Copyright (2024) NTESS
 #                        https://www.sandia.gov/UQToolkit/
 #                        https://github.com/sandialabs/UQTk
 #
-#     Copyright @UQTKYEAR@ National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+#     Copyright 2024 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 #     Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 #     retains certain rights in this software.
 #
@@ -45,7 +45,7 @@ done
 # Adjust the UQTK_SRC_DIR to point to where the UQTk source directory is. Feel free
 # to update the desired installation directory as you prefer.
 UQTK_SRC_DIR=../UQTk-SNL
-#../@UQTKSRCDIR@
+#../UQTk-SNL
 UQTK_INSTALL_DIR=$UQTK_SRC_DIR-install
 
 echo "This script assumes the UQTk source code is in $UQTK_SRC_DIR"

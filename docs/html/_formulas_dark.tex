@@ -1,0 +1,318 @@
+\documentclass{article}
+\usepackage{iftex}
+\usepackage{ifthen}
+\usepackage{epsfig}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\color{white}
+\pagecolor{black}
+\ifPDFTeX
+\usepackage{newunicodechar}
+  \makeatletter
+    \def\doxynewunicodechar#1#2{%
+    \@tempswafalse
+    \edef\nuc@tempa{\detokenize{#1}}%
+    \if\relax\nuc@tempa\relax
+      \nuc@emptyargerr
+    \else
+      \edef\@tempb{\expandafter\@car\nuc@tempa\@nil}%
+      \nuc@check
+      \if@tempswa
+        \@namedef{u8:\nuc@tempa}{#2}%
+      \fi
+    \fi
+  }
+  \makeatother
+  \doxynewunicodechar{⁻}{${}^{-}$}% Superscript minus
+  \doxynewunicodechar{²}{${}^{2}$}% Superscript two
+  \doxynewunicodechar{³}{${}^{3}$}% Superscript three
+
+\fi
+\pagestyle{empty}
+\begin{document}
+$j+i\times ny$
+\pagebreak
+
+$ C=A\backslash B$
+\pagebreak
+
+$y=\alpha Ax$
+\pagebreak
+
+$\left[n\times m\right]$
+\pagebreak
+
+$m$
+\pagebreak
+
+$n$
+\pagebreak
+
+$y=\alpha A^Tx$
+\pagebreak
+
+$\left[m\times n\right]$
+\pagebreak
+
+$C=\alpha AB$
+\pagebreak
+
+$m\times m$
+\pagebreak
+
+$C=\alpha A^TB$
+\pagebreak
+
+$x_i=x_i+\alpha y_i^ip$
+\pagebreak
+
+$a^T B c$
+\pagebreak
+
+$A^T A$
+\pagebreak
+
+$\left[n\times k\right]$
+\pagebreak
+
+$\left[n\times n\right]$
+\pagebreak
+
+$A_{n+1,i}=A_{i,n+1}=x_i$
+\pagebreak
+
+$A_{n+1,n+1}=scal$
+\pagebreak
+
+$V^*$
+\pagebreak
+
+$A$
+\pagebreak
+
+$\alpha$
+\pagebreak
+
+$\beta$
+\pagebreak
+
+$y=f(\lambda;x)$
+\pagebreak
+
+$x\in\mathbf{R}^s$
+\pagebreak
+
+$\lambda\in\mathbf{R}^d$
+\pagebreak
+
+$r$
+\pagebreak
+
+$\lambda$
+\pagebreak
+
+$x$
+\pagebreak
+
+$r\times d$
+\pagebreak
+
+$n\times s$
+\pagebreak
+
+$r\times n$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda x$
+\pagebreak
+
+$x\in\mathbf{R}^1$
+\pagebreak
+
+$\lambda\in\mathbf{R}^1$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda_1 x+\lambda_2x^2$
+\pagebreak
+
+$\lambda\in\mathbf{R}^2$
+\pagebreak
+
+$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x}$
+\pagebreak
+
+$y=f(\lambda;x)=e^{\lambda_1 +\lambda_2x+\lambda_3x^2}$
+\pagebreak
+
+$\lambda\in\mathbf{R}^3$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda_1+\lambda_2x$
+\pagebreak
+
+$y=f(\lambda;x)=\frac{x d_w}{A_w \lambda}+T_0$
+\pagebreak
+
+$d_w=0.1, A_w=0.04, T_0=273$
+\pagebreak
+
+$y=f(\lambda;x)=\frac{x Q}{A_w \lambda_1}+\lambda_2$
+\pagebreak
+
+$A_w=0.04, Q=20.0$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda_1+\lambda_2 x+\lambda_3 x^2+ \lambda_4 (x+1)^{3.5}$
+\pagebreak
+
+$\lambda\in\mathbf{R}^4$
+\pagebreak
+
+$y=f(\lambda;x)=\lambda_2 e^{\lambda_1 x} - 2$
+\pagebreak
+
+$y=f(\lambda;x_i)=\lambda_i$
+\pagebreak
+
+$i=1,...,d$
+\pagebreak
+
+$x_i\in\mathbf{R}^1$
+\pagebreak
+
+$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} \lambda_\alpha \Psi_\alpha(x)$
+\pagebreak
+
+$\lambda\in\mathbf{R}^{|{\cal S}|}$
+\pagebreak
+
+${\cal S}$
+\pagebreak
+
+$z=(\lambda,x)$
+\pagebreak
+
+$y=f(\lambda;x)=\sum_{\alpha\in{\cal S}} c_\alpha \Psi_\alpha(\lambda,x)$
+\pagebreak
+
+$c_\alpha$
+\pagebreak
+
+$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\pagebreak
+
+$c_{\alpha,i}$
+\pagebreak
+
+$y=f(\lambda;x^{(i)})=\sum_{\alpha\in{\cal S}_i} c_{\alpha,i} \Psi_\alpha(\lambda)$
+\pagebreak
+
+$(-\infty,\infty)$
+\pagebreak
+
+$[-1,1]$
+\pagebreak
+
+$\xi=R^{-1}(u)\in\mathbf{R}^d$
+\pagebreak
+
+$u\in[0,1]^d$
+\pagebreak
+
+$d$
+\pagebreak
+
+$d\times M$
+\pagebreak
+
+$N\times d$
+\pagebreak
+
+$u=R(\xi)$
+\pagebreak
+
+$\xi$
+\pagebreak
+
+$M\times d$
+\pagebreak
+
+$\xi_d$
+\pagebreak
+
+$[0,1]^d$
+\pagebreak
+
+\[
+F(t,\theta) = \left < F(t,\theta) \right >_{\theta}
+              + \sum_{k=1}^{\infty} \sqrt{\lambda_k} f_k(t) \xi_k\]
+\pagebreak
+
+$C$
+\pagebreak
+
+$t$
+\pagebreak
+
+$w$
+\pagebreak
+
+\[ \int C(s,t)f(t)dt=\lambda f(s) \rightarrow \sum w_j C(s_i,t_j) f_k(t_j) = \lambda_k f_k(s_i)\]
+\pagebreak
+
+\[A g=\lambda g \]
+\pagebreak
+
+$A=W K W$
+\pagebreak
+
+$g=Wf$
+\pagebreak
+
+$W$
+\pagebreak
+
+$W_{ii}=\sqrt{w_i}$
+\pagebreak
+
+$K_{ij}=Cov(t_i,t_j)$
+\pagebreak
+
+$\lambda_k$
+\pagebreak
+
+$f_k=W^{-1}g_k$
+\pagebreak
+
+$F(t,\theta_l)$
+\pagebreak
+
+$\xi_k$
+\pagebreak
+
+$F$
+\pagebreak
+
+$f_k$
+\pagebreak
+
+\[ \left.\xi_k\right\vert_{\theta_l}=\left <F(t,\theta_l)-\left <
+  F(t,\theta) \right >_{\theta}, f_k(t) \right >_t/\sqrt{\lambda_k} \]
+\pagebreak
+
+\[
+\left.\xi_k\right\vert_{\theta_l}=\sum_{i=1}^{N_p} w_i\left(F(t_i,\theta_l)-\left <
+  F(t_i,\theta) \right >_{\theta} \right) f_k(t_i)/\sqrt{\lambda_k} \]
+\pagebreak
+
+\[
+  F(t_i,\theta_l) = \left < F(t_i,\theta) \right >_{\theta}
+                        + \sum_{k=1}^{nKL} \sqrt{\lambda_k} f_k(t_i) \left. \xi_k\right\vert_{\theta_l}
+
+\]
+\pagebreak
+
+\end{document}
