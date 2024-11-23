@@ -1,8 +1,3 @@
-# Enable support for modern IN_LIST operator
-if (POLICY CMP0057)
-  cmake_policy(SET CMP0057 NEW)
-endif()
-
 # Using Pybind to build the Python module
 find_package(pybind11 REQUIRED)
 
