@@ -10,6 +10,7 @@ target_link_libraries (pce_quad uqtktools)
 target_link_libraries (pce_quad uqtkarray)
 
 target_link_libraries (pce_quad depdsfmt )
+target_link_libraries (pce_quad sundials_core)
 target_link_libraries (pce_quad sundials_cvode)
 target_link_libraries (pce_quad sundials_nvecserial)
 target_link_libraries (pce_quad sundials_sunlinsoldense)

@@ -6,6 +6,7 @@ target_link_libraries (pdf_cl uqtktools)
 target_link_libraries (pdf_cl uqtkarray)
 
 target_link_libraries (pdf_cl depdsfmt )
+target_link_libraries (pdf_cl sundials_core)
 target_link_libraries (pdf_cl sundials_cvode)
 target_link_libraries (pdf_cl sundials_nvecserial)
 target_link_libraries (pdf_cl sundials_sunlinsoldense)

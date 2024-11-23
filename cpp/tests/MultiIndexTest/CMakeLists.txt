@@ -5,6 +5,7 @@ add_executable (MultiIndexTest main.cpp)
 target_link_libraries (MultiIndexTest uqtk)
 
 target_link_libraries (MultiIndexTest depdsfmt   )
+target_link_libraries (MultiIndexTest sundials_core)
 target_link_libraries (MultiIndexTest sundials_cvode)
 target_link_libraries (MultiIndexTest sundials_nvecserial)
 target_link_libraries (MultiIndexTest sundials_sunlinsoldense)

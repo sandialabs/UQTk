@@ -23,6 +23,7 @@ add_executable (TMCMC2dTest main.cpp)
 target_link_libraries (TMCMC2dTest uqtk  )
 
 target_link_libraries (TMCMC2dTest depdsfmt )
+target_link_libraries (TMCMC2dTest sundials_core)
 target_link_libraries (TMCMC2dTest sundials_cvode)
 target_link_libraries (TMCMC2dTest sundials_nvecserial)
 target_link_libraries (TMCMC2dTest sundials_sunlinsoldense)

@@ -11,6 +11,7 @@ add_executable (BCS2dTest main.cpp)
 target_link_libraries (BCS2dTest uqtk )
 
 target_link_libraries (BCS2dTest depdsfmt )
+target_link_libraries (BCS2dTest sundials_core)
 target_link_libraries (BCS2dTest sundials_cvode)
 target_link_libraries (BCS2dTest sundials_nvecserial)
 target_link_libraries (BCS2dTest sundials_sunlinsoldense)

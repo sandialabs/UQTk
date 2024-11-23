@@ -5,6 +5,7 @@ add_executable (ArraySortTest main.cpp)
 target_link_libraries (ArraySortTest uqtk  )
 
 target_link_libraries (ArraySortTest depdsfmt )
+target_link_libraries (ArraySortTest sundials_core)
 target_link_libraries (ArraySortTest sundials_cvode)
 target_link_libraries (ArraySortTest sundials_nvecserial)
 target_link_libraries (ArraySortTest sundials_sunlinsoldense)

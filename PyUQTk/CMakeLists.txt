@@ -1,5 +1,10 @@
 project (UQTk)
 
+# Enable support for modern IN_LIST operator
+if (POLICY CMP0057)
+  cmake_policy(SET CMP0057 NEW)
+endif()
+
 add_subdirectory (inference)
 add_subdirectory (plotting)
 add_subdirectory (sens)

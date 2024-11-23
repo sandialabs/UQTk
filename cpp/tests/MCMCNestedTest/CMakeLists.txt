@@ -7,6 +7,7 @@ add_executable (MCMCNestedTest main.cpp)
 target_link_libraries (MCMCNestedTest uqtk  )
 
 target_link_libraries (MCMCNestedTest depdsfmt )
+target_link_libraries (MCMCNestedTest sundials_core)
 target_link_libraries (MCMCNestedTest sundials_cvode)
 target_link_libraries (MCMCNestedTest sundials_nvecserial)
 target_link_libraries (MCMCNestedTest sundials_sunlinsoldense)

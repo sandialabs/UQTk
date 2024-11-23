@@ -5,6 +5,7 @@ add_executable (SecondDeriv1dTest main.cpp)
 target_link_libraries (SecondDeriv1dTest uqtk )
 
 target_link_libraries (SecondDeriv1dTest depdsfmt )
+target_link_libraries (SecondDeriv1dTest sundials_core)
 target_link_libraries (SecondDeriv1dTest sundials_cvode)
 target_link_libraries (SecondDeriv1dTest sundials_nvecserial)
 target_link_libraries (SecondDeriv1dTest sundials_sunlinsoldense)

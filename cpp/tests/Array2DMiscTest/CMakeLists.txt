@@ -5,6 +5,7 @@ add_executable (Array2DMiscTest main.cpp)
 target_link_libraries (Array2DMiscTest uqtk )
 
 target_link_libraries (Array2DMiscTest depdsfmt )
+target_link_libraries (Array2DMiscTest sundials_core)
 target_link_libraries (Array2DMiscTest sundials_cvode)
 target_link_libraries (Array2DMiscTest sundials_nvecserial)
 target_link_libraries (Array2DMiscTest sundials_sunlinsoldense)

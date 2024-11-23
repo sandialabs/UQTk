@@ -5,6 +5,7 @@ add_executable (PCE1dTest main.cpp)
 target_link_libraries (PCE1dTest uqtk )
 
 target_link_libraries (PCE1dTest depdsfmt )
+target_link_libraries (PCE1dTest sundials_core)
 target_link_libraries (PCE1dTest sundials_cvode)
 target_link_libraries (PCE1dTest sundials_nvecserial)
 target_link_libraries (PCE1dTest sundials_sunlinsoldense)

@@ -5,6 +5,7 @@ add_executable (ArrayDelColumn main.cpp)
 target_link_libraries (ArrayDelColumn uqtk )
 
 target_link_libraries (ArrayDelColumn depdsfmt )
+target_link_libraries (ArrayDelColumn sundials_core)
 target_link_libraries (ArrayDelColumn sundials_cvode)
 target_link_libraries (ArrayDelColumn sundials_nvecserial)
 target_link_libraries (ArrayDelColumn sundials_sunlinsoldense)

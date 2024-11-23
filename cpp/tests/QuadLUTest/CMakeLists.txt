@@ -11,6 +11,7 @@ add_executable (QuadLUTest main.cpp)
 target_link_libraries (QuadLUTest uqtk  )
 
 target_link_libraries (QuadLUTest depdsfmt )
+target_link_libraries (QuadLUTest sundials_core)
 target_link_libraries (QuadLUTest sundials_cvode)
 target_link_libraries (QuadLUTest sundials_nvecserial)
 target_link_libraries (QuadLUTest sundials_sunlinsoldense)

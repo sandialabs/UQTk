@@ -5,6 +5,7 @@ add_executable (Hessian2dTest main.cpp)
 target_link_libraries (Hessian2dTest uqtk )
 
 target_link_libraries (Hessian2dTest depdsfmt )
+target_link_libraries (Hessian2dTest sundials_core)
 target_link_libraries (Hessian2dTest sundials_cvode)
 target_link_libraries (Hessian2dTest sundials_nvecserial)
 target_link_libraries (Hessian2dTest sundials_sunlinsoldense)
