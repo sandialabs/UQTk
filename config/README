@@ -8,5 +8,5 @@ confic-gcc-Python.sh: same as config-gcc-base with Python added to enable PyUQTk
 
 config-intel.sh: basic config file using Intel compiler
 
-config-options.sh: more complicated config file that check system for
+config-options.sh: more complicated config file that checks system for
   different versions of necessary components
