@@ -5,6 +5,7 @@ add_executable (PCELogTest main.cpp)
 target_link_libraries (PCELogTest uqtk )
 
 target_link_libraries (PCELogTest depdsfmt )
+target_link_libraries (PCELogTest sundials_core)
 target_link_libraries (PCELogTest sundials_cvode)
 target_link_libraries (PCELogTest sundials_nvecserial)
 target_link_libraries (PCELogTest sundials_sunlinsoldense)

@@ -45,13 +45,15 @@
 
 /*  CVODE headers  */
 #include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts.  */
-#include <cvode/cvode_direct.h>        /* access to CVDls interface            */
+// #include <cvode/cvode_direct.h>        /* access to CVDls interface            */
 #include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
 #include <sunmatrix/sunmatrix_dense.h> /* access to dense SUNMatrix            */
 #include <sunlinsol/sunlinsol_dense.h> /* access to dense SUNLinearSolver      */
 // #include <cvode/cvode_dense.h>       /* prototype for CVDense                */
-#include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM        */
-#include <sundials/sundials_types.h> /* definition of type realtype          */
+#include <sundials/sundials_types.h>    /* definition of type sunrealtype          */
+#include <sundials/sundials_context.h>  /* for SUNContext_Create */
+#include <sundials/sundials_dense.h>    /* definitions DlsMat DENSE_ELEM        */
+
 
 #include <iostream>
 #include <string.h>
@@ -800,7 +802,7 @@ public:
   /// carries an integer handle identifying the appropriate PC object
   /// \todo Why is this function a static int instead of static void? Should
   /// there be a return statement at the end?
-  static int LogIntRhsWrapper(realtype t, N_Vector y, N_Vector ydot, void *f_data)
+  static int LogIntRhsWrapper(sunrealtype t, N_Vector y, N_Vector ydot, void *f_data)
   {
     double indxobj = ((double*) f_data)[0] ;
 
@@ -821,7 +823,7 @@ public:
   }
 
   /// \brief Evaluates rhs necessary to compute natural logarithm via integration
-  int LogIntRhs(realtype t, N_Vector y, N_Vector ydot, void *f_data) const;
+  int LogIntRhs(sunrealtype t, N_Vector y, N_Vector ydot, void *f_data) const;
 
   /// \brief Verbosity level
   /// \note Currently the values of 0, 1 or 2 are implemented.

@@ -2047,7 +2047,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
 
   // initial condition array
   SUNContext sunctx;
-  SUNContext_Create(NULL, &sunctx);
+  SUNContext_Create(SUN_COMM_NULL, &sunctx);
   N_Vector u ;
   u = N_VNew_Serial( this->nPCTerms_ , sunctx) ;
   double p1Mean = p1[0];
@@ -2056,7 +2056,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
     NV_Ith_S(u,k) = 0.0 ;
 
   // initialize tolerances
-  realtype relT ;
+  sunrealtype relT ;
   N_Vector absT ;
   relT = CVrelt_ ;
   absT = N_VNew_Serial( this->nPCTerms_ , sunctx) ;
@@ -2064,7 +2064,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
     NV_Ith_S(absT,k) = CVabst_ ;
 
   // initialize integration limits
-  realtype tstart,tend,tret ;
+  sunrealtype tstart,tend,tret ;
   tstart = 0.0 ;
   tend   = 1.0 ;
 
@@ -2120,8 +2120,11 @@ void PCSet::LogInt(const double* p1, double* p2) const
   this->Check_CVflag((void *)linsolve, "SUNDenseLinearSolver", 0);
 
    /* Call CVDlsSetLinearSolver to attach the matrix and linear solver to CVode */
-  cvflag = CVDlsSetLinearSolver(cvode_mem, linsolve, denseMat);
-  this->Check_CVflag(&cvflag, "CVDlsSetLinearSolver", 1);
+  // cvflag = CVDlsSetLinearSolver(cvode_mem, linsolve, denseMat); // Deprecated
+  cvflag = CVodeSetLinearSolver(cvode_mem, linsolve, denseMat); 
+
+  // this->Check_CVflag(&cvflag, "CVDlsSetLinearSolver", 1);
+  this->Check_CVflag(&cvflag, "CVodeSetLinearSolver", 1);
 
   // // Set dense solver
   // cvflag = CVDense(cvode_mem, (this->nPCTerms_) );
@@ -2170,7 +2173,7 @@ void PCSet::LogInt(const double* p1, double* p2) const
 
 }
 
-int PCSet::LogIntRhs(realtype t, N_Vector y, N_Vector ydot, void *f_data) const
+int PCSet::LogIntRhs(sunrealtype t, N_Vector y, N_Vector ydot, void *f_data) const
 {
 
   // do nothing

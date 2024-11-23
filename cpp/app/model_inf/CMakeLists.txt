@@ -12,6 +12,7 @@ target_link_libraries (model_inf uqtkarray)
 
 target_link_libraries (model_inf depdsfmt )
 target_link_libraries (model_inf deplbfgs )
+target_link_libraries (model_inf sundials_core)
 target_link_libraries (model_inf sundials_cvode)
 target_link_libraries (model_inf sundials_nvecserial)
 target_link_libraries (model_inf sundials_sunlinsoldense)

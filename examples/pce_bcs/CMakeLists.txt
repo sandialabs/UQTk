@@ -27,6 +27,7 @@ target_link_libraries (pce_bcs.x uqtkxmlutils )
 
 target_link_libraries (pce_bcs.x depdsfmt )
 target_link_libraries (pce_bcs.x deplbfgs )
+target_link_libraries (pce_bcs.x sundials_core)
 target_link_libraries (pce_bcs.x sundials_cvode)
 target_link_libraries (pce_bcs.x sundials_nvecserial)
 target_link_libraries (pce_bcs.x sundials_sunlinsoldense)

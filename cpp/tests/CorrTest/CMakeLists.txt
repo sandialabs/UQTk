@@ -21,6 +21,7 @@ add_executable (CorrTest main.cpp)
 target_link_libraries (CorrTest uqtk )
 
 target_link_libraries (CorrTest depdsfmt )
+target_link_libraries (CorrTest sundials_core)
 target_link_libraries (CorrTest sundials_cvode)
 target_link_libraries (CorrTest sundials_nvecserial)
 target_link_libraries (CorrTest sundials_sunlinsoldense)

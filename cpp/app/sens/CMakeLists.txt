@@ -11,6 +11,7 @@ target_link_libraries (trdSpls uqtkarray)
 
 target_link_libraries (trdSpls depdsfmt )
 target_link_libraries (trdSpls deplbfgs )
+target_link_libraries (trdSpls sundials_core)
 target_link_libraries (trdSpls sundials_cvode)
 target_link_libraries (trdSpls sundials_nvecserial)
 target_link_libraries (trdSpls sundials_sunlinsoldense)

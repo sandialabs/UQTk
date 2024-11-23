@@ -5,6 +5,7 @@ add_executable (Deriv1dTest main.cpp)
 target_link_libraries (Deriv1dTest uqtk )
 
 target_link_libraries (Deriv1dTest depdsfmt )
+target_link_libraries (Deriv1dTest sundials_core)
 target_link_libraries (Deriv1dTest sundials_cvode)
 target_link_libraries (Deriv1dTest sundials_nvecserial)
 target_link_libraries (Deriv1dTest sundials_sunlinsoldense)

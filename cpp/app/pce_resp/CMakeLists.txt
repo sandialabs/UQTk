@@ -8,6 +8,7 @@ target_link_libraries (pce_resp uqtktools)
 target_link_libraries (pce_resp uqtkarray)
 
 target_link_libraries (pce_resp depdsfmt )
+target_link_libraries (pce_resp sundials_core)
 target_link_libraries (pce_resp sundials_cvode)
 target_link_libraries (pce_resp sundials_nvecserial)
 target_link_libraries (pce_resp sundials_sunlinsoldense)

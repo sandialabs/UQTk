@@ -5,6 +5,7 @@ add_executable (GradientPCETest main.cpp)
 target_link_libraries (GradientPCETest uqtk )
 
 target_link_libraries (GradientPCETest depdsfmt )
+target_link_libraries (GradientPCETest sundials_core)
 target_link_libraries (GradientPCETest sundials_cvode)
 target_link_libraries (GradientPCETest sundials_nvecserial)
 target_link_libraries (GradientPCETest sundials_sunlinsoldense)

@@ -11,6 +11,7 @@ target_link_libraries (gp_regr uqtkarray)
 
 target_link_libraries (gp_regr depdsfmt )
 target_link_libraries (gp_regr deplbfgs )
+target_link_libraries (gp_regr sundials_core)
 target_link_libraries (gp_regr sundials_cvode)
 target_link_libraries (gp_regr sundials_nvecserial)
 target_link_libraries (gp_regr sundials_sunlinsoldense)

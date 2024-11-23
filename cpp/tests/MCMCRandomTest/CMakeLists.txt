@@ -7,6 +7,7 @@ add_executable (MCMCRandomTest main.cpp)
 target_link_libraries (MCMCRandomTest uqtk  )
 
 target_link_libraries (MCMCRandomTest depdsfmt )
+target_link_libraries (MCMCRandomTest sundials_core)
 target_link_libraries (MCMCRandomTest sundials_cvode)
 target_link_libraries (MCMCRandomTest sundials_nvecserial)
 target_link_libraries (MCMCRandomTest sundials_sunlinsoldense)
