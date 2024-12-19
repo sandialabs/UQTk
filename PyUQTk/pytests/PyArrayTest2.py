@@ -76,4 +76,4 @@ assert b_np.flags['C_CONTIGUOUS'] == True
 # test for the dot product
 print("\ncompute dot product which should be [2,1.1,6] (Note that if F contigous, the dot product would be [.1,3,6]:")
 dp = np.dot(b_np,np.ones(2))
-assert np.alltrue( dp ==  np.array([2.,1.1,6.]))
+assert np.all( dp ==  np.array([2.,1.1,6.]))
