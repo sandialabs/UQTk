@@ -10,12 +10,13 @@ SET(copy_FILES
   README
   )
 
-link_directories(${CMAKE_SUNDIALS_DIR}/lib)
+# link_directories(${CMAKE_SUNDIALS_DIR}/lib)
 
 add_executable (umbridge_model.x umbridge_model.cpp)
 target_link_libraries (umbridge_model.x pthread)
 
 add_executable (tmcmc_umbridge.x tmcmc_umbridge.cpp)
+target_link_libraries (tmcmc_umbridge.x pthread)
 target_link_libraries (tmcmc_umbridge.x uqtk  )
 target_link_libraries (tmcmc_umbridge.x depdsfmt )
 target_link_libraries (tmcmc_umbridge.x depslatec)
